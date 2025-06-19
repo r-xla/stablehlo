@@ -35,6 +35,12 @@ jobs:
         with:
           create-symlink: true
           key: ${{matrix.config.os}}-ccache-check
+      
+      - if: runner.os == 'Linux'
+        name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt install lld
 
       - uses: r-lib/actions/setup-pandoc@v2
 
