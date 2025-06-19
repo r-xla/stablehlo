@@ -1,3 +1,3 @@
 test_that("minimal", {
-  test()
+  expect_equal(test(), 0)
 })
