@@ -4,3 +4,4 @@
 ^\.cache$
 ^stablehlo.*$
 ^src/Makevars$
+^\.github$
