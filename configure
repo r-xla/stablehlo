@@ -1,5 +1,6 @@
 
-[[ "$(uname)" != "Darwin" ]] && LLVM_ENABLE_LLD="ON" || LLVM_ENABLE_LLD="OFF"
+# [[ "$(uname)" != "Darwin" ]] && LLVM_ENABLE_LLD="ON" || LLVM_ENABLE_LLD="OFF"
+LLVM_ENABLE_LLD="OFF"
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
