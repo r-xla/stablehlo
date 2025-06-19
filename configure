@@ -1,6 +1,8 @@
 
 # [[ "$(uname)" != "Darwin" ]] && LLVM_ENABLE_LLD="ON" || LLVM_ENABLE_LLD="OFF"
 LLVM_ENABLE_LLD="OFF"
+STABLEHLO_DIR=${PWD}/../stablehlo-src
+PKG_DIR=${PWD}
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
@@ -14,9 +16,9 @@ LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 
 # Clone and build stablehlo
 
-if [ ! -d "stablehlo" ]; then
-  git clone https://github.com/openxla/stablehlo
-  cd stablehlo && git clone https://github.com/llvm/llvm-project.git
+if [ ! -d "${STABLEHLO_DIR}" ]; then
+  git clone https://github.com/openxla/stablehlo ${STABLEHLO_DIR}
+  cd ${STABLEHLO_DIR} && git clone https://github.com/llvm/llvm-project.git
   (cd llvm-project && git fetch && git checkout $(cat ../build_tools/llvm_version.txt))
 
   MLIR_ENABLE_BINDINGS_PYTHON=OFF build_tools/build_mlir.sh ${PWD}/llvm-project/ ${PWD}/llvm-build
@@ -31,13 +33,13 @@ if [ ! -d "stablehlo" ]; then
     -DMLIR_DIR=${PWD}/../llvm-build/lib/cmake/mlir
 
   cmake --build . --parallel 8
-  cmake --install . --prefix ../../src/stablehlo
-  cd ../..
 fi
 
-STABLEHLO_LIBS="-L${PWD}/stablehlo/build/lib $(find ${PWD}/stablehlo/build/lib  -name '*.so' -o -name '*.dylib' -o -name '*.a' | sed -E 's:.*/lib(.*)\.(a|so|dylib):-l\1:' | xargs)" 
-LLVM_LIBS="-L${PWD}/stablehlo/llvm-build/lib $(find ${PWD}/stablehlo/llvm-build/lib -maxdepth 1 -name '*.a' | sed -E 's:.*/lib(.*)\.(a|so|dylib):-l\1:' | xargs)"
-PKG_CPPFLAGS="-I${PWD}/stablehlo -I${PWD}/stablehlo/build -I${PWD}/stablehlo/llvm-build/include/ -I${PWD}/stablehlo/llvm-build/tools/mlir/include -I${PWD}/stablehlo/llvm-project/llvm/include -I${PWD}/stablehlo/llvm-project/mlir/include"
+cd ${PKG_DIR}
+
+STABLEHLO_LIBS="-L${STABLEHLO_DIR}/build/lib $(find ${STABLEHLO_DIR}/build/lib  -name '*.a' | sed -E 's:.*/lib(.*)\.(a|so|dylib):-l\1:' | xargs)" 
+LLVM_LIBS="-L${STABLEHLO_DIR}/llvm-build/lib $(find ${STABLEHLO_DIR}/llvm-build/lib -maxdepth 1 -name '*.a' | sed -E 's:.*/lib(.*)\.(a|so|dylib):-l\1:' | xargs)"
+PKG_CPPFLAGS="-I${STABLEHLO_DIR} -I${STABLEHLO_DIR}/build -I${STABLEHLO_DIR}/llvm-build/include/ -I${STABLEHLO_DIR}/llvm-build/tools/mlir/include -I${STABLEHLO_DIR}/llvm-project/llvm/include -I${STABLEHLO_DIR}/llvm-project/mlir/include"
 
 echo "Using stablehlo libraries: $STABLEHLO_LIBS"
 echo "Using include path: $PKG_CPPFLAGS"
