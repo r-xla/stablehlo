@@ -16,7 +16,10 @@ LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 
 # Clone and build stablehlo
 
-if [ ! -d "${STABLEHLO_DIR}" ]; then
+if [ ! -d "${STABLEHLO_DIR}" ] || [ -z "$(ls -A ${STABLEHLO_DIR})" ]; then
+  if [ -d "${STABLEHLO_DIR}" ]; then
+    rm -rf "${STABLEHLO_DIR}"
+  fi
   git clone https://github.com/openxla/stablehlo ${STABLEHLO_DIR}
   cd ${STABLEHLO_DIR} && git clone https://github.com/llvm/llvm-project.git
   (cd llvm-project && git fetch && git checkout $(cat ../build_tools/llvm_version.txt))
