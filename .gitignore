@@ -1,0 +1,10 @@
+.Rproj.user
+compile_commands.json
+.cache
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
+stablehlo/
+src/Makevars

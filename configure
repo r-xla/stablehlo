@@ -1,0 +1,46 @@
+
+[[ "$(uname)" != "Darwin" ]] && LLVM_ENABLE_LLD="ON" || LLVM_ENABLE_LLD="OFF"
+
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+  echo "could not determine R_HOME"
+  exit 1
+fi
+CC=`"${R_HOME}/bin/R" CMD config CC`
+CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
+
+# Clone and build stablehlo
+
+if [ ! -d "stablehlo" ]; then
+  git clone https://github.com/openxla/stablehlo
+  cd stablehlo && git clone https://github.com/llvm/llvm-project.git
+  (cd llvm-project && git fetch && git checkout $(cat ../build_tools/llvm_version.txt))
+
+  MLIR_ENABLE_BINDINGS_PYTHON=OFF build_tools/build_mlir.sh ${PWD}/llvm-project/ ${PWD}/llvm-build
+
+  mkdir build && cd build
+
+  cmake .. -GNinja \
+    -DLLVM_ENABLE_LLD="$LLVM_ENABLE_LLD" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DLLVM_ENABLE_ASSERTIONS=ON \
+    -DSTABLEHLO_ENABLE_BINDINGS_PYTHON=OFF \
+    -DMLIR_DIR=${PWD}/../llvm-build/lib/cmake/mlir
+
+  cmake --build . --parallel 8
+  cmake --install . --prefix ../../src/stablehlo
+  cd ../..
+fi
+
+STABLEHLO_LIBS="-L${PWD}/stablehlo/build/lib $(find ${PWD}/stablehlo/build/lib  -name '*.so' -o -name '*.dylib' -o -name '*.a' | sed -E 's:.*/lib(.*)\.(a|so|dylib):-l\1:' | xargs)" 
+LLVM_LIBS="-L${PWD}/stablehlo/llvm-build/lib $(find ${PWD}/stablehlo/llvm-build/lib -maxdepth 1 -name '*.a' | sed -E 's:.*/lib(.*)\.(a|so|dylib):-l\1:' | xargs)"
+PKG_CPPFLAGS="-I${PWD}/stablehlo -I${PWD}/stablehlo/build -I${PWD}/stablehlo/llvm-build/include/ -I${PWD}/stablehlo/llvm-build/tools/mlir/include -I${PWD}/stablehlo/llvm-project/llvm/include -I${PWD}/stablehlo/llvm-project/mlir/include"
+
+echo "Using stablehlo libraries: $STABLEHLO_LIBS"
+echo "Using include path: $PKG_CPPFLAGS"
+sed -e "s|@STABLEHLO_LIBS@|$STABLEHLO_LIBS|" \
+    -e "s|@PKG_CPPFLAGS@|$PKG_CPPFLAGS|" \
+    -e "s|@LLVM_LIBS@|$LLVM_LIBS|" \
+    src/Makevars.in > src/Makevars

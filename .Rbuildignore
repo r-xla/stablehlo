@@ -1,0 +1,6 @@
+^stablehlo\.Rproj$
+^\.Rproj\.user$
+^compile_commands\.json$
+^\.cache$
+^stablehlo.*$
+^src/Makevars$
