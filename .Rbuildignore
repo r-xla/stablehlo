@@ -6,3 +6,4 @@
 ^src/Makevars$
 ^\.github$
 ^LICENSE\.md$
+^.ccache.*
