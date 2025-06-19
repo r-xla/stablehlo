@@ -5,3 +5,4 @@
 ^stablehlo.*$
 ^src/Makevars$
 ^\.github$
+^LICENSE\.md$
