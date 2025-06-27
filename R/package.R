@@ -1,9 +1,13 @@
-## usethis namespace: start
-#' @useDynLib stablehlo, .registration = TRUE
-## usethis namespace: end
-NULL
+#' Converts a function to StableHLO src code.
+#' 
+#' @export
+jit <- function(f) {
+  if (!rlang::is_function(f)) {
+    cli::cli_abort("Expected {.arg f} to be {.cls function}. Got {.cls {class(f)}}.")
+  }
 
-## usethis namespace: start
-#' @importFrom Rcpp sourceCpp
-## usethis namespace: end
-NULL
+}
+
+jit_impl <- function(exprs) {
+
+}

@@ -17,3 +17,17 @@ Config/build/compilation-database: true
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Collate: 
+    'list_of.R'
+    'repr.R'
+    'shape.R'
+    'enum.R'
+    'types.R'
+    'constant.R'
+    'value_id.R'
+    'op.R'
+    'func.R'
+    'ops.R'
+    'package.R'
+    'tracer.R'
+    'utils.R'
