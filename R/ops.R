@@ -40,7 +40,7 @@ OpConstant <- S7::new_class(
   }
 )
 method(repr, OpConstant) <- function(x) {
-  repr(super(x, to = Op))
+  repr(S7::super(x, to = Op))
 }
 
 stablehlo_constant <- function(value) {

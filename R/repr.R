@@ -8,6 +8,6 @@ method(repr, NULL) <- function(x) {
   ""
 }
 
-method(repr, class_integer) <- function(x) {
+method(repr, S7::class_integer) <- function(x) {
   as.character(x)
 }

@@ -44,7 +44,7 @@ FuncInputs <- new_list_of("FuncInputs", FuncInput)
 method(repr, FuncInputs) <- function(x) {
   paste0(
     "(",
-    paste0(sapply(inputs@items, repr), collapse = ", "),
+    paste0(sapply(x@items, repr), collapse = ", "),
     ")"
   )
 }
