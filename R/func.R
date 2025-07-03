@@ -76,14 +76,22 @@ FuncId <- new_class(
   )
 )
 
-method(repr, FuncId) <- function(x) {
-  x@id
+
+method(`==`, list(FuncId, FuncId)) <- function(e1, e2) {
+  identical(e1@id, e2@id)
 }
 
 FuncBody <- new_list_of(
   "FuncBody",
   item_type = Op
 )
+
+method(`==`, list(FuncBody, FuncBody)) <- function(e1, e2) {
+  length(e1@items) == length(e2@items) &&
+    all(sapply(seq_along(e1@items), function(i) {
+      e1@items[[i]] == e2@items[[i]]
+    }))
+}
 
 method(repr, FuncBody) <- function(x) {
   paste0(sapply(x@items, repr), collapse = "\n")

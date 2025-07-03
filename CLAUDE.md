@@ -61,7 +61,7 @@ The package implements a representation of the StableHLO IR (Intermediate Repres
 3. **Functions** (`func.R`): Defines function representation
    - `Func`, `FuncBody`, `FuncInputs`, `FuncOutputs`
 
-4. **Values and Constants** (`constant.R`, `value_id.R`): 
+4. **Values and Constants** (`constant.R`, `value_id.R`):
    - `ValueId` - Identifier for values
    - `Constant` - Representation of constant values
 
@@ -80,7 +80,7 @@ The package implements a representation of the StableHLO IR (Intermediate Repres
 
 ## Development Practices
 
-1. Use S7 (object-oriented system) for defining types and classes
+1. Use S7 (object-oriented system) for defining types and classes, except for PartialFunc, which is an R6 class (use $ instead of @ for R6).
 2. Follow the established pattern for adding new operations and types
 3. Add tests in `tests/testthat/` with appropriate snapshots for validation
 4. Document functions with roxygen2 comments

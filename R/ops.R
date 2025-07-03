@@ -14,6 +14,20 @@ Abs <- new_class(
   }
 )
 
+Add <- new_class(
+  "Add",
+  parent = Op,
+  constructor = function(inputs, outputs, signature) {
+    new_object(
+      Op,
+      name = OpName(OpMnemonic("add")),
+      inputs = inputs,
+      outputs = outputs,
+      signature = signature
+    )
+  }
+)
+
 OpConstant <- S7::new_class(
   "OpConstant",
   parent = Op,
@@ -46,7 +60,7 @@ method(repr, OpConstant) <- function(x) {
 stablehlo_constant <- function(value) {
   # First convert the R value to a Constant value
   const_value <- r_to_constant(value)
-  
+
   # Then create the constant operation
   OpConstant(const_value)
 }

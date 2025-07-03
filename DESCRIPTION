@@ -1,7 +1,7 @@
 Package: stablehlo
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R:
     person("Daniel", "Falbel", , "daniel@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0009-0006-0143-2392"))
 Description: What the package does (one paragraph).
@@ -9,25 +9,31 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-LinkingTo: 
+LinkingTo:
     Rcpp
-Imports: 
-    Rcpp
+Imports:
+    cli,
+    Rcpp,
+    rlang,
+    R6
 Config/build/compilation-database: true
-Suggests: 
+Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-Collate: 
-    'list_of.R'
+Collate:
     'repr.R'
+    'aaa.R'
+    'value_id.R'
+    'list_of.R'
     'shape.R'
     'enum.R'
     'types.R'
+    'builder.R'
     'constant.R'
-    'value_id.R'
     'op.R'
     'func.R'
     'ops.R'
     'package.R'
     'tracer.R'
+    'type-inference.R'
     'utils.R'
