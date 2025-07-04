@@ -79,7 +79,7 @@ The package implements a representation of the StableHLO IR (Intermediate Repres
 
 ## Development Practices
 
-1. Use S7 (object-oriented system) for defining types and classes, except for PartialFunc, which is an R6 class (use $ instead of @ for R6).
+1. Use S7 (object-oriented system) for defining types and classes.
 2. Follow the established pattern for adding new operations and types
 3. Add tests in `tests/testthat/` with appropriate snapshots for validation
 4. Document functions with roxygen2 comments

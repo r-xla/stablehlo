@@ -2,29 +2,36 @@
 # What we care about though is uniqueness.
 # We still allow to specify the id for the tests, but from a user-level
 # perspective, one should just call ValueId()
+
+.id_gen <- new.env()
+.id_gen$i <- 0
+
+next_id <- function() {
+  .id_gen$i <- .id_gen$i + 1
+  paste0("xxvar", .id_gen$i)
+}
+
+reset_id_gen <- function() {
+  .id_gen$i <- 0
+}
+
 ValueId <- new_class(
   "ValueId",
   properties = list(
-    id = class_character,
-    # We store the environment, so the address is unique as long as the object
-    # exists
-    env = class_environment | NULL
+    id = class_character
   ),
   constructor = function(id) {
     if (missing(id)) {
-      env = new.env()
-      new_object(
-        ValueId,
-        env = env,
-        id = paste0("v", rlang::obj_address(env))
-      )
+      id = next_id()
     } else {
-      new_object(
-        ValueId,
-        id = id,
-        env = NULL
-      )
+      if (startsWith(id, "xxvar")) {
+        stop("ValueId cannot start with 'xxvar'")
+      }
     }
+    new_object(
+      ValueId,
+      id = id
+    )
   }
 )
 

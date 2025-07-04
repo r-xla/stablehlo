@@ -1,89 +1,85 @@
 #' @importFrom S7 class_environment
 #' @include types.R
+#' @include func.R
 NULL
 
-PartialFunc <- R6::R6Class("PartialFunc",
-  public = list(
-    inputs = NULL,
-    outputs = NULL,
-    body = NULL,
-    id = NULL,
-
-    initialize = function(inputs, outputs = NULL, body = FuncBody(), id = NULL) {
-      self$inputs <- inputs
-      self$outputs <- outputs
-      self$body <- body
-      self$id <- id
-    }
-  )
-)
-
 #' @include value_id.R
-PartialFuncPointer <- new_class("PartialFuncPointer",
+FuncPointer <- new_class("FuncPointer",
   properties = list(
     value_id = ValueId,
     value_type = ValueType,
-    partial_func = class_environment
+    func = Func
   )
 )
 
-merge_partial_funcs <- function(partial_funcs) {
-  partial_funcs = partial_funcs[!duplicated(partial_funcs)]
-  if (!length(partial_funcs)) {
+merge_funcs <- function(funcs) {
+  funcs = funcs[!duplicated(funcs)]
+  if (!length(funcs)) {
     stop("Zero partial funcs provided")
   }
-  if (length(partial_funcs) == 1L) {
-    return(partial_funcs[[1]])
+  if (length(funcs) == 1L) {
+    return(funcs[[1]])
   }
 
-  PartialFunc$new(
-    inputs = merge_partial_func_inputs(partial_funcs),
-    outputs = merge_partial_func_outputs(partial_funcs),
-    body = merge_partial_func_bodies(partial_funcs),
-    id = merge_partial_func_ids(partial_funcs)
+  Func(
+    inputs = merge_func_inputs(funcs),
+    outputs = merge_func_outputs(funcs),
+    body = merge_func_bodies(funcs),
+    id = merge_func_ids(funcs)
   )
 }
 
-merge_partial_func_ids <- function(partial_funcs) {
-  ids = unlist(lapply(partial_funcs, function(x) x$id))
-  if (any(duplicated(ids))) {
-    stop("Cannot merge partial funcs with duplicate ids")
+merge_func_ids <- function(funcs) {
+  ids <- unlist(lapply(funcs, function(x) {
+    id <- x@id@id
+    if (identical(id, "")) {
+      return(NULL)
+    }
+    id
+  }))
+
+  uids <- unique(ids)
+  if (length(uids) > 1L) {
+    stop("Cannot merge partial funcs with different ids")
+  } else if (length(uids) == 1L) {
+    FuncId(uids)
+  } else {
+    FuncId()
   }
-  unique(ids)
 }
 
-merge_partial_func_inputs <- function(partial_funcs) {
-  if (length(partial_funcs) == 1L) {
-    return(partial_funcs[[1L]]$inputs)
+merge_func_inputs <- function(funcs) {
+  if (length(funcs) == 1L) {
+    return(funcs[[1L]]@inputs)
   }
   .merge <- function(x, y) {
-    x <- x$inputs
-    y <- y$inputs
+    x <- x@inputs
+    y <- y@inputs
     # TODO: This assumes that inputs are unique within x and y, verify this
     if (any(duplicated(c(x, y))) && !identical(x, y)) {
       stop("Cannot merge partial funcs with duplicate inputs")
     }
     FuncInputs(unique(c(x@items, y@items)))
   }
-  Reduce(.merge, partial_funcs)
+  Reduce(.merge, funcs)
 }
 
-merge_partial_func_outputs <- function(partial_funcs) {
-  lapply(partial_funcs, function(partial_func) {
-    output <- partial_func$outputs
-    if (!is.null(output)) {
+merge_func_outputs <- function(funcs) {
+  lapply(funcs, function(func) {
+    output <- func@outputs
+    if (length(output@items)) {
       stop("Cannot merge partial funcs with outputs for now")
     }
   })
-  NULL
+  FuncOutputs()
 }
 
-merge_partial_func_bodies <- function(partial_funcs) {
+merge_func_bodies <- function(funcs) {
   # TODO: This assumes that all the variables that are from different input programs
   # are unique. This is the case when they are generated via ValueId(), but there can be
   # collisions if the name is specified. We might want to add a check for this
-  bodies = lapply(unique(partial_funcs), function(partial_func) {
-    partial_func$body@items
+  bodies = lapply(unique(funcs), function(func) {
+    func@body@items
   })
   # Merge the bodies.
   # Because each individual body is ordered (variables appearing on line n can only access
@@ -111,12 +107,12 @@ stablehlo_fn <- function(op_class, type_inference, return_func = FALSE) {
   function(..., .funcs = OpInputFuncs(), .attrs = OpInputAttrs()) {
     pointers = list(...)
     lapply(pointers, function(x) {
-      if (!inherits(x, PartialFuncPointer)) {
-        stop("All arguments must be PartialFuncPointers")
+      if (!inherits(x, FuncPointer)) {
+        stop("All arguments must be FuncPointers")
       }
     })
 
-    partial_func <- merge_partial_funcs(lapply(pointers, function(x) x@partial_func))
+    func <- merge_funcs(lapply(pointers, function(x) x@func))
     inputs <- OpInputs(
       OpInputValues(lapply(pointers, function(x) OpInputValue(x@value_id))),
       funcs = .funcs,
@@ -141,30 +137,25 @@ stablehlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       signature = signature
     )
 
-    partial_func$body <- FuncBody(c(partial_func$body@items, list(op)))
+    func@body <- FuncBody(c(func@body@items, list(op)))
 
     if (return_func) {
-      f <- Func(
-        inputs = partial_func$inputs,
-        outputs = FuncOutputs(lapply(list(...), function(x) FuncOutput(type = x@value_type))),
-        body = partial_func$body,
-        id = FuncId(partial_func$id)
-      )
-      return(f)
+      func@outputs <- FuncOutputs(lapply(list(...), function(x) FuncOutput(type = x@value_type)))
+      return(func)
     }
 
     if (nout == 1L) {
-      return(PartialFuncPointer(
+      return(FuncPointer(
         value_id = output_value_ids[[1L]],
         value_type = output_types@items[[1L]],
-        partial_func = partial_func
+        func = func
       ))
     }
     lapply(seq_len(nout), function(i) {
-      PartialFuncPointer(
+      FuncPointer(
         value_id = output_value_ids[[i]],
         value_type = output_types@items[[i]],
-        partial_func = partial_func
+        func = func
       )
     })
   }

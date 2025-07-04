@@ -96,6 +96,10 @@ infer_types_add <- function(lhs, rhs) {
   ))))
 }
 
+infer_types_after_all <- function(...) {
+
+}
+
 infer_types_return <- function(...) {
   ValueTypes()
 }
