@@ -6,6 +6,7 @@ NULL
 OpMnemonic <- new_enum(
   "OpMnemonic",
   c(
+    "return",
     "abs",
     "add",
     "after_all",
@@ -139,6 +140,10 @@ OpInputValue <- new_class(
   )
 )
 
+method(repr, OpInputValue) <- function(x) {
+  repr(x@id)
+}
+
 method(`==`, list(OpInputValue, OpInputValue)) <- function(e1, e2) {
   e1@id == e2@id
 }
@@ -237,17 +242,19 @@ OpOutput <- new_class(
   properties = list(
     id = ValueId
   ),
-  constructor = function(name) {
-    if (missing(name)) {
+  constructor = function(value_id) {
+    if (missing(value_id)) {
       new_object(
         OpOutput,
         id = ValueId()
       )
-    } else {
+    } else if (inherits(value_id, ValueId)) {
       new_object(
         OpOutput,
-        id = ValueId(name)
+        id = value_id
       )
+    } else {
+      stop("invalid input")
     }
   }
 )
@@ -291,6 +298,7 @@ method(repr, OpSignature) <- function(x) {
 
 method(`==`, list(OpSignature, OpSignature)) <- function(e1, e2) {
   e1@input_types == e2@input_types &&
+
     e1@output_types == e2@output_types
 }
 
@@ -303,6 +311,22 @@ Op <- new_class(
     signature = OpSignature | NULL
   )
 )
+
+new_Op <- function(classname, mnemonic) {
+  new_class(
+    classname,
+    parent = Op,
+    constructor = function(inputs, outputs, signature) {
+      new_object(
+        Op,
+        name = OpName(OpMnemonic(mnemonic)),
+        inputs = inputs,
+        outputs = outputs,
+        signature = signature
+      )
+    }
+  )
+}
 
 method(repr, Op) <- function(x) {
   paste0(

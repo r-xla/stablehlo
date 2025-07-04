@@ -67,7 +67,6 @@ The package implements a representation of the StableHLO IR (Intermediate Repres
 
 5. **Shape Handling** (`shape.R`):
    - `Shape` - Representation of tensor shapes
-   - `DimensionSize` - Size of a dimension
 
 6. **Utilities**:
    - `repr.R` - Representation helpers

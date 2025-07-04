@@ -1,12 +1,20 @@
 #' @include op.R
+NULL
 
-Abs <- new_class(
-  "Abs",
+# Technicall this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
+Return <- new_class(
+  "Return",
   parent = Op,
-  constructor = function(inputs, outputs, signature) {
+  constructor = function(inputs, outputs = OpOutputs(), signature = NULL) {
+    if (length(outputs@items)) {
+      cli::cli_abort("Return op must not have outputs")
+    }
+    if (length(signature@output_types@items)) {
+      stopf("Invalid signature for Return op.")
+    }
     new_object(
       Op,
-      name = OpName(OpMnemonic("abs")),
+      name = OpName(OpMnemonic("return")),
       inputs = inputs,
       outputs = outputs,
       signature = signature
@@ -14,19 +22,12 @@ Abs <- new_class(
   }
 )
 
-Add <- new_class(
-  "Add",
-  parent = Op,
-  constructor = function(inputs, outputs, signature) {
-    new_object(
-      Op,
-      name = OpName(OpMnemonic("add")),
-      inputs = inputs,
-      outputs = outputs,
-      signature = signature
-    )
-  }
-)
+Abs <- new_Op("Abs", "abs")
+Add <- new_Op("Add", "add")
+If <- new_Op("If", "if")
+Case <- new_Op("Case", "case")
+
+
 
 OpConstant <- S7::new_class(
   "OpConstant",

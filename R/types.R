@@ -104,6 +104,7 @@ method(repr, TensorType) <- function(x) {
   paste0(
     "tensor<",
     repr(x@shape),
+    "x",
     repr(x@dtype),
     ">"
   )

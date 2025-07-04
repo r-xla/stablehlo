@@ -16,7 +16,7 @@ ValueId <- new_class(
       new_object(
         ValueId,
         env = env,
-        id = paste0("%v", rlang::obj_address(env))
+        id = paste0("v", rlang::obj_address(env))
       )
     } else {
       new_object(
@@ -29,9 +29,5 @@ ValueId <- new_class(
 )
 
 method(repr, ValueId) <- function(x) {
-  if (is.environment(x@id)) {
-    paste0("%v", rlang::obj_address(x@id))
-  } else {
-    x@id
-  }
+  paste0("%", x@id)
 }

@@ -76,6 +76,9 @@ FuncId <- new_class(
   )
 )
 
+method(repr, FuncId) <- function(x) {
+  paste0("@", x@id)
+}
 
 method(`==`, list(FuncId, FuncId)) <- function(e1, e2) {
   identical(e1@id, e2@id)

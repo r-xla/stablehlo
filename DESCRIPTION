@@ -35,5 +35,5 @@ Collate:
     'ops.R'
     'package.R'
     'tracer.R'
-    'type-inference.R'
+    'type_inference.R'
     'utils.R'

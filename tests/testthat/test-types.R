@@ -11,8 +11,8 @@ test_that("Boolean Type repr", {
 test_that("TensorType repr", {
   tt <- TensorType(
     dtype = TensorElementType(type = FloatType("f32")),
-    shape = Shape(list(DimensionSize(1L), DimensionSize(2L)))
+    shape = Shape(c(1L, 2L))
   )
-  
+
   expect_equal(repr(tt), "tensor<1x2xf32>")
 })

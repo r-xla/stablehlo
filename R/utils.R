@@ -42,7 +42,7 @@ r_to_constant <- function(value) {
     element_literal <- ElementLiteral(f)
   }
 
-  shape <- Shape(as.list(dim(value) %||% length(value)))
+  shape <- Shape(dim(value) %||% length(value))
 
   element_type <- TensorElementType(type = FloatType("f32"))
   tensor_type <- TensorType(dtype = element_type, shape = shape)
