@@ -33,12 +33,11 @@ baseline_type <- function(x) {
 # shortcut for element_type(baseline_type(x))
 baseline_element_type <- function(x) {
   stopifnot(inherits(x, ValueType))
+  # TODO: QuantizedTensorType
   if (is(x@type, TensorType)) {
     return(x@type@dtype)
   } else if (is(x@type, TokenType)) {
     stop("Invalid input")
-  } else if (is(x@type, QuantizedTensorType)) {
-    stop("Baselining for quantized tensor not implemented yet.")
   } else {
     stop("Not implemented yet")
   }
@@ -88,6 +87,7 @@ infer_types_abs <- function(operand) {
 infer_types_add <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(inherits(rhs@type, TensorType))
+  #stopifnot(identical(lhs@type@dtype, rhs@type@dtype))
   stopifnot(lhs@type@dtype == rhs@type@dtype)
 
   ValueTypes(list(ValueType(TensorType(

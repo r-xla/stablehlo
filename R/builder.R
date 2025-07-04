@@ -53,11 +53,49 @@ merge_func_inputs <- function(funcs) {
     return(funcs[[1L]]@inputs)
   }
   .merge <- function(x, y) {
-    x <- x@inputs
-    y <- y@inputs
-    # TODO: This assumes that inputs are unique within x and y, verify this
-    if (any(duplicated(c(x, y))) && !identical(x, y)) {
-      stop("Cannot merge partial funcs with duplicate inputs")
+    xinp <- x@inputs
+    yinp <- y@inputs
+
+    if (!any(duplicated(c(xinp, yinp)))) {
+      return(FuncInputs(c(xinp, yinp)))
+    }
+
+    if (anyDuplicated(c(xinp, yinp))) {
+      # A possible situation might be:
+      # f(x, y):
+      #   a <- x + y
+      #   ---<branch>---
+      #   b <- a^2
+      # g(x, y):
+      #   a <- x + y
+      #   ---<branch>---
+      #   c <- a * 4
+
+      # This is okay, as long as all variable names that are created after the branch
+      # have different names
+
+      small_len <- min(length(x@body@items), length(y@body@items))
+      different <- which(x@body@items[seq_len(small_len)] != y@body@items[seq_len(small_len)])
+
+      if (!length(different)) {
+        # all are the same
+        return(x)
+      }
+      first_diff <- different[1L]
+
+      xlines <- x@body@items[seq(first_diff, length(x@body@items))]
+      ylines <- y@body@items[seq(first_diff, length(y@body@items))]
+
+      xvars <- unlist(lapply(xlines, function(line) sapply(line@outputs@items, function(out) out@id@id)))
+      yvars <- unlist(lapply(ylines, function(line) sapply(line@outputs@items, function(out) out@id@id)))
+
+      # This check is conservative.
+      # There are programs that could be merged (e.g. permuting rows that does not change a program)
+      # that we reject here.
+      # But as long as we create functions with our builder API, this won't happen
+      if (anyDuplicated(c(xvars, yvars))) {
+        stop("The two functions that are being merged have a variable with the same name")
+      }
     }
     FuncInputs(unique(c(x@items, y@items)))
   }

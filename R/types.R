@@ -8,10 +8,6 @@ method(repr, BooleanType) <- function(x) {
   "i1"
 }
 
-method(`==`, list(BooleanType, BooleanType)) <- function(e1, e2) {
-  e1@Value == e2@Value
-}
-
 IntegerType <- new_enum(
   "IntegerType",
   c(
@@ -34,11 +30,6 @@ method(repr, IntegerType) <- function(x) {
   x@Value
 }
 
-method(`==`, list(IntegerType, IntegerType)) <- function(e1, e2) {
-  e1@Value == e2@Value
-}
-
-
 FloatType <- new_enum(
   "FloatType",
   c(
@@ -60,12 +51,6 @@ FloatType <- new_enum(
   )
 )
 
-method(`==`, list(FloatType, FloatType)) <- function(e1, e2) {
-  e1@Value == e2@Value
-}
-
-
-
 ComplexType <- new_class("ComplexType")
 
 TensorElementType <- new_class(
@@ -80,16 +65,33 @@ TensorElementType <- new_class(
   )
 )
 
+method(`==`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
+  e1@type == e2@type
+}
+
 method(repr, TensorElementType) <- function(x) {
   repr(x@type)
 }
 
-method(`==`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
-  identical(S7::S7_class(e1), S7::S7_class(e2)) && e1@type == e2@type
-}
+element_type_union <- S7::new_union(
+  BooleanType,
+  IntegerType,
+  FloatType,
+  ComplexType
+)
 
-method(`!=`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
-  !(e1 == e2)
+method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
+  if (!identical(S7::S7_class(e1), S7::S7_class(e2))) {
+    return(FALSE)
+  }
+  if (inherits(e1, BooleanType)) {
+    return(TRUE)
+  }
+  if (inherits(e1, ComplexType)) {
+    .NotYetImplemented()
+  }
+  # Float and Int are both enums
+  e1@Value == e2@Value
 }
 
 TensorType <- new_class(

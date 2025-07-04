@@ -10,7 +10,7 @@ Return <- new_class(
       cli::cli_abort("Return op must not have outputs")
     }
     if (length(signature@output_types@items)) {
-      stopf("Invalid signature for Return op.")
+      cli::cli_abort("Invalid signature for Return op.")
     }
     new_object(
       Op,

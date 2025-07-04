@@ -2,7 +2,7 @@
 #' @include types.R
 NULL
 
-#' Create a Constant from R value
+# Create a Constant from R value
 r_to_constant <- function(value) {
 
   if (is.numeric(value)) {

@@ -30,13 +30,10 @@ test_that("builder works", {
   expect_snapshot(repr(out))
 })
 
-test_that("return works", {
-})
-
-
 test_that("branching works", {
   id_cond <- ValueId("cond")
   id_branch1 <- ValueId("branch1")
   id_branch2 <- ValueId("branch2")
+  # TODO:
 
 })
