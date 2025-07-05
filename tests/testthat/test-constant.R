@@ -19,7 +19,7 @@ test_that("Constant TensorLiteral", {
     ),
     TensorType(
       dtype = TensorElementType(type = FloatType("f32")),
-      shape = Shape(list())
+      shape = Shape()
     )
   ))
 

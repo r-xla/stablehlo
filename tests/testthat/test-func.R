@@ -4,14 +4,14 @@ test_that("FuncInputs repr", {
       id = ValueId("x"),
       type = ValueType(TensorType(
         dtype = TensorElementType(type = FloatType("f32")),
-        shape = Shape(list(DimensionSize(1L), DimensionSize(2L)))
+        shape = Shape(c(1L, 2L))
       ))
     ),
     FuncInput(
       id = ValueId("y"),
       type = ValueType(TensorType(
         dtype = TensorElementType(type = FloatType("f32")),
-        shape = Shape(list(DimensionSize(1L), DimensionSize(2L)))
+        shape = Shape(c(1L, 2L))
       ))
     )
   ))
@@ -25,14 +25,14 @@ test_that("Func repr", {
       id = ValueId("x"),
       type = ValueType(TensorType(
         dtype = TensorElementType(type = FloatType("f32")),
-        shape = Shape(list(DimensionSize(1L), DimensionSize(2L)))
+        shape = Shape(c(1L, 2L))
       ))
     ),
     FuncInput(
       id = ValueId("y"),
       type = ValueType(TensorType(
         dtype = TensorElementType(type = FloatType("f32")),
-        shape = Shape(list(DimensionSize(1L), DimensionSize(2L)))
+        shape = Shape(c(1L, 2L))
       ))
     )
   ))
@@ -41,7 +41,7 @@ test_that("Func repr", {
     FuncOutput(
       type = ValueType(TensorType(
         dtype = TensorElementType(type = FloatType("f32")),
-        shape = Shape(list(DimensionSize(1L), DimensionSize(2L)))
+        shape = Shape(c(1L, 2L))
       ))
     )
   ))

@@ -1,11 +1,13 @@
 #' @include list_of.R
 #' @include value_id.R
 #' @include types.R
+#' @include constant.R
 NULL
 
 OpMnemonic <- new_enum(
   "OpMnemonic",
   c(
+    "return",
     "abs",
     "add",
     "after_all",
@@ -124,6 +126,10 @@ OpName <- new_class(
   )
 )
 
+method(`==`, list(OpName, OpName)) <- function(e1, e2) {
+  e1@mnemonic == e2@mnemonic
+}
+
 method(repr, OpName) <- function(x) {
   paste0("\"stablehlo.", repr(x@mnemonic), "\"")
 }
@@ -134,6 +140,14 @@ OpInputValue <- new_class(
     id = ValueId
   )
 )
+
+method(repr, OpInputValue) <- function(x) {
+  repr(x@id)
+}
+
+method(`==`, list(OpInputValue, OpInputValue)) <- function(e1, e2) {
+  e1@id == e2@id
+}
 
 OpInputValues <- new_list_of("OpInputValues", OpInputValue)
 
@@ -149,6 +163,11 @@ OpInputFuncs <- new_class("OpInputFuncs")
 method(repr, OpInputFuncs) <- function(x) {
   # TODO!
   return("")
+}
+
+method(`==`, list(OpInputFuncs, OpInputFuncs)) <- function(e1, e2) {
+  # TODO
+  .NotYetImplemented()
 }
 
 OpInputAttrName <- new_class(
@@ -172,7 +191,7 @@ method(repr, OpInputAttrValue) <- function(x) {
 }
 
 OpInputAttr <- new_class(
-  "OpInputAttr", 
+  "OpInputAttr",
   properties = list(
     name = OpInputAttrName,
     value = OpInputAttrValue
@@ -189,8 +208,8 @@ method(repr, OpInputAttr) <- function(x) {
 OpInputAttrs <- new_list_of("OpInputAttrs", OpInputAttr)
 method(repr, OpInputAttrs) <- function(x) {
   if (length(x@items) == 0) return("")
-  
-  a <- vapply(x@items, repr, character(1)) |> 
+
+  a <- vapply(x@items, repr, character(1)) |>
     paste(collapse = ", ")
 
   paste0("{ ", a, " }")
@@ -213,11 +232,23 @@ method(repr, OpInputs) <- function(x) {
   )
 }
 
+method(`==`, list(OpInputs, OpInputs)) <- function(e1, e2) {
+  e1@values == e2@values &&
+    e1@funcs == e2@funcs &&
+    e1@attrs == e2@attrs
+}
+
 OpOutput <- new_class(
   "OpOutput",
   properties = list(
     id = ValueId
-  )
+  ),
+  constructor = function(value_id = ValueId()) {
+    new_object(
+      OpOutput,
+        id = value_id
+      )
+  }
 )
 
 method(repr, OpOutput) <- function(x) {
@@ -257,15 +288,37 @@ method(repr, OpSignature) <- function(x) {
   )
 }
 
+method(`==`, list(OpSignature, OpSignature)) <- function(e1, e2) {
+  e1@input_types == e2@input_types &&
+    e1@output_types == e2@output_types
+}
+
 Op <- new_class(
   "Op",
   properties = list(
     name = OpName,
     inputs = OpInputs,
-    outputs = OpOutputs | NULL,
+    outputs = OpOutputs,
     signature = OpSignature
   )
 )
+
+new_Op <- function(classname, mnemonic) {
+  new_class(
+    classname,
+    parent = Op,
+    constructor = function(inputs, outputs, signature) {
+      new_object(
+        Op,
+        name = OpName(OpMnemonic(mnemonic)),
+        inputs = inputs,
+        outputs = outputs,
+        signature = signature
+      )
+    }
+  )
+}
+
 method(repr, Op) <- function(x) {
   paste0(
     repr(x@outputs),
@@ -274,4 +327,11 @@ method(repr, Op) <- function(x) {
     ":",
     repr(x@signature)
   )
+}
+
+method(`==`, list(Op, Op)) <- function(e1, e2) {
+  e1@name == e2@name &&
+    e1@inputs == e2@inputs &&
+    e1@outputs == e2@outputs &&
+    e1@signature == e2@signature
 }

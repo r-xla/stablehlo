@@ -1,8 +1,15 @@
 
 
+list_of <- new_class("list_of")
+
+method(length, list_of) <- function(x) {
+  length(x@items)
+}
+
 new_list_of <- function(class_name, item_type) {
   new_class(
     class_name,
+    parent = list_of,
     properties = list(
       items = new_property(
         S7::class_list,

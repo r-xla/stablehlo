@@ -1,18 +1,14 @@
 #' @include op.R
+NULL
 
-Abs <- new_class(
-  "Abs",
-  parent = Op,
-  constructor = function(inputs, outputs, signature) {
-    new_object(
-      Op,
-      name = OpName(OpMnemonic("abs")),
-      inputs = inputs,
-      outputs = outputs,
-      signature = signature
-    )
-  }
-)
+# Technicall this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
+Return <- new_Op("Return", "return")
+Abs <- new_Op("Abs", "abs")
+Add <- new_Op("Add", "add")
+If <- new_Op("If", "if")
+Case <- new_Op("Case", "case")
+
+
 
 OpConstant <- S7::new_class(
   "OpConstant",
@@ -46,7 +42,11 @@ method(repr, OpConstant) <- function(x) {
 stablehlo_constant <- function(value) {
   # First convert the R value to a Constant value
   const_value <- r_to_constant(value)
-  
+
   # Then create the constant operation
   OpConstant(const_value)
 }
+
+
+stablehlo_add <- stablehlo_fn(Add, infer_types_add)
+stablehlo_return <- stablehlo_fn(Return, infer_types_return, TRUE)
