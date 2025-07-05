@@ -2,26 +2,7 @@
 NULL
 
 # Technicall this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
-Return <- new_class(
-  "Return",
-  parent = Op,
-  constructor = function(inputs, outputs = OpOutputs(), signature = NULL) {
-    if (length(outputs@items)) {
-      cli::cli_abort("Return op must not have outputs")
-    }
-    if (length(signature@output_types@items)) {
-      cli::cli_abort("Invalid signature for Return op.")
-    }
-    new_object(
-      Op,
-      name = OpName(OpMnemonic("return")),
-      inputs = inputs,
-      outputs = outputs,
-      signature = signature
-    )
-  }
-)
-
+Return <- new_Op("Return", "return")
 Abs <- new_Op("Abs", "abs")
 Add <- new_Op("Add", "add")
 If <- new_Op("If", "if")
@@ -65,3 +46,7 @@ stablehlo_constant <- function(value) {
   # Then create the constant operation
   OpConstant(const_value)
 }
+
+
+stablehlo_add <- stablehlo_fn(Add, infer_types_add)
+stablehlo_return <- stablehlo_fn(Return, infer_types_return, TRUE)

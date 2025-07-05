@@ -1,8 +1,6 @@
 #' @include repr.R
 NULL
 
-#' @description
-#' NA represents ?
 Shape <- new_class(
   "Shape",
   properties = list(
@@ -12,7 +10,7 @@ Shape <- new_class(
     stopifnot(isTRUE(all.equal(self@dims, as.integer(self@dims))))
     dims = as.integer(self@dims)
     if (any(dims[!is.na(dims)] <= 0L)) {
-      cli::cli_abort("Dimensions must be positive")
+      cli_abort("Dimensions must be positive")
     }
   }
 )

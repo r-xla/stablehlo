@@ -94,10 +94,11 @@ merge_func_inputs <- function(funcs) {
       # that we reject here.
       # But as long as we create functions with our builder API, this won't happen
       if (anyDuplicated(c(xvars, yvars))) {
-        stop("The two functions that are being merged have a variable with the same name")
+        stop("The two functions that are being merged define the same variable differently")
       }
     }
-    FuncInputs(unique(c(x@items, y@items)))
+    combined <- c(x@items, y@items)
+    FuncInputs(combined[!duplicated(combined)])
   }
   Reduce(.merge, funcs)
 }
@@ -106,6 +107,8 @@ merge_func_outputs <- function(funcs) {
   lapply(funcs, function(func) {
     output <- func@outputs
     if (length(output@items)) {
+      # I think that this never throws, because whenever we have a return statement,
+      # a function is complete, as there can be no early returns in branches.
       stop("Cannot merge partial funcs with outputs for now")
     }
   })
@@ -114,14 +117,16 @@ merge_func_outputs <- function(funcs) {
 
 merge_func_bodies <- function(funcs) {
   # TODO: This assumes that all the variables that are from different input programs
-  # are unique. This is the case when they are generated via ValueId(), but there can be
-  # collisions if the name is specified. We might want to add a check for this
+  # are unique. This is the case when they are generated via ValueId(), which is the
+  # case with the builder API.
+  # Maybe we want a check for this?
+  # But I think it's fine to only guarantee valid programs when using the builder API
   bodies = lapply(unique(funcs), function(func) {
     func@body@items
   })
-  # Merge the bodies.
-  # Because each individual body is ordered (variables appearing on line n can only access
-  # variables from lines <n), we can just merge them and m
+  # When creating functions with the builder API, we guarantee that
+  # each individual body is ordered (variables appearing on line <n> can only access
+  # variables from lines <n> - 1 and below), we can just merge them and maintain order
   body = Reduce(c, bodies)
   # It is possible, however, that the same line appears in more than one body
   # This can happen if we have one function
@@ -134,10 +139,9 @@ merge_func_bodies <- function(funcs) {
 
   # When we remove duplicates when merging two bodies, there is also no issue w.r.t. the order,
   # because we remove the second appearance of the creation of the variable, i.e. it's creation still
-  # precedes the usage of the variable.
+  # precedes the usage of the variable and the new function is still valid.
 
   body = body[!duplicated(body)]
-
   FuncBody(body)
 }
 

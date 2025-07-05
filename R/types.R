@@ -122,13 +122,11 @@ ValueType <- new_class(
   "ValueType",
   properties = list(
     type = S7::new_union(
-      # TODO: TokenType (!), QuantizedTensorType (?)
+      # Not supported:]
+      # - QuantizedTensorType
+      # - TupleType (will probably be removed from stablehlo, is only legacy from xla)
       TokenType,
       TensorType
-      # Not supported yet:
-      # - QuantizedTensorType
-      # - TupleType, because it is just a remainder from xla, which did not have native support for
-      # variadic arguments
     )
   )
 )

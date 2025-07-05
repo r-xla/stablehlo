@@ -1,4 +1,4 @@
-#' @param ... integer
+# @param ... integer
 broadcast_shapes <- function(...) {
   if (...length() == 1L) {
     return(...elt(1))
@@ -43,33 +43,7 @@ baseline_element_type <- function(x) {
   }
 }
 
-# These inference functions should return either a ValueType or a list of ValueTypes
-
-infer_types_unop <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
-  ValueTypes(list(ValueType(operand@type)))
-}
-
-make_infer_unop <- function(infer_shape, infer_type) {
-
-}
-
-infer_types_binop <- function(lhs, rhs) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(inherits(rhs@type, TensorType))
-  # stabhelo does no type-castig
-  # jax supports it by adding casting to the stablehlo program
-  stopifnot(lhs@type@dtype == rhs@type@dtype)
-
-  shapeout = broadcast_shapes(lhs@type@shape@dims, rhs@type@shape@dims)
-
-  ValueTypes(list(ValueType(TensorType(
-    lhs@type@dtype,
-    Shape(shapeout)
-  ))))
-}
-
-# We ignore all restrictinos that apply to quantized tensors for now
+# We ignore all restrictions that apply to quantized tensors for now
 
 # unary ops
 infer_types_abs <- function(operand) {
@@ -94,10 +68,6 @@ infer_types_add <- function(lhs, rhs) {
     lhs@type@dtype,
     Shape(broadcast_shapes(lhs@type@shape@dims, rhs@type@shape@dims))
   ))))
-}
-
-infer_types_after_all <- function(...) {
-
 }
 
 infer_types_return <- function(...) {

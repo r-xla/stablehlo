@@ -107,11 +107,7 @@ Func <- new_class(
     inputs = FuncInputs,
     outputs = FuncOutputs,
     body = FuncBody
-  ),
-  validator = function(self) {
-    # TODO: Verify that all variables on lhs are unique
-    # TODO: Verify unique arguments
-  }
+  )
 )
 
 

@@ -3,7 +3,3 @@ test_that("stablehlo_constant works with numeric values", {
   op <- stablehlo_constant(3.14)
   expect_snapshot(repr(op))
 })
-
-test_that("can add two numbers", {
-
-})

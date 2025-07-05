@@ -167,7 +167,7 @@ method(repr, OpInputFuncs) <- function(x) {
 
 method(`==`, list(OpInputFuncs, OpInputFuncs)) <- function(e1, e2) {
   # TODO
-  stop("not implemented")
+  .NotYetImplemented()
 }
 
 OpInputAttrName <- new_class(
@@ -243,20 +243,11 @@ OpOutput <- new_class(
   properties = list(
     id = ValueId
   ),
-  constructor = function(value_id) {
-    if (missing(value_id)) {
-      new_object(
-        OpOutput,
-        id = ValueId()
-      )
-    } else if (inherits(value_id, ValueId)) {
-      new_object(
-        OpOutput,
+  constructor = function(value_id = ValueId()) {
+    new_object(
+      OpOutput,
         id = value_id
       )
-    } else {
-      stop("invalid input")
-    }
   }
 )
 
@@ -299,7 +290,6 @@ method(repr, OpSignature) <- function(x) {
 
 method(`==`, list(OpSignature, OpSignature)) <- function(e1, e2) {
   e1@input_types == e2@input_types &&
-
     e1@output_types == e2@output_types
 }
 
@@ -308,8 +298,8 @@ Op <- new_class(
   properties = list(
     name = OpName,
     inputs = OpInputs,
-    outputs = OpOutputs | NULL,
-    signature = OpSignature | NULL
+    outputs = OpOutputs,
+    signature = OpSignature
   )
 )
 
