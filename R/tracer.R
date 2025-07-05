@@ -15,5 +15,3 @@ method(repr, Tracer) <- function(x) {
     ">"
   )
 }
-
-

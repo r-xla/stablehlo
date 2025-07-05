@@ -4,13 +4,33 @@
 NULL
 
 #' @include value_id.R
-FuncPointer <- new_class("FuncPointer",
+FuncPointer <- new_class(
+  "FuncPointer",
   properties = list(
     value_id = ValueId,
     value_type = ValueType,
     func = Func
   )
 )
+
+stablehlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
+  value_id <- ValueId(argname)
+  value_type <- ValueType(type, shape = shape)
+
+  if (is.character(func_id)) {
+    func_id <- FuncId(func_id)
+  }
+
+  func <- Func(
+    inputs = FuncInputs(list(FuncInput(id = value_id, type = value_type))),
+    id = func_id
+  )
+  FuncPointer(
+    value_id = value_id,
+    value_type = value_type,
+    func = func
+  )
+}
 
 merge_funcs <- function(funcs) {
   funcs = funcs[!duplicated(funcs)]
@@ -57,7 +77,7 @@ merge_func_inputs <- function(funcs) {
     yinp <- y@inputs
 
     if (!any(duplicated(c(xinp, yinp)))) {
-      return(FuncInputs(c(xinp, yinp)))
+      return(FuncInputs(c(xinp@items, yinp@items)))
     }
 
     if (anyDuplicated(c(xinp, yinp))) {
@@ -75,7 +95,9 @@ merge_func_inputs <- function(funcs) {
       # have different names
 
       small_len <- min(length(x@body@items), length(y@body@items))
-      different <- which(x@body@items[seq_len(small_len)] != y@body@items[seq_len(small_len)])
+      different <- which(
+        x@body@items[seq_len(small_len)] != y@body@items[seq_len(small_len)]
+      )
 
       if (!length(different)) {
         # all are the same
@@ -86,15 +108,21 @@ merge_func_inputs <- function(funcs) {
       xlines <- x@body@items[seq(first_diff, length(x@body@items))]
       ylines <- y@body@items[seq(first_diff, length(y@body@items))]
 
-      xvars <- unlist(lapply(xlines, function(line) sapply(line@outputs@items, function(out) out@id@id)))
-      yvars <- unlist(lapply(ylines, function(line) sapply(line@outputs@items, function(out) out@id@id)))
+      xvars <- unlist(lapply(xlines, function(line) {
+        sapply(line@outputs@items, function(out) out@id@id)
+      }))
+      yvars <- unlist(lapply(ylines, function(line) {
+        sapply(line@outputs@items, function(out) out@id@id)
+      }))
 
       # This check is conservative.
       # There are programs that could be merged (e.g. permuting rows that does not change a program)
       # that we reject here.
       # But as long as we create functions with our builder API, this won't happen
       if (anyDuplicated(c(xvars, yvars))) {
-        stop("The two functions that are being merged define the same variable differently")
+        stop(
+          "The two functions that are being merged define the same variable differently"
+        )
       }
     }
     combined <- c(x@items, y@items)
@@ -161,7 +189,10 @@ stablehlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       attrs = .attrs
     )
 
-    output_types <- rlang::exec(type_inference, !!!lapply(pointers, function(x) x@value_type))
+    output_types <- rlang::exec(
+      type_inference,
+      !!!lapply(pointers, function(x) x@value_type)
+    )
     nout <- length(output_types@items)
 
     output_value_ids = replicate(nout, ValueId(), simplify = FALSE)
@@ -172,7 +203,6 @@ stablehlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       output_types = output_types
     )
 
-
     op <- op_class(
       inputs = inputs,
       outputs = outputs,
@@ -182,7 +212,9 @@ stablehlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     func@body <- FuncBody(c(func@body@items, list(op)))
 
     if (return_func) {
-      func@outputs <- FuncOutputs(lapply(list(...), function(x) FuncOutput(type = x@value_type)))
+      func@outputs <- FuncOutputs(lapply(list(...), function(x) {
+        FuncOutput(type = x@value_type)
+      }))
       return(func)
     }
 
@@ -202,6 +234,3 @@ stablehlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     })
   }
 }
-
-stablehlo_add <- stablehlo_fn(Add, infer_types_add)
-stablehlo_return <- stablehlo_fn(Return, infer_types_return, TRUE)

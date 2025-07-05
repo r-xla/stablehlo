@@ -10,7 +10,7 @@ Shape <- new_class(
     stopifnot(isTRUE(all.equal(self@dims, as.integer(self@dims))))
     dims = as.integer(self@dims)
     if (any(dims[!is.na(dims)] <= 0L)) {
-      cli_abort("Dimensions must be positive")
+      stop("Dimensions must be positive")
     }
   }
 )

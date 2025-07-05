@@ -22,7 +22,6 @@
 NULL
 
 
-
 FuncInput <- new_class(
   "FuncInput",
   properties = list(
@@ -125,4 +124,8 @@ method(repr, Func) <- function(x) {
     repr(x@body),
     "\n}"
   )
+}
+
+method(print, Func) <- function(x, ...) {
+  cat(repr(x))
 }

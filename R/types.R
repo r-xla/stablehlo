@@ -128,8 +128,37 @@ ValueType <- new_class(
       TokenType,
       TensorType
     )
-  )
+  ),
+  constructor = function(type, shape = NULL) {
+    if (is.character(type)) {
+      return(make_value_type(type, shape = shape))
+    }
+    new_object(ValueType, type = type)
+  }
 )
+
+make_value_type <- function(str, shape = NULL) {
+  assert_string(str)
+  type <- if (str == "token") {
+    TokenType()
+  } else {
+    if (is.null(shape)) {
+      shape <- integer(0)
+    }
+    elt_type <- if (str %in% c("bool", "i1")) {
+      BooleanType()
+    } else if (grepl("^(s|u)i[0-9]+$", str)) {
+      IntegerType(str)
+    } else if (grepl("^f[0-9]+$", str)) {
+      FloatType(str)
+    } else {
+      .NotYetImplemented()
+    }
+    TensorType(TensorElementType(elt_type), shape = Shape(shape))
+  }
+
+  ValueType(type)
+}
 
 method(repr, ValueType) <- function(x) {
   repr(x@type)

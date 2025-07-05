@@ -1,4 +1,3 @@
-
 #' @importFrom S7 new_generic
 repr <- new_generic("repr", "x", function(x) {
   S7::S7_dispatch()
