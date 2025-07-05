@@ -1,5 +1,3 @@
-
-
 list_of <- new_class("list_of")
 
 method(length, list_of) <- function(x) {
@@ -20,9 +18,11 @@ new_list_of <- function(class_name, item_type) {
           for (i in seq_along(value)) {
             if (!S7::S7_inherits(value[[i]], item_type)) {
               return(
-                sprintf("Expected item to be of type %s. Got %s.",
-                        S7::S7_class(value[[i]]),
-                        S7::S7_class(item_type))
+                sprintf(
+                  "Expected item to be of type %s. Got %s.",
+                  S7::S7_class(value[[i]]),
+                  S7::S7_class(item_type)
+                )
               )
             }
           }

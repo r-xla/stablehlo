@@ -207,7 +207,9 @@ method(repr, OpInputAttr) <- function(x) {
 
 OpInputAttrs <- new_list_of("OpInputAttrs", OpInputAttr)
 method(repr, OpInputAttrs) <- function(x) {
-  if (length(x@items) == 0) return("")
+  if (length(x@items) == 0) {
+    return("")
+  }
 
   a <- vapply(x@items, repr, character(1)) |>
     paste(collapse = ", ")
@@ -246,8 +248,8 @@ OpOutput <- new_class(
   constructor = function(value_id = ValueId()) {
     new_object(
       OpOutput,
-        id = value_id
-      )
+      id = value_id
+    )
   }
 )
 

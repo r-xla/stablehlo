@@ -27,10 +27,13 @@ method(repr, FractionalPart) <- function(x) {
   paste0(".", paste0(sapply(x@items, repr), collapse = ""))
 }
 
-ScientificPart <- new_class("ScientificPart", properties = list(
-  exponent_sign = SignPart,
-  exponent_digits = DecimalDigits
-))
+ScientificPart <- new_class(
+  "ScientificPart",
+  properties = list(
+    exponent_sign = SignPart,
+    exponent_digits = DecimalDigits
+  )
+)
 
 method(repr, ScientificPart) <- function(x) {
   paste0(
@@ -97,11 +100,13 @@ method(repr, TensorConstant) <- function(x) {
   )
 }
 
-Constant <- new_class("Constant", properties = list(
-  value = TensorConstant
-))
+Constant <- new_class(
+  "Constant",
+  properties = list(
+    value = TensorConstant
+  )
+)
 
 method(repr, Constant) <- function(x) {
   repr(x@value)
 }
-

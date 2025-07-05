@@ -9,3 +9,4 @@
 ^.ccache.*
 CLAUDE.md
 SPEC.md
+^README\.Rmd$

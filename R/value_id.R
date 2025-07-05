@@ -8,7 +8,7 @@
 
 next_id <- function() {
   .id_gen$i <- .id_gen$i + 1
-  paste0("xx", .id_gen$i)
+  paste0("", .id_gen$i)
 }
 
 reset_id_gen <- function() {

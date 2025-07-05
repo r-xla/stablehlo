@@ -14,7 +14,7 @@ Description: The package allows to create stableHLO programs, including
     dependencies.
 License: MIT + file LICENSE
 Imports:
-    cli,
+    checkmate,
     methods,
     rlang,
     S7

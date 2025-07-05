@@ -10,13 +10,13 @@ Enum <- new_class(
     Value = S7::class_any,
     Variants = S7::class_any
   ),
-  validator = function(self) { 
+  validator = function(self) {
     if (length(self@Value) != 1L) {
       "enum value's are length 1"
     } else if (!(self@Value %in% self@Variants)) {
       "enum value must be one of possible variants"
     }
-  }, 
+  },
   abstract = TRUE
 )
 
@@ -33,4 +33,3 @@ new_enum <- function(class, variants) {
     }
   )
 }
-

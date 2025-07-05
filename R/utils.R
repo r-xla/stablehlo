@@ -4,7 +4,6 @@ NULL
 
 # Create a Constant from R value
 r_to_constant <- function(value) {
-
   if (is.numeric(value)) {
     # For numeric values, create a FloatLiteral
     x <- formatC(abs(value), digits = 16, format = "e")
@@ -47,7 +46,10 @@ r_to_constant <- function(value) {
   element_type <- TensorElementType(type = FloatType("f32"))
   tensor_type <- TensorType(dtype = element_type, shape = shape)
   tensor_literal <- TensorLiteral(literal = element_literal)
-  tensor_constant <- TensorConstant(literal = tensor_literal, type = tensor_type)
+  tensor_constant <- TensorConstant(
+    literal = tensor_literal,
+    type = tensor_type
+  )
 
   Constant(value = tensor_constant)
 }
