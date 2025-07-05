@@ -137,6 +137,26 @@ ValueType <- new_class(
   }
 )
 
+method(`==`, list(ValueType, ValueType)) <- function(e1, e2) {
+  e1@type == e2@type
+}
+
+value_type_union <- S7::new_union(
+  TokenType,
+  TensorType
+)
+
+method(`==`, list(value_type_union, value_type_union)) <- function(e1, e2) {
+  if (!identical(S7::S7_class(e1), S7::S7_class(e2))) {
+    return(FALSE)
+  }
+  if (inherits(e1, TokenType)) {
+    return(TRUE)
+  }
+  # TensorType
+  e1@dtype == e2@dtype && e1@shape == e2@shape
+}
+
 make_value_type <- function(str, shape = NULL) {
   assert_string(str)
   type <- if (str == "token") {
