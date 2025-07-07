@@ -13,24 +13,6 @@ FuncPointer <- new_class(
   )
 )
 
-stablehlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
-  value_id <- ValueId(argname)
-  value_type <- ValueType(type, shape = shape)
-
-  if (is.character(func_id)) {
-    func_id <- FuncId(func_id)
-  }
-
-  func <- Func(
-    inputs = FuncInputs(list(FuncInput(id = value_id, type = value_type))),
-    id = func_id
-  )
-  FuncPointer(
-    value_id = value_id,
-    value_type = value_type,
-    func = func
-  )
-}
 
 merge_funcs <- function(funcs) {
   funcs = funcs[!duplicated(funcs)]
@@ -171,66 +153,4 @@ merge_func_bodies <- function(funcs) {
 
   body = body[!duplicated(body)]
   FuncBody(body)
-}
-
-stablehlo_fn <- function(op_class, type_inference, return_func = FALSE) {
-  function(..., .funcs = OpInputFuncs(), .attrs = OpInputAttrs()) {
-    pointers = list(...)
-    lapply(pointers, function(x) {
-      if (!inherits(x, FuncPointer)) {
-        stop("All arguments must be FuncPointers")
-      }
-    })
-
-    func <- merge_funcs(lapply(pointers, function(x) x@func))
-    inputs <- OpInputs(
-      OpInputValues(lapply(pointers, function(x) OpInputValue(x@value_id))),
-      funcs = .funcs,
-      attrs = .attrs
-    )
-
-    output_types <- rlang::exec(
-      type_inference,
-      !!!lapply(pointers, function(x) x@value_type)
-    )
-    nout <- length(output_types@items)
-
-    output_value_ids = replicate(nout, ValueId(), simplify = FALSE)
-    outputs = OpOutputs(lapply(output_value_ids, OpOutput))
-
-    signature <- OpSignature(
-      input_types = ValueTypes(lapply(pointers, function(x) x@value_type)),
-      output_types = output_types
-    )
-
-    op <- op_class(
-      inputs = inputs,
-      outputs = outputs,
-      signature = signature
-    )
-
-    func@body <- FuncBody(c(func@body@items, list(op)))
-
-    if (return_func) {
-      func@outputs <- FuncOutputs(lapply(list(...), function(x) {
-        FuncOutput(type = x@value_type)
-      }))
-      return(func)
-    }
-
-    if (nout == 1L) {
-      return(FuncPointer(
-        value_id = output_value_ids[[1L]],
-        value_type = output_types@items[[1L]],
-        func = func
-      ))
-    }
-    lapply(seq_len(nout), function(i) {
-      FuncPointer(
-        value_id = output_value_ids[[i]],
-        value_type = output_types@items[[i]],
-        func = func
-      )
-    })
-  }
 }

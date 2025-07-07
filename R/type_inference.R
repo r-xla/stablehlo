@@ -24,13 +24,7 @@ baseline_element_type <- function(x) {
 # unary ops
 infer_types_abs <- function(operand) {
   stopifnot(inherits(operand@type, TensorType))
-  # TODO: Not perfectly sure what (C2) means
-  ValueTypes(list(ValueType(
-    TensorType(
-      baseline_element_type(operand),
-      operand@type@shape
-    )
-  )))
+  ValueTypes(list(operand))
 }
 
 # binary ops
@@ -44,5 +38,28 @@ infer_types_add <- function(lhs, rhs) {
 }
 
 infer_types_return <- function(...) {
+  lapply(list(...), function(x) {
+    stopifnot(inherits(x, ValueType))
+  })
   ValueTypes()
+}
+
+infer_types_after_all <- function(...) {
+  ValueTypes(list(ValueType(TokenType())))
+}
+
+infer_types_and <- function(lhs, rhs) {
+  stopifnot(inherits(lhs@type, TensorType))
+  stopifnot(lhs@type == rhs@type)
+  assert_one_of(lhs@type@dtype@type, IntegerType, BooleanType)
+
+  ValueTypes(list(lhs))
+}
+
+infer_types_atan2 <- function(lhs, rhs) {
+  stopifnot(inherits(lhs@type, TensorType))
+  stopifnot(lhs@type == rhs@type)
+  stopifnot(lhs@type@dtype == rhs@type@dtype)
+  assert_one_of(lhs@type@dtype@type, FloatType, ComplexType)
+  ValueTypes(list(lhs))
 }

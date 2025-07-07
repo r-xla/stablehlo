@@ -16,7 +16,6 @@
 #' @include list_of.R
 #' @include types.R
 #' @include repr.R
-#' @include op.R
 #' @include value_id.R
 #' @importFrom S7 new_class new_property method
 NULL
@@ -128,4 +127,56 @@ method(repr, Func) <- function(x) {
 
 method(print, Func) <- function(x, ...) {
   cat(repr(x))
+}
+
+
+OpInputFunc <- new_class(
+  "OpInputFunc",
+  properties = list(
+    inputs = FuncInputs,
+    body = FuncBody
+  )
+)
+
+method(repr, OpInputFunc) <- function(x) {
+  paste0(
+    "{\n  ",
+    "^bb0",
+    repr(x@inputs),
+    "\n    ",
+    paste0(sapply(x@body@items, repr), collapse = "\n    "),
+    "\n",
+    "}"
+  )
+}
+
+method(`==`, list(OpInputFunc, OpInputFunc)) <- function(e1, e2) {
+  e1@inputs == e2@inputs && e1@body == e2@body
+}
+
+OpInputFuncs <- new_list_of("OpInputFuncs", OpInputFunc)
+
+method(repr, OpInputFuncs) <- function(x) {
+  if (length(x@items) == 0) {
+    return("")
+  }
+
+  paste0(
+    "(",
+    paste0(sapply(x@items, repr), collapse = ", "),
+    ")"
+  )
+}
+
+method(`==`, list(OpInputFuncs, OpInputFuncs)) <- function(e1, e2) {
+  if (length(e1@items) != length(e2@items)) {
+    return(FALSE)
+  }
+
+  for (i in seq_along(e1@items)) {
+    if (!(e1@items[[i]] == e2@items[[i]])) {
+      return(FALSE)
+    }
+  }
+  TRUE
 }

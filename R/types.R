@@ -106,7 +106,7 @@ method(repr, TensorType) <- function(x) {
   paste0(
     "tensor<",
     repr(x@shape),
-    "x",
+    if (length(x@shape@dims) > 0) "x" else "",
     repr(x@dtype),
     ">"
   )

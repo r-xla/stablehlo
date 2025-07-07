@@ -1,6 +1,7 @@
 #' @include op.R
 NULL
 
+# Technicall this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
 Return <- new_class(
   "Return",
   parent = Op,
@@ -21,11 +22,11 @@ Return <- new_class(
   }
 )
 
-# Technicall this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
-Return <- new_Op("Return", "return")
 Abs <- new_Op("Abs", "abs")
 Add <- new_Op("Add", "add")
-If <- new_Op("If", "if")
+AfterAll <- new_Op("AfterAll", "after_all")
+And <- new_Op("And", "and")
+Atan2 <- new_Op("Atan2", "atan2")
 Case <- new_Op("Case", "case")
 
 
@@ -54,18 +55,7 @@ OpConstant <- S7::new_class(
     )
   }
 )
+
 method(repr, OpConstant) <- function(x) {
   repr(S7::super(x, to = Op))
 }
-
-stablehlo_constant <- function(value) {
-  # First convert the R value to a Constant value
-  const_value <- r_to_constant(value)
-
-  # Then create the constant operation
-  OpConstant(const_value)
-}
-
-
-stablehlo_add <- stablehlo_fn(Add, infer_types_add)
-stablehlo_return <- stablehlo_fn(Return, infer_types_return, TRUE)

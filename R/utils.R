@@ -53,3 +53,17 @@ r_to_constant <- function(value) {
 
   Constant(value = tensor_constant)
 }
+
+assert_one_of <- function(x, ...) {
+  for (type in list(...)) {
+    if (inherits(x, type)) {
+      return(TRUE)
+    }
+  }
+  stop("Invalid type")
+}
+
+# takes in a body and returns the output types of the last instruction
+output_types_from_body <- function(body) {
+  body@items[[length(body@items)]]@inputs@values
+}

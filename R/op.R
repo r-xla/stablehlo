@@ -2,6 +2,8 @@
 #' @include value_id.R
 #' @include types.R
 #' @include constant.R
+#' @include func.R
+#'
 NULL
 
 OpMnemonic <- new_enum(
@@ -159,16 +161,6 @@ method(repr, OpInputValues) <- function(x) {
   )
 }
 
-OpInputFuncs <- new_class("OpInputFuncs")
-method(repr, OpInputFuncs) <- function(x) {
-  # TODO!
-  return("")
-}
-
-method(`==`, list(OpInputFuncs, OpInputFuncs)) <- function(e1, e2) {
-  # TODO
-  .NotYetImplemented()
-}
 
 OpInputAttrName <- new_class(
   "OpInputAttrName",
