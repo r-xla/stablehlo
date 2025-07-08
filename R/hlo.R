@@ -2,13 +2,13 @@
 NULL
 
 hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
-  # values: list of FuncPointer
+  # values: list of FuncVariable
   # funcs: list of Func
   # attrs: list of Constant
   function(values, funcs = NULL, attrs = NULL) {
     lapply(values, function(x) {
-      if (!inherits(x, FuncPointer)) {
-        stop("All arguments must be FuncPointers")
+      if (!inherits(x, FuncVariable)) {
+        stop("All arguments must be FuncVariables")
       }
     })
     lapply(funcs, function(x) {
@@ -81,14 +81,14 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     }
 
     if (nout == 1L) {
-      return(FuncPointer(
+      return(FuncVariable(
         value_id = output_value_ids[[1L]],
         value_type = output_types@items[[1L]],
         func = func
       ))
     }
     lapply(seq_len(nout), function(i) {
-      FuncPointer(
+      FuncVariable(
         value_id = output_value_ids[[i]],
         value_type = output_types@items[[i]],
         func = func
@@ -115,7 +115,7 @@ hlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
     inputs = FuncInputs(list(FuncInput(id = value_id, type = value_type))),
     id = func_id
   )
-  FuncPointer(
+  FuncVariable(
     value_id = value_id,
     value_type = value_type,
     func = func

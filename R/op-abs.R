@@ -11,8 +11,8 @@ infer_types_abs <- function(operand) {
 hlo_abs_impl <- hlo_fn(Abs, infer_types_abs)
 
 #' @title Absolute value
-#' @param operand [`FuncPointer`]
-#' @return [`FuncPointer`]
+#' @param operand [`FuncVariable`]
+#' @return [`FuncVariable`]
 #' @export
 hlo_abs <- function(operand) {
   hlo_abs_impl(values = list(operand))

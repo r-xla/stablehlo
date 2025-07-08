@@ -7,10 +7,10 @@
 hlo_after_all(...)
 }
 \arguments{
-\item{...}{\code{\link{FuncPointer}}}
+\item{...}{\code{\link{FuncVariable}}}
 }
 \value{
-\code{\link{FuncPointer}}
+\code{\link{FuncVariable}}
 }
 \description{
 After all

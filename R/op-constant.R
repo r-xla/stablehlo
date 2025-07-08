@@ -46,7 +46,7 @@ hlo_constant <- function(value) {
   ))
 
   # Then create the constant operation
-  FuncPointer(
+  FuncVariable(
     value_id = value_id,
     value_type = ValueType(const_value@value@type),
     func = Func(

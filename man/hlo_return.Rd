@@ -7,7 +7,7 @@
 hlo_return(...)
 }
 \arguments{
-\item{...}{(\code{\link{FuncPointer}})\cr}
+\item{...}{(\code{\link{FuncVariable}})\cr}
 }
 \description{
 Create a return operation

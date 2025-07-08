@@ -7,10 +7,10 @@
 hlo_abs(operand)
 }
 \arguments{
-\item{operand}{\code{\link{FuncPointer}}}
+\item{operand}{\code{\link{FuncVariable}}}
 }
 \value{
-\code{\link{FuncPointer}}
+\code{\link{FuncVariable}}
 }
 \description{
 Absolute value

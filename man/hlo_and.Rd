@@ -7,10 +7,10 @@
 hlo_and(lhs, rhs)
 }
 \arguments{
-\item{lhs, rhs}{(\code{\link{FuncPointer}})}
+\item{lhs, rhs}{(\code{\link{FuncVariable}})}
 }
 \value{
-\code{\link{FuncPointer}}
+\code{\link{FuncVariable}}
 }
 \description{
 Logical AND operation.

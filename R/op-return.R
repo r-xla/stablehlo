@@ -25,7 +25,7 @@ Return <- new_class(
 hlo_return_impl <- hlo_fn(Return, infer_types_return, TRUE)
 
 #' @title Create a return operation
-#' @param ... ([`FuncPointer`])\cr
+#' @param ... ([`FuncVariable`])\cr
 #' @export
 hlo_return <- function(...) {
   dots <- list(...)

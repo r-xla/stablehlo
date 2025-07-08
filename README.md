@@ -40,12 +40,12 @@ pp <- function(x) cat(repr(x@func), "\n")
 x <- hlo_input("x", "f32", shape = c(2, 2), func_id = "main")
 pp(x)
 #> func.func @main (%x: tensor<2x2xf32>) ->  {
-#> 
+#>
 #> }
 y <- hlo_input("y", "f32", shape = c(2, 2))
 pp(y)
 #> func.func @ (%y: tensor<2x2xf32>) ->  {
-#> 
+#>
 #> }
 ```
 
@@ -87,7 +87,7 @@ f
 
 ## How does it work?
 
-The central class the underpins the API is the `FuncPointer` class. It
+The central class the underpins the API is the `FuncVariable` class. It
 has three fields, namely the name and type of the variable it “points
 to” and the function it belongs to.
 
@@ -102,19 +102,19 @@ repr(x@func)
 #> [1] "func.func @main (%x: tensor<2x2xf32>) ->  {\n\n}"
 ```
 
-When we combine two `FuncPointer`s, we:
+When we combine two `FuncVariable`s, we:
 
 1.  Merge the underlying functions by combining their arguments and
     body:
 2.  Add the new operation to the bottom of the body
-3.  Create a (list of) `FuncPointer`(s) that represent the outputs of
+3.  Create a (list of) `FuncVariable`(s) that represent the outputs of
     the applied operation.
 
 Note that all variable names but the the argument names are considered
 an internal implementation detail.
 
 The `hlo_return()` function is special, because it does not return a
-`FuncPointer` but instead the function itself. This is, because after
+`FuncVariable` but instead the function itself. This is, because after
 returning, a function can no longer be modified.
 
 ## What it can’t do?
