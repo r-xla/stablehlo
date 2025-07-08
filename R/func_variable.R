@@ -3,7 +3,15 @@
 #' @include func.R
 NULL
 
+#' @title FuncPointer
+#' @description
+#' This represents a variable within a function.
+#' @param value_id The name of the variable.
+#' @param value_type The type of the variable.
+#' @param func The function the variable belongs to.
+#' @export
 #' @include value_id.R
+#' @export
 FuncPointer <- new_class(
   "FuncPointer",
   properties = list(
@@ -156,13 +164,13 @@ merge_func_bodies <- function(funcs) {
 }
 
 method(c, FuncPointer) <- function(...) {
-  pointers <- list(...)
-  func <- merge_funcs(lapply(pointers, function(x) x@func))
+  variables <- list(...)
+  func <- merge_funcs(lapply(variables, function(x) x@func))
   # Return all pointers of the inputs as outputs
-  lapply(pointers, function(pointer) {
+  lapply(variables, function(variable) {
     FuncPointer(
-      value_id = pointer@value_id,
-      value_type = pointer@value_type,
+      value_id = variable@value_id,
+      value_type = variable@value_type,
       func = func
     )
   })

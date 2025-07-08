@@ -67,6 +67,11 @@ method(repr, FuncOutputs) <- function(x) {
   )
 }
 
+#' @title FuncId
+#' @description
+#' This represents the id of a function.
+#' @param id The id of the function.
+#' @export
 FuncId <- new_class(
   "FuncId",
   properties = list(

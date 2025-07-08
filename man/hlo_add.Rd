@@ -7,7 +7,7 @@
 hlo_add(lhs, rhs)
 }
 \arguments{
-\item{lhs, }{rhs \code{\link{FuncPointer}}}
+\item{lhs, rhs}{(\code{\link{FuncPointer}})}
 }
 \value{
 \code{\link{FuncPointer}}

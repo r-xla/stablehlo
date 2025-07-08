@@ -18,7 +18,7 @@ hlo_and_impl <- hlo_fn(And, infer_types_and)
 #' @description
 #' Logical AND operation.
 #'
-#' @param lhs,rhs [`FuncPointer`]
+#' @param lhs,rhs ([`FuncPointer`])
 #'
 #' @return [`FuncPointer`]
 #' @export

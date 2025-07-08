@@ -35,7 +35,7 @@ Collate:
     'constant.R'
     'value_id.R'
     'func.R'
-    'func_pointer.R'
+    'func_variable.R'
     'type_inference.R'
     'hlo.R'
     'op.R'
