@@ -44,7 +44,6 @@ Collate:
     'op-after_all.R'
     'op-and.R'
     'op-atan2.R'
-    'op-case.R'
     'op-constant.R'
     'op-if.R'
     'op-return.R'

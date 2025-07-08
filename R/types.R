@@ -122,6 +122,7 @@ method(repr, TokenType) <- function(x) {
 #' @description
 #' This represents the type of a value.
 #' @param type The type of the value.
+#' @param shape The shape of the value.
 #' @export
 ValueType <- new_class(
   "ValueType",

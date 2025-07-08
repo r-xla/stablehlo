@@ -8,6 +8,8 @@ ValueType(type, shape = NULL)
 }
 \arguments{
 \item{type}{The type of the value.}
+
+\item{shape}{The shape of the value.}
 }
 \description{
 This represents the type of a value.
