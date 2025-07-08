@@ -11,8 +11,8 @@ infer_types_atan2 <- function(lhs, rhs) {
   ValueTypes(list(lhs))
 }
 
-.hlo_atan2 <- hlo_fn(Atan2, infer_types_atan2)
+hlo_atan2_impl <- hlo_fn(Atan2, infer_types_atan2)
 
 hlo_atan2 <- function(lhs, rhs) {
-  .hlo_atan2(values = list(lhs, rhs))
+  hlo_atan2_impl(values = list(lhs = lhs, rhs = rhs))
 }
