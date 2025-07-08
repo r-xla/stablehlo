@@ -1,4 +1,4 @@
-#' @include op.R api.R
+#' @include op.R hlo.R
 NULL
 
 Abs <- new_Op("Abs", "abs")

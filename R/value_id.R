@@ -44,6 +44,14 @@ ValueId <- new_class(
   }
 )
 
+method(`==`, list(ValueId, ValueId)) <- function(e1, e2) {
+  e1@id == e2@id
+}
+
+method(`!=`, list(ValueId, ValueId)) <- function(e1, e2) {
+  !(e1 == e2)
+}
+
 method(repr, ValueId) <- function(x) {
   paste0("%", x@id)
 }

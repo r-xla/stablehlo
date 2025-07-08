@@ -28,8 +28,6 @@ RoxygenNote: 7.3.2
 Collate:
     'repr.R'
     'aaa.R'
-    'type_inference.R'
-    'api.R'
     'list_of.R'
     'shape.R'
     'enum.R'
@@ -38,6 +36,8 @@ Collate:
     'value_id.R'
     'func.R'
     'func_pointer.R'
+    'type_inference.R'
+    'hlo.R'
     'op.R'
     'op-abs.R'
     'op-add.R'

@@ -97,6 +97,12 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
   }
 }
 
+#' @title Create a input to a function
+#' @param argname (`character()`)\cr
+#' @param type ([`ValueType`])\cr
+#' @param shape (`integer()`)\cr
+#' @param func_id ([`FuncId`])\cr
+#' @export
 hlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
   value_id <- ValueId(argname)
   value_type <- ValueType(type, shape = shape)

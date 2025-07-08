@@ -117,6 +117,14 @@ OpMnemonic <- new_enum(
     "xor"
   )
 )
+
+method(`==`, list(OpMnemonic, OpMnemonic)) <- function(e1, e2) {
+  e1@Value == e2@Value
+}
+
+method(`!=`, list(OpMnemonic, OpMnemonic)) <- function(e1, e2) {
+  !(e1 == e2)
+}
 method(repr, OpMnemonic) <- function(x) {
   x@Value
 }
@@ -245,6 +253,10 @@ OpOutput <- new_class(
   }
 )
 
+method(`==`, list(OpOutput, OpOutput)) <- function(e1, e2) {
+  e1@id == e2@id
+}
+
 method(repr, OpOutput) <- function(x) {
   repr(x@id)
 }
@@ -328,4 +340,8 @@ method(`==`, list(Op, Op)) <- function(e1, e2) {
     e1@inputs == e2@inputs &&
     e1@outputs == e2@outputs &&
     e1@signature == e2@signature
+}
+
+method(`!=`, list(Op, Op)) <- function(e1, e2) {
+  !(e1 == e2)
 }

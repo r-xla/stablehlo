@@ -1,4 +1,4 @@
-#' @include op.R api.R
+#' @include op.R hlo.R
 NULL
 
 Case <- new_Op("Case", "case")

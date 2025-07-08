@@ -87,13 +87,6 @@ FuncBody <- new_list_of(
   item_type = Op
 )
 
-method(`==`, list(FuncBody, FuncBody)) <- function(e1, e2) {
-  length(e1@items) == length(e2@items) &&
-    all(sapply(seq_along(e1@items), function(i) {
-      e1@items[[i]] == e2@items[[i]]
-    }))
-}
-
 method(repr, FuncBody) <- function(x) {
   paste0(sapply(x@items, repr), collapse = "\n")
 }
@@ -166,17 +159,4 @@ method(repr, OpInputFuncs) <- function(x) {
     paste0(sapply(x@items, repr), collapse = ", "),
     ")"
   )
-}
-
-method(`==`, list(OpInputFuncs, OpInputFuncs)) <- function(e1, e2) {
-  if (length(e1@items) != length(e2@items)) {
-    return(FALSE)
-  }
-
-  for (i in seq_along(e1@items)) {
-    if (!(e1@items[[i]] == e2@items[[i]])) {
-      return(FALSE)
-    }
-  }
-  TRUE
 }

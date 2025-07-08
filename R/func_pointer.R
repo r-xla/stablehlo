@@ -77,9 +77,9 @@ merge_func_inputs <- function(funcs) {
       # have different names
 
       small_len <- min(length(x@body@items), length(y@body@items))
-      different <- which(
-        x@body@items[seq_len(small_len)] != y@body@items[seq_len(small_len)]
-      )
+      different <- which(vapply(seq_len(small_len), function(i) {
+        x@body@items[[i]] != y@body@items[[i]]
+      }, logical(1L)))
 
       if (!length(different)) {
         # all are the same

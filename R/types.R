@@ -191,10 +191,3 @@ method(repr, ValueTypes) <- function(x) {
     collapse = ", "
   )
 }
-
-method(`==`, list(ValueTypes, ValueTypes)) <- function(e1, e2) {
-  length(e1@items) == length(e2@items) &&
-    all(sapply(seq_along(e1@items), function(i) {
-      e1@items[[i]] == e2@items[[i]]
-    }))
-}
