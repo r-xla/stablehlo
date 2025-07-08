@@ -22,10 +22,16 @@ Return <- new_class(
   }
 )
 
-hlo_return <- hlo_fn(Return, infer_types_return, TRUE)
+hlo_return_impl <- hlo_fn(Return, infer_types_return, TRUE)
+
+hlo_return <- function(...) {
+  dots <- list(...)
+  hlo_return_impl(values = dots)
+}
 
 infer_types_return <- function(...) {
-  lapply(list(...), function(x) {
+  dots <- list(...)
+  lapply(dots, function(x) {
     stopifnot(inherits(x, ValueType))
   })
   ValueTypes()

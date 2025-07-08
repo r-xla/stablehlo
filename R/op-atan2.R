@@ -10,3 +10,9 @@ infer_types_atan2 <- function(lhs, rhs) {
   assert_one_of(lhs@type@dtype@type, FloatType, ComplexType)
   ValueTypes(list(lhs))
 }
+
+.hlo_atan2 <- hlo_fn(Atan2, infer_types_atan2)
+
+hlo_atan2 <- function(lhs, rhs) {
+  .hlo_atan2(values = list(lhs, rhs))
+}

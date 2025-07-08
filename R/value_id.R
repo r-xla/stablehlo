@@ -15,6 +15,15 @@ reset_id_gen <- function() {
   .id_gen$i <- 0
 }
 
+local_reset_id_gen <- function(i = 0, local_envir = parent.frame()) {
+  old_i <- .id_gen$i
+  withr::defer(envir = local_envir, {
+    .id_gen$i <- old_i
+  })
+  .id_gen$i <- i
+  invisible(i)
+}
+
 ValueId <- new_class(
   "ValueId",
   properties = list(

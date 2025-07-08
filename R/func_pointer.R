@@ -83,7 +83,7 @@ merge_func_inputs <- function(funcs) {
 
       if (!length(different)) {
         # all are the same
-        return(x)
+        return(xinp)
       }
       first_diff <- different[1L]
 
@@ -153,4 +153,17 @@ merge_func_bodies <- function(funcs) {
 
   body = body[!duplicated(body)]
   FuncBody(body)
+}
+
+method(c, FuncPointer) <- function(...) {
+  pointers <- list(...)
+  func <- merge_funcs(lapply(pointers, function(x) x@func))
+  # Return all pointers of the inputs as outputs
+  lapply(pointers, function(pointer) {
+    FuncPointer(
+      value_id = pointer@value_id,
+      value_type = pointer@value_type,
+      func = func
+    )
+  })
 }

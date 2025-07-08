@@ -2,45 +2,66 @@
 NULL
 
 hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
-  function(..., .funcs = NULL, .attrs = NULL) {
-    pointers = list(...)
-    lapply(pointers, function(x) {
+  # values: list of FuncPointer
+  # funcs: list of Func
+  # attrs: list of Constant
+  function(values, funcs = NULL, attrs = NULL) {
+    lapply(values, function(x) {
       if (!inherits(x, FuncPointer)) {
         stop("All arguments must be FuncPointers")
       }
     })
+    lapply(funcs, function(x) {
+      if (!inherits(x, Func)) {
+        stop("All functions must be Func objects")
+      }
+    })
+    lapply(attrs, function(x) {
+      if (!inherits(x, Constant)) {
+        stop("All attributes must be Constant objects")
+      }
+    })
 
-    .op_input_funcs <- OpInputFuncs(lapply(.funcs, function(x) {
+    op_input_funcs <- OpInputFuncs(lapply(funcs, function(x) {
       OpInputFunc(
         inputs = x@inputs,
         body = x@body
       )
     }))
 
-    func <- merge_funcs(lapply(pointers, function(x) x@func))
+    op_input_attrs <- OpInputAttrs(lapply(seq_along(attrs), function(i) {
+      attr <- attrs[[i]]
+      name <- names(attrs)[i]
+      OpInputAttr(
+        name = OpInputAttrName(name),
+        value = OpInputAttrValue(attr)
+      )
+    }))
+
+    func <- merge_funcs(lapply(values, function(x) x@func))
     inputs <- OpInputs(
-      OpInputValues(lapply(pointers, function(x) OpInputValue(x@value_id))),
-      funcs = .op_input_funcs,
-      attrs = .attrs %??% OpInputAttrs()
+      OpInputValues(lapply(values, function(x) OpInputValue(x@value_id))),
+      funcs = op_input_funcs,
+      attrs = op_input_attrs
     )
 
-    args <- lapply(pointers, function(x) x@value_type)
+    infer_args <- lapply(values, function(x) x@value_type)
 
-    if (!is.null(.funcs)) {
-      args <- c(args, list(.funcs = .funcs))
+    if (length(funcs) > 0L) {
+      infer_args <- c(infer_args, funcs)
     }
-    if (!is.null(.attrs)) {
-      args <- c(args, list(.attrs = .attrs))
+    if (length(attrs) > 0L) {
+      infer_args <- c(infer_args, attrs)
     }
 
-    output_types <- rlang::exec(type_inference, !!!args)
+    output_types <- rlang::exec(type_inference, !!!infer_args)
     nout <- length(output_types@items)
 
     output_value_ids = replicate(nout, ValueId(), simplify = FALSE)
     outputs = OpOutputs(lapply(output_value_ids, OpOutput))
 
     signature <- OpSignature(
-      input_types = ValueTypes(lapply(pointers, function(x) x@value_type)),
+      input_types = ValueTypes(lapply(values, function(x) x@value_type)),
       output_types = output_types
     )
 
@@ -53,7 +74,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     func@body <- FuncBody(c(func@body@items, list(op)))
 
     if (return_func) {
-      func@outputs <- FuncOutputs(lapply(list(...), function(x) {
+      func@outputs <- FuncOutputs(lapply(values, function(x) {
         FuncOutput(type = x@value_type)
       }))
       return(func)
@@ -95,21 +116,3 @@ hlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
   )
 }
 
-
-.hlo_after_all <- hlo_fn(AfterAll, infer_types_after_all)
-hlo_after_all <- function(..., .update_pointer = TRUE) {
-  out <- .hlo_after_all(...)
-  if (.update_pointer) {
-    return(out)
-  }
-  in_pointers <- list(...)
-  lapply(seq_along(in_pointers), function(i) {
-    FuncPointer(
-      value_id = in_pointers[[i]]@value_id,
-      value_type = in_pointers[[i]]@value_type,
-      func = out@func
-    )
-  })
-}
-
-hlo_atan2 <- hlo_fn(Atan2, infer_types_atan2)

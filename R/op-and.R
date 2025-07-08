@@ -11,4 +11,17 @@ infer_types_and <- function(lhs, rhs) {
   ValueTypes(list(lhs))
 }
 
-hlo_and <- hlo_fn(And, infer_types_and)
+hlo_and_impl <- hlo_fn(And, infer_types_and)
+
+#' @title And
+#'
+#' @description
+#' Logical AND operation.
+#'
+#' @param lhs,rhs [`FuncPointer`]
+#'
+#' @return [`FuncPointer`]
+#' @export
+hlo_and <- function(lhs, rhs) {
+  hlo_and_impl(values = list(lhs = lhs, rhs = rhs))
+}
