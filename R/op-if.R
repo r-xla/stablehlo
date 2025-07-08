@@ -14,3 +14,5 @@ infer_types_if <- function(pred, .funcs) {
   stopifnot(out_types1 == out_types2)
   out_types1
 }
+
+hlo_if <- hlo_fn(If, infer_types_if)

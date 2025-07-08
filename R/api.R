@@ -95,8 +95,6 @@ hlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
   )
 }
 
-hlo_abs <- hlo_fn(Abs, infer_types_abs)
-hlo_add <- hlo_fn(Add, infer_types_add)
 
 .hlo_after_all <- hlo_fn(AfterAll, infer_types_after_all)
 hlo_after_all <- function(..., .update_pointer = TRUE) {
@@ -114,17 +112,4 @@ hlo_after_all <- function(..., .update_pointer = TRUE) {
   })
 }
 
-hlo_and <- hlo_fn(And, infer_types_and)
 hlo_atan2 <- hlo_fn(Atan2, infer_types_atan2)
-
-hlo_constant <- function(value) {
-  # First convert the R value to a Constant value
-  const_value <- r_to_constant(value)
-
-  # Then create the constant operation
-  OpConstant(const_value)
-}
-
-hlo_return <- hlo_fn(Return, infer_types_return, TRUE)
-
-hlo_if <- hlo_fn(If, infer_types_if)
