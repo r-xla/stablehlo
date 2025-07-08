@@ -3,7 +3,15 @@
 #' @include func.R
 NULL
 
+#' @title FuncPointer
+#' @description
+#' This represents a variable within a function.
+#' @param value_id The name of the variable.
+#' @param value_type The type of the variable.
+#' @param func The function the variable belongs to.
+#' @export
 #' @include value_id.R
+#' @export
 FuncPointer <- new_class(
   "FuncPointer",
   properties = list(
@@ -13,24 +21,6 @@ FuncPointer <- new_class(
   )
 )
 
-stablehlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
-  value_id <- ValueId(argname)
-  value_type <- ValueType(type, shape = shape)
-
-  if (is.character(func_id)) {
-    func_id <- FuncId(func_id)
-  }
-
-  func <- Func(
-    inputs = FuncInputs(list(FuncInput(id = value_id, type = value_type))),
-    id = func_id
-  )
-  FuncPointer(
-    value_id = value_id,
-    value_type = value_type,
-    func = func
-  )
-}
 
 merge_funcs <- function(funcs) {
   funcs = funcs[!duplicated(funcs)]
@@ -95,13 +85,13 @@ merge_func_inputs <- function(funcs) {
       # have different names
 
       small_len <- min(length(x@body@items), length(y@body@items))
-      different <- which(
-        x@body@items[seq_len(small_len)] != y@body@items[seq_len(small_len)]
-      )
+      different <- which(vapply(seq_len(small_len), function(i) {
+        x@body@items[[i]] != y@body@items[[i]]
+      }, logical(1L)))
 
       if (!length(different)) {
         # all are the same
-        return(x)
+        return(xinp)
       }
       first_diff <- different[1L]
 
@@ -173,64 +163,15 @@ merge_func_bodies <- function(funcs) {
   FuncBody(body)
 }
 
-stablehlo_fn <- function(op_class, type_inference, return_func = FALSE) {
-  function(..., .funcs = OpInputFuncs(), .attrs = OpInputAttrs()) {
-    pointers = list(...)
-    lapply(pointers, function(x) {
-      if (!inherits(x, FuncPointer)) {
-        stop("All arguments must be FuncPointers")
-      }
-    })
-
-    func <- merge_funcs(lapply(pointers, function(x) x@func))
-    inputs <- OpInputs(
-      OpInputValues(lapply(pointers, function(x) OpInputValue(x@value_id))),
-      funcs = .funcs,
-      attrs = .attrs
+method(c, FuncPointer) <- function(...) {
+  variables <- list(...)
+  func <- merge_funcs(lapply(variables, function(x) x@func))
+  # Return all pointers of the inputs as outputs
+  lapply(variables, function(variable) {
+    FuncPointer(
+      value_id = variable@value_id,
+      value_type = variable@value_type,
+      func = func
     )
-
-    output_types <- rlang::exec(
-      type_inference,
-      !!!lapply(pointers, function(x) x@value_type)
-    )
-    nout <- length(output_types@items)
-
-    output_value_ids = replicate(nout, ValueId(), simplify = FALSE)
-    outputs = OpOutputs(lapply(output_value_ids, OpOutput))
-
-    signature <- OpSignature(
-      input_types = ValueTypes(lapply(pointers, function(x) x@value_type)),
-      output_types = output_types
-    )
-
-    op <- op_class(
-      inputs = inputs,
-      outputs = outputs,
-      signature = signature
-    )
-
-    func@body <- FuncBody(c(func@body@items, list(op)))
-
-    if (return_func) {
-      func@outputs <- FuncOutputs(lapply(list(...), function(x) {
-        FuncOutput(type = x@value_type)
-      }))
-      return(func)
-    }
-
-    if (nout == 1L) {
-      return(FuncPointer(
-        value_id = output_value_ids[[1L]],
-        value_type = output_types@items[[1L]],
-        func = func
-      ))
-    }
-    lapply(seq_len(nout), function(i) {
-      FuncPointer(
-        value_id = output_value_ids[[i]],
-        value_type = output_types@items[[i]],
-        func = func
-      )
-    })
-  }
+  })
 }

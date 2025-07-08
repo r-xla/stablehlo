@@ -17,6 +17,7 @@ Imports:
     checkmate,
     methods,
     rlang,
+    withr,
     S7
 Suggests:
     testthat (>= 3.0.0)
@@ -27,17 +28,25 @@ RoxygenNote: 7.3.2
 Collate:
     'repr.R'
     'aaa.R'
-    'value_id.R'
     'list_of.R'
     'shape.R'
     'enum.R'
     'types.R'
     'constant.R'
-    'op.R'
+    'value_id.R'
     'func.R'
-    'builder.R'
-    'ops.R'
-    'tracer.R'
+    'func_variable.R'
     'type_inference.R'
+    'hlo.R'
+    'op.R'
+    'op-abs.R'
+    'op-add.R'
+    'op-after_all.R'
+    'op-and.R'
+    'op-atan2.R'
+    'op-constant.R'
+    'op-if.R'
+    'op-return.R'
+    'tracer.R'
     'utils.R'
     'zzz.R'

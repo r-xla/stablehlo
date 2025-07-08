@@ -2,6 +2,8 @@
 #' @include value_id.R
 #' @include types.R
 #' @include constant.R
+#' @include func.R
+#'
 NULL
 
 OpMnemonic <- new_enum(
@@ -115,6 +117,14 @@ OpMnemonic <- new_enum(
     "xor"
   )
 )
+
+method(`==`, list(OpMnemonic, OpMnemonic)) <- function(e1, e2) {
+  e1@Value == e2@Value
+}
+
+method(`!=`, list(OpMnemonic, OpMnemonic)) <- function(e1, e2) {
+  !(e1 == e2)
+}
 method(repr, OpMnemonic) <- function(x) {
   x@Value
 }
@@ -159,16 +169,6 @@ method(repr, OpInputValues) <- function(x) {
   )
 }
 
-OpInputFuncs <- new_class("OpInputFuncs")
-method(repr, OpInputFuncs) <- function(x) {
-  # TODO!
-  return("")
-}
-
-method(`==`, list(OpInputFuncs, OpInputFuncs)) <- function(e1, e2) {
-  # TODO
-  .NotYetImplemented()
-}
 
 OpInputAttrName <- new_class(
   "OpInputAttrName",
@@ -253,6 +253,10 @@ OpOutput <- new_class(
   }
 )
 
+method(`==`, list(OpOutput, OpOutput)) <- function(e1, e2) {
+  e1@id == e2@id
+}
+
 method(repr, OpOutput) <- function(x) {
   repr(x@id)
 }
@@ -336,4 +340,8 @@ method(`==`, list(Op, Op)) <- function(e1, e2) {
     e1@inputs == e2@inputs &&
     e1@outputs == e2@outputs &&
     e1@signature == e2@signature
+}
+
+method(`!=`, list(Op, Op)) <- function(e1, e2) {
+  !(e1 == e2)
 }

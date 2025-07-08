@@ -1,4 +1,4 @@
-# stablehlo_constant works with numeric values
+# op_constant works with numeric values
 
     Code
       repr(op)

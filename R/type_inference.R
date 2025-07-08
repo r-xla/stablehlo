@@ -18,31 +18,3 @@ baseline_element_type <- function(x) {
     stop("Not implemented yet")
   }
 }
-
-# We ignore all restrictions that apply to quantized tensors for now
-
-# unary ops
-infer_types_abs <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
-  # TODO: Not perfectly sure what (C2) means
-  ValueTypes(list(ValueType(
-    TensorType(
-      baseline_element_type(operand),
-      operand@type@shape
-    )
-  )))
-}
-
-# binary ops
-infer_types_add <- function(lhs, rhs) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(inherits(rhs@type, TensorType))
-  #stopifnot(identical(lhs@type@dtype, rhs@type@dtype))
-  stopifnot(lhs@type == rhs@type)
-
-  ValueTypes(list(lhs))
-}
-
-infer_types_return <- function(...) {
-  ValueTypes()
-}

@@ -106,7 +106,7 @@ method(repr, TensorType) <- function(x) {
   paste0(
     "tensor<",
     repr(x@shape),
-    "x",
+    if (length(x@shape@dims) > 0) "x" else "",
     repr(x@dtype),
     ">"
   )
@@ -118,6 +118,12 @@ method(repr, TokenType) <- function(x) {
   "!stablehlo.token"
 }
 
+#' @title ValueType
+#' @description
+#' This represents the type of a value.
+#' @param type The type of the value.
+#' @param shape The shape of the value.
+#' @export
 ValueType <- new_class(
   "ValueType",
   properties = list(
@@ -190,11 +196,4 @@ method(repr, ValueTypes) <- function(x) {
     sapply(x@items, repr),
     collapse = ", "
   )
-}
-
-method(`==`, list(ValueTypes, ValueTypes)) <- function(e1, e2) {
-  length(e1@items) == length(e2@items) &&
-    all(sapply(seq_along(e1@items), function(i) {
-      e1@items[[i]] == e2@items[[i]]
-    }))
 }
