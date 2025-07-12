@@ -1,4 +1,4 @@
-# abs works
+# basic tests
 
     Code
       repr(func)
