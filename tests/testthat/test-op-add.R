@@ -19,3 +19,4 @@ test_that("basic tests", {
   out_buf <- pjrt_execute(executable, x_buf, y_buf)
   expect_equal(x + y, as_array(out_buf))
 })
+

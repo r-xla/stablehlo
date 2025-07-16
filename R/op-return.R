@@ -39,3 +39,14 @@ infer_types_return <- function(...) {
   })
   ValueTypes()
 }
+
+
+method(repr, Return) <- function(x) {
+  paste0(
+    repr(x@outputs),
+    "\"func.return\"",
+    repr(x@inputs),
+    ":",
+    repr(x@signature)
+  )
+}
