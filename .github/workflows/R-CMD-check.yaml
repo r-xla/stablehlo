@@ -25,47 +25,33 @@ jobs:
           - {os: macos-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
 
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      R_KEEP_PKG_SOURCE: yes
-      STABLEHLO_DIR: ${{ github.workspace }}/stablehlo-src
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+          R_KEEP_PKG_SOURCE: yes
 
-    steps:
-      - uses: actions/checkout@v4
+        steps:
+          - uses: actions/checkout@v4
 
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          create-symlink: true
-          key: ${{matrix.config.os}}-ccache-check
-      
-      - if: runner.os == 'Linux'
-        name: Install system dependencies
-        run: |
-          sudo apt update
-          sudo apt install lld
+          - uses: r-lib/actions/setup-pandoc@v2
 
-      - uses: r-lib/actions/setup-pandoc@v2
+          - name: Install protobuf on macOS
+            if: runner.os == 'macOS'
+            run: |
+              brew install protobuf@21
+              brew link protobuf@21 --force --overwrite
 
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
+          - uses: r-lib/actions/setup-r@v2
+            with:
+              r-version: ${{ matrix.config.r }}
+              http-user-agent: ${{ matrix.config.http-user-agent }}
+              use-public-rspm: true
 
-      - name: Cache
-        id: cache-stable-hlo
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STABLEHLO_DIR }}
-          key: ${{ runner.os }}-stablehlo-src
+          - uses: r-lib/actions/setup-r-dependencies@v2
+            with:
+              extra-packages: any::rcmdcheck
+              needs: check
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck
-          needs: check
-
-      - uses: r-lib/actions/check-r-package@v2
-        with:
-          upload-snapshots: true
-          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+          - uses: r-lib/actions/check-r-package@v2
+            with:
+              upload-snapshots: true
+              build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
