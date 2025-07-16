@@ -24,7 +24,7 @@ OpConstant <- S7::new_class(
   }
 )
 
-method(repr, OpConstant) <- function(x) {
+method(repr, OpConstant) <- function(x, ...) {
   repr(S7::super(x, to = Op))
 }
 
