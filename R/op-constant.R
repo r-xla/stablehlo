@@ -1,4 +1,3 @@
-
 OpConstant <- S7::new_class(
   "OpConstant",
   parent = Op,
@@ -37,13 +36,16 @@ op_constant <- function(value) {
 hlo_constant <- function(value) {
   const_value <- r_to_constant(value)
   value_id <- ValueId()
-  op <- OpConstant(const_value, OpOutputs(
-    items = list(
-      OpOutput(
-        value_id
+  op <- OpConstant(
+    const_value,
+    OpOutputs(
+      items = list(
+        OpOutput(
+          value_id
+        )
       )
     )
-  ))
+  )
 
   # Then create the constant operation
   FuncVariable(

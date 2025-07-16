@@ -121,4 +121,3 @@ hlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
     func = func
   )
 }
-
