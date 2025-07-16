@@ -41,10 +41,10 @@ infer_types_return <- function(...) {
 }
 
 
-method(repr, Return) <- function(x) {
+method(repr, Return) <- function(x, toplevel = TRUE) {
   paste0(
     repr(x@outputs),
-    "\"func.return\"",
+    if (toplevel) "\"func.return\"" else "\"stablehlo.return\"",
     repr(x@inputs),
     ":",
     repr(x@signature)

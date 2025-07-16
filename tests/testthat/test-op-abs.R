@@ -5,6 +5,7 @@ test_that("basic tests", {
   func <- hlo_return(y)
   expect_snapshot(repr(func))
 
+  skip_if_not_installed("pjrt")
   program <- pjrt_program(repr(func))
   expect_class(program, "PJRTProgram")
 

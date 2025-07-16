@@ -2,10 +2,11 @@
 #' @description
 #' This function generates a string representation of a stableHLO program.
 #' @param x The object to generate a string representation of.
+#' @param ... Additional arguments passed to the method.
 #' @return `character(1)`
 #' @importFrom S7 new_generic
 #' @export
-repr <- new_generic("repr", "x", function(x) {
+repr <- new_generic("repr", "x", function(x, ...) {
   S7::S7_dispatch()
 })
 

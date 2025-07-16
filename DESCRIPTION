@@ -16,11 +16,11 @@ License: MIT + file LICENSE
 Imports:
     checkmate,
     methods,
-    pjrt,
     rlang,
     withr,
-    S7,
+    S7
 Suggests:
+    pjrt,
     testthat (>= 3.0.0)
 Remotes:
     r-xla/pjrt@makevars
