@@ -325,7 +325,7 @@ new_Op <- function(classname, mnemonic) {
   )
 }
 
-method(repr, Op) <- function(x) {
+method(repr, Op) <- function(x, toplevel = TRUE) {
   paste0(
     repr(x@outputs),
     repr(x@name),

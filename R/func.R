@@ -116,10 +116,9 @@ method(repr, Func) <- function(x) {
     repr(x@inputs),
     " ",
     repr(x@outputs),
-    " ",
-    "{\n",
+    " {\n",
     repr(x@body),
-    "\n}"
+    "\n}\n"
   )
 }
 
@@ -138,13 +137,11 @@ OpInputFunc <- new_class(
 
 method(repr, OpInputFunc) <- function(x) {
   paste0(
-    "{\n  ",
-    "^bb0",
+    "{\n  ^bb0",
     repr(x@inputs),
-    "\n    ",
-    paste0(sapply(x@body@items, repr), collapse = "\n    "),
-    "\n",
-    "}"
+    ":\n    ",
+    paste0(sapply(x@body@items, repr, toplevel = FALSE), collapse = "\n    "),
+    "\n}"
   )
 }
 

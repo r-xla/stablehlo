@@ -13,3 +13,5 @@ SPEC.md
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^README.html$
+^codecov.yaml$

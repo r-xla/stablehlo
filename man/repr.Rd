@@ -4,10 +4,12 @@
 \alias{repr}
 \title{Generate stableHLO string representation}
 \usage{
-repr(x)
+repr(x, ...)
 }
 \arguments{
 \item{x}{The object to generate a string representation of.}
+
+\item{...}{Additional arguments passed to the method.}
 }
 \value{
 \code{character(1)}
