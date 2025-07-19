@@ -3,6 +3,8 @@
 export(FuncId)
 export(FuncVariable)
 export(ValueType)
+export(FloatLiteral)
+export(local_reset_id_gen)
 export(hlo_abs)
 export(hlo_add)
 export(hlo_after_all)

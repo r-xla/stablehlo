@@ -8,6 +8,5 @@
 
 library(testthat)
 library(stablehlo)
-library(pjrt)
 
 test_check("stablehlo")

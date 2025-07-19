@@ -30,3 +30,14 @@ hlo_if <- function(pred, true_branch, false_branch) {
     )
   )
 }
+
+method(repr, If) <- function(x, toplevel = TRUE) {
+  paste0(
+    repr(x@outputs),
+    repr(x@name),
+    repr(x@inputs@values),
+    repr(x@inputs@funcs),
+    ":",
+    repr(x@signature)
+  )
+}
