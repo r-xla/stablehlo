@@ -13,6 +13,8 @@ Description: The package allows to create stableHLO programs, including
     The package is implemented in pure R without any C++
     dependencies.
 License: MIT + file LICENSE
+URL: https://r-xla.github.io/stablehlo/, https://github.com/r-xla/stablehlo
+BugReports: https://github.com/r-xla/stablehlo/issues
 Imports:
     checkmate,
     methods,
