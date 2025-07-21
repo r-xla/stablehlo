@@ -64,12 +64,12 @@
 <div class="page-header"><h1 id="stablehlo">stablehlo<a class="anchor" aria-label="anchor" href="#stablehlo"></a>
 </h1></div>
 <!-- badges: start -->
-<p><img src="https://github.com/r-xla/stablehlo/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"><img src="https://img.shields.io/badge/status-work%20in%20progress-yellow" alt="work-in-progress"><!-- badges: end --></p>
-<p>The {stablehlo} R package provides a functional API to creating <a href="https://github.com/openxla/stablehlo" class="external-link">stableHLO</a> programs. The thereby created programs can be executed using the R package <a href="https://github.com/r-xla/pjrt" class="external-link">pjrt</a>.</p>
+
+<p>The {stablehlo} R package provides a functional API to create <a href="https://github.com/openxla/stablehlo" class="external-link">stableHLO</a> programs. These programs can be executed using the R package <a href="https://github.com/r-xla/pjrt" class="external-link">pjrt</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of stablehlo from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
+<p>You can install the development version of stablehlo from <a href="https://github.com/r-xla/stablehlo" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"r-xla/stablehlo"</span><span class="op">)</span></span></code></pre></div>
@@ -93,7 +93,7 @@
 <span><span class="co">#&gt; func.func @ (%y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
-<p>To create a function that has these <code>x</code> and <code>y</code> as arguments and adds them, we can pass the two variables to the <code><a href="reference/hlo_add.html">hlo_add()</a></code> function:</p>
+<p>To create a function that takes <code>x</code> and <code>y</code> as arguments and adds them, we can pass the two variables to the <code><a href="reference/hlo_add.html">hlo_add()</a></code> function:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_add.html">hlo_add</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu">pp</span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
@@ -121,17 +121,15 @@
 <div class="section level2">
 <h2 id="how-does-it-work">How does it work?<a class="anchor" aria-label="anchor" href="#how-does-it-work"></a>
 </h2>
-<p>The central class the underpins the API is the <code>FuncVariable</code> class. It has three fields, namely the name and type of the variable it “points to” and the function it belongs to.</p>
+<p>The central class that underpins the API is the <code>FuncVariable</code> class. It has three fields, namely the name and type of the variable it “points to” and the function it belongs to.</p>
 <p>For example, for the <code>x</code> variable above, we have</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/repr.html">repr</a></span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">value_id</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "%x"</span></span>
 <span><span class="fu"><a href="reference/repr.html">repr</a></span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">value_type</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "tensor&lt;2x2xf32&gt;"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">func</span><span class="op">)</span></span>
-<span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/repr.html">repr</a></span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">func</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "func.func @main (%x: tensor&lt;2x2xf32&gt;) -&gt;  {\n\n}"</span></span></code></pre></div>
 <p>When we combine two <code>FuncVariable</code>s, we:</p>
 <ol style="list-style-type: decimal">
 <li>Merge the underlying functions by combining their arguments and body:</li>
@@ -147,19 +145,20 @@
 <p>Initially, we will:</p>
 <ul>
 <li>only support a subset of the available operations, see <a href="https://github.com/r-xla/stablehlo/issues/6" class="external-link">this issue</a> for the currently supported operations.</li>
-<li>not support all datatypes, specifically no quantization or complex numbers</li>
+<li>not support quantization</li>
+<li>not support complex numbers</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
 </h2>
-<p>The easiest way to contribute is to implement a new operator. See <a href="https://github.com/r-xla/stablehlo/issues/6" class="external-link">this issue</a> for those that are already implemented. The definition of the primitive stableHLO operators can be found <a href="https://openxla.org/stablehlo/spec#ops" class="external-link">here</a>.</p>
+<p>The easiest way to contribute is to implement a new operator. See <a href="https://github.com/r-xla/stablehlo/issues/6" class="external-link">this issue</a> for those that are already implemented. The definitions of the primitive stableHLO operators can be found <a href="https://openxla.org/stablehlo/spec#ops" class="external-link">here</a>.</p>
 <p>To implement a new primitive, you need to create:</p>
 <ol style="list-style-type: decimal">
 <li>An <code>Op</code> class that represents the operator.</li>
 <li>Implement the type inference for the operator, i.e. for which inputs it produces which outputs.</li>
 <li>Implement the API function (<code>hlo_&lt;opname&gt;</code>) for the operation.</li>
-<li>(TODO) Add the tests for the operation. The testing infrastructure is not yet in place, see <a href="https://github.com/r-xla/stablehlo/issues/9" class="external-link">this issue</a>.</li>
+<li>Add the tests for the operation, see other ops for examples.</li>
 </ol>
 </div>
 </div>
@@ -195,7 +194,14 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://CRAN.R-project.org/package=stablehlo" class="external-link"><img src="https://www.r-pkg.org/badges/version/stablehlo" alt="CRAN status"></a></li>
+<li><a href="https://codecov.io/gh/r-xla/stablehlo" class="external-link"><img src="https://codecov.io/gh/r-xla/stablehlo/branch/main/graph/badge.svg" alt="codecov"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>
