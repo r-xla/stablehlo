@@ -80,7 +80,7 @@ For example, for the `x` variable above, we have
 ```{r}
 repr(x@value_id)
 repr(x@value_type)
-repr(x@func)
+print(x@func)
 ```
 
 When we combine two `FuncVariable`s, we:
@@ -89,7 +89,7 @@ When we combine two `FuncVariable`s, we:
 2. Add the new operation to the bottom of the body
 3. Create a (list of) `FuncVariable`(s) that represent the outputs of the applied operation.
 
-Note that all variable names but the the argument names are considered an internal implementation detail.
+Note that all variable names but the argument names are considered an internal implementation detail.
 
 The `hlo_return()` function is special, because it does not return a `FuncVariable` but instead the function itself.
 This is, because after returning, a function can no longer be modified.
@@ -99,8 +99,7 @@ This is, because after returning, a function can no longer be modified.
 Initially, we will:
 
 - only support a subset of the available operations, see [this issue](https://github.com/r-xla/stablehlo/issues/6) for the currently supported operations.
-- not support quantization
-- not support complex numbers
+- not support all datatypes, specifically no quantization or complex numbers
 
 ## Contributing
 

@@ -40,12 +40,12 @@ pp <- function(x) cat(repr(x@func), "\n")
 x <- hlo_input("x", "f32", shape = c(2, 2), func_id = "main")
 pp(x)
 #> func.func @main (%x: tensor<2x2xf32>) ->  {
-#>
+#> 
 #> }
 y <- hlo_input("y", "f32", shape = c(2, 2))
 pp(y)
 #> func.func @ (%y: tensor<2x2xf32>) ->  {
-#>
+#> 
 #> }
 ```
 
@@ -98,8 +98,10 @@ repr(x@value_id)
 #> [1] "%x"
 repr(x@value_type)
 #> [1] "tensor<2x2xf32>"
-repr(x@func)
-#> [1] "func.func @main (%x: tensor<2x2xf32>) ->  {\n\n}"
+print(x@func)
+#> func.func @main (%x: tensor<2x2xf32>) ->  {
+#> 
+#> }
 ```
 
 When we combine two `FuncVariable`s, we:
@@ -110,8 +112,8 @@ When we combine two `FuncVariable`s, we:
 3.  Create a (list of) `FuncVariable`(s) that represent the outputs of
     the applied operation.
 
-Note that all variable names but the the argument names are considered
-an internal implementation detail.
+Note that all variable names but the argument names are considered an
+internal implementation detail.
 
 The `hlo_return()` function is special, because it does not return a
 `FuncVariable` but instead the function itself. This is, because after
@@ -124,8 +126,8 @@ Initially, we will:
 - only support a subset of the available operations, see [this
   issue](https://github.com/r-xla/stablehlo/issues/6) for the currently
   supported operations.
-- not support quantization
-- not support complex numbers
+- not support all datatypes, specifically no quantization or complex
+  numbers
 
 ## Contributing
 
