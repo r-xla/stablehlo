@@ -5,19 +5,23 @@
 
 <!-- badges: start -->
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 ![R-CMD-check](https://github.com/r-xla/stablehlo/actions/workflows/R-CMD-check.yaml/badge.svg)
-![work-in-progress](https://img.shields.io/badge/status-work%20in%20progress-yellow)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/stablehlo)](https://CRAN.R-project.org/package=stablehlo)
+[![codecov](https://codecov.io/gh/r-xla/stablehlo/branch/main/graph/badge.svg)](https://codecov.io/gh/r-xla/stablehlo)
 <!-- badges: end -->
 
-The {stablehlo} R package provides a functional API to creating
-[stableHLO](https://github.com/openxla/stablehlo) programs. The thereby
-created programs can be executed using the R package
+The {stablehlo} R package provides a functional API to create
+[stableHLO](https://github.com/openxla/stablehlo) programs. These
+programs can be executed using the R package
 [pjrt](https://github.com/r-xla/pjrt).
 
 ## Installation
 
 You can install the development version of stablehlo from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/r-xla/stablehlo) with:
 
 ``` r
 # install.packages("pak")
@@ -49,8 +53,8 @@ pp(y)
 #> }
 ```
 
-To create a function that has these `x` and `y` as arguments and adds
-them, we can pass the two variables to the `hlo_add()` function:
+To create a function that takes `x` and `y` as arguments and adds them,
+we can pass the two variables to the `hlo_add()` function:
 
 ``` r
 z <- hlo_add(x, y)
@@ -87,7 +91,7 @@ f
 
 ## How does it work?
 
-The central class the underpins the API is the `FuncVariable` class. It
+The central class that underpins the API is the `FuncVariable` class. It
 has three fields, namely the name and type of the variable it “points
 to” and the function it belongs to.
 
@@ -98,10 +102,8 @@ repr(x@value_id)
 #> [1] "%x"
 repr(x@value_type)
 #> [1] "tensor<2x2xf32>"
-print(x@func)
-#> func.func @main (%x: tensor<2x2xf32>) ->  {
-#> 
-#> }
+repr(x@func)
+#> [1] "func.func @main (%x: tensor<2x2xf32>) ->  {\n\n}"
 ```
 
 When we combine two `FuncVariable`s, we:
@@ -126,15 +128,15 @@ Initially, we will:
 - only support a subset of the available operations, see [this
   issue](https://github.com/r-xla/stablehlo/issues/6) for the currently
   supported operations.
-- not support all datatypes, specifically no quantization or complex
-  numbers
+- not support quantization
+- not support complex numbers
 
 ## Contributing
 
 The easiest way to contribute is to implement a new operator. See [this
 issue](https://github.com/r-xla/stablehlo/issues/6) for those that are
-already implemented. The definition of the primitive stableHLO operators
-can be found [here](https://openxla.org/stablehlo/spec#ops).
+already implemented. The definitions of the primitive stableHLO
+operators can be found [here](https://openxla.org/stablehlo/spec#ops).
 
 To implement a new primitive, you need to create:
 
@@ -142,6 +144,4 @@ To implement a new primitive, you need to create:
 2.  Implement the type inference for the operator, i.e. for which inputs
     it produces which outputs.
 3.  Implement the API function (`hlo_<opname>`) for the operation.
-4.  (TODO) Add the tests for the operation. The testing infrastructure
-    is not yet in place, see [this
-    issue](https://github.com/r-xla/stablehlo/issues/9).
+4.  Add the tests for the operation, see other ops for examples.
