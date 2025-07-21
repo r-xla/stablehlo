@@ -5,13 +5,17 @@
 
 <!-- badges: start -->
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 ![R-CMD-check](https://github.com/r-xla/stablehlo/actions/workflows/R-CMD-check.yaml/badge.svg)
-![work-in-progress](https://img.shields.io/badge/status-work%20in%20progress-yellow)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/stablehlo)](https://CRAN.R-project.org/package=stablehlo)
+[![codecov](https://codecov.io/gh/r-xla/stablehlo/branch/main/graph/badge.svg)](https://codecov.io/gh/r-xla/stablehlo)
 <!-- badges: end -->
 
-The {stablehlo} R package provides a functional API to creating
-[stableHLO](https://github.com/openxla/stablehlo) programs. The thereby
-created programs can be executed using the R package
+The {stablehlo} R package provides a functional API to create
+[stableHLO](https://github.com/openxla/stablehlo) programs. These
+programs can be executed using the R package
 [pjrt](https://github.com/r-xla/pjrt).
 
 ## Installation
@@ -40,17 +44,17 @@ pp <- function(x) cat(repr(x@func), "\n")
 x <- hlo_input("x", "f32", shape = c(2, 2), func_id = "main")
 pp(x)
 #> func.func @main (%x: tensor<2x2xf32>) ->  {
-#>
+#> 
 #> }
 y <- hlo_input("y", "f32", shape = c(2, 2))
 pp(y)
 #> func.func @ (%y: tensor<2x2xf32>) ->  {
-#>
+#> 
 #> }
 ```
 
-To create a function that has these `x` and `y` as arguments and adds
-them, we can pass the two variables to the `hlo_add()` function:
+To create a function that takes `x` and `y` as arguments and adds them,
+we can pass the two variables to the `hlo_add()` function:
 
 ``` r
 z <- hlo_add(x, y)
@@ -87,7 +91,7 @@ f
 
 ## How does it work?
 
-The central class the underpins the API is the `FuncVariable` class. It
+The central class that underpins the API is the `FuncVariable` class. It
 has three fields, namely the name and type of the variable it “points
 to” and the function it belongs to.
 
@@ -110,8 +114,8 @@ When we combine two `FuncVariable`s, we:
 3.  Create a (list of) `FuncVariable`(s) that represent the outputs of
     the applied operation.
 
-Note that all variable names but the the argument names are considered
-an internal implementation detail.
+Note that all variable names but the argument names are considered an
+internal implementation detail.
 
 The `hlo_return()` function is special, because it does not return a
 `FuncVariable` but instead the function itself. This is, because after
@@ -131,8 +135,8 @@ Initially, we will:
 
 The easiest way to contribute is to implement a new operator. See [this
 issue](https://github.com/r-xla/stablehlo/issues/6) for those that are
-already implemented. The definition of the primitive stableHLO operators
-can be found [here](https://openxla.org/stablehlo/spec#ops).
+already implemented. The definitions of the primitive stableHLO
+operators can be found [here](https://openxla.org/stablehlo/spec#ops).
 
 To implement a new primitive, you need to create:
 
@@ -140,6 +144,6 @@ To implement a new primitive, you need to create:
 2.  Implement the type inference for the operator, i.e. for which inputs
     it produces which outputs.
 3.  Implement the API function (`hlo_<opname>`) for the operation.
-4.  (TODO) Add the tests for the operation. The testing infrastructure
-    is not yet in place, see [this
+4.  Add the tests for the operation, see other ops for examples. The
+    testing infrastructure is not yet in place, see [this
     issue](https://github.com/r-xla/stablehlo/issues/9).
