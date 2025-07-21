@@ -2,11 +2,8 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches:
-      - main
+    branches: [main, master]
   pull_request:
-    branches:
-      - main
 
 name: R-CMD-check.yaml
 
@@ -14,36 +11,48 @@ permissions: read-all
 
 jobs:
   R-CMD-check:
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.runner }}
+    container: ${{ matrix.container }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    name: ${{ matrix.config.os }} - ${{ matrix.config.platform }} (${{ matrix.config.r }})
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
+          - { os: "macos", r: "release", platform: "cpu" }
+          - { os: "macos", r: "release", platform: "metal" }
+          - { os: "ubuntu", r: "release", platform: "cpu" }
+          - { os: "ubuntu", r: "release", platform: "cuda"}
+
+        include:
+          - config: {os: "ubuntu", platform: "cuda"}
+            container: {image: 'nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04', options: '--gpus all --runtime=nvidia'}
+            runner: ['self-hosted', 'gpu']
+            setup: |
+              DEBIAN_FRONTEND="noninteractive" apt-get update -y
+              DEBIAN_FRONTEND="noninteractive" apt-get install -y sudo software-properties-common dialog apt-utils tzdata libpng-dev locales pkg-config
+              DEBIAN_FRONTEND="noninteractive" locale-gen en_US.UTF-8
+              DEBIAN_FRONTEND="noninteractive" update-locale LANG=en_US.UTF-8
+          - config: {os: "ubuntu", platform: "cpu"}
+            runner: 'ubuntu-latest'
+          - config: {os: "macos"}
+            runner: 'macos-latest'
+            setup: |
+              brew install protobuf@21
+              brew link protobuf@21 --force --overwrite
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      STABLEHLO_DIR: ${{ github.workspace }}/stablehlo-src
+      PJRT_PLATFORM: ${{ matrix.config.platform }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Setup
+        if: ${{ matrix.setup }}
+        run: ${{ matrix.setup }}
 
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          create-symlink: true
-          key: ${{matrix.config.os}}-ccache-check
-      
-      - if: runner.os == 'Linux'
-        name: Install system dependencies
-        run: |
-          sudo apt update
-          sudo apt install lld
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -52,13 +61,6 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-
-      - name: Cache
-        id: cache-stable-hlo
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STABLEHLO_DIR }}
-          key: ${{ runner.os }}-stablehlo-src
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
