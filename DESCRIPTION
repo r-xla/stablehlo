@@ -1,52 +1,43 @@
 Package: stablehlo
-Title: Create stableHLO programs
+Title: Write stableHLO programs
 Version: 0.0.0.9000
 Authors@R: c(
     person("Daniel", "Falbel", , "daniel@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0009-0006-0143-2392")),
     person("Sebastian", "Fischer", , "seb.fischer@tutamail.com", role = "aut",
-           comment = c(ORCID = "https://orcid.org/0000-0002-9609-3197")),
-    person("Nikolai", "German", , "N.German@campus.lmu.de", role = "aut")
+           comment = c(ORCID = "https://orcid.org/0000-0002-9609-3197"))
   )
-Description: The package offers a low level interface to create stableHLO
-    programs.  These programs can be compiled and run on different
-    hardware backends (CPU, GPU, ...)  using the 'pjrt' package.
+Description: The package allows to create stableHLO programs, including
+    type inference. Using the {pjrt} package, these programs can be run
+    on various accelerator, such as GPUs or TPUs.
+    The package is implemented in pure R without any C++
+    dependencies.
 License: MIT + file LICENSE
-URL: https://r-xla.github.io/stablehlo/,
-    https://github.com/r-xla/stablehlo
+URL: https://r-xla.github.io/stablehlo/, https://github.com/r-xla/stablehlo
 BugReports: https://github.com/r-xla/stablehlo/issues
 Imports:
     checkmate,
-    cli,
     methods,
-    Rcpp,
     rlang,
-    S7,
-    tengen,
-    withr
+    withr,
+    S7
 Suggests:
     pjrt,
     testthat (>= 3.0.0)
-LinkingTo:
-    Rcpp
 Remotes:
-    r-xla/pjrt,
-    r-xla/tengen
-Config/build/compilation-database: true
+    r-xla/pjrt
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2.9000
+RoxygenNote: 7.3.2
 Collate:
-    'RcppExports.R'
-    'assert.R'
     'repr.R'
+    'aaa.R'
     'list_of.R'
     'shape.R'
     'enum.R'
     'types.R'
     'constant.R'
-    'format_double.R'
     'value_id.R'
     'func.R'
     'func_variable.R'
@@ -58,38 +49,12 @@ Collate:
     'op-after_all.R'
     'op-and.R'
     'op-atan2.R'
-    'op-broadcast_in_dim.R'
-    'op-cbrt.R'
-    'op-ceil.R'
-    'op-clamp.R'
     'op-constant.R'
-    'op-cosine.R'
-    'op-divide.R'
-    'op-dot_general.R'
-    'op-exponential.R'
-    'op-exponential_minus_one.R'
-    'op-floor.R'
     'op-if.R'
-    'op-log.R'
-    'op-log_plus_one.R'
-    'op-logistic.R'
-    'op-maximum.R'
-    'op-minimum.R'
-    'op-multiply.R'
-    'op-negate.R'
-    'op-or.R'
-    'op-power.R'
-    'op-remainder.R'
     'op-return.R'
-    'op-round_nearest_even.R'
-    'op-rsqrt.R'
-    'op-sign.R'
-    'op-sine.R'
-    'op-sqrt.R'
     'op-subtract.R'
     'op-tan.R'
     'op-tanh.R'
-    'op-xor.R'
-    'reexports.R'
+    'tracer.R'
     'utils.R'
     'zzz.R'

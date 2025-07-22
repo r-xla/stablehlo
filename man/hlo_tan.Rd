@@ -2,16 +2,16 @@
 % Please edit documentation in R/op-tan.R
 \name{hlo_tan}
 \alias{hlo_tan}
-\title{Tan Operator}
+\title{Tangent Operation}
 \usage{
 hlo_tan(operand)
 }
 \arguments{
-\item{operand}{(\code{\link{FuncVariable}})\cr}
+\item{operand}{(\code{\link{FuncVariable}})}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncVariable}}
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#tan} for details.
+Tangent Operation
 }
