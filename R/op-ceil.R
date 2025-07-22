@@ -6,6 +6,8 @@ OpCeil <- new_Op("OpCeil", "ceil")
 hlo_ceil_impl <- hlo_fn(OpCeil, infer_types_generic_uni)
 
 #' @templateVar mnemonic ceil
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_ceil <- function(operand) {

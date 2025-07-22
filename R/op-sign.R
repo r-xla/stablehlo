@@ -6,6 +6,8 @@ OpSign <- new_Op("OpSign", "sign")
 hlo_sign_impl <- hlo_fn(OpSign, infer_types_generic_uni)
 
 #' @templateVar mnemonic sign
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_sign <- function(operand) {

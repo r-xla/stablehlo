@@ -6,6 +6,8 @@ OpPower <- new_Op("OpPower", "power")
 hlo_power_impl <- hlo_fn(OpPower, infer_types_generic_biv)
 
 #' @templateVar mnemonic power
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_power <- function(lhs, rhs) {

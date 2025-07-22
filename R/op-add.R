@@ -6,6 +6,8 @@ OpAdd <- new_Op("OpAdd", "add")
 hlo_add_impl <- hlo_fn(OpAdd, infer_types_generic_biv)
 
 #' @templateVar mnemonic add
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_add <- function(lhs, rhs) {

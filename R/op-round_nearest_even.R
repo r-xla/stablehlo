@@ -9,6 +9,8 @@ hlo_round_nearest_even_impl <- hlo_fn(
 )
 
 #' @templateVar mnemonic round_nearest_even
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_round_nearest_even <- function(operand) {

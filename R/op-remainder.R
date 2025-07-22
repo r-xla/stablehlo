@@ -6,6 +6,8 @@ OpRemainder <- new_Op("OpRemainder", "remainder")
 hlo_remainder_impl <- hlo_fn(OpRemainder, infer_types_generic_biv)
 
 #' @templateVar mnemonic remainder
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_remainder <- function(lhs, rhs) {

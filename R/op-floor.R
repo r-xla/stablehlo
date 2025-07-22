@@ -6,6 +6,8 @@ OpFloor <- new_Op("OpFloor", "floor")
 hlo_floor_impl <- hlo_fn(OpFloor, infer_types_generic_uni)
 
 #' @templateVar mnemonic floor
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_floor <- function(operand) {

@@ -12,6 +12,8 @@ hlo_exponential_minus_one_impl <- hlo_fn(
 )
 
 #' @templateVar mnemonic exponential_minus_one
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_exponential_minus_one <- function(operand) {

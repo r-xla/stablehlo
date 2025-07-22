@@ -6,6 +6,8 @@ OpTan <- new_Op("OpTan", "tan")
 hlo_tan_impl <- hlo_fn(OpTan, infer_types_generic_uni)
 
 #' @templateVar mnemonic tan
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_tan <- function(operand) {

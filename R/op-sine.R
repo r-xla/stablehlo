@@ -6,6 +6,8 @@ OpSine <- new_Op("OpSine", "sine")
 hlo_sine_impl <- hlo_fn(OpSine, infer_types_generic_uni)
 
 #' @templateVar mnemonic sine
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_sine <- function(operand) {

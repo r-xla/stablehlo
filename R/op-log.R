@@ -6,6 +6,8 @@ OpLog <- new_Op("OpLog", "log")
 hlo_log_impl <- hlo_fn(OpLog, infer_types_generic_uni)
 
 #' @templateVar mnemonic log
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_log <- function(operand) {

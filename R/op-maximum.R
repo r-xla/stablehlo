@@ -6,6 +6,8 @@ OpMaximum <- new_Op("OpMaximum", "maximum")
 hlo_maximum_impl <- hlo_fn(OpMaximum, infer_types_generic_biv)
 
 #' @templateVar mnemonic maximum
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_maximum <- function(lhs, rhs) {

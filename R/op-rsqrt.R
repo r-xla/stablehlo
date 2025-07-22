@@ -6,6 +6,8 @@ OpRsqrt <- new_Op("OpRsqrt", "rsqrt")
 hlo_rsqrt_impl <- hlo_fn(OpRsqrt, infer_types_generic_uni)
 
 #' @templateVar mnemonic rsqrt
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_rsqrt <- function(operand) {

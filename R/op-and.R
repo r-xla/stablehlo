@@ -6,6 +6,8 @@ OpAnd <- new_Op("OpAnd", "and")
 hlo_and_impl <- hlo_fn(OpAnd, infer_types_boolean_biv)
 
 #' @templateVar mnemonic and
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_and <- function(lhs, rhs) {

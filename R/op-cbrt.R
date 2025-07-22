@@ -6,6 +6,8 @@ OpCbrt <- new_Op("OpCbrt", "cbrt")
 hlo_cbrt_impl <- hlo_fn(OpCbrt, infer_types_generic_uni)
 
 #' @templateVar mnemonic cbrt
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_cbrt <- function(operand) {

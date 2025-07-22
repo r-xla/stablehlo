@@ -6,8 +6,9 @@ OpSubtract <- new_Op("OpSubtract", "subtract")
 hlo_subtract_impl <- hlo_fn(OpSubtract, infer_types_generic_biv)
 
 #' @templateVar mnemonic subtract
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
-
 #' @export
 hlo_subtract <- function(lhs, rhs) {
   hlo_subtract_impl(values = list(lhs = lhs, rhs = rhs))

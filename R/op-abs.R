@@ -6,6 +6,8 @@ OpAbs <- new_Op("OpAbs", "abs")
 hlo_abs_impl <- hlo_fn(OpAbs, infer_types_generic_uni)
 
 #' @templateVar mnemonic abs
+#' @templateVar params %s
+#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_abs <- function(operand) {
