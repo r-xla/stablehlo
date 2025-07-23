@@ -4,17 +4,35 @@
 \alias{hlo_input}
 \title{Create a input to a function}
 \usage{
-hlo_input(argname, type, shape = integer(), func_id = FuncId())
+hlo_input(name, elt_type, shape = integer(), func_id = FuncId())
 }
 \arguments{
-\item{argname}{(\code{character()})\cr}
+\item{name}{(\code{character(1)})\cr
+The name of the parameter.}
 
-\item{type}{(\code{\link{ValueType}})\cr}
+\item{elt_type}{(\code{\link{ValueType}})\cr
+The element type of the parameter.
+Can contain digits, letters and underscores.
+If it starts with a digit, it can only contain digits.
+Otherwise it must start with a letter.}
 
-\item{shape}{(\code{integer()})\cr}
+\item{shape}{(\code{integer()})\cr
+The shape of the parameter.
+Use \code{integer()} for scalars.}
 
-\item{func_id}{(\code{\link{FuncId}})\cr}
+\item{func_id}{(\code{\link{FuncId}} | \code{character(1)})\cr
+The function id of the parameter.}
 }
 \description{
 Create a input to a function
+}
+\examples{
+x <- hlo_input("x", "f32", shape = c(2, 2))
+print(x)
+
+# You can combine multiple inputs as follows:
+c(
+  hlo_input("x", "f32", shape = c(2, 2)),
+  hlo_input("y", "f32", shape = c(2, 2))
+)
 }

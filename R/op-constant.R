@@ -8,12 +8,14 @@ OpConstant <- S7::new_class(
       inputs = OpInputs(
         values = OpInputValues(list()),
         funcs = OpInputFuncs(),
-        attrs = OpInputAttrs(list(
-          OpInputAttr(
-            OpInputAttrName("value"),
-            OpInputAttrValue(value)
+        attrs = OpInputAttrs(
+          list(
+            OpInputAttr(
+              OpInputAttrName("value"),
+              OpInputAttrValue(value)
+            )
           )
-        ))
+        )
       ),
       outputs = output %||% OpOutputs(),
       signature = OpSignature(

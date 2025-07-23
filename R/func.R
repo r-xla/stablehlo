@@ -20,7 +20,6 @@
 #' @importFrom S7 new_class new_property method
 NULL
 
-
 FuncInput <- new_class(
   "FuncInput",
   properties = list(
@@ -106,7 +105,6 @@ Func <- new_class(
   )
 )
 
-
 method(repr, Func) <- function(x) {
   # Func        ::= 'func' '.' 'func' FuncId FuncInputs FuncOutputs '{' FuncBody '}'
   paste0(
@@ -126,7 +124,6 @@ method(print, Func) <- function(x, ...) {
   cat(repr(x))
 }
 
-
 OpInputFunc <- new_class(
   "OpInputFunc",
   properties = list(
@@ -136,6 +133,19 @@ OpInputFunc <- new_class(
 )
 
 method(repr, OpInputFunc) <- function(x) {
+  # Don't print parameters if there are none:
+  if (length(x@inputs@items) == 0) {
+    return(
+      paste0(
+        "{\n",
+        paste0(
+          sapply(x@body@items, repr, toplevel = FALSE),
+          collapse = "\n    "
+        ),
+        "\n}"
+      )
+    )
+  }
   paste0(
     "{\n  ^bb0",
     repr(x@inputs),
