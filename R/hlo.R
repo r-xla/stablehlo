@@ -107,13 +107,27 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
 
 #' @title Create a input to a function
 #' @param argname (`character()`)\cr
-#' @param type ([`ValueType`])\cr
+#' @param elt_type ([`ValueType`])\cr
 #' @param shape (`integer()`)\cr
 #' @param func_id ([`FuncId`])\cr
 #' @export
-hlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
+#' @examples
+#' x <- hlo_input("x", "f32", shape = c(2, 2))
+#' print(x)
+#'
+#' # You can combine multiple inputs as follows:
+#' c(
+#'   hlo_input("x", "f32", shape = c(2, 2)),
+#'   hlo_input("y", "f32", shape = c(2, 2))
+#' )
+hlo_input <- function(
+  argname,
+  elt_type,
+  shape = integer(),
+  func_id = FuncId()
+) {
   value_id <- ValueId(argname)
-  value_type <- ValueType(type, shape = shape)
+  value_type <- ValueType(elt_type, shape = shape)
 
   if (is.character(func_id)) {
     func_id <- FuncId(func_id)
@@ -130,13 +144,24 @@ hlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
   )
 }
 
+#' @title Create a Closure
+#' @description
+#' Creates a new function without any arguments that captures the provided variables.
+#' @param ... ([`FuncVariable`])\cr
+#'   The variables to capture.
+#' @return (`list()` of [`FuncVariable`])
 #' @export
-hlo_capture <- function(...) {
+#' @examples
+#' x <- hlo_input("x", "f32", shape = c(2, 2))
+#' y <- hlo_input("y", "f32", shape = c(2, 2))
+#' f <- hlo_closure(x, y)
+#' print(f)
+hlo_closure <- function(...) {
   vars <- list(...)
   ids <- vapply(vars, function(v) v@value_id@id, character(1))
   if (any(duplicated(ids))) {
     stop(
-      "Each variable can only be captured once in hlo_capture (duplicate value_id detected)"
+      "Each variable can only be captured once in hlo_closure (duplicate value_id detected)"
     )
   }
   lapply(vars, function(variable) {

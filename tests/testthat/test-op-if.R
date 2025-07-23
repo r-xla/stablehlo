@@ -7,8 +7,8 @@ test_that("If operator works", {
     x2 = hlo_input("x2", "f32", integer(), func_id = "main")
   )
 
-  f1 <- hlo_return(hlo_capture(params$x1)[[1L]])
-  f2 <- hlo_return(hlo_capture(params$x2)[[1L]])
+  f1 <- hlo_return(hlo_closure(params$x1)[[1L]])
+  f2 <- hlo_return(hlo_closure(params$x2)[[1L]])
 
   out <- hlo_if(
     pred = params$pred,

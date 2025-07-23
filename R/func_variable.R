@@ -179,11 +179,13 @@ method(c, FuncVariable) <- function(...) {
   variables <- list(...)
   func <- merge_funcs(lapply(variables, function(x) x@func))
   # Return all pointers of the inputs as outputs
-  lapply(variables, function(variable) {
+  out <- lapply(variables, function(variable) {
     FuncVariable(
       value_id = variable@value_id,
       value_type = variable@value_type,
       func = func
     )
   })
+  names(out) <- vapply(variables, function(x) x@value_id@id, character(1L))
+  out
 }

@@ -4,12 +4,12 @@
 \alias{hlo_input}
 \title{Create a input to a function}
 \usage{
-hlo_input(argname, type, shape = integer(), func_id = FuncId())
+hlo_input(argname, elt_type, shape = integer(), func_id = FuncId())
 }
 \arguments{
 \item{argname}{(\code{character()})\cr}
 
-\item{type}{(\code{\link{ValueType}})\cr}
+\item{elt_type}{(\code{\link{ValueType}})\cr}
 
 \item{shape}{(\code{integer()})\cr}
 
@@ -17,4 +17,14 @@ hlo_input(argname, type, shape = integer(), func_id = FuncId())
 }
 \description{
 Create a input to a function
+}
+\examples{
+x <- hlo_input("x", "f32", shape = c(2, 2))
+print(x)
+
+# You can combine multiple inputs as follows:
+c(
+  hlo_input("x", "f32", shape = c(2, 2)),
+  hlo_input("y", "f32", shape = c(2, 2))
+)
 }
