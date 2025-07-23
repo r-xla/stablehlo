@@ -11,4 +11,3 @@ is_metal <- function() {
 is_cuda <- function() {
   Sys.getenv("PJRT_PLATFORM") == "cuda"
 }
-
