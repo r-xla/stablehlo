@@ -22,21 +22,25 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       }
     })
 
-    op_input_funcs <- OpInputFuncs(lapply(funcs, function(x) {
-      OpInputFunc(
-        inputs = x@inputs,
-        body = x@body
-      )
-    }))
+    op_input_funcs <- OpInputFuncs(
+      lapply(funcs, function(x) {
+        OpInputFunc(
+          inputs = x@inputs,
+          body = x@body
+        )
+      })
+    )
 
-    op_input_attrs <- OpInputAttrs(lapply(seq_along(attrs), function(i) {
-      attr <- attrs[[i]]
-      name <- names(attrs)[i]
-      OpInputAttr(
-        name = OpInputAttrName(name),
-        value = OpInputAttrValue(attr)
-      )
-    }))
+    op_input_attrs <- OpInputAttrs(
+      lapply(seq_along(attrs), function(i) {
+        attr <- attrs[[i]]
+        name <- names(attrs)[i]
+        OpInputAttr(
+          name = OpInputAttrName(name),
+          value = OpInputAttrValue(attr)
+        )
+      })
+    )
 
     func <- merge_funcs(lapply(values, function(x) x@func))
     inputs <- OpInputs(
@@ -74,18 +78,22 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     func@body <- FuncBody(c(func@body@items, list(op)))
 
     if (return_func) {
-      func@outputs <- FuncOutputs(lapply(values, function(x) {
-        FuncOutput(type = x@value_type)
-      }))
+      func@outputs <- FuncOutputs(
+        lapply(values, function(x) {
+          FuncOutput(type = x@value_type)
+        })
+      )
       return(func)
     }
 
     if (nout == 1L) {
-      return(FuncVariable(
-        value_id = output_value_ids[[1L]],
-        value_type = output_types@items[[1L]],
-        func = func
-      ))
+      return(
+        FuncVariable(
+          value_id = output_value_ids[[1L]],
+          value_type = output_types@items[[1L]],
+          func = func
+        )
+      )
     }
     lapply(seq_len(nout), function(i) {
       FuncVariable(
@@ -120,4 +128,27 @@ hlo_input <- function(argname, type, shape = integer(), func_id = FuncId()) {
     value_type = value_type,
     func = func
   )
+}
+
+#' @export
+hlo_capture <- function(...) {
+  vars <- list(...)
+  ids <- vapply(vars, function(v) v@value_id@id, character(1))
+  if (any(duplicated(ids))) {
+    stop(
+      "Each variable can only be captured once in hlo_capture (duplicate value_id detected)"
+    )
+  }
+  lapply(vars, function(variable) {
+    FuncVariable(
+      value_id = variable@value_id,
+      value_type = variable@value_type,
+      func = Func(
+        id = FuncId(""),
+        inputs = FuncInputs(list()),
+        outputs = FuncOutputs(list()),
+        body = FuncBody(list())
+      )
+    )
+  })
 }

@@ -21,7 +21,6 @@ FuncVariable <- new_class(
   )
 )
 
-
 merge_funcs <- function(funcs) {
   funcs = funcs[!duplicated(funcs)]
   if (!length(funcs)) {
@@ -40,13 +39,15 @@ merge_funcs <- function(funcs) {
 }
 
 merge_func_ids <- function(funcs) {
-  ids <- unlist(lapply(funcs, function(x) {
-    id <- x@id@id
-    if (identical(id, "")) {
-      return(NULL)
-    }
-    id
-  }))
+  ids <- unlist(
+    lapply(funcs, function(x) {
+      id <- x@id@id
+      if (identical(id, "")) {
+        return(NULL)
+      }
+      id
+    })
+  )
 
   uids <- unique(ids)
   if (length(uids) > 1L) {
@@ -62,15 +63,16 @@ merge_func_inputs <- function(funcs) {
   if (length(funcs) == 1L) {
     return(funcs[[1L]]@inputs)
   }
+  inputs <- lapply(funcs, function(func) {
+    func@inputs
+  })
+  inputs <- inputs[!duplicated(inputs)]
   .merge <- function(x, y) {
-    xinp <- x@inputs
-    yinp <- y@inputs
-
-    if (!any(duplicated(c(xinp, yinp)))) {
-      return(FuncInputs(c(xinp@items, yinp@items)))
+    if (!any(duplicated(c(x, y)))) {
+      return(FuncInputs(c(x@items, y@items)))
     }
 
-    if (anyDuplicated(c(xinp, yinp))) {
+    if (anyDuplicated(c(x, y))) {
       # A possible situation might be:
       # f(x, y):
       #   a <- x + y
@@ -85,29 +87,35 @@ merge_func_inputs <- function(funcs) {
       # have different names
 
       small_len <- min(length(x@body@items), length(y@body@items))
-      different <- which(vapply(
-        seq_len(small_len),
-        function(i) {
-          x@body@items[[i]] != y@body@items[[i]]
-        },
-        logical(1L)
-      ))
+      different <- which(
+        vapply(
+          seq_len(small_len),
+          function(i) {
+            x@body@items[[i]] != y@body@items[[i]]
+          },
+          logical(1L)
+        )
+      )
 
       if (!length(different)) {
         # all are the same
-        return(xinp)
+        return(x)
       }
       first_diff <- different[1L]
 
       xlines <- x@body@items[seq(first_diff, length(x@body@items))]
       ylines <- y@body@items[seq(first_diff, length(y@body@items))]
 
-      xvars <- unlist(lapply(xlines, function(line) {
-        sapply(line@outputs@items, function(out) out@id@id)
-      }))
-      yvars <- unlist(lapply(ylines, function(line) {
-        sapply(line@outputs@items, function(out) out@id@id)
-      }))
+      xvars <- unlist(
+        lapply(xlines, function(line) {
+          sapply(line@outputs@items, function(out) out@id@id)
+        })
+      )
+      yvars <- unlist(
+        lapply(ylines, function(line) {
+          sapply(line@outputs@items, function(out) out@id@id)
+        })
+      )
 
       # This check is conservative.
       # There are programs that could be merged (e.g. permuting rows that does not change a program)
@@ -122,7 +130,7 @@ merge_func_inputs <- function(funcs) {
     combined <- c(x@items, y@items)
     FuncInputs(combined[!duplicated(combined)])
   }
-  Reduce(.merge, funcs)
+  Reduce(.merge, inputs)
 }
 
 merge_func_outputs <- function(funcs) {
