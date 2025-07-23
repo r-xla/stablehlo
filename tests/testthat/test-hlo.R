@@ -31,3 +31,15 @@ test_that("hlo_closure works", {
 
   expect_error(hlo_closure(x, x))
 })
+
+test_that("checks on input names", {
+  expect_error(hlo_input("_", "f32", shape = c(2L, 2L)), "pattern")
+  expect_error(hlo_input("_1", "f32", shape = c(2L, 2L)), "pattern")
+  expect_error(hlo_input("1a", "f32", shape = c(2L, 2L)), "pattern")
+  expect_error(hlo_input("1_", "f32", shape = c(2L, 2L)), "pattern")
+  expect_error(hlo_input("1", "f32", shape = c(2L, 2L)), regexp = NA)
+  expect_error(hlo_input("12", "f32", shape = c(2L, 2L)), regexp = NA)
+  expect_error(hlo_input("a1", "f32", shape = c(2L, 2L)), regexp = NA)
+  expect_error(hlo_input("a_1", "f32", shape = c(2L, 2L)), regexp = NA)
+  expect_error(hlo_input("a1_", "f32", shape = c(2L, 2L)), regexp = NA)
+})
