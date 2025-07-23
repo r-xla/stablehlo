@@ -19,6 +19,7 @@ test_that("If operator works", {
   expect_snapshot(f)
 
   skip_if_not_installed("pjrt")
+  skip_if_metal()
   program <- pjrt_program(repr(f))
   expect_class(program, "PJRTProgram")
 
