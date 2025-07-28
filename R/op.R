@@ -169,7 +169,6 @@ method(repr, OpInputValues) <- function(x) {
   )
 }
 
-
 OpInputAttrName <- new_class(
   "OpInputAttrName",
   properties = list(

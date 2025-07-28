@@ -20,7 +20,6 @@ method(repr, DecimalDigits) <- function(x) {
   paste0(sapply(x@items, repr), collapse = "")
 }
 
-
 IntegerPart <- new_class("IntegerPart", parent = DecimalDigits)
 FractionalPart <- new_class("FractionalPart", parent = DecimalDigits)
 method(repr, FractionalPart) <- function(x) {
