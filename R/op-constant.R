@@ -30,13 +30,13 @@ method(repr, OpConstant) <- function(x, ...) {
   repr(S7::super(x, to = Op))
 }
 
-op_constant <- function(value) {
-  const_value <- r_to_constant(value)
+op_constant <- function(value, element_type = NULL) {
+  const_value <- r_to_constant(value, element_type = element_type)
   OpConstant(const_value)
 }
 
-hlo_constant <- function(value) {
-  const_value <- r_to_constant(value)
+hlo_constant <- function(value, element_type = NULL) {
+  const_value <- r_to_constant(value, element_type = element_type)
   value_id <- ValueId()
   op <- OpConstant(
     const_value,

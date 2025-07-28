@@ -61,21 +61,53 @@ method(repr, FloatLiteral) <- function(x) {
   )
 }
 
-ElementLiteral <- new_class(
-  "ElementLiteral",
+BooleanConstant <- new_class(
+  "BooleanConstant",
   properties = list(
-    literal = FloatLiteral
+    literal = S7::class_logical
   )
 )
 
-method(repr, ElementLiteral) <- function(x) {
+method(repr, BooleanConstant) <- function(x) {
+  if (x@literal) {
+    "true"
+  } else {
+    "false"
+  }
+}
+
+IntegerConstant <- new_class(
+  "IntegerConstant",
+  properties = list(
+    value = S7::class_integer,
+    type = IntegerType
+  )
+)
+
+method(repr, IntegerConstant) <- function(x) {
+  as.character(x@value)
+}
+
+FloatConstant <- new_class(
+  "FloatConstant",
+  properties = list(
+    literal = FloatLiteral,
+    type = FloatType
+  )
+)
+
+method(repr, FloatConstant) <- function(x) {
   repr(x@literal)
 }
 
 TensorLiteral <- new_class(
   "TensorLiteral",
   properties = list(
-    literal = ElementLiteral
+    literal = S7::new_union(
+      BooleanConstant,
+      IntegerConstant,
+      FloatConstant
+    )
   )
 )
 
@@ -86,23 +118,31 @@ method(repr, TensorLiteral) <- function(x) {
 TensorConstant <- new_class(
   "TensorConstant",
   properties = list(
-    literal = TensorLiteral,
+    data = S7::class_any,
     type = TensorType
   )
 )
 
 method(repr, TensorConstant) <- function(x) {
-  paste0(
-    repr(x@literal),
-    " : ",
-    repr(x@type)
-  )
+  # Generate proper StableHLO dense format
+  data <- x@data
+  type <- x@type
+
+  # Convert data to StableHLO string representation
+  value_str <- r_to_stablehlo_string(data)
+
+  paste0("dense<", value_str, "> : ", repr(type))
 }
 
 Constant <- new_class(
   "Constant",
   properties = list(
-    value = TensorConstant
+    value = S7::new_union(
+      BooleanConstant,
+      IntegerConstant,
+      FloatConstant,
+      TensorConstant
+    )
   )
 )
 
