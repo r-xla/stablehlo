@@ -38,7 +38,7 @@
     Code
       repr(float_constant)
     Output
-      [1] "+314.159E+0"
+      [1] "314.159E+0"
 
 # TensorConstant works correctly
 
@@ -59,5 +59,5 @@
     Code
       repr(int_tensor)
     Output
-      [1] "dense<42> : tensor<si64>"
+      [1] "dense<42> : tensor<i64>"
 

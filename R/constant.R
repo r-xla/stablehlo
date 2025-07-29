@@ -54,7 +54,7 @@ FloatLiteral <- new_class(
 
 method(repr, FloatLiteral) <- function(x) {
   paste0(
-    repr(x@sign_part),
+    if (x@sign_part@Value == "-") "-" else "",
     repr(x@integer_part),
     repr(x@fractional_part),
     repr(x@scientific_part)
@@ -148,4 +148,131 @@ Constant <- new_class(
 
 method(repr, Constant) <- function(x) {
   repr(x@value)
+}
+
+# Create a Constant from R value
+r_to_constant <- S7::new_generic(
+  "r_to_constant",
+  "value",
+  function(value, elt_type = NULL, ...) {
+    S7::S7_dispatch()
+  }
+)
+
+method(r_to_constant, S7::class_logical) <- function(
+  value,
+  elt_type = NULL,
+  ...
+) {
+  # For logical values, create a BooleanConstant
+  boolean_constant <- BooleanConstant(value)
+
+  shape <- Shape(integer()) #Shape(dim(value) %||% length(value))
+  stablehlo_type <- BooleanType()
+  element_type_obj <- TensorElementType(type = stablehlo_type)
+  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
+
+  # Create TensorConstant with the data and type
+  tensor_constant <- TensorConstant(
+    data = value,
+    type = tensor_type
+  )
+
+  return(Constant(value = tensor_constant))
+}
+
+method(r_to_constant, S7::class_numeric) <- function(
+  value,
+  elt_type = NULL,
+  ...
+) {
+  # For numeric values, create a FloatConstant
+  x <- formatC(abs(value), digits = 16, format = "e")
+
+  parts <- strcapture(
+    "([0-9]+)\\.([0-9]+)e([+-])([0-9]+)",
+    x,
+    proto = list(
+      integral = character(),
+      fractional = character(),
+      exponent_sign = character(),
+      exponent_digits = character()
+    )
+  )
+
+  charpart_to_digit <- \(x) {
+    x |> strsplit("") |> unlist() |> as.integer() |> lapply(decimalDigit)
+  }
+
+  integer_part <- charpart_to_digit(parts$integral) |> IntegerPart()
+  fractional_part <- charpart_to_digit(parts$fractional) |> FractionalPart()
+  exponent_sign <- SignPart(parts$exponent_sign)
+  exponent_digits <- charpart_to_digit(parts$exponent_digits) |> IntegerPart()
+
+  f <- FloatLiteral(
+    sign_part = SignPart(if (value >= 0) "+" else "-"),
+    integer_part = integer_part,
+    fractional_part = fractional_part,
+    scientific_part = ScientificPart(
+      exponent_sign = exponent_sign,
+      exponent_digits = exponent_digits
+    )
+  )
+
+  # Use provided element_type or default to f32
+  elt_type <- if (is.null(elt_type)) {
+    FloatType("f32")
+  } else {
+    string_to_type(elt_type)
+  }
+  float_constant <- FloatConstant(literal = f, type = elt_type)
+
+  shape <- Shape(integer()) #Shape(dim(value) %||% length(value))
+
+  element_type_obj <- TensorElementType(type = elt_type)
+  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
+
+  # Create TensorConstant with the data and type
+  tensor_constant <- TensorConstant(
+    data = value,
+    type = tensor_type
+  )
+
+  return(Constant(value = tensor_constant))
+}
+
+method(r_to_constant, S7::class_integer) <- function(
+  value,
+  elt_type = NULL,
+  ...
+) {
+  # For integer values, create an IntegerConstant
+  # Use provided element_type or default to i64
+  elt_type <- if (is.null(elt_type)) {
+    IntegerType("i64")
+  } else {
+    string_to_type(elt_type)
+  }
+  integer_constant <- IntegerConstant(value = value, type = elt_type)
+
+  shape <- Shape(integer()) #Shape(dim(value) %||% length(value))
+
+  element_type_obj <- TensorElementType(type = elt_type)
+  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
+
+  # Create TensorConstant with the data and type
+  tensor_constant <- TensorConstant(
+    data = value,
+    type = tensor_type
+  )
+
+  return(Constant(value = tensor_constant))
+}
+
+method(r_to_constant, S7::class_any) <- function(
+  value,
+  elt_type = NULL,
+  ...
+) {
+  stop("Unsupported type for r_to_constant: ", class(value)[1])
 }

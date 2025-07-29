@@ -3,82 +3,82 @@
     Code
       repr(op_constant(3.14))
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<+3.1400000000000001e+00> : tensor<1xf32> }:() -> (tensor<1xf32>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<+3.1400000000000001e+00> : tensor<f32> }\n:() -> (tensor<f32>)"
 
 ---
 
     Code
       repr(op_constant(3L))
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<3> : tensor<1xsi64> }:() -> (tensor<1xsi64>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<3> : tensor<i64> }\n:() -> (tensor<i64>)"
 
 ---
 
     Code
       repr(op_constant(-3L))
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<-3> : tensor<1xsi64> }:() -> (tensor<1xsi64>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<-3> : tensor<i64> }\n:() -> (tensor<i64>)"
 
 ---
 
     Code
       repr(op_constant(-100L))
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<-100> : tensor<1xsi64> }:() -> (tensor<1xsi64>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<-100> : tensor<i64> }\n:() -> (tensor<i64>)"
 
 ---
 
     Code
       repr(op_constant(TRUE))
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<true> : tensor<1xi1> }:() -> (tensor<1xi1>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<true> : tensor<i1> }\n:() -> (tensor<i1>)"
 
 ---
 
     Code
       repr(op_constant(FALSE))
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<false> : tensor<1xi1> }:() -> (tensor<1xi1>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<false> : tensor<i1> }\n:() -> (tensor<i1>)"
 
 ---
 
     Code
-      repr(op_constant(3.14, element_type = "f64"))
+      repr(op_constant(3.14, elt_type = "f64"))
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<+3.1400000000000001e+00> : tensor<1xf64> }:() -> (tensor<1xf64>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<+3.1400000000000001e+00> : tensor<f64> }\n:() -> (tensor<f64>)"
 
 ---
 
     Code
-      repr(op_constant(3L, element_type = "s32"))
+      repr(op_constant(3L, elt_type = "i32"))
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<3> : tensor<1xsi32> }:() -> (tensor<1xsi32>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<3> : tensor<i32> }\n:() -> (tensor<i32>)"
 
 ---
 
     Code
-      repr(op_constant(TRUE, element_type = "pred"))
+      repr(op_constant(TRUE, elt_type = "pred"))
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<true> : tensor<1xi1> }:() -> (tensor<1xi1>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<true> : tensor<i1> }\n:() -> (tensor<i1>)"
 
 # Can create a function with no inputs
 
     Code
       repr(f)
     Output
-      [1] "func.func @ () -> tensor<1xf32> {\n%1 =\"stablehlo.constant\"(){ value = dense<+3.1400000000000001e+00> : tensor<1xf32> }:() -> (tensor<1xf32>)\n\"func.return\"(%1):(tensor<1xf32>) -> ()\n}\n"
+      [1] "func.func @ () -> tensor<f32> {\n%1 =\"stablehlo.constant\"(){\nvalue = dense<+3.1400000000000001e+00> : tensor<f32> }\n:() -> (tensor<f32>)\n\"func.return\"(%1):(tensor<f32>) -> ()\n}\n"
 
 # op_constant works with boolean values
 
     Code
       repr(op_true)
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<true> : tensor<1xi1> }:() -> (tensor<1xi1>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<true> : tensor<i1> }\n:() -> (tensor<i1>)"
 
 ---
 
     Code
       repr(op_false)
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<false> : tensor<1xi1> }:() -> (tensor<1xi1>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<false> : tensor<i1> }\n:() -> (tensor<i1>)"
 

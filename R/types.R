@@ -11,14 +11,14 @@ method(repr, BooleanType) <- function(x) {
 IntegerType <- new_enum(
   "IntegerType",
   c(
-    #"si2",
-    #"si4",
-    "si8",
-    "si16",
-    "si32",
-    "si64",
-    "ui2",
-    "ui4",
+    #"i2",
+    #"i4",
+    #"u2",
+    #"u4",
+    "i8",
+    "i16",
+    "i32",
+    "i64",
     "ui8",
     "ui16",
     "ui32",
@@ -173,7 +173,7 @@ make_value_type <- function(str, shape = NULL) {
     }
     elt_type <- if (str %in% c("bool", "i1")) {
       BooleanType()
-    } else if (grepl("^(s|u)i[0-9]+$", str)) {
+    } else if (grepl("^(i|ui)[0-9]+$", str)) {
       IntegerType(str)
     } else if (grepl("^f[0-9]+$", str)) {
       FloatType(str)

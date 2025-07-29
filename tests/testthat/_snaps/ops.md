@@ -3,5 +3,5 @@
     Code
       repr(op)
     Output
-      [1] "\"stablehlo.constant\"(){ value = dense<+3.1400000000000001e+00> : tensor<1xf32> }:() -> (tensor<1xf32>)"
+      [1] "\"stablehlo.constant\"(){\nvalue = dense<+3.1400000000000001e+00> : tensor<f32> }\n:() -> (tensor<f32>)"
 

@@ -21,8 +21,8 @@ test_that("BooleanConstant works correctly", {
 })
 
 test_that("IntegerConstant works correctly", {
-  int_constant <- IntegerConstant(value = 42L, type = IntegerType("si64"))
-  negative_int <- IntegerConstant(value = -123L, type = IntegerType("si32"))
+  int_constant <- IntegerConstant(value = 42L, type = IntegerType("i64"))
+  negative_int <- IntegerConstant(value = -123L, type = IntegerType("i32"))
 
   expect_snapshot(repr(int_constant))
   expect_snapshot(repr(negative_int))
@@ -31,14 +31,22 @@ test_that("IntegerConstant works correctly", {
 test_that("FloatConstant works correctly", {
   f <- FloatLiteral(
     sign_part = SignPart("+"),
-    integer_part = IntegerPart(list(decimalDigit(3L), decimalDigit(1L), decimalDigit(4L))),
-    fractional_part = FractionalPart(list(decimalDigit(1L), decimalDigit(5L), decimalDigit(9L))),
+    integer_part = IntegerPart(list(
+      decimalDigit(3L),
+      decimalDigit(1L),
+      decimalDigit(4L)
+    )),
+    fractional_part = FractionalPart(list(
+      decimalDigit(1L),
+      decimalDigit(5L),
+      decimalDigit(9L)
+    )),
     scientific_part = ScientificPart(
       exponent_sign = SignPart("+"),
       exponent_digits = IntegerPart(list(decimalDigit(0)))
     )
   )
-  float_constant <- FloatConstant(literal = f, type = FloatType("f32"))
+  float_constant <- FloatConstant(f, type = FloatType("f32"))
   expect_snapshot(repr(float_constant))
 })
 
@@ -67,7 +75,7 @@ test_that("TensorConstant works correctly", {
   int_tensor <- TensorConstant(
     data = 42L,
     type = TensorType(
-      dtype = TensorElementType(type = IntegerType("si64")),
+      dtype = TensorElementType(type = IntegerType("i64")),
       shape = Shape()
     )
   )

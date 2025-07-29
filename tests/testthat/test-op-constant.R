@@ -9,9 +9,9 @@ test_that("op_constant", {
   expect_snapshot(repr(op_constant(FALSE)))
 
   # Test with element_type
-  expect_snapshot(repr(op_constant(3.14, element_type = "f64")))
-  expect_snapshot(repr(op_constant(3L, element_type = "s32")))
-  expect_snapshot(repr(op_constant(TRUE, element_type = "pred")))
+  expect_snapshot(repr(op_constant(3.14, elt_type = "f64")))
+  expect_snapshot(repr(op_constant(3L, elt_type = "i32")))
+  expect_snapshot(repr(op_constant(TRUE, elt_type = "pred")))
 })
 
 test_that("Can create a function with no inputs", {
@@ -59,11 +59,11 @@ test_that("Can create integer constants with hlo_constant", {
   expect_s3_class(x_neg, "stablehlo::FuncVariable")
 
   # Test with element_type
-  x_s32 <- hlo_constant(42L, element_type = "s32")
-  expect_s3_class(x_s32@value_type@type@dtype@type, "stablehlo::IntegerType")
-  expect_equal(x_s32@value_type@type@dtype@type@Value, "si32")
+  x_i32 <- hlo_constant(42L, elt_type = "i32")
+  expect_s3_class(x_i32@value_type@type@dtype@type, "stablehlo::IntegerType")
+  expect_equal(x_i32@value_type@type@dtype@type@Value, "i32")
 
-  x_f64 <- hlo_constant(3.14, element_type = "f64")
+  x_f64 <- hlo_constant(3.14, elt_type = "f64")
   expect_s3_class(x_f64@value_type@type@dtype@type, "stablehlo::FloatType")
   expect_equal(x_f64@value_type@type@dtype@type@Value, "f64")
 })
@@ -73,4 +73,32 @@ test_that("Can create a function with boolean constant", {
   x <- hlo_constant(TRUE)
   f <- hlo_return(x)
   expect_s3_class(f, "stablehlo::Func")
+})
+
+test_that("scalar constants compile", {
+  skip_if_not_installed("pjrt")
+  local_reset_id_gen()
+  # float
+  x <- hlo_constant(-3)
+  f <- hlo_return(x)
+  f@id@id <- "main"
+  exec <- pjrt::pjrt_compile(pjrt::pjrt_program(repr(f)))
+  expect_equal(pjrt::pjrt_execute(exec), pjrt::pjrt_scalar(-3))
+
+  # int
+  x <- hlo_constant(3L, elt_type = "i32")
+  f <- hlo_return(x)
+  f@id@id <- "main"
+  exec <- pjrt::pjrt_compile(pjrt::pjrt_program(repr(f)))
+  expect_equal(pjrt::pjrt_execute(exec), pjrt::pjrt_scalar(3L))
+
+  # unsigned int
+  x <- hlo_constant(3L, elt_type = "ui32")
+  f <- hlo_return(x)
+  f@id@id <- "main"
+  exec <- pjrt::pjrt_compile(pjrt::pjrt_program(repr(f)))
+  expect_equal(
+    pjrt::pjrt_execute(exec),
+    pjrt::pjrt_scalar(3L, elt_type = "ui32")
+  )
 })
