@@ -17,3 +17,7 @@ method(repr, NULL) <- function(x) {
 method(repr, S7::class_integer) <- function(x) {
   as.character(x)
 }
+
+method(repr, S7::class_logical) <- function(x) {
+  if (x) "true" else "false"
+}
