@@ -130,7 +130,6 @@ method(r_to_constant, S7::class_numeric) <- function(
   element_type_obj <- TensorElementType(type = elt_type)
   tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
 
-  # Create TensorConstant with the data and type
   tensor_constant <- TensorConstant(
     data = value,
     type = tensor_type
