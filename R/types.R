@@ -83,7 +83,6 @@ method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
   if (inherits(e1, BooleanType)) {
     return(TRUE)
   }
-  # Float and Int are both enums
   e1@Value == e2@Value
 }
 

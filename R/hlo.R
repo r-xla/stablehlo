@@ -2,9 +2,6 @@
 NULL
 
 hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
-  # values: list of FuncVariable
-  # funcs: list of Func
-  # attrs: list of Constant
   function(values, funcs = NULL, attrs = NULL) {
     lapply(values, function(x) {
       if (!inherits(x, FuncVariable)) {

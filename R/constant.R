@@ -47,12 +47,19 @@ method(repr, TensorConstant) <- function(x) {
   } else if (inherits(type@dtype@type, BooleanType)) {
     tolower(as.logical(data))
   }
+
   if (is.array(data)) {
     dim(value_reprs) <- dim(data)
+  } else {
+    return(paste0(
+      "dense<",
+      paste(value_reprs, collapse = ", "),
+      "> : ",
+      repr(type)
+    ))
   }
 
   f <- function(x) {
-    if (length(dim(x)) == 1L & length(x) == 1L) return(x)
     if (length(dim(x)) == 1L || is.vector(x)) {
       paste0("[", paste(x, collapse = ", "), "]")
     } else {
@@ -79,7 +86,6 @@ method(repr, Constant) <- function(x) {
   repr(x@value)
 }
 
-# Create a Constant from R value
 r_to_constant <- S7::new_generic(
   "r_to_constant",
   "value",
@@ -143,8 +149,6 @@ method(r_to_constant, S7::class_integer) <- function(
   elt_type = NULL,
   ...
 ) {
-  # For integer values, create a tensor constant
-  # Use provided element_type or default to i32
   elt_type <- if (is.null(elt_type)) {
     IntegerType("i32")
   } else {
@@ -158,7 +162,6 @@ method(r_to_constant, S7::class_integer) <- function(
   element_type_obj <- TensorElementType(type = elt_type)
   tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
 
-  # Create TensorConstant with the data and type
   tensor_constant <- TensorConstant(
     data = value,
     type = tensor_type

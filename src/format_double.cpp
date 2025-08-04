@@ -5,7 +5,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-CharacterVector format_c_cpp(NumericVector x, int precision) {
+CharacterVector format_double_cpp(NumericVector x, int precision) {
   // Validate precision parameter
   if (precision != 32 && precision != 64) {
     stop("precision must be either 32 or 64");

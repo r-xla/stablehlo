@@ -10,21 +10,21 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// format_c_cpp
-CharacterVector format_c_cpp(NumericVector x, int precision);
-RcppExport SEXP _stablehlo_format_c_cpp(SEXP xSEXP, SEXP precisionSEXP) {
+// format_double_cpp
+CharacterVector format_double_cpp(NumericVector x, int precision);
+RcppExport SEXP _stablehlo_format_double_cpp(SEXP xSEXP, SEXP precisionSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< int >::type precision(precisionSEXP);
-    rcpp_result_gen = Rcpp::wrap(format_c_cpp(x, precision));
+    rcpp_result_gen = Rcpp::wrap(format_double_cpp(x, precision));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_stablehlo_format_c_cpp", (DL_FUNC) &_stablehlo_format_c_cpp, 2},
+    {"_stablehlo_format_double_cpp", (DL_FUNC) &_stablehlo_format_double_cpp, 2},
     {NULL, NULL, 0}
 };
 
