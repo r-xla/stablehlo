@@ -44,6 +44,8 @@ output_types_from_body <- function(body) {
 
 #' Convert R value to StableHLO string representation
 #' @param value The R value to convert
+#' @param dtype (`character(1)`)\cr
+#'   The dtype of the value
 #' @return A string representation suitable for StableHLO dense format
 r_to_stablehlo_string <- function(value, dtype) {
   if (is.logical(value)) {

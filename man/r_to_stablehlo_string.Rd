@@ -8,6 +8,9 @@ r_to_stablehlo_string(value, dtype)
 }
 \arguments{
 \item{value}{The R value to convert}
+
+\item{dtype}{(\code{character(1)})\cr
+The dtype of the value}
 }
 \value{
 A string representation suitable for StableHLO dense format
