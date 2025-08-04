@@ -52,7 +52,7 @@ output_types_from_body <- function(body) {
 #' Convert R value to StableHLO string representation
 #' @param value The R value to convert
 #' @return A string representation suitable for StableHLO dense format
-r_to_stablehlo_string <- function(value) {
+r_to_stablehlo_string <- function(value, dtype) {
   if (is.logical(value)) {
     # Boolean data
     if (value) {
@@ -64,12 +64,10 @@ r_to_stablehlo_string <- function(value) {
     # Integer data
     return(as.character(value))
   } else if (is.numeric(value)) {
-    # Float data - format with scientific notation
-    value_str <- formatC(value, digits = 16, format = "e")
-    if (value >= 0) {
-      return(paste0("+", value_str))
+    if (dtype == "f32") {
+      format_double(value, precision = 32)
     } else {
-      return(value_str)
+      format_double(value, precision = 64)
     }
   } else {
     # Fallback

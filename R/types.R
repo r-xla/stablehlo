@@ -45,13 +45,11 @@ FloatType <- new_enum(
     #"f8E5M2FNUZ",
     #"f8E8M0FNU",
     #"bf16",
-    "f16",
+    #"f16",
     "f32",
     "f64"
   )
 )
-
-ComplexType <- new_class("ComplexType")
 
 TensorElementType <- new_class(
   name = "TensorElementType",
@@ -59,8 +57,7 @@ TensorElementType <- new_class(
     type = S7::new_union(
       BooleanType,
       IntegerType,
-      FloatType,
-      ComplexType
+      FloatType
     )
   )
 )
@@ -76,8 +73,7 @@ method(repr, TensorElementType) <- function(x) {
 element_type_union <- S7::new_union(
   BooleanType,
   IntegerType,
-  FloatType,
-  ComplexType
+  FloatType
 )
 
 method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
@@ -86,9 +82,6 @@ method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
   }
   if (inherits(e1, BooleanType)) {
     return(TRUE)
-  }
-  if (inherits(e1, ComplexType)) {
-    .NotYetImplemented()
   }
   # Float and Int are both enums
   e1@Value == e2@Value

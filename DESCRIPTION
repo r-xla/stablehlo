@@ -10,8 +10,8 @@ Authors@R: c(
 Description: The package allows to create stableHLO programs, including
     type inference. Using the {pjrt} package, these programs can be run
     on various accelerator, such as GPUs or TPUs.
-    The package is implemented in pure R without any C++
-    dependencies.
+    The package is implemented in R with some C++ components for
+    performance-critical operations.
 License: MIT + file LICENSE
 URL: https://r-xla.github.io/stablehlo/, https://github.com/r-xla/stablehlo
 BugReports: https://github.com/r-xla/stablehlo/issues
@@ -20,7 +20,8 @@ Imports:
     methods,
     rlang,
     withr,
-    S7
+    S7,
+    Rcpp
 Suggests:
     pjrt,
     testthat (>= 3.0.0)
@@ -31,6 +32,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Collate:
+    'RcppExports.R'
     'repr.R'
     'aaa.R'
     'list_of.R'
@@ -38,6 +40,7 @@ Collate:
     'enum.R'
     'types.R'
     'constant.R'
+    'format_double.R'
     'value_id.R'
     'func.R'
     'func_variable.R'
@@ -55,3 +58,6 @@ Collate:
     'tracer.R'
     'utils.R'
     'zzz.R'
+LinkingTo:
+    Rcpp
+Config/build/compilation-database: true

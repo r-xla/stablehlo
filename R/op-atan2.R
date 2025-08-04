@@ -7,7 +7,7 @@ infer_types_atan2 <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(lhs@type == rhs@type)
   stopifnot(lhs@type@dtype == rhs@type@dtype)
-  assert_one_of(lhs@type@dtype@type, FloatType, ComplexType)
+  assert_one_of(lhs@type@dtype@type, FloatType)
   ValueTypes(list(lhs))
 }
 

@@ -35,7 +35,21 @@ op_constant <- function(value, elt_type = NULL) {
   OpConstant(const_value)
 }
 
-hlo_constant <- function(value, elt_type = NULL) {
+hlo_scalar <- function(value, elt_type = NULL) {
+  if (!is.atomic(value) || length(value) != 1L) {
+    stop("hlo_scalar expects a single atomic value.")
+  }
+  impl_hlo_constant(value, elt_type = elt_type)
+}
+
+hlo_tensor <- function(value, elt_type = NULL) {
+  if (!is.array(value)) {
+    stop("hlo_tensor expects an R array.")
+  }
+  impl_hlo_constant(value, elt_type = elt_type)
+}
+
+impl_hlo_constant <- function(value, elt_type = NULL) {
   const_value <- r_to_constant(value, elt_type = elt_type)
   value_id <- ValueId()
   op <- OpConstant(
