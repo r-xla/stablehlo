@@ -34,12 +34,10 @@ TensorConstant <- new_class(
 )
 
 method(repr, TensorConstant) <- function(x) {
-  # Generate proper StableHLO dense format
   data <- x@data
   type <- x@type
 
   value_reprs <- if (inherits(type@dtype@type, FloatType)) {
-    # Convert data to StableHLO string representation
     format_double(
       data,
       precision = if (type@dtype@type@Value == "f32") 32 else 64
@@ -53,11 +51,8 @@ method(repr, TensorConstant) <- function(x) {
     dim(value_reprs) <- dim(data)
   }
 
-  if (!is.array(data)) {
-    return(paste0("dense<", value_reprs, "> : ", repr(type)))
-  }
-
   f <- function(x) {
+    if (length(dim(x)) == 1L & length(x) == 1L) return(x)
     if (length(dim(x)) == 1L || is.vector(x)) {
       paste0("[", paste(x, collapse = ", "), "]")
     } else {
@@ -101,7 +96,6 @@ method(r_to_constant, S7::class_logical) <- function(
   elt_type = NULL, # is ignored
   ...
 ) {
-  # For logical values, create a tensor constant
   shape <- Shape(
     if (is.array(value)) dim(value) else integer()
   )
@@ -110,7 +104,6 @@ method(r_to_constant, S7::class_logical) <- function(
   element_type_obj <- TensorElementType(type = stablehlo_type)
   tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
 
-  # Create TensorConstant with the data and type
   tensor_constant <- TensorConstant(
     data = value,
     type = tensor_type
@@ -124,8 +117,6 @@ method(r_to_constant, S7::class_numeric) <- function(
   elt_type = NULL,
   ...
 ) {
-  # For numeric values, create a tensor constant
-  # Use provided element_type or default to f32
   elt_type <- if (is.null(elt_type)) {
     FloatType("f32")
   } else {
