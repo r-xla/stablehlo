@@ -5,32 +5,10 @@ NULL
 TensorConstant <- new_class(
   "TensorConstant",
   properties = list(
+    # This can be anything as long as it implements r_to_constant
     data = S7::class_any,
     type = TensorType
-  ),
-  constructor = function(data, type) {
-    if (anyNA(data)) {
-      stop("NA values are not supported in constants.")
-    }
-    if (!is.array(data) && length(data) != 1) {
-      stop("data must ber an array or a vector of length 1.")
-    }
-    if (is.logical(data) & !inherits(type@dtype@type, BooleanType)) {
-      stop("For logical data, the type must be BooleanType.")
-    }
-    if (is.double(data) & !inherits(type@dtype@type, FloatType)) {
-      stop("For numeric data, the type must be FloatType.")
-    }
-    if (is.integer(data) & !inherits(type@dtype@type, IntegerType)) {
-      stop("For integer data, the type must be IntegerType.")
-    }
-    if (is.integer(data) && startsWith(type@dtype@type@Value, "ui")) {
-      if (!all(data >= 0)) {
-        stop("Unsigned integer data must be non-negative.")
-      }
-    }
-    S7::new_object(TensorConstant, data = data, type = type)
-  }
+  )
 )
 
 method(repr, TensorConstant) <- function(x) {
@@ -90,9 +68,6 @@ r_to_constant <- S7::new_generic(
   "r_to_constant",
   "value",
   function(value, elt_type = NULL, ...) {
-    if (!is.array(value) && length(value) != 1L) {
-      stop("Either provide an R array or a length 1 vector.")
-    }
     S7::S7_dispatch()
   }
 )
@@ -102,6 +77,12 @@ method(r_to_constant, S7::class_logical) <- function(
   elt_type = NULL, # is ignored
   ...
 ) {
+  if (!is.array(value) && length(value) != 1L) {
+    stop("Either provide an R array or a length 1 vector.")
+  }
+  if (!is.null(elt_type) && elt_type != "pred") {
+    stop("Invalid elt_type for logical")
+  }
   shape <- Shape(
     if (is.array(value)) dim(value) else integer()
   )
@@ -118,11 +99,17 @@ method(r_to_constant, S7::class_logical) <- function(
   return(Constant(value = tensor_constant))
 }
 
-method(r_to_constant, S7::class_numeric) <- function(
+method(r_to_constant, S7::class_double) <- function(
   value,
   elt_type = NULL,
   ...
 ) {
+  if (!is.array(value) && length(value) != 1L) {
+    stop("Either provide an R array or a length 1 vector.")
+  }
+  if (!is.null(elt_type) && !(elt_type %in% c("f32", "f64"))) {
+    stop("Invalid elt_type for double")
+  }
   elt_type <- if (is.null(elt_type)) {
     FloatType("f32")
   } else {
@@ -149,6 +136,13 @@ method(r_to_constant, S7::class_integer) <- function(
   elt_type = NULL,
   ...
 ) {
+  if (!is.array(value) && length(value) != 1L) {
+    stop("Either provide an R array or a length 1 vector.")
+  }
+  valid_types <- c("i8", "i16", "i32", "i64", "ui8", "ui16", "ui32", "ui64")
+  if (!is.null(elt_type) && !(elt_type %in% valid_types)) {
+    stop("Invalid elt_type for integer")
+  }
   elt_type <- if (is.null(elt_type)) {
     IntegerType("i32")
   } else {

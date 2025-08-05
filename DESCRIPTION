@@ -33,7 +33,6 @@ RoxygenNote: 7.3.2
 Collate:
     'RcppExports.R'
     'repr.R'
-    'aaa.R'
     'list_of.R'
     'shape.R'
     'enum.R'
