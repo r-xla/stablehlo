@@ -49,7 +49,7 @@ test_that("arrays", {
   expect_snapshot(repr(op_constant(array(1:6, dim = c(2, 3, 1)))))
 })
 
-test_that("compile arrays", {
+test_that("compile tensors", {
   skip_if_not_installed("pjrt")
   check <- function(x, dtype) {
     f <- hlo_return(hlo_tensor(x, dtype))
