@@ -54,7 +54,9 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">hlo_scalar</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'logical'</span></span>
-<span><span class="fu">hlo_scalar</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">hlo_scalar</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,14 +68,15 @@
 Value from which to create a constant.</p></dd>
 
 
+<dt id="arg-elt-type">elt_type<a class="anchor" aria-label="anchor" href="#arg-elt-type"></a></dt>
+<dd><p>(<code>character(1)</code>)<br>
+String for element type.
+Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>(any)<br>
 Additional arguments.</p></dd>
-
-
-<dt id="arg-dtype">dtype<a class="anchor" aria-label="anchor" href="#arg-dtype"></a></dt>
-<dd><p>(<code>character(1)</code>)<br>
-String for type; one of: f32, u,i8, 16, 32, 64, pred.</p></dd>
 
 </dl></div>
 
@@ -153,9 +156,7 @@ String for type; one of: f32, u,i8, 16, 32, 64, pred.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. @ Variants: chr [1:8] "i8" "i16" "i32" "i64" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ shape: &lt;stablehlo::Shape&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ dims: int(0) </span>
-<span class="r-in"><span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="fl">1L</span>, <span class="st">"i16"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in UseMethod("hlo_tensor"):</span> no applicable method for 'hlo_tensor' applied to an object of class "c('integer', 'numeric')"</span>
-<span class="r-in"><span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>, <span class="st">"f64"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">hlo_scalar</span><span class="op">(</span><span class="fl">1</span>, <span class="st">"f32"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;stablehlo::FuncVariable&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ value_id  : &lt;stablehlo::ValueId&gt; function (id)  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ id: chr "2"</span>
@@ -163,7 +164,81 @@ String for type; one of: f32, u,i8, 16, 32, 64, pred.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ type: &lt;stablehlo::TensorType&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ dtype: &lt;stablehlo::TensorElementType&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. @ type: &lt;stablehlo::FloatType&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. @ Value   : chr "f64"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. @ Value   : chr "f32"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. @ Variants: chr [1:2] "f32" "f64"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ shape: &lt;stablehlo::Shape&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. @ dims: int(0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ func      : &lt;stablehlo::Func&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ id     : &lt;stablehlo::FuncId&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ id: chr(0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ inputs : &lt;stablehlo::FuncInputs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ items: list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ outputs: &lt;stablehlo::FuncOutputs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ items:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. $ : &lt;stablehlo::FuncOutput&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ type: &lt;stablehlo::ValueType&gt; function (type, shape = NULL)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ type: &lt;stablehlo::TensorType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ dtype: &lt;stablehlo::TensorElementType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. @ type: &lt;stablehlo::FloatType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ Value   : chr "f32"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ Variants: chr [1:2] "f32" "f64"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ shape: &lt;stablehlo::Shape&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. @ dims: int(0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ body   : &lt;stablehlo::FuncBody&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ items:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. $ : &lt;stablehlo::OpConstant&gt; function (name = OpName(), inputs = OpInputs(), outputs = OpOutputs(), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     signature = OpSignature())  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ name     : &lt;stablehlo::OpName&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ mnemonic: &lt;stablehlo::OpMnemonic&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ Value   : chr "constant"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ Variants: chr [1:106] "return" "abs" "add" "after_all" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ inputs   : &lt;stablehlo::OpInputs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ values: &lt;stablehlo::OpInputValues&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items: list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ funcs : &lt;stablehlo::OpInputFuncs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items: list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ attrs : &lt;stablehlo::OpInputAttrs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. $ : &lt;stablehlo::OpInputAttr&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ name : &lt;stablehlo::OpInputAttrName&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ value: chr "value"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ value: &lt;stablehlo::OpInputAttrValue&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ value: &lt;stablehlo::Constant&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. @ value: &lt;stablehlo::TensorConstant&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. @ data: num 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. @ type: &lt;stablehlo::TensorType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. @ dtype: &lt;stablehlo::TensorElementType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. @ type: &lt;stablehlo::FloatType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. .. @ Value   : chr "f32"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. .. @ Variants: chr [1:2] "f32" "f64"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. @ shape: &lt;stablehlo::Shape&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. @ dims: int(0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ outputs  : &lt;stablehlo::OpOutputs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ items:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. $ : &lt;stablehlo::OpOutput&gt; function (value_id = ValueId())  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. ..  ..@ id: &lt;stablehlo::ValueId&gt; function (id)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ id: chr "2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ signature: &lt;stablehlo::OpSignature&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ input_types : &lt;stablehlo::ValueTypes&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items: list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ output_types: &lt;stablehlo::ValueTypes&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. $ : &lt;stablehlo::TensorType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ dtype: &lt;stablehlo::TensorElementType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ type: &lt;stablehlo::FloatType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. @ Value   : chr "f32"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. @ Variants: chr [1:2] "f32" "f64"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ shape: &lt;stablehlo::Shape&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ dims: int(0) </span>
+<span class="r-in"><span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>, <span class="st">"f32"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;stablehlo::FuncVariable&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ value_id  : &lt;stablehlo::ValueId&gt; function (id)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ id: chr "3"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ value_type: &lt;stablehlo::ValueType&gt; function (type, shape = NULL)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ type: &lt;stablehlo::TensorType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ dtype: &lt;stablehlo::TensorElementType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. @ type: &lt;stablehlo::FloatType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. @ Value   : chr "f32"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. @ Variants: chr [1:2] "f32" "f64"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ shape: &lt;stablehlo::Shape&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. @ dims: int [1:2] 1 4</span>
@@ -179,7 +254,7 @@ String for type; one of: f32, u,i8, 16, 32, 64, pred.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ type: &lt;stablehlo::TensorType&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ dtype: &lt;stablehlo::TensorElementType&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. @ type: &lt;stablehlo::FloatType&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ Value   : chr "f64"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ Value   : chr "f32"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ Variants: chr [1:2] "f32" "f64"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ shape: &lt;stablehlo::Shape&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. @ dims: int [1:2] 1 4</span>
@@ -208,7 +283,7 @@ String for type; one of: f32, u,i8, 16, 32, 64, pred.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. @ type: &lt;stablehlo::TensorType&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. @ dtype: &lt;stablehlo::TensorElementType&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. @ type: &lt;stablehlo::FloatType&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. .. @ Value   : chr "f64"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. .. @ Value   : chr "f32"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. .. @ Variants: chr [1:2] "f32" "f64"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. @ shape: &lt;stablehlo::Shape&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. @ dims: int [1:2] 1 4</span>
@@ -216,7 +291,7 @@ String for type; one of: f32, u,i8, 16, 32, 64, pred.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ items:List of 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. $ : &lt;stablehlo::OpOutput&gt; function (value_id = ValueId())  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. ..  ..@ id: &lt;stablehlo::ValueId&gt; function (id)  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ id: chr "2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ id: chr "3"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ signature: &lt;stablehlo::OpSignature&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ input_types : &lt;stablehlo::ValueTypes&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items: list()</span>
@@ -225,7 +300,7 @@ String for type; one of: f32, u,i8, 16, 32, 64, pred.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. $ : &lt;stablehlo::TensorType&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ dtype: &lt;stablehlo::TensorElementType&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ type: &lt;stablehlo::FloatType&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. @ Value   : chr "f64"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. @ Value   : chr "f32"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. @ Variants: chr [1:2] "f32" "f64"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ shape: &lt;stablehlo::Shape&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ dims: int [1:2] 1 4</span>
