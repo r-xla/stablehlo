@@ -4,27 +4,31 @@
 \alias{hlo_constant}
 \alias{hlo_scalar}
 \alias{hlo_scalar.logical}
+\alias{hlo_tensor}
 \title{Create a Constant}
 \usage{
 hlo_scalar(value, elt_type = NULL, ...)
 
 \method{hlo_scalar}{logical}(value, elt_type = NULL, ...)
+
+hlo_tensor(value, elt_type = NULL, ...)
 }
 \arguments{
 \item{value}{(any)\cr
 Value from which to create a constant.}
 
+\item{elt_type}{(\code{character(1)})\cr
+String for element type.
+Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.}
+
 \item{...}{(any)\cr
 Additional arguments.}
-
-\item{dtype}{(\code{character(1)})\cr
-String for type; one of: f{32}, {u,i}{8, 16, 32, 64}, pred.}
 }
 \description{
 Create either a scalar or tensor constant.
 }
 \examples{
 hlo_scalar(1L)
-hlo_tensor(1L, "i16")
-hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), "f64")
+hlo_scalar(1, "f32")
+hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), "f32")
 }

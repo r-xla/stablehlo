@@ -30,7 +30,6 @@ test_that("compile scalars", {
     )
   }
   check(3.14, "f32")
-  check(3.14, "f64")
   check(-8.23, "f32")
   check(-8.23, "f64")
   check(3L, "i32")
@@ -41,6 +40,8 @@ test_that("compile scalars", {
   check(3L, "ui16")
   check(TRUE, "pred")
   check(FALSE, "pred")
+  skip_if_metal()
+  check(3.14, "f64")
 })
 
 test_that("arrays", {

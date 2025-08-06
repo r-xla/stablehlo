@@ -40,16 +40,17 @@ op_constant <- function(value, elt_type = NULL) {
 #' Create either a scalar or tensor constant.
 #' @param value (any)\cr
 #'   Value from which to create a constant.
-#' @param dtype (`character(1)`)\cr
-#'   String for type; one of: f{32}, {u,i}{8, 16, 32, 64}, pred.
+#' @param elt_type (`character(1)`)\cr
+#'   String for element type.
+#'   Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.
 #' @param ... (any)\cr
 #'   Additional arguments.
 #' @name hlo_constant
 #' @export
 #' @examples
 #' hlo_scalar(1L)
-#' hlo_tensor(1L, "i16")
-#' hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), "f64")
+#' hlo_scalar(1, "f32")
+#' hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), "f32")
 hlo_scalar <- function(value, elt_type = NULL, ...) {
   UseMethod("hlo_scalar")
 }
@@ -83,6 +84,7 @@ hlo_scalar.integer <- function(value, elt_type = NULL, ...) {
   impl_hlo_constant(value, elt_type = elt_type)
 }
 
+#' @rdname hlo_constant
 #' @export
 hlo_tensor <- function(value, elt_type = NULL, ...) {
   UseMethod("hlo_tensor")
