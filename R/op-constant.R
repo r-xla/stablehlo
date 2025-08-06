@@ -64,6 +64,20 @@ hlo_scalar.logical <- function(value, elt_type = NULL, ...) {
 hlo_scalar.double <- hlo_scalar.logical
 
 #' @export
+hlo_scalar.integer <- function(value, elt_type = NULL, ...) {
+  if (length(value) != 1L) {
+    stop("hlo_scalar expects a single atomic value.")
+  }
+  if (anyNA(value)) {
+    stop("Data for constants must not contain NA values.")
+  }
+  if (grepl("^ui", elt_type) && any(value < 0L)) {
+    stop("Data for unsigned integer must be non-negative")
+  }
+  impl_hlo_constant(value, elt_type = elt_type)
+}
+
+#' @export
 hlo_tensor <- function(value, elt_type = NULL, ...) {
   UseMethod("hlo_tensor")
 }

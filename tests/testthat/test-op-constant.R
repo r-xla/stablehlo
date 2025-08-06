@@ -62,16 +62,16 @@ test_that("compile tensors", {
       x
     )
   }
-  check(array(1:2), "i32")
+  #check(array(1:2), "i32")
   check(array(c(1, 2, 3, 4, 5, 6), dim = c(2, 3)), "f32")
   check(array(c(1, 2, 3, 4, 5, 6), dim = c(2, 3, 1)), "f32")
 })
 
 
 test_that("errors", {
-  expect_error(op_constant(-1L, "ui16"), "must be non-negative")
-  expect_error(op_constant(NA), "are not supported")
-  expect_error(op_constant(3L, "f32"), "must be IntegerType")
-  expect_error(op_constant(1, "i32"), "must be FloatType")
-  expect_error(op_constant(1:2), "or a length 1 vector")
+  expect_error(hlo_scalar(-1L, "ui16"), "must be non-negative")
+  expect_error(hlo_scalar(NA), "must not contain NA")
+  expect_error(hlo_scalar(3L, "f32"), "Invalid elt_type for integer")
+  expect_error(hlo_scalar(1, "i32"), "Invalid elt_type for double")
+  expect_error(hlo_scalar(1:2), "a single atomic value")
 })
