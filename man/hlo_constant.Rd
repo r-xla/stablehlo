@@ -10,6 +10,16 @@ hlo_scalar(value, elt_type = NULL, ...)
 
 \method{hlo_scalar}{logical}(value, elt_type = NULL, ...)
 }
+\arguments{
+\item{value}{(any)\cr
+Value from which to create a constant.}
+
+\item{...}{(any)\cr
+Additional arguments.}
+
+\item{dtype}{(\code{character(1)})\cr
+String for type; one of: f{32}, {u,i}{8, 16, 32, 64}, pred.}
+}
 \description{
 Create either a scalar or tensor constant.
 }

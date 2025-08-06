@@ -38,6 +38,12 @@ op_constant <- function(value, elt_type = NULL) {
 #' @title Create a Constant
 #' @description
 #' Create either a scalar or tensor constant.
+#' @param value (any)\cr
+#'   Value from which to create a constant.
+#' @param dtype (`character(1)`)\cr
+#'   String for type; one of: f{32}, {u,i}{8, 16, 32, 64}, pred.
+#' @param ... (any)\cr
+#'   Additional arguments.
 #' @name hlo_constant
 #' @export
 #' @examples

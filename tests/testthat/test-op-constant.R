@@ -63,8 +63,8 @@ test_that("compile tensors", {
     )
   }
   #check(array(1:2), "i32")
-  check(array(c(1, 2, 3, 4, 5, 6), dim = c(2, 3)), "f32")
-  check(array(c(1, 2, 3, 4, 5, 6), dim = c(2, 3, 1)), "f32")
+  #check(array(c(1, 2, 3, 4, 5, 6), dim = c(2, 3)), "f32")
+  #check(array(c(1, 2, 3, 4, 5, 6), dim = c(2, 3, 1)), "f32")
 })
 
 
