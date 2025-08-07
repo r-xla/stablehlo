@@ -1,14 +1,19 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
-OpCbrt <- new_Op("OpCbrt", "cbrt")
+Cbrt <- new_Op("Cbrt", "cbrt")
 
-hlo_cbrt_impl <- hlo_fn(OpCbrt, infer_types_generic_uni)
+# binary ops
+infer_types_cbrt <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
 
-#' @templateVar mnemonic cbrt
-#' @templateVar params %s
-#' @templateVar attrs %s
-#' @template op
+hlo_cbrt_impl <- hlo_fn(Cbrt, infer_types_cbrt)
+
+#' @title element-wise cubic root
+#' @param lhs,rhs ([`FuncVariable`])
+#' @return [`FuncVariable`]
 #' @export
 hlo_cbrt <- function(operand) {
   hlo_cbrt_impl(values = list(operand = operand))

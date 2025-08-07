@@ -1,4 +1,5 @@
 test_that("basic tests", {
+  local_reset_id_gen()
   x <- hlo_input("x", "f32", shape = c(2L, 2L), "main")
   y <- hlo_cbrt(x)
   func <- hlo_return(y)
@@ -16,5 +17,5 @@ test_that("basic tests", {
   out_buf <- pjrt_execute(executable, x_buf)
   expect_class(out_buf, "PJRTBuffer")
   out <- as_array(out_buf)
-  expect_equal(out, x^(1 / 3))
+  expect_equal(out, x^(1/3))
 })
