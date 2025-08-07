@@ -10,3 +10,4 @@ stablehlo/
 src/Makevars
 README.html
 docs
+**/*op-transpose.R
