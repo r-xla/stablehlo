@@ -70,7 +70,7 @@ jobs:
       - name: Install pjrt
         run: |
           Rscript -e 'install.packages("remotes")'
-          Rscript -e 'remotes::install_github("r-xla/pjrt@fix-segfault")'
+          Rscript -e 'remotes::install_github("r-xla/pjrt@fix-segfault", force = TRUE)'
           Rscript -e 'pjrt:::plugin_version()'
 
 
