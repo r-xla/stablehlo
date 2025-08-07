@@ -1,14 +1,19 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
-OpCosine <- new_Op("OpCosine", "cosine")
+Cosine <- new_Op("Cosine", "cosine")
 
-hlo_cosine_impl <- hlo_fn(OpCosine, infer_types_generic_uni)
+# binary ops
+infer_types_cosine <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
 
-#' @templateVar mnemonic cosine
-#' @templateVar params %s
-#' @templateVar attrs %s
-#' @template op
+hlo_cosine_impl <- hlo_fn(Cosine, infer_types_cosine)
+
+#' @title element-wise ceil operation
+#' @param operand ([`FuncVariable`])
+#' @return [`FuncVariable`]
 #' @export
 hlo_cosine <- function(operand) {
   hlo_cosine_impl(values = list(operand = operand))
