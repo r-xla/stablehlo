@@ -10,4 +10,6 @@ stablehlo/
 src/Makevars
 README.html
 docs
-**/*op-transpose.R
+**/*op-transpose.*
+**/*op-cholesky.*
+**/*op-clamp.*
