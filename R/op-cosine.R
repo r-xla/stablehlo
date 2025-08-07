@@ -11,7 +11,7 @@ infer_types_cosine <- function(operand) {
 
 hlo_cosine_impl <- hlo_fn(Cosine, infer_types_cosine)
 
-#' @title element-wise ceil operation
+#' @title element-wise cosine operation
 #' @param operand ([`FuncVariable`])
 #' @return [`FuncVariable`]
 #' @export
