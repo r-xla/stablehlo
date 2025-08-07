@@ -1,14 +1,19 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
-OpCeil <- new_Op("OpCeil", "ceil")
+Ceil <- new_Op("Ceil", "ceil")
 
-hlo_ceil_impl <- hlo_fn(OpCeil, infer_types_generic_uni)
+# binary ops
+infer_types_ceil <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
 
-#' @templateVar mnemonic ceil
-#' @templateVar params %s
-#' @templateVar attrs %s
-#' @template op
+hlo_ceil_impl <- hlo_fn(Ceil, infer_types_ceil)
+
+#' @title element-wise ceil operation
+#' @param operand ([`FuncVariable`])
+#' @return [`FuncVariable`]
 #' @export
 hlo_ceil <- function(operand) {
   hlo_ceil_impl(values = list(operand = operand))
