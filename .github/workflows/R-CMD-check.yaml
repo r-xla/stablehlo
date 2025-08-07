@@ -71,7 +71,7 @@ jobs:
         run: |
           Rscript -e 'install.packages("remotes")'
           Rscript -e 'remotes::install_github("r-xla/pjrt@fix-segfault")'
-          Rscript -e 'pjrt:::plugin_version("cuda")'
+          Rscript -e 'pjrt:::plugin_version()'
 
 
       - uses: r-lib/actions/check-r-package@v2
