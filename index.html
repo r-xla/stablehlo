@@ -17,8 +17,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Write stableHLO programs">
-<meta name="description" content="The package allows to create stableHLO programs, including type inference. Using the {pjrt} package, these programs can be run on various accelerator, such as GPUs or TPUs. The package is mostly implemented in R, without any heavy C++ dependencies.">
-<meta property="og:description" content="The package allows to create stableHLO programs, including type inference. Using the {pjrt} package, these programs can be run on various accelerator, such as GPUs or TPUs. The package is mostly implemented in R, without any heavy C++ dependencies.">
+<meta name="description" content="The package offers a low level interface to create stableHLO programs. These programs can be compiled and run on different hardware backends (CPU, GPU, ...) using the {pjrt} package.">
+<meta property="og:description" content="The package offers a low level interface to create stableHLO programs. These programs can be compiled and run on different hardware backends (CPU, GPU, ...) using the {pjrt} package.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -65,101 +65,52 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The {stablehlo} R package provides a functional API to create <a href="https://github.com/openxla/stablehlo" class="external-link">stableHLO</a> programs. These programs can be executed using the R package <a href="https://github.com/r-xla/pjrt" class="external-link">pjrt</a>.</p>
+<p>The {stablehlo} R package provides a functional API to create <a href="https://openxla.org/stablehlo" class="external-link">stableHLO</a> programs. These programs can be executed using the R package <a href="https://github.com/r-xla/pjrt" class="external-link">pjrt</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of stablehlo from <a href="https://github.com/r-xla/stablehlo" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"r-xla/stablehlo"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"r-xla/stablehlo"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="what-can-it-do">What can it do?<a class="anchor" aria-label="anchor" href="#what-can-it-do"></a>
+<h2 id="quickstart">Quickstart<a class="anchor" aria-label="anchor" href="#quickstart"></a>
 </h2>
-<p>Using a functional API, we can build up programs using the <code>hlo_&lt;op&gt;</code> functions, which is the API through which the package should be used.</p>
-<p>To create a new function with a single argument, we can use the <code>hlo_input</code> function and specify its type as well as the function id. Below, we create two function inputs.</p>
+<p>Below, we create a function that takes two input arguments <code>x</code> and <code>y</code> of type <code>f32</code> and shape <code>(2, 2)</code> and adds them.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-xla.github.io/stablehlo/" class="external-link">stablehlo</a></span><span class="op">)</span></span>
-<span><span class="va">pp</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="reference/repr.html">repr</a></span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">func</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co"># we only need to specify the func_id for one of the inputs</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_input.html">hlo_input</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"f32"</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, func_id <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span></span>
-<span><span class="fu">pp</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="va">x</span></span>
+<span><span class="co">#&gt; Variable %x in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_input.html">hlo_input</a></span><span class="op">(</span><span class="st">"y"</span>, <span class="st">"f32"</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">pp</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
-<span><span class="co">#&gt; func.func @ (%y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_input.html">hlo_input</a></span><span class="op">(</span><span class="st">"y"</span>, <span class="st">"f32"</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, func_id <span class="op">=</span> <span class="st">"main"</span><span class="op">)</span></span>
+<span><span class="va">y</span></span>
+<span><span class="co">#&gt; Variable %y in:</span></span>
+<span><span class="co">#&gt; func.func @main (%y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
-<p>To create a function that takes <code>x</code> and <code>y</code> as arguments and adds them, we can pass the two variables to the <code><a href="reference/hlo_add.html">hlo_add()</a></code> function:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_add.html">hlo_add</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
-<span><span class="fu">pp</span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_add.html">hlo_add</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="va">z</span></span>
+<span><span class="co">#&gt; Variable %1 in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
 <span><span class="co">#&gt; %1 ="stablehlo.add"(%x, %y):(tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
-<p>We can continue building up the function, e.g. by calculating the absolute value of the result.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">z_abs</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_abs.html">hlo_abs</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
-<span><span class="fu">pp</span><span class="op">(</span><span class="va">z_abs</span><span class="op">)</span></span>
-<span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; %1 ="stablehlo.add"(%x, %y):(tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
-<span><span class="co">#&gt; %2 ="stablehlo.abs"(%1):(tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
-<p>Once we are done defining the function arguments and body, we use the <code>hlo_return</code> function.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_return.html">hlo_return</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">z_abs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_return.html">hlo_return</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
 <span><span class="va">f</span></span>
-<span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt; tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt; {</span></span>
+<span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt; tensor&lt;2x2xf32&gt; {</span></span>
 <span><span class="co">#&gt; %1 ="stablehlo.add"(%x, %y):(tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
-<span><span class="co">#&gt; %2 ="stablehlo.abs"(%1):(tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
-<span><span class="co">#&gt; "stablehlo.return"(%1, %2):(tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt; "func.return"(%1):(tensor&lt;2x2xf32&gt;) -&gt; ()</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="how-does-it-work">How does it work?<a class="anchor" aria-label="anchor" href="#how-does-it-work"></a>
+<h2 id="restrictions">Restrictions<a class="anchor" aria-label="anchor" href="#restrictions"></a>
 </h2>
-<p>The central class that underpins the API is the <code>FuncVariable</code> class. It has three fields, namely the name and type of the variable it “points to” and the function it belongs to.</p>
-<p>For example, for the <code>x</code> variable above, we have</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/repr.html">repr</a></span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">value_id</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "%x"</span></span>
-<span><span class="fu"><a href="reference/repr.html">repr</a></span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">value_type</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tensor&lt;2x2xf32&gt;"</span></span>
-<span><span class="fu"><a href="reference/repr.html">repr</a></span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">func</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "func.func @main (%x: tensor&lt;2x2xf32&gt;) -&gt;  {\n\n}"</span></span></code></pre></div>
-<p>When we combine two <code>FuncVariable</code>s, we:</p>
-<ol style="list-style-type: decimal">
-<li>Merge the underlying functions by combining their arguments and body:</li>
-<li>Add the new operation to the bottom of the body</li>
-<li>Create a (list of) <code>FuncVariable</code>(s) that represent the outputs of the applied operation.</li>
-</ol>
-<p>Note that all variable names but the argument names are considered an internal implementation detail.</p>
-<p>The <code><a href="reference/hlo_return.html">hlo_return()</a></code> function is special, because it does not return a <code>FuncVariable</code> but instead the function itself. This is, because after returning, a function can no longer be modified.</p>
-</div>
-<div class="section level2">
-<h2 id="what-it-cant-do">What it can’t do?<a class="anchor" aria-label="anchor" href="#what-it-cant-do"></a>
-</h2>
-<p>Initially, we will:</p>
+<p>The R package should be considered a <em>partial</em> implementation of the stableHLO specification. At least initially, it will:</p>
 <ul>
-<li>only support a subset of the available operations, see <a href="https://github.com/r-xla/stablehlo/issues/6" class="external-link">this issue</a> for the currently supported operations.</li>
-<li>not support quantization</li>
-<li>not support complex numbers</li>
+<li>only support a subset of the available operations, see <a href="https://github.com/r-xla/stablehlo/issues/6" class="external-link">this issue</a> for an overview.</li>
+<li>not support all datatypes, e.g. quantized types and complex numbers are not supported.</li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
-</h2>
-<p>The easiest way to contribute is to implement a new operator. See <a href="https://github.com/r-xla/stablehlo/issues/6" class="external-link">this issue</a> for those that are already implemented. The definitions of the primitive stableHLO operators can be found <a href="https://openxla.org/stablehlo/spec#ops" class="external-link">here</a>.</p>
-<p>To implement a new primitive, you need to create:</p>
-<ol style="list-style-type: decimal">
-<li>An <code>Op</code> class that represents the operator.</li>
-<li>Implement the type inference for the operator, i.e. for which inputs it produces which outputs.</li>
-<li>Implement the API function (<code>hlo_&lt;opname&gt;</code>) for the operation.</li>
-<li>Add the tests for the operation, see other ops for examples.</li>
-</ol>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
