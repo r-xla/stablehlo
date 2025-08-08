@@ -51,7 +51,6 @@ Collate:
     'op-and.R'
     'op-atan2.R'
     'op-constant.R'
-    'op-dot_general.R'
     'op-if.R'
     'op-return.R'
     'tracer.R'
