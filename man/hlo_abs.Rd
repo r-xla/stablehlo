@@ -2,16 +2,16 @@
 % Please edit documentation in R/op-abs.R
 \name{hlo_abs}
 \alias{hlo_abs}
-\title{Absolute value}
+\title{StableHLO Abs}
 \usage{
 hlo_abs(operand)
 }
 \arguments{
-\item{operand}{\code{\link{FuncVariable}}}
+\item{operand}{(\code{\link{FuncVariable}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}
+\code{\link{FuncVariable}}\cr
 }
 \description{
-Absolute value
+See \url{https://openxla.org/stablehlo/spec?hl=en#abs} for the semantics.
 }

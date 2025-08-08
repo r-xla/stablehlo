@@ -67,6 +67,14 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      # Not sure why this is needed, but otherwise we get an outdated pjrt package version
+      # Hopefully this resolves itself
+      - name: Install pjrt
+        run: |
+          Rscript -e 'install.packages("remotes")'
+          Rscript -e 'remotes::install_github("r-xla/pjrt", force = TRUE)'
+
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true

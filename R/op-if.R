@@ -4,10 +4,9 @@ NULL
 If <- new_Op("If", "if")
 
 infer_types_if <- function(pred, true_branch, false_branch) {
-  # Check that pred is a 0-dimensional tensor of type i1 (boolean)
   stopifnot(inherits(pred@type, TensorType))
   stopifnot(pred@type@dtype@type == BooleanType())
-  stopifnot(length(pred@type@shape@dims) == 0) # 0-dimensional tensor
+  stopifnot(length(pred@type@shape@dims) == 0)
 
   out_types1 <- ValueTypes(
     lapply(true_branch@outputs@items, function(x) {
@@ -25,6 +24,9 @@ infer_types_if <- function(pred, true_branch, false_branch) {
 
 hlo_if_impl <- hlo_fn(If, infer_types_if)
 
+#' @templateVar mnemonic if
+#' @template op
+#' @export
 hlo_if <- function(pred, true_branch, false_branch) {
   hlo_if_impl(
     values = list(pred = pred),

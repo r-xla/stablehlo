@@ -13,14 +13,8 @@ infer_types_and <- function(lhs, rhs) {
 
 hlo_and_impl <- hlo_fn(And, infer_types_and)
 
-#' @title And
-#'
-#' @description
-#' Logical AND operation.
-#'
-#' @param lhs,rhs ([`FuncVariable`])
-#'
-#' @return [`FuncVariable`]
+#' @templateVar mnemonic and
+#' @template op
 #' @export
 hlo_and <- function(lhs, rhs) {
   hlo_and_impl(values = list(lhs = lhs, rhs = rhs))

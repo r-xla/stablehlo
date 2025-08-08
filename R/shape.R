@@ -21,7 +21,6 @@ method(`==`, list(Shape, Shape)) <- function(e1, e2) {
 
 method(repr, Shape) <- function(x) {
   dims = x@dims
-  # R coerces on assignment
   dims[is.na(dims)] = "?"
   paste0(dims, collapse = "x")
 }

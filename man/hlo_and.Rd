@@ -2,16 +2,16 @@
 % Please edit documentation in R/op-and.R
 \name{hlo_and}
 \alias{hlo_and}
-\title{And}
+\title{StableHLO And}
 \usage{
 hlo_and(lhs, rhs)
 }
 \arguments{
-\item{lhs, rhs}{(\code{\link{FuncVariable}})}
+\item{lhs, }{rhs (\code{\link{FuncVariable}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}
+\code{\link{FuncVariable}}\cr
 }
 \description{
-Logical AND operation.
+See \url{https://openxla.org/stablehlo/spec?hl=en#and} for the semantics.
 }

@@ -9,9 +9,8 @@ infer_types_after_all <- function(...) {
 
 hlo_after_all_impl <- hlo_fn(AfterAll, infer_types_after_all)
 
-#' @title After all
-#' @param ... [`FuncVariable`]
-#' @return [`FuncVariable`]
+#' @templateVar mnemonic after_all
+#' @template op
 #' @export
 hlo_after_all <- function(...) {
   hlo_after_all_impl(values = list(...))
