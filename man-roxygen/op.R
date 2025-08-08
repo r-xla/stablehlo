@@ -3,5 +3,5 @@
 #' @title StableHLO <%= op@name %>
 #' @description
 #' See \url{https://openxla.org/stablehlo/spec?hl=en#<%= mnemonic %>} for the semantics.
-#' @param <%= paste(formalArgs(f), collapse = ", ") %> ([`FuncVariable`])\cr
+#' @param <%= paste(formalArgs(f), collapse = ",") %> ([`FuncVariable`])\cr
 #' @return [`FuncVariable`]\cr

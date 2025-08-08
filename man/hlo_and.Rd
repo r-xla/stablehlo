@@ -7,7 +7,7 @@
 hlo_and(lhs, rhs)
 }
 \arguments{
-\item{lhs, }{rhs (\code{\link{FuncVariable}})\cr}
+\item{lhs, rhs}{(\code{\link{FuncVariable}})\cr}
 }
 \value{
 \code{\link{FuncVariable}}\cr

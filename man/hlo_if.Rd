@@ -7,7 +7,7 @@
 hlo_if(pred, true_branch, false_branch)
 }
 \arguments{
-\item{pred, }{true_branch, false_branch (\code{\link{FuncVariable}})\cr}
+\item{pred, true_branch, false_branch}{(\code{\link{FuncVariable}})\cr}
 }
 \value{
 \code{\link{FuncVariable}}\cr
