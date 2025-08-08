@@ -14,3 +14,8 @@ test_that("c works", {
   f <- hlo_return(outs[[1]], outs[[2L]])
   expect_snapshot(f)
 })
+
+test_that("repr", {
+  x <- hlo_input("x", "f32", shape = c(2, 2), func_id = "main")
+  expect_snapshot(x)
+})

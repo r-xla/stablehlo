@@ -21,6 +21,12 @@ FuncVariable <- new_class(
   )
 )
 
+method(print, FuncVariable) <- function(x, ...) {
+  str <- repr(x@func)
+  cat(sprintf("Variable %s in:\n", repr(x@value_id)))
+  cat(sub(repr(x@value_id), cli::col_blue(repr(x@value_id)), str, fixed = TRUE))
+}
+
 merge_funcs <- function(funcs) {
   funcs = funcs[!duplicated(funcs)]
   if (!length(funcs)) {

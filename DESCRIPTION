@@ -7,15 +7,15 @@ Authors@R: c(
     person("Sebastian", "Fischer", , "seb.fischer@tutamail.com", role = "aut",
            comment = c(ORCID = "https://orcid.org/0000-0002-9609-3197"))
   )
-Description: The package allows to create stableHLO programs, including
-    type inference. Using the {pjrt} package, these programs can be run
-    on various accelerator, such as GPUs or TPUs.
-    The package is mostly implemented in R, without any heavy C++ dependencies.
+Description: The package offers a low level interface to create stableHLO programs.
+    These programs can be compiled and run on different hardware backends (CPU, GPU, ...)
+    using the {pjrt} package.
 License: MIT + file LICENSE
 URL: https://r-xla.github.io/stablehlo/, https://github.com/r-xla/stablehlo
 BugReports: https://github.com/r-xla/stablehlo/issues
 Imports:
     checkmate,
+    cli,
     methods,
     rlang,
     withr,
@@ -51,6 +51,7 @@ Collate:
     'op-and.R'
     'op-atan2.R'
     'op-constant.R'
+    'op-dot_general.R'
     'op-if.R'
     'op-return.R'
     'tracer.R'
