@@ -15,8 +15,10 @@
 <url><loc>/reference/hlo_add.html</loc></url>
 <url><loc>/reference/hlo_after_all.html</loc></url>
 <url><loc>/reference/hlo_and.html</loc></url>
+<url><loc>/reference/hlo_atan2.html</loc></url>
 <url><loc>/reference/hlo_closure.html</loc></url>
 <url><loc>/reference/hlo_constant.html</loc></url>
+<url><loc>/reference/hlo_if.html</loc></url>
 <url><loc>/reference/hlo_input.html</loc></url>
 <url><loc>/reference/hlo_return.html</loc></url>
 <url><loc>/reference/index.html</loc></url>

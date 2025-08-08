@@ -5,7 +5,9 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create a Constant — hlo_constant"><meta name="description" content="Create either a scalar or tensor constant."><meta property="og:description" content="Create either a scalar or tensor constant."></head><body>
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create a Constant — hlo_constant"><meta name="description" content="Create either a scalar or tensor constant.
+Note that strictly speaking, stableHLO 'scalars' are simply tensors with 0 dimensions."><meta property="og:description" content="Create either a scalar or tensor constant.
+Note that strictly speaking, stableHLO 'scalars' are simply tensors with 0 dimensions."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -41,12 +43,13 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Create a Constant</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/feat-constants/R/op-constant.R" class="external-link"><code>R/op-constant.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/constants/R/op-constant.R" class="external-link"><code>R/op-constant.R</code></a></small>
       <div class="d-none name"><code>hlo_constant.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Create either a scalar or tensor constant.</p>
+    <p>Create either a scalar or tensor constant.
+Note that strictly speaking, stableHLO 'scalars' are simply tensors with 0 dimensions.</p>
     </div>
 
     <div class="section level2">
@@ -56,6 +59,15 @@
 <span><span class="co"># S3 method for class 'logical'</span></span>
 <span><span class="fu">hlo_scalar</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'double'</span></span>
+<span><span class="fu">hlo_scalar</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'integer'</span></span>
+<span><span class="fu">hlo_scalar</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'array'</span></span>
 <span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -82,7 +94,7 @@ Additional arguments.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">hlo_scalar</span><span class="op">(</span><span class="fl">1L</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">hlo_scalar</span><span class="op">(</span><span class="fl">1L</span>, <span class="st">"i32"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;stablehlo::FuncVariable&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ value_id  : &lt;stablehlo::ValueId&gt; function (id)  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ id: chr "1"</span>
@@ -230,10 +242,76 @@ Additional arguments.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. @ Variants: chr [1:2] "f32" "f64"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ shape: &lt;stablehlo::Shape&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ dims: int(0) </span>
-<span class="r-in"><span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>, <span class="st">"f32"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">hlo_scalar</span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;stablehlo::FuncVariable&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ value_id  : &lt;stablehlo::ValueId&gt; function (id)  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ id: chr "3"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ value_type: &lt;stablehlo::ValueType&gt; function (type, shape = NULL)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ type: &lt;stablehlo::TensorType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ dtype: &lt;stablehlo::TensorElementType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. @ type: &lt;stablehlo::BooleanType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ shape: &lt;stablehlo::Shape&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. @ dims: int(0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ func      : &lt;stablehlo::Func&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ id     : &lt;stablehlo::FuncId&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ id: chr(0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ inputs : &lt;stablehlo::FuncInputs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ items: list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ outputs: &lt;stablehlo::FuncOutputs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ items:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. $ : &lt;stablehlo::FuncOutput&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ type: &lt;stablehlo::ValueType&gt; function (type, shape = NULL)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ type: &lt;stablehlo::TensorType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ dtype: &lt;stablehlo::TensorElementType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. @ type: &lt;stablehlo::BooleanType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ shape: &lt;stablehlo::Shape&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. @ dims: int(0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ body   : &lt;stablehlo::FuncBody&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ items:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. $ : &lt;stablehlo::OpConstant&gt; function (name = OpName(), inputs = OpInputs(), outputs = OpOutputs(), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     signature = OpSignature())  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ name     : &lt;stablehlo::OpName&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ mnemonic: &lt;stablehlo::OpMnemonic&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ Value   : chr "constant"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ Variants: chr [1:106] "return" "abs" "add" "after_all" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ inputs   : &lt;stablehlo::OpInputs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ values: &lt;stablehlo::OpInputValues&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items: list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ funcs : &lt;stablehlo::OpInputFuncs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items: list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ attrs : &lt;stablehlo::OpInputAttrs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. $ : &lt;stablehlo::OpInputAttr&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ name : &lt;stablehlo::OpInputAttrName&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ value: chr "value"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ value: &lt;stablehlo::OpInputAttrValue&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ value: &lt;stablehlo::Constant&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. @ value: &lt;stablehlo::TensorConstant&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. @ data: logi TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. @ type: &lt;stablehlo::TensorType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. @ dtype: &lt;stablehlo::TensorElementType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. @ type: &lt;stablehlo::BooleanType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. @ shape: &lt;stablehlo::Shape&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. .. .. .. .. @ dims: int(0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ outputs  : &lt;stablehlo::OpOutputs&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ items:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. $ : &lt;stablehlo::OpOutput&gt; function (value_id = ValueId())  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. ..  ..@ id: &lt;stablehlo::ValueId&gt; function (id)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ id: chr "3"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ signature: &lt;stablehlo::OpSignature&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ input_types : &lt;stablehlo::ValueTypes&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items: list()</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ output_types: &lt;stablehlo::ValueTypes&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items:List of 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. $ : &lt;stablehlo::TensorType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ dtype: &lt;stablehlo::TensorElementType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ type: &lt;stablehlo::BooleanType&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. ..  ..@ shape: &lt;stablehlo::Shape&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. .. @ dims: int(0) </span>
+<span class="r-in"><span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span>, <span class="st">"f32"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;stablehlo::FuncVariable&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  @ value_id  : &lt;stablehlo::ValueId&gt; function (id)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ id: chr "4"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  @ value_type: &lt;stablehlo::ValueType&gt; function (type, shape = NULL)  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. @ type: &lt;stablehlo::TensorType&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. @ dtype: &lt;stablehlo::TensorElementType&gt;</span>
@@ -291,7 +369,7 @@ Additional arguments.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ items:List of 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. $ : &lt;stablehlo::OpOutput&gt; function (value_id = ValueId())  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. ..  ..@ id: &lt;stablehlo::ValueId&gt; function (id)  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ id: chr "3"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. .. .. @ id: chr "4"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. ..  ..@ signature: &lt;stablehlo::OpSignature&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. @ input_types : &lt;stablehlo::ValueTypes&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  .. .. .. .. .. .. @ items: list()</span>
