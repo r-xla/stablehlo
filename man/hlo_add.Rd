@@ -2,16 +2,16 @@
 % Please edit documentation in R/op-add.R
 \name{hlo_add}
 \alias{hlo_add}
-\title{Addition}
+\title{StableHLO Add}
 \usage{
 hlo_add(lhs, rhs)
 }
 \arguments{
-\item{lhs, rhs}{(\code{\link{FuncVariable}})}
+\item{lhs, rhs}{(\code{\link{FuncVariable}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}
+\code{\link{FuncVariable}}\cr
 }
 \description{
-Addition
+See \url{https://openxla.org/stablehlo/spec?hl=en#add} for the semantics.
 }

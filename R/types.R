@@ -11,14 +11,14 @@ method(repr, BooleanType) <- function(x) {
 IntegerType <- new_enum(
   "IntegerType",
   c(
-    "si2",
-    "si4",
-    "si8",
-    "si16",
-    "si32",
-    "si64",
-    "ui2",
-    "ui4",
+    #"i2",
+    #"i4",
+    #"u2",
+    #"u4",
+    "i8",
+    "i16",
+    "i32",
+    "i64",
     "ui8",
     "ui16",
     "ui32",
@@ -33,25 +33,23 @@ method(repr, IntegerType) <- function(x) {
 FloatType <- new_enum(
   "FloatType",
   c(
-    "f4E2M1FN",
-    "f6E2M3FN",
-    "f6E3M2FN",
-    "f8E3M4",
-    "f8E4M3",
-    "f8E4M3FN",
-    "f8E4M3FNUZ",
-    "f8E4M3B11FNUZ",
-    "f8E5M2",
-    "f8E5M2FNUZ",
-    "f8E8M0FNU",
-    "bf16",
-    "f16",
+    #"f4E2M1FN",
+    #"f6E2M3FN",
+    #"f6E3M2FN",
+    #"f8E3M4",
+    #"f8E4M3",
+    #"f8E4M3FN",
+    #"f8E4M3FNUZ",
+    #"f8E4M3B11FNUZ",
+    #"f8E5M2",
+    #"f8E5M2FNUZ",
+    #"f8E8M0FNU",
+    #"bf16",
+    #"f16",
     "f32",
     "f64"
   )
 )
-
-ComplexType <- new_class("ComplexType")
 
 TensorElementType <- new_class(
   name = "TensorElementType",
@@ -59,8 +57,7 @@ TensorElementType <- new_class(
     type = S7::new_union(
       BooleanType,
       IntegerType,
-      FloatType,
-      ComplexType
+      FloatType
     )
   )
 )
@@ -76,8 +73,7 @@ method(repr, TensorElementType) <- function(x) {
 element_type_union <- S7::new_union(
   BooleanType,
   IntegerType,
-  FloatType,
-  ComplexType
+  FloatType
 )
 
 method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
@@ -87,10 +83,6 @@ method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
   if (inherits(e1, BooleanType)) {
     return(TRUE)
   }
-  if (inherits(e1, ComplexType)) {
-    .NotYetImplemented()
-  }
-  # Float and Int are both enums
   e1@Value == e2@Value
 }
 
@@ -173,7 +165,7 @@ make_value_type <- function(str, shape = NULL) {
     }
     elt_type <- if (str %in% c("bool", "i1")) {
       BooleanType()
-    } else if (grepl("^(s|u)i[0-9]+$", str)) {
+    } else if (grepl("^(i|ui)[0-9]+$", str)) {
       IntegerType(str)
     } else if (grepl("^f[0-9]+$", str)) {
       FloatType(str)

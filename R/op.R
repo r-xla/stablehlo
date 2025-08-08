@@ -213,7 +213,7 @@ method(repr, OpInputAttrs) <- function(x) {
   a <- vapply(x@items, repr, character(1)) |>
     paste(collapse = ", ")
 
-  paste0("{ ", a, " }")
+  paste0("{\n", a, "\n}")
 }
 
 OpInputs <- new_class(
