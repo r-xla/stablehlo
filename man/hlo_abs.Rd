@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-abs.R
 \name{hlo_abs}
 \alias{hlo_abs}
-\title{StableHLO Abs}
+\title{Abs Operator}
 \usage{
 hlo_abs(operand)
 }
@@ -13,5 +13,5 @@ hlo_abs(operand)
 \code{\link{FuncVariable}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec?hl=en#abs} for the semantics.
+See \url{https://openxla.org/stablehlo/spec#abs} for details.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-add.R
 \name{hlo_add}
 \alias{hlo_add}
-\title{StableHLO Add}
+\title{Add Operator}
 \usage{
 hlo_add(lhs, rhs)
 }
@@ -13,5 +13,5 @@ hlo_add(lhs, rhs)
 \code{\link{FuncVariable}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec?hl=en#add} for the semantics.
+See \url{https://openxla.org/stablehlo/spec#add} for details.
 }

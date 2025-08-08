@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-atan2.R
 \name{hlo_atan2}
 \alias{hlo_atan2}
-\title{StableHLO Atan2}
+\title{Atan2 Operator}
 \usage{
 hlo_atan2(lhs, rhs)
 }
@@ -13,5 +13,5 @@ hlo_atan2(lhs, rhs)
 \code{\link{FuncVariable}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec?hl=en#atan2} for the semantics.
+See \url{https://openxla.org/stablehlo/spec#atan2} for details.
 }

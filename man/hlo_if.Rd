@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-if.R
 \name{hlo_if}
 \alias{hlo_if}
-\title{StableHLO If}
+\title{If Operator}
 \usage{
 hlo_if(pred, true_branch, false_branch)
 }
@@ -13,5 +13,5 @@ hlo_if(pred, true_branch, false_branch)
 \code{\link{FuncVariable}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec?hl=en#if} for the semantics.
+See \url{https://openxla.org/stablehlo/spec#if} for details.
 }

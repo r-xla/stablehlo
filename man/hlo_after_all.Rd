@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-after_all.R
 \name{hlo_after_all}
 \alias{hlo_after_all}
-\title{StableHLO AfterAll}
+\title{AfterAll Operator}
 \usage{
 hlo_after_all(...)
 }
@@ -13,5 +13,5 @@ hlo_after_all(...)
 \code{\link{FuncVariable}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec?hl=en#after_all} for the semantics.
+See \url{https://openxla.org/stablehlo/spec#after_all} for details.
 }

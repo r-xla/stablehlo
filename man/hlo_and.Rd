@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-and.R
 \name{hlo_and}
 \alias{hlo_and}
-\title{StableHLO And}
+\title{And Operator}
 \usage{
 hlo_and(lhs, rhs)
 }
@@ -13,5 +13,5 @@ hlo_and(lhs, rhs)
 \code{\link{FuncVariable}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec?hl=en#and} for the semantics.
+See \url{https://openxla.org/stablehlo/spec#and} for details.
 }
