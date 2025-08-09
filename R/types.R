@@ -89,7 +89,7 @@ method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
 TensorType <- new_class(
   "TensorType",
   properties = list(
-    dtype = TensorElementType,
+    elt_type = TensorElementType,
     shape = Shape
   )
 )
@@ -99,7 +99,7 @@ method(repr, TensorType) <- function(x) {
     "tensor<",
     repr(x@shape),
     if (length(x@shape@dims) > 0) "x" else "",
-    repr(x@dtype),
+    repr(x@elt_type),
     ">"
   )
 }
@@ -135,6 +135,14 @@ ValueType <- new_class(
   }
 )
 
+method(dim, ValueType) <- function(x) {
+  dim(x@type)
+}
+
+method(dim, TensorType) <- function(x) {
+  x@shape@dims
+}
+
 method(`==`, list(ValueType, ValueType)) <- function(e1, e2) {
   e1@type == e2@type
 }
@@ -152,7 +160,7 @@ method(`==`, list(value_type_union, value_type_union)) <- function(e1, e2) {
     return(TRUE)
   }
   # TensorType
-  e1@dtype == e2@dtype && e1@shape == e2@shape
+  e1@elt_type == e2@elt_type && e1@shape == e2@shape
 }
 
 make_value_type <- function(str, shape = NULL) {

@@ -5,7 +5,7 @@ If <- new_Op("If", "if")
 
 infer_types_if <- function(pred, true_branch, false_branch) {
   stopifnot(inherits(pred@type, TensorType))
-  stopifnot(pred@type@dtype@type == BooleanType())
+  stopifnot(pred@type@elt_type@type == BooleanType())
   stopifnot(length(pred@type@shape@dims) == 0)
 
   out_types1 <- ValueTypes(
@@ -34,16 +34,5 @@ hlo_if <- function(pred, true_branch, false_branch) {
       true_branch = true_branch,
       false_branch = false_branch
     )
-  )
-}
-
-method(repr, If) <- function(x, toplevel = TRUE) {
-  paste0(
-    repr(x@outputs),
-    repr(x@name),
-    repr(x@inputs@values),
-    repr(x@inputs@funcs),
-    ":",
-    repr(x@signature)
   )
 }
