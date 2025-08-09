@@ -44,8 +44,8 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
         attr <- attrs[[i]]
         name <- names(attrs)[i]
         OpInputAttr(
-          name = OpInputAttrName(name),
-          value = OpInputAttrValue(attr)
+          name = name,
+          value = attr
         )
       })
     )

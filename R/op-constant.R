@@ -11,8 +11,8 @@ OpConstant <- S7::new_class(
         attrs = OpInputAttrs(
           list(
             OpInputAttr(
-              OpInputAttrName("value"),
-              OpInputAttrValue(value)
+              "value",
+              value
             )
           )
         )

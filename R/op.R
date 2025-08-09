@@ -165,38 +165,17 @@ method(repr, OpInputValues) <- function(x) {
   paste0(sapply(x@items, repr), collapse = ", ")
 }
 
-OpInputAttrName <- new_class(
-  "OpInputAttrName",
-  properties = list(
-    value = class_character
-  )
-)
-method(repr, OpInputAttrName) <- function(x) {
-  x@value
-}
-
-OpInputAttrValue <- new_class(
-  "OpInputAttrValue",
-  properties = list(
-    value = Constant
-  )
-)
-method(repr, OpInputAttrValue) <- function(x) {
-  repr(x@value)
-}
 
 OpInputAttr <- new_class(
   "OpInputAttr",
   properties = list(
-    # TODO(simplify): This should just be class_character
-    name = OpInputAttrName,
-    # TODO(simplify): This can just be Constant
-    value = OpInputAttrValue
+    name = class_character,
+    value = Constant
   )
 )
 method(repr, OpInputAttr) <- function(x) {
   paste0(
-    repr(x@name),
+    x@name,
     " = ",
     repr(x@value)
   )
