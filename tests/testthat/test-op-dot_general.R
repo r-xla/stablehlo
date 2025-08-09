@@ -7,7 +7,8 @@ test_that("matmul", {
     contracting_dims = list(1L, 0L)
   )
   f <- hlo_return(z)
-  cat(repr(f), "\n")
+
+  expect_snapshot(repr(f))
 
   pjrt_program <- pjrt_program(repr(f))
   exec <- pjrt_compile(pjrt_program)

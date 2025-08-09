@@ -1,7 +1,12 @@
 #' @include type_inference.R
 NULL
 
+# return_func is special and only used for hlo_return
 hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
+  # custom_attrs are attributes that are formatted in a special way, see e.g.
+  # hlo_dot_general for an example.
+  # In principle this can be any type
+  # You then need to implement repr for the Op class
   function(values, funcs = NULL, attrs = NULL, custom_attrs = NULL) {
     lapply(values, function(x) {
       if (!inherits(x, FuncVariable)) {
