@@ -53,7 +53,7 @@ hlo_dot_general <- function(
   lhs,
   rhs,
   contracting_dims,
-  batching_dims = list(integer(), integer())
+  batching_dims = NULL
 ) {
   dot_general_impl(
     values = list(
@@ -70,12 +70,19 @@ hlo_dot_general <- function(
 }
 
 method(repr, DotDimensionNumbers) <- function(x) {
-  sprintf(
-    "batching_dims = [%s] x [%s], contracting_dims = [%s] x [%s]",
-    paste0(x@batching_dims[[1L]], collapse = ", "),
-    paste0(x@batching_dims[[2L]], collapse = ", "),
+  str <- sprintf(
+    "contracting_dims = [%s] x [%s]",
     paste0(x@contracting_dims[[1L]], collapse = ", "),
     paste0(x@contracting_dims[[2L]], collapse = ", ")
+  )
+  if (is.null(x@batching_dims)) {
+    return(str)
+  }
+  sprintf(
+    "batching_dims = [%s] x [%s], %s",
+    paste0(x@batching_dims[[1L]], collapse = ", "),
+    paste0(x@batching_dims[[2L]], collapse = ", "),
+    str
   )
 }
 

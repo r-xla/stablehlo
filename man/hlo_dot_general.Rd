@@ -4,12 +4,7 @@
 \alias{hlo_dot_general}
 \title{DotGeneral Operator}
 \usage{
-hlo_dot_general(
-  lhs,
-  rhs,
-  contracting_dims,
-  batching_dims = list(integer(), integer())
-)
+hlo_dot_general(lhs, rhs, contracting_dims, batching_dims = NULL)
 }
 \arguments{
 \item{lhs, rhs, contracting_dims, batching_dims}{(\code{\link{FuncVariable}})\cr}

@@ -171,7 +171,7 @@ make_value_type <- function(str, shape = NULL) {
     if (is.null(shape)) {
       shape <- integer(0)
     }
-    elt_type <- if (str %in% c("bool", "i1")) {
+    elt_type <- if (str %in% c("pred", "i1")) {
       BooleanType()
     } else if (grepl("^(i|ui)[0-9]+$", str)) {
       IntegerType(str)
