@@ -41,7 +41,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Create a input to a function</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/main/R/hlo.R" class="external-link"><code>R/hlo.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/feat-dot-general/R/hlo.R" class="external-link"><code>R/hlo.R</code></a></small>
       <div class="d-none name"><code>hlo_input.Rd</code></div>
     </div>
 
@@ -87,7 +87,7 @@ The function id of the parameter.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">hlo_input</span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"f32"</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Variable %x in:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable <span style="color: #0000BB;">%x</span> in:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> func.func @ (<span style="color: #0000BB;">%x</span>: tensor&lt;2x2xf32&gt;) -&gt;  {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
@@ -98,13 +98,13 @@ The function id of the parameter.</p></dd>
 <span class="r-in"><span>  <span class="fu">hlo_input</span><span class="op">(</span><span class="st">"y"</span>, <span class="st">"f32"</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $x</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Variable %x in:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable <span style="color: #0000BB;">%x</span> in:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> func.func @ (<span style="color: #0000BB;">%x</span>: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Variable %y in:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable <span style="color: #0000BB;">%y</span> in:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> func.func @ (%x: tensor&lt;2x2xf32&gt;, <span style="color: #0000BB;">%y</span>: tensor&lt;2x2xf32&gt;) -&gt;  {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
