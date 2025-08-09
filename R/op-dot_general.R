@@ -5,7 +5,9 @@ infer_types_dot_general <- function(
   rhs,
   dot_dimension_numbers
 ) {
-  # TODO: Checks on lhs and rhs
+  stopifnot(inherits(lhs@type, TensorType))
+  stopifnot(inherits(rhs@type, TensorType))
+  stopifnot(lhs@type@elt_type == rhs@type@elt_type)
   dim_lhs <- dim(lhs)
   dim_rhs <- dim(rhs)
   contracting_dims <- dot_dimension_numbers@contracting_dims

@@ -1,3 +1,10 @@
+# matmul
+
+    Code
+      repr(f)
+    Output
+      [1] "func.func @main (%lhs: tensor<5x4xf32>, %rhs: tensor<4x3xf32>) -> tensor<5x3xf32> {\n%20 = stablehlo.dot_general %lhs, %rhs, contracting_dims = [1] x [0]: (tensor<5x4xf32>, tensor<4x3xf32>) -> (tensor<5x3xf32>)\n\"func.return\"(%20): (tensor<5x3xf32>) -> ()\n}\n"
+
 # batching_dims
 
     Code
