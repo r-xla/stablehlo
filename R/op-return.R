@@ -45,7 +45,7 @@ method(repr, Return) <- function(x, toplevel = TRUE) {
     repr(x@outputs),
     if (toplevel) "\"func.return\"" else "\"stablehlo.return\"",
     repr(x@inputs),
-    ":",
+    ": ",
     repr(x@signature)
   )
 }

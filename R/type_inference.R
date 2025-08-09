@@ -10,7 +10,7 @@ baseline_type <- function(x) {
 baseline_element_type <- function(x) {
   stopifnot(inherits(x, ValueType))
   if (is(x@type, TensorType)) {
-    return(x@type@dtype)
+    return(x@type@elt_type)
   } else if (is(x@type, TokenType)) {
     stop("Invalid input")
   } else {

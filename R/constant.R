@@ -6,6 +6,8 @@ TensorConstant <- new_class(
   "TensorConstant",
   properties = list(
     # This can be anything as long as it implements r_to_constant
+    # However, for static function inputs, we need to perform some checks on
+    # the data, so we need a way to convert it to an R array.
     data = S7::class_any,
     type = TensorType
   )
@@ -15,14 +17,14 @@ method(repr, TensorConstant) <- function(x) {
   data <- x@data
   type <- x@type
 
-  value_reprs <- if (inherits(type@dtype@type, FloatType)) {
+  value_reprs <- if (inherits(type@elt_type@type, FloatType)) {
     format_double(
       data,
-      precision = if (type@dtype@type@Value == "f32") 32 else 64
+      precision = if (type@elt_type@type@Value == "f32") 32 else 64
     )
-  } else if (inherits(type@dtype@type, IntegerType)) {
+  } else if (inherits(type@elt_type@type, IntegerType)) {
     as.character(data)
-  } else if (inherits(type@dtype@type, BooleanType)) {
+  } else if (inherits(type@elt_type@type, BooleanType)) {
     tolower(as.logical(data))
   }
 
@@ -87,7 +89,7 @@ method(r_to_constant, S7::class_logical) <- function(
 
   stablehlo_type <- BooleanType()
   element_type_obj <- TensorElementType(type = stablehlo_type)
-  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
+  tensor_type <- TensorType(elt_type = element_type_obj, shape = shape)
 
   tensor_constant <- TensorConstant(
     data = value,
@@ -119,7 +121,7 @@ method(r_to_constant, S7::class_double) <- function(
   )
 
   element_type_obj <- TensorElementType(type = elt_type)
-  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
+  tensor_type <- TensorType(elt_type = element_type_obj, shape = shape)
 
   tensor_constant <- TensorConstant(
     data = value,
@@ -152,7 +154,7 @@ method(r_to_constant, S7::class_integer) <- function(
   )
 
   element_type_obj <- TensorElementType(type = elt_type)
-  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
+  tensor_type <- TensorType(elt_type = element_type_obj, shape = shape)
 
   tensor_constant <- TensorConstant(
     data = value,
@@ -168,4 +170,8 @@ method(r_to_constant, S7::class_any) <- function(
   ...
 ) {
   stop("Unsupported type for r_to_constant: ", class(value)[1])
+}
+
+method(dim, TensorConstant) <- function(x) {
+  x@type@shape@dims
 }

@@ -2,7 +2,7 @@
 NULL
 
 hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
-  function(values, funcs = NULL, attrs = NULL) {
+  function(values, funcs = NULL, attrs = NULL, custom_attrs = NULL) {
     lapply(values, function(x) {
       if (!inherits(x, FuncVariable)) {
         stop("All arguments must be FuncVariables")
@@ -13,10 +13,21 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
         stop("All functions must be Func objects")
       }
     })
-    lapply(attrs, function(x) {
-      if (!inherits(x, Constant)) {
-        stop("All attributes must be Constant objects")
+
+    attrs <- lapply(attrs, function(x) {
+      err <- "All attributes must be FuncVariables with a single constant Op."
+      if (!inherits(x, FuncVariable)) {
+        stop(err)
       }
+      items <- x@func@body@items
+      if (length(items) != 1L) {
+        stop(err)
+      }
+
+      if (!inherits(items[[1L]], OpConstant)) {
+        stop(err)
+      }
+      items[[1]]@inputs@attrs@items[[1]]@value@value
     })
 
     op_input_funcs <- OpInputFuncs(
@@ -40,10 +51,12 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     )
 
     func <- merge_funcs(lapply(values, function(x) x@func))
+
     inputs <- OpInputs(
       OpInputValues(lapply(values, function(x) OpInputValue(x@value_id))),
       funcs = op_input_funcs,
-      attrs = op_input_attrs
+      attrs = op_input_attrs,
+      custom_attrs = custom_attrs %??% list()
     )
 
     infer_args <- lapply(values, function(x) x@value_type)
@@ -53,6 +66,9 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     }
     if (length(attrs) > 0L) {
       infer_args <- c(infer_args, attrs)
+    }
+    if (length(custom_attrs) > 0L) {
+      infer_args <- c(infer_args, custom_attrs)
     }
 
     output_types <- rlang::exec(type_inference, !!!infer_args)
