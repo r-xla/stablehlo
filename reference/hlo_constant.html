@@ -71,13 +71,13 @@ Note that strictly speaking, stableHLO 'scalars' are simply tensors with 0 dimen
 <span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'integer'</span></span>
-<span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, shape <span class="op">=</span> <span class="fu">get_dims</span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'logical'</span></span>
-<span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, shape <span class="op">=</span> <span class="fu">get_dims</span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'double'</span></span>
-<span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">hlo_tensor</span><span class="op">(</span><span class="va">value</span>, elt_type <span class="op">=</span> <span class="cn">NULL</span>, shape <span class="op">=</span> <span class="fu">get_dims</span><span class="op">(</span><span class="va">value</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -98,6 +98,12 @@ Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.</p></dd>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>(any)<br>
 Additional arguments.</p></dd>
+
+
+<dt id="arg-shape">shape<a class="anchor" aria-label="anchor" href="#arg-shape"></a></dt>
+<dd><p>(<code><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer()</a></code>)<br>
+Shape of the tensor.
+If not specified, the shape is inferred from the data.</p></dd>
 
 </dl></div>
 
