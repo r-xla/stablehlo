@@ -110,9 +110,17 @@ hlo_tensor.array <- function(value, elt_type = NULL, ...) {
 }
 
 #' @rdname hlo_constant
+#' @param shape (`integer()`)\cr
+#'   Shape of the tensor.
+#'   If not specified, the shape is inferred from the data.
 #' @export
-hlo_tensor.integer <- function(value, elt_type = NULL, ...) {
-  impl_hlo_constant(array(value), elt_type = elt_type, ...)
+hlo_tensor.integer <- function(
+  value,
+  elt_type = NULL,
+  shape = get_dims(value),
+  ...
+) {
+  impl_hlo_constant(array(value, dim = shape), elt_type = elt_type)
 }
 
 #' @rdname hlo_constant

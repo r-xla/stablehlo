@@ -25,11 +25,11 @@ hlo_tensor(value, elt_type = NULL, ...)
 
 \method{hlo_tensor}{array}(value, elt_type = NULL, ...)
 
-\method{hlo_tensor}{integer}(value, elt_type = NULL, ...)
+\method{hlo_tensor}{integer}(value, elt_type = NULL, shape = get_dims(value), ...)
 
-\method{hlo_tensor}{logical}(value, elt_type = NULL, ...)
+\method{hlo_tensor}{logical}(value, elt_type = NULL, shape = get_dims(value), ...)
 
-\method{hlo_tensor}{double}(value, elt_type = NULL, ...)
+\method{hlo_tensor}{double}(value, elt_type = NULL, shape = get_dims(value), ...)
 }
 \arguments{
 \item{value}{(any)\cr
@@ -41,6 +41,10 @@ Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.}
 
 \item{...}{(any)\cr
 Additional arguments.}
+
+\item{shape}{(\code{integer()})\cr
+Shape of the tensor.
+If not specified, the shape is inferred from the data.}
 }
 \description{
 Create either a scalar or tensor constant.

@@ -83,3 +83,9 @@ test_that("errors", {
   expect_error(hlo_scalar(1, "i32"), "Invalid elt_type for double")
   expect_error(hlo_scalar(1:2), "a single value")
 })
+
+test_that("specify shape in hlo_tensor", {
+  expect_snapshot(repr(hlo_tensor(1:2, shape = c(2, 1))@func))
+  expect_snapshot(repr(hlo_tensor(1:2)@func))
+  expect_snapshot(repr(hlo_tensor(1)@func))
+})

@@ -1,4 +1,5 @@
 test_that("matmul", {
+  local_reset_id_gen()
   lhs <- hlo_input("lhs", "f32", shape = c(5, 4), func_id = "main")
   rhs <- hlo_input("rhs", "f32", shape = c(4, 3))
   z <- hlo_dot_general(
@@ -7,8 +8,9 @@ test_that("matmul", {
     contracting_dims = list(1L, 0L)
   )
   f <- hlo_return(z)
-
   expect_snapshot(repr(f))
+
+  skip_if_not_installed("pjrt")
 
   pjrt_program <- pjrt_program(repr(f))
   exec <- pjrt_compile(pjrt_program)
@@ -27,6 +29,7 @@ test_that("matmul", {
 })
 
 test_that("batching_dims", {
+  local_reset_id_gen()
   skip_if_not_installed("pjrt")
   lhs <- hlo_input("lhs", "f32", shape = c(1, 5, 4), func_id = "main")
   rhs <- hlo_input("rhs", "f32", shape = c(4, 3, 1L))

@@ -103,3 +103,24 @@
     Output
       [1] "func.func @ () -> tensor<2x3x1xi32> {\n%16 = \"stablehlo.constant\" () {\nvalue = dense<[[[1], [3], [5]], [[2], [4], [6]]]> : tensor<2x3x1xi32>\n}: () -> (tensor<2x3x1xi32>)\n}\n"
 
+# specify shape in hlo_tensor
+
+    Code
+      repr(hlo_tensor(1:2, shape = c(2, 1))@func)
+    Output
+      [1] "func.func @ () -> tensor<2x1xi32> {\n%20 = \"stablehlo.constant\" () {\nvalue = dense<[[1], [2]]> : tensor<2x1xi32>\n}: () -> (tensor<2x1xi32>)\n}\n"
+
+---
+
+    Code
+      repr(hlo_tensor(1:2)@func)
+    Output
+      [1] "func.func @ () -> tensor<2xi32> {\n%21 = \"stablehlo.constant\" () {\nvalue = dense<[1, 2]> : tensor<2xi32>\n}: () -> (tensor<2xi32>)\n}\n"
+
+---
+
+    Code
+      repr(hlo_tensor(1)@func)
+    Output
+      [1] "func.func @ () -> tensor<1xf32> {\n%22 = \"stablehlo.constant\" () {\nvalue = dense<[1.00000000e+00]> : tensor<1xf32>\n}: () -> (tensor<1xf32>)\n}\n"
+
