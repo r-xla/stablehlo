@@ -111,12 +111,6 @@ hlo_tensor.array <- function(value, elt_type = NULL, ...) {
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.NULL <- function(value, elt_type = NULL, ...) {
-  impl_hlo_constant(array(0L), elt_type = elt_type, ...)
-}
-
-#' @rdname hlo_constant
-#' @export
 hlo_tensor.integer <- function(value, elt_type = NULL, ...) {
   impl_hlo_constant(array(value), elt_type = elt_type, ...)
 }

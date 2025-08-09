@@ -3,7 +3,6 @@
 S3method(hlo_scalar,double)
 S3method(hlo_scalar,integer)
 S3method(hlo_scalar,logical)
-S3method(hlo_tensor,"NULL")
 S3method(hlo_tensor,array)
 S3method(hlo_tensor,double)
 S3method(hlo_tensor,integer)

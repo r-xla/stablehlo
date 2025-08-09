@@ -41,6 +41,8 @@ test_that("batching_dims", {
 
   x1 <- array(as.double(1:20), dim = c(1, 5, 4))
   x2 <- array(as.double(1:12), dim = c(4, 3, 1L))
+  x1b <- pjrt_buffer(x1)
+  x2b <- pjrt_buffer(x2)
 
   pjrt_program <- pjrt_program(repr(f))
   exec <- pjrt_compile(pjrt_program)
@@ -50,7 +52,7 @@ test_that("batching_dims", {
   dim(x) <- c(1, 5, 3)
 
   expect_equal(
-    pjrt_execute(exec, pjrt_buffer(x1), pjrt_buffer(x2)),
+    pjrt_execute(exec, x1b, x2b),
     pjrt_buffer(x)
   )
 })

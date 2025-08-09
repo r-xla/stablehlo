@@ -8,7 +8,6 @@
 \alias{hlo_scalar.integer}
 \alias{hlo_tensor}
 \alias{hlo_tensor.array}
-\alias{hlo_tensor.NULL}
 \alias{hlo_tensor.integer}
 \alias{hlo_tensor.logical}
 \alias{hlo_tensor.double}
@@ -25,8 +24,6 @@ hlo_scalar(value, elt_type = NULL, ...)
 hlo_tensor(value, elt_type = NULL, ...)
 
 \method{hlo_tensor}{array}(value, elt_type = NULL, ...)
-
-\method{hlo_tensor}{`NULL`}(value, elt_type = NULL, ...)
 
 \method{hlo_tensor}{integer}(value, elt_type = NULL, ...)
 
