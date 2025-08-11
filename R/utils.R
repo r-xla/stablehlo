@@ -78,3 +78,13 @@ capitalize = function(str) {
   substr(str, 1L, 1L) = toupper(substr(str, 1L, 1L))
   str
 }
+
+get_dims <- function(data) {
+  if (is.null(dim(data))) {
+    if (length(data) == 1) {
+      return(1L)
+    }
+    return(length(data))
+  }
+  dim(data)
+}

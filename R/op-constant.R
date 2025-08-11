@@ -11,8 +11,8 @@ OpConstant <- S7::new_class(
         attrs = OpInputAttrs(
           list(
             OpInputAttr(
-              OpInputAttrName("value"),
-              OpInputAttrValue(value)
+              "value",
+              value
             )
           )
         )
@@ -25,10 +25,6 @@ OpConstant <- S7::new_class(
     )
   }
 )
-
-method(repr, OpConstant) <- function(x, ...) {
-  repr(S7::super(x, to = Op))
-}
 
 op_constant <- function(value, elt_type = NULL) {
   const_value <- r_to_constant(value, elt_type = elt_type)
@@ -54,6 +50,7 @@ op_constant <- function(value, elt_type = NULL) {
 #' hlo_scalar(TRUE)
 #' hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), "f32")
 hlo_scalar <- function(value, elt_type = NULL, ...) {
+  # Can't use S7 for now, because there is no array class
   UseMethod("hlo_scalar")
 }
 
@@ -82,7 +79,7 @@ hlo_scalar.integer <- function(value, elt_type = NULL, ...) {
   if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
-  if (grepl("^ui", elt_type) && any(value < 0L)) {
+  if (!is.null(elt_type) && grepl("^ui", elt_type) && any(value < 0L)) {
     stop("Data for unsigned integer must be non-negative")
   }
   impl_hlo_constant(value, elt_type = elt_type)
@@ -91,6 +88,7 @@ hlo_scalar.integer <- function(value, elt_type = NULL, ...) {
 #' @rdname hlo_constant
 #' @export
 hlo_tensor <- function(value, elt_type = NULL, ...) {
+  # Can't use S7 for now, because there is no array class
   UseMethod("hlo_tensor")
 }
 
@@ -100,11 +98,38 @@ hlo_tensor.array <- function(value, elt_type = NULL, ...) {
   if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
-  if (is.integer(value) && grepl(elt_type, "ui") && any(value < 0)) {
+  if (
+    is.integer(value) &&
+      !is.null(elt_type) &&
+      grepl(elt_type, "ui") &&
+      any(value < 0)
+  ) {
     stop("Data for unsigned integer must be non-negative")
   }
   impl_hlo_constant(value, elt_type = elt_type)
 }
+
+#' @rdname hlo_constant
+#' @param shape (`integer()`)\cr
+#'   Shape of the tensor.
+#'   If not specified, the shape is inferred from the data.
+#' @export
+hlo_tensor.integer <- function(
+  value,
+  elt_type = NULL,
+  shape = get_dims(value),
+  ...
+) {
+  impl_hlo_constant(array(value, dim = shape), elt_type = elt_type)
+}
+
+#' @rdname hlo_constant
+#' @export
+hlo_tensor.logical <- hlo_tensor.integer
+
+#' @rdname hlo_constant
+#' @export
+hlo_tensor.double <- hlo_tensor.integer
 
 
 impl_hlo_constant <- function(value, elt_type) {

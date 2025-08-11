@@ -23,7 +23,7 @@ FuncVariable <- new_class(
 
 method(print, FuncVariable) <- function(x, ...) {
   str <- repr(x@func)
-  cat(sprintf("Variable %s in:\n", repr(x@value_id)))
+  cat(sprintf("Variable %s in:\n", cli::col_blue(repr(x@value_id))))
   cat(sub(repr(x@value_id), cli::col_blue(repr(x@value_id)), str, fixed = TRUE))
 }
 
@@ -194,4 +194,8 @@ method(c, FuncVariable) <- function(...) {
   })
   names(out) <- vapply(variables, function(x) x@value_id@id, character(1L))
   out
+}
+
+method(dim, FuncVariable) <- function(x) {
+  dim(x@value_type@shape@dims)
 }

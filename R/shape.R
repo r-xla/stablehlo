@@ -9,8 +9,8 @@ Shape <- new_class(
   validator = function(self) {
     stopifnot(isTRUE(all.equal(self@dims, as.integer(self@dims))))
     dims = as.integer(self@dims)
-    if (any(dims[!is.na(dims)] <= 0L)) {
-      stop("Dimensions must be positive")
+    if (any(dims[!is.na(dims)] < 0L)) {
+      stop("Dimensions must be >= 0")
     }
   }
 )
