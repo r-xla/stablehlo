@@ -98,4 +98,3 @@ test_that("specify shape in hlo_tensor", {
   expect_snapshot(repr(hlo_tensor(1:2)@func))
   expect_snapshot(repr(hlo_tensor(1)@func))
 })
-

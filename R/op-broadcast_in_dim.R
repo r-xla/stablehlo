@@ -23,7 +23,9 @@ infer_types_broadcast_in_dim <- function(
 
   # (C3) 0 <= broadcast_dimensions < rank(result)
   if (length(result_dims) == 0L) {
-    cli::cli_abort("shape_out must specify the full result shape (rank > 0 for non-scalars)")
+    cli::cli_abort(
+      "shape_out must specify the full result shape (rank > 0 for non-scalars)"
+    )
   }
   if (any(bdims < 0L | bdims >= length(result_dims))) {
     cli::cli_abort("broadcast_dimensions must be within [0, rank(result))")
@@ -42,7 +44,9 @@ infer_types_broadcast_in_dim <- function(
 
     # Allow unknown dims (NA) to pass checks where appropriate
     if (op_dim != 1L && op_dim != res_dim) {
-      cli::cli_abort("Operand dimension and result dimension must match unless operand dim is 1")
+      cli::cli_abort(
+        "Operand dimension and result dimension must match unless operand dim is 1"
+      )
     }
   }
 
@@ -56,7 +60,10 @@ infer_types_broadcast_in_dim <- function(
   ))
 }
 
-hlo_broadcast_in_dim_impl <- hlo_fn(BroadcastInDim, infer_types_broadcast_in_dim)
+hlo_broadcast_in_dim_impl <- hlo_fn(
+  BroadcastInDim,
+  infer_types_broadcast_in_dim
+)
 
 #' @templateVar mnemonic broadcast_in_dim
 #' @template op
