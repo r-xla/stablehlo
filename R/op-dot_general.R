@@ -1,0 +1,102 @@
+DotGeneral <- new_Op("DotGeneral", "dot_general")
+
+infer_types_dot_general <- function(
+  lhs,
+  rhs,
+  dot_dimension_numbers
+) {
+  stopifnot(inherits(lhs@type, TensorType))
+  stopifnot(inherits(rhs@type, TensorType))
+  stopifnot(lhs@type@elt_type == rhs@type@elt_type)
+  dim_lhs <- dim(lhs)
+  dim_rhs <- dim(rhs)
+  contracting_dims <- dot_dimension_numbers@contracting_dims
+  batching_dims <- dot_dimension_numbers@batching_dims
+
+  # stableHLO uses 0-based indexing
+  dim_merge1 <- dim_lhs[contracting_dims[[1L]] + 1L]
+  dim_merge2 <- dim_rhs[contracting_dims[[2L]] + 1L]
+  dim_batch1 <- dim_lhs[batching_dims[[1L]] + 1L]
+  dim_batch2 <- dim_rhs[batching_dims[[2L]] + 1L]
+  if (!identical(dim_merge1, dim_merge2)) {
+    cli::cli_abort("Contracting dimensions must be the same")
+  }
+  if (!identical(dim_batch1, dim_batch2)) {
+    cli::cli_abort("Batching dimensions must be the same")
+  }
+
+  dim_lhs_remaining <- dim_lhs[
+    -(c(contracting_dims[[1L]], batching_dims[[1L]]) + 1L)
+  ]
+  dim_rhs_remaining <- dim_rhs[
+    -(c(contracting_dims[[2L]], batching_dims[[2L]]) + 1L)
+  ]
+  out_dim <- c(dim_batch1, dim_lhs_remaining, dim_rhs_remaining)
+
+  ValueTypes(list(
+    ValueType(TensorType(elt_type = lhs@type@elt_type, shape = Shape(out_dim)))
+  ))
+}
+
+DotDimensionNumbers <- new_class(
+  "DotDimensionNumbers",
+  properties = list(
+    contracting_dims = S7::class_any,
+    batching_dims = S7::class_any
+  )
+)
+
+dot_general_impl <- hlo_fn(DotGeneral, infer_types_dot_general)
+
+#' @templateVar mnemonic dot_general
+#' @template op
+#' @export
+hlo_dot_general <- function(
+  lhs,
+  rhs,
+  contracting_dims,
+  batching_dims = NULL
+) {
+  dot_general_impl(
+    values = list(
+      lhs = lhs,
+      rhs = rhs
+    ),
+    custom_attrs = list(
+      dot_dimension_numbers = DotDimensionNumbers(
+        contracting_dims = contracting_dims,
+        batching_dims = batching_dims
+      )
+    )
+  )
+}
+
+method(repr, DotDimensionNumbers) <- function(x) {
+  str <- sprintf(
+    "contracting_dims = [%s] x [%s]",
+    paste0(x@contracting_dims[[1L]], collapse = ", "),
+    paste0(x@contracting_dims[[2L]], collapse = ", ")
+  )
+  if (is.null(x@batching_dims)) {
+    return(str)
+  }
+  sprintf(
+    "batching_dims = [%s] x [%s], %s",
+    paste0(x@batching_dims[[1L]], collapse = ", "),
+    paste0(x@batching_dims[[2L]], collapse = ", "),
+    str
+  )
+}
+
+method(repr, DotGeneral) <- function(x) {
+  paste0(
+    repr(x@outputs),
+    " = ",
+    "stablehlo.dot_general ",
+    repr(x@inputs@values),
+    ", ",
+    repr(x@inputs@custom_attrs$dot_dimension_numbers),
+    ": ",
+    repr(x@signature)
+  )
+}

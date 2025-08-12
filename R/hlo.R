@@ -1,11 +1,13 @@
 #' @include type_inference.R
 NULL
 
+# return_func is special and only used for hlo_return
 hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
-  # values: list of FuncVariable
-  # funcs: list of Func
-  # attrs: list of Constant
-  function(values, funcs = NULL, attrs = NULL) {
+  # custom_attrs are attributes that are formatted in a special way, see e.g.
+  # hlo_dot_general for an example.
+  # In principle this can be any type
+  # You then need to implement repr for the Op class
+  function(values, funcs = NULL, attrs = NULL, custom_attrs = NULL) {
     lapply(values, function(x) {
       if (!inherits(x, FuncVariable)) {
         stop("All arguments must be FuncVariables")
@@ -16,10 +18,21 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
         stop("All functions must be Func objects")
       }
     })
-    lapply(attrs, function(x) {
-      if (!inherits(x, Constant)) {
-        stop("All attributes must be Constant objects")
+
+    attrs <- lapply(attrs, function(x) {
+      err <- "All attributes must be FuncVariables with a single constant Op."
+      if (!inherits(x, FuncVariable)) {
+        stop(err)
       }
+      items <- x@func@body@items
+      if (length(items) != 1L) {
+        stop(err)
+      }
+
+      if (!inherits(items[[1L]], OpConstant)) {
+        stop(err)
+      }
+      items[[1]]@inputs@attrs@items[[1]]@value@value
     })
 
     op_input_funcs <- OpInputFuncs(
@@ -36,17 +49,19 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
         attr <- attrs[[i]]
         name <- names(attrs)[i]
         OpInputAttr(
-          name = OpInputAttrName(name),
-          value = OpInputAttrValue(attr)
+          name = name,
+          value = attr
         )
       })
     )
 
     func <- merge_funcs(lapply(values, function(x) x@func))
+
     inputs <- OpInputs(
       OpInputValues(lapply(values, function(x) OpInputValue(x@value_id))),
       funcs = op_input_funcs,
-      attrs = op_input_attrs
+      attrs = op_input_attrs,
+      custom_attrs = custom_attrs %??% list()
     )
 
     infer_args <- lapply(values, function(x) x@value_type)
@@ -56,6 +71,9 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     }
     if (length(attrs) > 0L) {
       infer_args <- c(infer_args, attrs)
+    }
+    if (length(custom_attrs) > 0L) {
+      infer_args <- c(infer_args, custom_attrs)
     }
 
     output_types <- rlang::exec(type_inference, !!!infer_args)

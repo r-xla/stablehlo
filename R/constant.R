@@ -2,110 +2,176 @@
 #' @include repr.R
 NULL
 
-SignPart <- new_enum("SignPart", c("+", "-"))
-method(repr, SignPart) <- function(x) {
-  as.character(x@Value)
-}
-
-decimalDigit <- new_enum("DecimalDigit", 0:9)
-method(repr, decimalDigit) <- function(x) {
-  as.character(x@Value)
-}
-
-DecimalDigits <- new_list_of(
-  "DecimalDigits",
-  item_type = decimalDigit
-)
-method(repr, DecimalDigits) <- function(x) {
-  paste0(sapply(x@items, repr), collapse = "")
-}
-
-IntegerPart <- new_class("IntegerPart", parent = DecimalDigits)
-FractionalPart <- new_class("FractionalPart", parent = DecimalDigits)
-method(repr, FractionalPart) <- function(x) {
-  paste0(".", paste0(sapply(x@items, repr), collapse = ""))
-}
-
-ScientificPart <- new_class(
-  "ScientificPart",
-  properties = list(
-    exponent_sign = SignPart,
-    exponent_digits = DecimalDigits
-  )
-)
-
-method(repr, ScientificPart) <- function(x) {
-  paste0(
-    "E",
-    repr(x@exponent_sign),
-    repr(x@exponent_digits)
-  )
-}
-
-FloatLiteral <- new_class(
-  "FloatLiteral",
-  properties = list(
-    sign_part = SignPart,
-    integer_part = IntegerPart,
-    fractional_part = FractionalPart,
-    scientific_part = ScientificPart
-  )
-)
-
-method(repr, FloatLiteral) <- function(x) {
-  paste0(
-    repr(x@sign_part),
-    repr(x@integer_part),
-    repr(x@fractional_part),
-    repr(x@scientific_part)
-  )
-}
-
-ElementLiteral <- new_class(
-  "ElementLiteral",
-  properties = list(
-    literal = FloatLiteral
-  )
-)
-
-method(repr, ElementLiteral) <- function(x) {
-  repr(x@literal)
-}
-
-TensorLiteral <- new_class(
-  "TensorLiteral",
-  properties = list(
-    literal = ElementLiteral
-  )
-)
-
-method(repr, TensorLiteral) <- function(x) {
-  paste0("dense<", repr(x@literal), ">")
-}
-
 TensorConstant <- new_class(
   "TensorConstant",
   properties = list(
-    literal = TensorLiteral,
+    # This can be anything as long as it implements r_to_constant
+    # However, for static function inputs, we need to perform some checks on
+    # the data, so we need a way to convert it to an R array.
+    data = S7::class_any,
     type = TensorType
   )
 )
 
 method(repr, TensorConstant) <- function(x) {
-  paste0(
-    repr(x@literal),
-    " : ",
-    repr(x@type)
-  )
+  data <- x@data
+  type <- x@type
+
+  value_reprs <- if (inherits(type@elt_type@type, FloatType)) {
+    format_double(
+      data,
+      precision = if (type@elt_type@type@Value == "f32") 32 else 64
+    )
+  } else if (inherits(type@elt_type@type, IntegerType)) {
+    as.character(data)
+  } else if (inherits(type@elt_type@type, BooleanType)) {
+    tolower(as.logical(data))
+  }
+
+  if (!is.array(data)) {
+    return(paste0(
+      "dense<",
+      paste(value_reprs, collapse = ", "),
+      "> : ",
+      repr(type)
+    ))
+  }
+  dim(value_reprs) <- dim(data)
+
+  f <- function(x) {
+    if (length(dim(x)) == 1L || is.vector(x)) {
+      paste0("[", paste(x, collapse = ", "), "]")
+    } else {
+      paste0("[", paste(apply(x, 1, f), collapse = ", "), "]")
+    }
+  }
+
+  paste0("dense<", f(value_reprs), "> : ", repr(type))
 }
 
 Constant <- new_class(
   "Constant",
   properties = list(
-    value = TensorConstant
+    value = S7::new_union(
+      # It's not clear to me, why we need the other constant types (FloatType) as there are no real
+      # scalars
+      TensorConstant
+    )
   )
 )
 
 method(repr, Constant) <- function(x) {
   repr(x@value)
+}
+
+r_to_constant <- S7::new_generic(
+  "r_to_constant",
+  "value",
+  function(value, elt_type = NULL, ...) {
+    S7::S7_dispatch()
+  }
+)
+
+method(r_to_constant, S7::class_logical) <- function(
+  value,
+  elt_type = NULL, # is ignored
+  ...
+) {
+  if (!is.array(value) && length(value) != 1L) {
+    stop("Either provide an R array or a length 1 vector.")
+  }
+  if (!is.null(elt_type) && elt_type != "pred") {
+    stop("Invalid elt_type for logical")
+  }
+  shape <- Shape(
+    if (is.array(value)) dim(value) else integer()
+  )
+
+  stablehlo_type <- BooleanType()
+  element_type_obj <- TensorElementType(type = stablehlo_type)
+  tensor_type <- TensorType(elt_type = element_type_obj, shape = shape)
+
+  tensor_constant <- TensorConstant(
+    data = value,
+    type = tensor_type
+  )
+
+  return(Constant(value = tensor_constant))
+}
+
+method(r_to_constant, S7::class_double) <- function(
+  value,
+  elt_type = NULL,
+  ...
+) {
+  if (!is.array(value) && length(value) != 1L) {
+    stop("Either provide an R array or a length 1 vector.")
+  }
+  if (!is.null(elt_type) && !(elt_type %in% c("f32", "f64"))) {
+    stop("Invalid elt_type for double")
+  }
+  elt_type <- if (is.null(elt_type)) {
+    FloatType("f32")
+  } else {
+    string_to_type(elt_type)
+  }
+
+  shape <- Shape(
+    if (is.array(value)) dim(value) else integer()
+  )
+
+  element_type_obj <- TensorElementType(type = elt_type)
+  tensor_type <- TensorType(elt_type = element_type_obj, shape = shape)
+
+  tensor_constant <- TensorConstant(
+    data = value,
+    type = tensor_type
+  )
+
+  return(Constant(value = tensor_constant))
+}
+
+method(r_to_constant, S7::class_integer) <- function(
+  value,
+  elt_type = NULL,
+  ...
+) {
+  if (!is.array(value) && length(value) != 1L) {
+    stop("Either provide an R array or a length 1 vector.")
+  }
+  valid_types <- c("i8", "i16", "i32", "i64", "ui8", "ui16", "ui32", "ui64")
+  if (!is.null(elt_type) && !(elt_type %in% valid_types)) {
+    stop("Invalid elt_type for integer")
+  }
+  elt_type <- if (is.null(elt_type)) {
+    IntegerType("i32")
+  } else {
+    string_to_type(elt_type)
+  }
+
+  shape <- Shape(
+    if (is.array(value)) dim(value) else integer()
+  )
+
+  element_type_obj <- TensorElementType(type = elt_type)
+  tensor_type <- TensorType(elt_type = element_type_obj, shape = shape)
+
+  tensor_constant <- TensorConstant(
+    data = value,
+    type = tensor_type
+  )
+
+  return(Constant(value = tensor_constant))
+}
+
+method(r_to_constant, S7::class_any) <- function(
+  value,
+  elt_type = NULL,
+  ...
+) {
+  stop("Unsupported type for r_to_constant: ", class(value)[1])
+}
+
+method(dim, TensorConstant) <- function(x) {
+  x@type@shape@dims
 }

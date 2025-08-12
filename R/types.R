@@ -11,14 +11,14 @@ method(repr, BooleanType) <- function(x) {
 IntegerType <- new_enum(
   "IntegerType",
   c(
-    "si2",
-    "si4",
-    "si8",
-    "si16",
-    "si32",
-    "si64",
-    "ui2",
-    "ui4",
+    #"i2",
+    #"i4",
+    #"u2",
+    #"u4",
+    "i8",
+    "i16",
+    "i32",
+    "i64",
     "ui8",
     "ui16",
     "ui32",
@@ -33,25 +33,23 @@ method(repr, IntegerType) <- function(x) {
 FloatType <- new_enum(
   "FloatType",
   c(
-    "f4E2M1FN",
-    "f6E2M3FN",
-    "f6E3M2FN",
-    "f8E3M4",
-    "f8E4M3",
-    "f8E4M3FN",
-    "f8E4M3FNUZ",
-    "f8E4M3B11FNUZ",
-    "f8E5M2",
-    "f8E5M2FNUZ",
-    "f8E8M0FNU",
-    "bf16",
-    "f16",
+    #"f4E2M1FN",
+    #"f6E2M3FN",
+    #"f6E3M2FN",
+    #"f8E3M4",
+    #"f8E4M3",
+    #"f8E4M3FN",
+    #"f8E4M3FNUZ",
+    #"f8E4M3B11FNUZ",
+    #"f8E5M2",
+    #"f8E5M2FNUZ",
+    #"f8E8M0FNU",
+    #"bf16",
+    #"f16",
     "f32",
     "f64"
   )
 )
-
-ComplexType <- new_class("ComplexType")
 
 TensorElementType <- new_class(
   name = "TensorElementType",
@@ -59,8 +57,7 @@ TensorElementType <- new_class(
     type = S7::new_union(
       BooleanType,
       IntegerType,
-      FloatType,
-      ComplexType
+      FloatType
     )
   )
 )
@@ -76,8 +73,7 @@ method(repr, TensorElementType) <- function(x) {
 element_type_union <- S7::new_union(
   BooleanType,
   IntegerType,
-  FloatType,
-  ComplexType
+  FloatType
 )
 
 method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
@@ -87,17 +83,13 @@ method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
   if (inherits(e1, BooleanType)) {
     return(TRUE)
   }
-  if (inherits(e1, ComplexType)) {
-    .NotYetImplemented()
-  }
-  # Float and Int are both enums
   e1@Value == e2@Value
 }
 
 TensorType <- new_class(
   "TensorType",
   properties = list(
-    dtype = TensorElementType,
+    elt_type = TensorElementType,
     shape = Shape
   )
 )
@@ -107,7 +99,7 @@ method(repr, TensorType) <- function(x) {
     "tensor<",
     repr(x@shape),
     if (length(x@shape@dims) > 0) "x" else "",
-    repr(x@dtype),
+    repr(x@elt_type),
     ">"
   )
 }
@@ -143,6 +135,14 @@ ValueType <- new_class(
   }
 )
 
+method(dim, ValueType) <- function(x) {
+  dim(x@type)
+}
+
+method(dim, TensorType) <- function(x) {
+  x@shape@dims
+}
+
 method(`==`, list(ValueType, ValueType)) <- function(e1, e2) {
   e1@type == e2@type
 }
@@ -160,7 +160,7 @@ method(`==`, list(value_type_union, value_type_union)) <- function(e1, e2) {
     return(TRUE)
   }
   # TensorType
-  e1@dtype == e2@dtype && e1@shape == e2@shape
+  e1@elt_type == e2@elt_type && e1@shape == e2@shape
 }
 
 make_value_type <- function(str, shape = NULL) {
@@ -171,9 +171,9 @@ make_value_type <- function(str, shape = NULL) {
     if (is.null(shape)) {
       shape <- integer(0)
     }
-    elt_type <- if (str %in% c("bool", "i1")) {
+    elt_type <- if (str %in% c("pred", "i1")) {
       BooleanType()
-    } else if (grepl("^(s|u)i[0-9]+$", str)) {
+    } else if (grepl("^(i|ui)[0-9]+$", str)) {
       IntegerType(str)
     } else if (grepl("^f[0-9]+$", str)) {
       FloatType(str)

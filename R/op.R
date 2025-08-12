@@ -162,43 +162,20 @@ method(`==`, list(OpInputValue, OpInputValue)) <- function(e1, e2) {
 OpInputValues <- new_list_of("OpInputValues", OpInputValue)
 
 method(repr, OpInputValues) <- function(x) {
-  paste0(
-    "(",
-    paste0(sapply(x@items, repr), collapse = ", "),
-    ")"
-  )
+  paste0(sapply(x@items, repr), collapse = ", ")
 }
 
-OpInputAttrName <- new_class(
-  "OpInputAttrName",
-  properties = list(
-    value = class_character
-  )
-)
-method(repr, OpInputAttrName) <- function(x) {
-  x@value
-}
-
-OpInputAttrValue <- new_class(
-  "OpInputAttrValue",
-  properties = list(
-    value = Constant
-  )
-)
-method(repr, OpInputAttrValue) <- function(x) {
-  repr(x@value)
-}
 
 OpInputAttr <- new_class(
   "OpInputAttr",
   properties = list(
-    name = OpInputAttrName,
-    value = OpInputAttrValue
+    name = class_character,
+    value = Constant
   )
 )
 method(repr, OpInputAttr) <- function(x) {
   paste0(
-    repr(x@name),
+    x@name,
     " = ",
     repr(x@value)
   )
@@ -211,9 +188,9 @@ method(repr, OpInputAttrs) <- function(x) {
   }
 
   a <- vapply(x@items, repr, character(1)) |>
-    paste(collapse = ", ")
+    paste(collapse = ",\n")
 
-  paste0("{ ", a, " }")
+  paste0(" {\n", a, "\n}")
 }
 
 OpInputs <- new_class(
@@ -221,13 +198,17 @@ OpInputs <- new_class(
   properties = list(
     values = OpInputValues,
     funcs = OpInputFuncs,
-    attrs = OpInputAttrs
+    attrs = OpInputAttrs,
+    custom_attrs = S7::class_list
   )
 )
 
+
 method(repr, OpInputs) <- function(x) {
   paste0(
+    "(",
     repr(x@values),
+    ")",
     repr(x@funcs),
     repr(x@attrs)
   )
@@ -266,10 +247,7 @@ method(repr, OpOutputs) <- function(x) {
   if (length(x@items) == 0L) {
     return("")
   } else {
-    paste(
-      paste0(sapply(x@items, repr), collapse = ", "),
-      "="
-    )
+    paste0(sapply(x@items, repr), collapse = ", ")
   }
 }
 
@@ -327,9 +305,11 @@ new_Op <- function(classname, mnemonic) {
 method(repr, Op) <- function(x, toplevel = TRUE) {
   paste0(
     repr(x@outputs),
+    " = ",
     repr(x@name),
+    " ",
     repr(x@inputs),
-    ":",
+    ": ",
     repr(x@signature)
   )
 }

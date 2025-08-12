@@ -2,57 +2,32 @@
 #' @include types.R
 NULL
 
-# Create a Constant from R value
-r_to_constant <- function(value) {
-  if (is.numeric(value)) {
-    # For numeric values, create a FloatLiteral
-    x <- formatC(abs(value), digits = 16, format = "e")
-
-    parts <- strcapture(
-      "([0-9]+)\\.([0-9]+)e([+-])([0-9]+)",
-      x,
-      proto = list(
-        integral = character(),
-        fractional = character(),
-        exponent_sign = character(),
-        exponent_digits = character()
-      )
-    )
-
-    charpart_to_digit <- \(x) {
-      x |> strsplit("") |> unlist() |> as.integer() |> lapply(decimalDigit)
-    }
-
-    integer_part <- charpart_to_digit(parts$integral) |> IntegerPart()
-    fractional_part <- charpart_to_digit(parts$fractional) |> FractionalPart()
-    exponent_sign <- SignPart(parts$exponent_sign)
-    exponent_digits <- charpart_to_digit(parts$exponent_digits) |> IntegerPart()
-
-    f <- FloatLiteral(
-      sign_part = SignPart(if (value >= 0) "+" else "-"),
-      integer_part = integer_part,
-      fractional_part = fractional_part,
-      scientific_part = ScientificPart(
-        exponent_sign = exponent_sign,
-        exponent_digits = exponent_digits
-      )
-    )
-
-    element_literal <- ElementLiteral(f)
+string_to_type <- function(element_type) {
+  if (is.null(element_type)) {
+    return(NULL)
   }
 
-  shape <- Shape(dim(value) %||% length(value))
+  switch(
+    element_type,
+    "pred" = BooleanType(),
 
-  element_type <- TensorElementType(type = FloatType("f32"))
-  tensor_type <- TensorType(dtype = element_type, shape = shape)
-  tensor_literal <- TensorLiteral(literal = element_literal)
-  tensor_constant <- TensorConstant(
-    literal = tensor_literal,
-    type = tensor_type
+    "i8" = IntegerType("i8"),
+    "i16" = IntegerType("i16"),
+    "i32" = IntegerType("i32"),
+    "i64" = IntegerType("i64"),
+
+    "ui8" = IntegerType("ui8"),
+    "ui16" = IntegerType("ui16"),
+    "ui32" = IntegerType("ui32"),
+    "ui64" = IntegerType("ui64"),
+
+    "f32" = FloatType("f32"),
+    "f64" = FloatType("f64"),
+
+    stop("Unsupported element type: ", element_type)
   )
-
-  Constant(value = tensor_constant)
 }
+
 
 assert_one_of <- function(x, ...) {
   for (type in list(...)) {
@@ -63,7 +38,53 @@ assert_one_of <- function(x, ...) {
   stop("Invalid type")
 }
 
-# takes in a body and returns the output types of the last instruction
 output_types_from_body <- function(body) {
   body@items[[length(body@items)]]@inputs@values
+}
+
+#' @title Represent an R value in stableHLO
+#' @description
+#' Convert R value to StableHLO string representation
+#' @param value (any)\cr
+#'  The R value to convert
+#' @param elt_type (`character(1)`)\cr
+#'   The element type to use.
+#' @return `character(1)`
+r_to_stablehlo_string <- function(value, elt_type) {
+  if (is.logical(value)) {
+    if (value) {
+      return("true")
+    } else {
+      return("false")
+    }
+  } else if (is.integer(value)) {
+    return(as.character(value))
+  } else if (is.numeric(value)) {
+    if (elt_type == "f32") {
+      format_double(value, precision = 32)
+    } else {
+      format_double(value, precision = 64)
+    }
+  } else {
+    return(as.character(value))
+  }
+}
+
+snake_to_camel <- function(str) {
+  paste(capitalize(strsplit(str, "_")[[1]]), collapse = "")
+}
+
+capitalize = function(str) {
+  substr(str, 1L, 1L) = toupper(substr(str, 1L, 1L))
+  str
+}
+
+get_dims <- function(data) {
+  if (is.null(dim(data))) {
+    if (length(data) == 1) {
+      return(1L)
+    }
+    return(length(data))
+  }
+  dim(data)
 }

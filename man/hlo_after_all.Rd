@@ -2,16 +2,16 @@
 % Please edit documentation in R/op-after_all.R
 \name{hlo_after_all}
 \alias{hlo_after_all}
-\title{After all}
+\title{AfterAll Operator}
 \usage{
 hlo_after_all(...)
 }
 \arguments{
-\item{...}{\code{\link{FuncVariable}}}
+\item{...}{(\code{\link{FuncVariable}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}
+\code{\link{FuncVariable}}\cr
 }
 \description{
-After all
+See \url{https://openxla.org/stablehlo/spec#after_all} for details.
 }

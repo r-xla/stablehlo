@@ -15,3 +15,5 @@ SPEC.md
 ^pkgdown$
 ^README.html$
 ^codecov.yaml$
+^attic$
+^man-roxygen$

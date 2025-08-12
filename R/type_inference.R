@@ -9,9 +9,8 @@ baseline_type <- function(x) {
 # shortcut for element_type(baseline_type(x))
 baseline_element_type <- function(x) {
   stopifnot(inherits(x, ValueType))
-  # TODO: QuantizedTensorType
   if (is(x@type, TensorType)) {
-    return(x@type@dtype)
+    return(x@type@elt_type)
   } else if (is(x@type, TokenType)) {
     stop("Invalid input")
   } else {
