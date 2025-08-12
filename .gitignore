@@ -12,4 +12,3 @@ README.html
 docs
 **/*op-transpose.*
 **/*op-cholesky.*
-**/*op-clamp.*

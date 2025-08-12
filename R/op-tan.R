@@ -1,13 +1,17 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
-OpTan <- new_Op("OpTan", "tan")
+Tan <- new_Op("Tan", "tan")
 
-hlo_tan_impl <- hlo_fn(OpTan, infer_types_generic_uni)
+# binary ops
+infer_types_tan <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
+
+hlo_tan_impl <- hlo_fn(Tan, infer_types_tan)
 
 #' @templateVar mnemonic tan
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_tan <- function(operand) {

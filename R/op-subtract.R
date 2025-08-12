@@ -1,13 +1,21 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
-OpSubtract <- new_Op("OpSubtract", "subtract")
+Subtract <- new_Op("Subtract", "subtract")
 
-hlo_subtract_impl <- hlo_fn(OpSubtract, infer_types_generic_biv)
+# binary ops
+infer_types_subtract <- function(lhs, rhs) {
+  stopifnot(inherits(lhs@type, TensorType))
+  stopifnot(inherits(rhs@type, TensorType))
+  #stopifnot(identical(lhs@type@dtype, rhs@type@dtype))
+  stopifnot(lhs@type == rhs@type)
+
+  ValueTypes(list(lhs))
+}
+
+hlo_subtract_impl <- hlo_fn(Subtract, infer_types_subtract)
 
 #' @templateVar mnemonic subtract
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_subtract <- function(lhs, rhs) {

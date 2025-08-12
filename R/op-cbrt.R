@@ -11,9 +11,8 @@ infer_types_cbrt <- function(operand) {
 
 hlo_cbrt_impl <- hlo_fn(Cbrt, infer_types_cbrt)
 
-#' @title element-wise cubic root
-#' @param operand ([`FuncVariable`])
-#' @return [`FuncVariable`]
+#' @templateVar mnemonic cbrt
+#' @template op
 #' @export
 hlo_cbrt <- function(operand) {
   hlo_cbrt_impl(values = list(operand = operand))

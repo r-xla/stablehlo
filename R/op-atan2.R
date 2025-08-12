@@ -1,13 +1,19 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
-OpAtan2 <- new_Op("OpAtan2", "atan2")
+Atan2 <- new_Op("Atan2", "atan2")
 
-hlo_atan2_impl <- hlo_fn(OpAtan2, infer_types_generic_biv)
+infer_types_atan2 <- function(lhs, rhs) {
+  stopifnot(inherits(lhs@type, TensorType))
+  stopifnot(lhs@type == rhs@type)
+  stopifnot(lhs@type@dtype == rhs@type@dtype)
+  assert_one_of(lhs@type@dtype@type, FloatType, ComplexType)
+  ValueTypes(list(lhs))
+}
+
+hlo_atan2_impl <- hlo_fn(Atan2, infer_types_atan2)
 
 #' @templateVar mnemonic atan2
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_atan2 <- function(lhs, rhs) {
