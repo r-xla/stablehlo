@@ -51,6 +51,7 @@ Collate:
     'op-after_all.R'
     'op-and.R'
     'op-atan2.R'
+    'op-broadcast_in_dim.R'
     'op-constant.R'
     'op-dot_general.R'
     'op-if.R'
