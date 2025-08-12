@@ -169,3 +169,15 @@ impl_hlo_constant <- function(value, elt_type) {
 infer_types_constant <- function(value) {
   ValueTypes(list(value@value@type))
 }
+
+method(repr, OpConstant) <- function(x) {
+  paste0(
+    repr(x@outputs),
+    " = ",
+    repr(x@name),
+    " ",
+    repr(x@inputs, simplify_dense = FALSE),
+    ": ",
+    repr(x@signature)
+  )
+}
