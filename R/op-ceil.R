@@ -11,9 +11,8 @@ infer_types_ceil <- function(operand) {
 
 hlo_ceil_impl <- hlo_fn(Ceil, infer_types_ceil)
 
-#' @title element-wise ceil operation
-#' @param operand ([`FuncVariable`])
-#' @return [`FuncVariable`]
+#' @templateVar mnemonic ceil
+#' @template op
 #' @export
 hlo_ceil <- function(operand) {
   hlo_ceil_impl(values = list(operand = operand))

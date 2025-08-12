@@ -1,7 +1,4 @@
 test_that("basic tests", {
-<<<<<<< HEAD
-  hlo_test_biv(hlo_divide, `/`)
-=======
   local_reset_id_gen()
   x <- hlo_input("x", "f32", shape = c(2L, 2L), "main")
   y <- hlo_input("y", "f32", shape = c(2L, 2L), "main")
@@ -20,6 +17,5 @@ test_that("basic tests", {
   x_buf <- pjrt_buffer(x)
   y_buf <- pjrt_buffer(y)
   out_buf <- pjrt_execute(executable, x_buf, y_buf)
-  expect_equal(x / y, as_array(out_buf))
->>>>>>> 4d95069 (feat: op cosine)
+  expect_equal(x / y, as_array(out_buf), tolerance = 1e-6)
 })

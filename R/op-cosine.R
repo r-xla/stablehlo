@@ -11,9 +11,8 @@ infer_types_cosine <- function(operand) {
 
 hlo_cosine_impl <- hlo_fn(Cosine, infer_types_cosine)
 
-#' @title element-wise cosine operation
-#' @param operand ([`FuncVariable`])
-#' @return [`FuncVariable`]
+#' @templateVar mnemonic cosine
+#' @template op
 #' @export
 hlo_cosine <- function(operand) {
   hlo_cosine_impl(values = list(operand = operand))

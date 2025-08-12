@@ -1,7 +1,7 @@
 #' @include op.R hlo.R
 NULL
 
-OpClamp <- new_Op("OpClamp", "clamp")
+Clamp <- new_Op("Clamp", "clamp")
 
 # binary ops
 infer_types_clamp <- function(Min, operand, Max) {
@@ -13,7 +13,7 @@ infer_types_clamp <- function(Min, operand, Max) {
   ValueTypes(list(operand))
 }
 
-hlo_clamp_impl <- hlo_fn(OpClamp, infer_types_clamp)
+hlo_clamp_impl <- hlo_fn(Clamp, infer_types_clamp)
 
 #' @templateVar mnemonic clamp
 #' @template op

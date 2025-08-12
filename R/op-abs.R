@@ -1,13 +1,16 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
-OpAbs <- new_Op("OpAbs", "abs")
+Abs <- new_Op("Abs", "abs")
 
-hlo_abs_impl <- hlo_fn(OpAbs, infer_types_generic_uni)
+infer_types_abs <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
+
+hlo_abs_impl <- hlo_fn(Abs, infer_types_abs)
 
 #' @templateVar mnemonic abs
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_abs <- function(operand) {
