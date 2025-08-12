@@ -14,9 +14,8 @@ infer_types_divide <- function(lhs, rhs) {
 
 hlo_divide_impl <- hlo_fn(Divide, infer_types_divide)
 
-#' @title Division
-#' @param lhs,rhs ([`FuncVariable`])
-#' @return [`FuncVariable`]
+#' @templateVar mnemonic divide
+#' @template op
 #' @export
 hlo_divide <- function(lhs, rhs) {
   hlo_divide_impl(values = list(lhs = lhs, rhs = rhs))

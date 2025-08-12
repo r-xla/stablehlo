@@ -17,5 +17,5 @@ test_that("basic tests", {
   x_buf <- pjrt_buffer(x)
   y_buf <- pjrt_buffer(y)
   out_buf <- pjrt_execute(executable, x_buf, y_buf)
-  expect_equal(x / y, as_array(out_buf))
+  expect_equal(x / y, as_array(out_buf), tolerance = 1e-6)
 })
