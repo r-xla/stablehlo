@@ -16,6 +16,7 @@
 <url><loc>/reference/hlo_after_all.html</loc></url>
 <url><loc>/reference/hlo_and.html</loc></url>
 <url><loc>/reference/hlo_atan2.html</loc></url>
+<url><loc>/reference/hlo_broadcast_in_dim.html</loc></url>
 <url><loc>/reference/hlo_closure.html</loc></url>
 <url><loc>/reference/hlo_constant.html</loc></url>
 <url><loc>/reference/hlo_dot_general.html</loc></url>
