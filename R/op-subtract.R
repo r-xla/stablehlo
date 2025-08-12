@@ -15,9 +15,8 @@ infer_types_subtract <- function(lhs, rhs) {
 
 hlo_subtract_impl <- hlo_fn(Subtract, infer_types_subtract)
 
-#' @title Subtraction
-#' @param lhs,rhs ([`FuncVariable`])
-#' @return [`FuncVariable`]
+#' @templateVar mnemonic subtract
+#' @template op
 #' @export
 hlo_subtract <- function(lhs, rhs) {
   hlo_subtract_impl(values = list(lhs = lhs, rhs = rhs))

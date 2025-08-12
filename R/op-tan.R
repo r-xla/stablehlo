@@ -11,9 +11,8 @@ infer_types_tan <- function(operand) {
 
 hlo_tan_impl <- hlo_fn(Tan, infer_types_tan)
 
-#' @title Tangent Operation
-#' @param operand ([`FuncVariable`])
-#' @return [`FuncVariable`]
+#' @templateVar mnemonic tan
+#' @template op
 #' @export
 hlo_tan <- function(operand) {
   hlo_tan_impl(values = list(operand = operand))

@@ -11,9 +11,9 @@ infer_types_tanh <- function(operand) {
 
 hlo_tanh_impl <- hlo_fn(Tanh, infer_types_tanh)
 
-#' @title Tangens hyperbolicus
-#' @param operand ([`FuncVariable`])
-#' @return [`FuncVariable`]
+
+#' @templateVar mnemonic tanh
+#' @template op
 #' @export
 hlo_tanh <- function(operand) {
   hlo_tanh_impl(values = list(operand = operand))
