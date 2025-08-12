@@ -1,13 +1,16 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
-OpExponential <- new_Op("OpExponential", "exponential")
+Exponential <- new_Op("Exponential", "exponential")
 
-hlo_exponential_impl <- hlo_fn(OpExponential, infer_types_generic_uni)
+infer_types_exponential <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
+
+hlo_exponential_impl <- hlo_fn(Exponential, infer_types_exponential)
 
 #' @templateVar mnemonic exponential
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_exponential <- function(operand) {

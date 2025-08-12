@@ -1,19 +1,16 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
-OpExponentialMinusOne <- new_Op(
-  "OpExponentialMinusOne",
-  "exponential_minus_one"
-)
+Exponential_minus_one <- new_Op("Exponential_minus_one", "exponential_minus_one")
 
-hlo_exponential_minus_one_impl <- hlo_fn(
-  OpExponentialMinusOne,
-  infer_types_generic_uni
-)
+infer_types_exponential_minus_one <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
+
+hlo_exponential_minus_one_impl <- hlo_fn(Exponential_minus_one, infer_types_exponential_minus_one)
 
 #' @templateVar mnemonic exponential_minus_one
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_exponential_minus_one <- function(operand) {
