@@ -173,21 +173,21 @@ OpInputAttr <- new_class(
     value = Constant
   )
 )
-method(repr, OpInputAttr) <- function(x) {
+method(repr, OpInputAttr) <- function(x, simplify_dense = TRUE) {
   paste0(
     x@name,
     " = ",
-    repr(x@value)
+    repr(x@value, simplify_dense = simplify_dense)
   )
 }
 
 OpInputAttrs <- new_list_of("OpInputAttrs", OpInputAttr)
-method(repr, OpInputAttrs) <- function(x) {
+method(repr, OpInputAttrs) <- function(x, simplify_dense = TRUE) {
   if (length(x@items) == 0) {
     return("")
   }
 
-  a <- vapply(x@items, repr, character(1)) |>
+  a <- vapply(x@items, repr, character(1), simplify_dense = simplify_dense) |>
     paste(collapse = ",\n")
 
   paste0(" {\n", a, "\n}")
@@ -204,13 +204,13 @@ OpInputs <- new_class(
 )
 
 
-method(repr, OpInputs) <- function(x) {
+method(repr, OpInputs) <- function(x, simplify_dense = TRUE) {
   paste0(
     "(",
     repr(x@values),
     ")",
     repr(x@funcs),
-    repr(x@attrs)
+    repr(x@attrs, simplify_dense = simplify_dense)
   )
 }
 
@@ -302,13 +302,13 @@ new_Op <- function(classname, mnemonic) {
   )
 }
 
-method(repr, Op) <- function(x, toplevel = TRUE) {
+method(repr, Op) <- function(x, toplevel = TRUE, simplify_dense = TRUE) {
   paste0(
     repr(x@outputs),
     " = ",
     repr(x@name),
     " ",
-    repr(x@inputs),
+    repr(x@inputs, simplify_dense = simplify_dense),
     ": ",
     repr(x@signature)
   )

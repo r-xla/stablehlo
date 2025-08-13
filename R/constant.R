@@ -13,7 +13,7 @@ TensorConstant <- new_class(
   )
 )
 
-method(repr, TensorConstant) <- function(x) {
+method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   data <- x@data
   type <- x@type
 
@@ -26,6 +26,16 @@ method(repr, TensorConstant) <- function(x) {
     as.character(data)
   } else if (inherits(type@elt_type@type, BooleanType)) {
     tolower(as.logical(data))
+  }
+
+  if (simplify_dense && length(dim(data)) <= 1L) {
+    return(paste0(
+      "array<",
+      repr(type@elt_type),
+      ": ",
+      paste(value_reprs, collapse = ", "),
+      ">"
+    ))
   }
 
   if (!is.array(data)) {
@@ -60,8 +70,8 @@ Constant <- new_class(
   )
 )
 
-method(repr, Constant) <- function(x) {
-  repr(x@value)
+method(repr, Constant) <- function(x, simplify_dense = TRUE) {
+  repr(x@value, simplify_dense = simplify_dense)
 }
 
 r_to_constant <- S7::new_generic(

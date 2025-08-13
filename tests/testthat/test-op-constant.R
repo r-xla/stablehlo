@@ -23,6 +23,7 @@ test_that("scalars", {
 })
 
 test_that("compile scalars", {
+  local_reset_id_gen()
   skip_if_not_installed("pjrt")
   check <- function(x, elt_type) {
     f <- hlo_return(hlo_scalar(x, elt_type))
@@ -52,12 +53,14 @@ test_that("compile scalars", {
 })
 
 test_that("arrays", {
+  local_reset_id_gen()
   expect_snapshot(repr(hlo_tensor(array(1:2))@func))
   expect_snapshot(repr(hlo_tensor(array(1:6, dim = c(2, 3)))@func))
   expect_snapshot(repr(hlo_tensor(array(1:6, dim = c(2, 3, 1)))@func))
 })
 
 test_that("compile tensors", {
+  local_reset_id_gen()
   skip_if_not_installed("pjrt")
   check <- function(x, elt_type) {
     f <- hlo_return(hlo_tensor(x, elt_type))
@@ -65,18 +68,23 @@ test_that("compile tensors", {
     program <- pjrt::pjrt_program(repr(f))
     exec <- pjrt::pjrt_compile(program)
     buffer <- pjrt::pjrt_execute(exec)
-    #expect_equal(
-    #  pjrt::as_array(buffer),
-    #  x
-    #)
+    expect_equal(
+      buffer,
+      pjrt::pjrt_buffer(x)
+    )
   }
   check(array(1:2), "i32")
   check(array(c(1, 2, 3, 4, 5, 6), dim = c(2, 3)), "f32")
   check(array(c(1, 2, 3, 4, 5, 6), dim = c(2, 3, 1)), "f32")
+
+  check(1:2, "i32")
+  check(c(1, 2, 3), "f32")
+  check(c(TRUE, FALSE), "pred")
 })
 
 
 test_that("errors", {
+  local_reset_id_gen()
   expect_error(hlo_scalar(-1L, "ui16"), "must be non-negative")
   expect_error(hlo_scalar(NA), "must not contain NA")
   expect_error(hlo_scalar(3L, "f32"), "Invalid elt_type for integer")
@@ -85,6 +93,7 @@ test_that("errors", {
 })
 
 test_that("specify shape in hlo_tensor", {
+  local_reset_id_gen()
   expect_snapshot(repr(hlo_tensor(1:2, shape = c(2, 1))@func))
   expect_snapshot(repr(hlo_tensor(1:2)@func))
   expect_snapshot(repr(hlo_tensor(1)@func))
