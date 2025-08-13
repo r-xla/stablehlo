@@ -43,11 +43,13 @@ test_that("compile scalars", {
   check(3L, "i64")
   check(3L, "i16")
   check(3L, "ui32")
-  check(3L, "ui64")
   check(3L, "ui16")
   check(TRUE, "pred")
   check(FALSE, "pred")
-  skip_if_metal()
+
+  skip_if_metal("types not supported on Metal")
+
+  check(3L, "ui64")
   check(-8.23, "f64")
   check(3.14, "f64")
 })
