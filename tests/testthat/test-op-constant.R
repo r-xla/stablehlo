@@ -23,7 +23,6 @@ test_that("scalars", {
 })
 
 test_that("compile scalars", {
-
   local_reset_id_gen()
   skip_if_not_installed("pjrt")
   check <- function(x, elt_type) {
@@ -47,9 +46,9 @@ test_that("compile scalars", {
   check(3L, "ui16")
   check(TRUE, "pred")
   check(FALSE, "pred")
-  
+
   skip_if_metal("types not supported on Metal")
-  
+
   check(3L, "ui64")
   check(-8.23, "f64")
   check(3.14, "f64")
