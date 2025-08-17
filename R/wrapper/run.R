@@ -9,7 +9,9 @@ univariates <- c(
   "floor",
   "tan",
   "tanh",
-  "log"
+  "log",
+  "log_plus_one",
+  "logistic"
 )
 
 univariates_experimental <- c(
