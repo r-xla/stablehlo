@@ -105,7 +105,8 @@ generate_op_wrapper <- function(op_name,
     op_class_line,
     infer_fn_lines,
     hlo_impl_line,
-    main_fn_lines
+    main_fn_lines,
+    ""
   )
 
   return(result)
