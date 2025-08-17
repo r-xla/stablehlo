@@ -9,12 +9,17 @@
 #' @param export Logical, whether to add @export tag
 #' @return Character vector containing the generated code
 generate_op_wrapper <- function(op_name,
-                                class_name = tools::toTitleCase(op_name),
+                                class_name = NULL,
                                 params = list(operand = NULL),
                                 attrs = list(),
                                 type_inference_fn = NULL,
                                 univariate = TRUE,
                                 export = TRUE) {
+
+  if (is.null(class_name)) {
+    # snake to camel
+    class_name <- paste(capitalize(strsplit(op_name, "_")[[1]]), collapse = "")
+  }
 
   # Generate parameter names
   param_names <- names(params)
