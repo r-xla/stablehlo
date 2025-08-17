@@ -1,4 +1,4 @@
-# univariate functions
+# univariate functions save to write
 univariates <- c(
   "abs",
   "cbrt",
@@ -9,12 +9,16 @@ univariates <- c(
   "floor",
   "tan",
   "tanh",
+  "log"
+)
+
+univariates_experimental <- c(
   "is_finite"
 )
 
 # create univariates: mind the right directory
 for (op in univariates) {
-  write_univariate_op(op)
+  write_univariate_op(op, dir = "R")
 }
 
 # bivariate function where lhs=rhs
