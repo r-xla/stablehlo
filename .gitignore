@@ -10,5 +10,6 @@ stablehlo/
 src/Makevars
 README.html
 docs
-**/*op-transpose.*
-**/*op-cholesky.*
+attic
+R/wrapper/R/*
+*is_finite*

@@ -8,7 +8,8 @@ univariates <- c(
   "exponential",
   "floor",
   "tan",
-  "tanh"
+  "tanh",
+  "is_finite"
 )
 
 # create univariates: mind the right directory
