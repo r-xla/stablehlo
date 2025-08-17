@@ -1,13 +1,15 @@
-#' @include op.R hlo.R type_inference.R
-NULL
+#' @include op.R hlo.R 
+NULL 
 
-OpLogPlusOne <- new_Op("OpLogPlusOne", "log_plus_one")
+Log_plus_one <- new_Op("Log_plus_one", "log_plus_one")
 
-hlo_log_plus_one_impl <- hlo_fn(OpLogPlusOne, infer_types_generic_uni)
+infer_types_log_plus_one <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
+hlo_log_plus_one_impl <- hlo_fn(Log_plus_one, infer_types_log_plus_one) 
 
 #' @templateVar mnemonic log_plus_one
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_log_plus_one <- function(operand) {
