@@ -2,16 +2,16 @@
 % Please edit documentation in R/op-tanh.R
 \name{hlo_tanh}
 \alias{hlo_tanh}
-\title{Tangens hyperbolicus}
+\title{Tanh Operator}
 \usage{
 hlo_tanh(operand)
 }
 \arguments{
-\item{operand}{(\code{\link{FuncVariable}})}
+\item{operand}{(\code{\link{FuncVariable}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}
+\code{\link{FuncVariable}}\cr
 }
 \description{
-Tangens hyperbolicus
+See \url{https://openxla.org/stablehlo/spec#tanh} for details.
 }

@@ -2,16 +2,16 @@
 % Please edit documentation in R/op-subtract.R
 \name{hlo_subtract}
 \alias{hlo_subtract}
-\title{Subtraction}
+\title{Subtract Operator}
 \usage{
 hlo_subtract(lhs, rhs)
 }
 \arguments{
-\item{lhs, rhs}{(\code{\link{FuncVariable}})}
+\item{lhs, rhs}{(\code{\link{FuncVariable}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}
+\code{\link{FuncVariable}}\cr
 }
 \description{
-Subtraction
+See \url{https://openxla.org/stablehlo/spec#subtract} for details.
 }

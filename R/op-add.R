@@ -1,14 +1,19 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
-OpAdd <- new_Op("OpAdd", "add")
+Add <- new_Op("Add", "add")
 
-hlo_add_impl <- hlo_fn(OpAdd, infer_types_generic_biv)
+infer_types_add <- function(lhs, rhs) {
+  stopifnot(inherits(lhs@type, TensorType))
+  stopifnot(inherits(rhs@type, TensorType))
+  stopifnot(lhs@type == rhs@type)
+  ValueTypes(list(lhs))
+}
 
-#' @templateVar mnemonic add
-#' @templateVar params %s
-#' @templateVar attrs %s
+hlo_add_impl <- hlo_fn(Add, infer_types_add)
+
 #' @template op
+#' @templateVar mnemonic add
 #' @export
 hlo_add <- function(lhs, rhs) {
   hlo_add_impl(values = list(lhs = lhs, rhs = rhs))
