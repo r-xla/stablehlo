@@ -95,15 +95,16 @@ str.S7_object <- function(object, ..., nest.lev = 0) {
   cat(obj_desc(object))
 
   if (!is_S7_type(object)) {
-    if (!typeof(object) %in% c("numeric", "integer", "character", "double"))
+    if (!typeof(object) %in% c("numeric", "integer", "character", "double")) {
       cat(" ")
+    }
 
     attrs <- attributes(object)
     if (is.environment(object)) {
       attributes(object) <- NULL
     } else if (is.function(object)) {
       attributes(object) <- list()
-    } else  {
+    } else {
       attributes(object) <- list(names = names(object), dim = dim(object))
     }
 
