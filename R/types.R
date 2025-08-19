@@ -135,6 +135,7 @@ ValueType <- new_class(
   }
 )
 
+
 method(dim, ValueType) <- function(x) {
   dim(x@type)
 }
