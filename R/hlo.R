@@ -32,7 +32,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       if (!inherits(items[[1L]], OpConstant)) {
         stop(err)
       }
-      items[[1]]@inputs@attrs@items[[1]]@value@value
+      items[[1]]@inputs@attrs@items[[1]]@value
     })
 
     op_input_funcs <- OpInputFuncs(
