@@ -1,5 +1,5 @@
 Package: stablehlo
-Title: Write stableHLO programs
+Title: Create stableHLO programs
 Version: 0.0.0.9000
 Authors@R: c(
     person("Daniel", "Falbel", , "daniel@posit.co", role = c("aut", "cre"),
@@ -9,7 +9,7 @@ Authors@R: c(
   )
 Description: The package offers a low level interface to create stableHLO programs.
     These programs can be compiled and run on different hardware backends (CPU, GPU, ...)
-    using the {pjrt} package.
+    using the 'pjrt' package.
 License: MIT + file LICENSE
 URL: https://r-xla.github.io/stablehlo/, https://github.com/r-xla/stablehlo
 BugReports: https://github.com/r-xla/stablehlo/issues
