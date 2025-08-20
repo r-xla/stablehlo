@@ -25,8 +25,7 @@ Suggests:
     pjrt,
     testthat (>= 3.0.0)
 Remotes:
-    r-xla/pjrt,
-    sebffischer/S7
+    r-xla/pjrt
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
