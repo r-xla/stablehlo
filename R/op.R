@@ -227,7 +227,7 @@ OpOutput <- new_class(
   ),
   constructor = function(value_id = ValueId()) {
     new_object(
-      OpOutput,
+      S7::S7_object(),
       id = value_id
     )
   }
@@ -292,11 +292,12 @@ new_Op <- function(classname, mnemonic) {
     parent = Op,
     constructor = function(inputs, outputs, signature) {
       new_object(
-        Op,
-        name = OpName(OpMnemonic(mnemonic)),
-        inputs = inputs,
-        outputs = outputs,
-        signature = signature
+        Op(
+          name = OpName(OpMnemonic(mnemonic)),
+          inputs = inputs,
+          outputs = outputs,
+          signature = signature
+        )
       )
     }
   )

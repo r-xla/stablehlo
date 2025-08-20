@@ -3,24 +3,25 @@ OpConstant <- S7::new_class(
   parent = Op,
   constructor = function(value, output = NULL) {
     new_object(
-      Op,
-      name = OpName(OpMnemonic("constant")),
-      inputs = OpInputs(
-        values = OpInputValues(list()),
-        funcs = OpInputFuncs(),
-        attrs = OpInputAttrs(
-          list(
-            OpInputAttr(
-              "value",
-              value
+      Op(
+        name = OpName(OpMnemonic("constant")),
+        inputs = OpInputs(
+          values = OpInputValues(list()),
+          funcs = OpInputFuncs(),
+          attrs = OpInputAttrs(
+            list(
+              OpInputAttr(
+                "value",
+                value
+              )
             )
           )
+        ),
+        outputs = output %||% OpOutputs(),
+        signature = OpSignature(
+          input_types = ValueTypes(list()),
+          output_types = ValueTypes(list(value@value@type))
         )
-      ),
-      outputs = output %||% OpOutputs(),
-      signature = OpSignature(
-        input_types = ValueTypes(list()),
-        output_types = ValueTypes(list(value@value@type))
       )
     )
   }

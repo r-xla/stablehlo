@@ -131,7 +131,7 @@ ValueType <- new_class(
     if (is.character(type)) {
       return(make_value_type(type, shape = shape))
     }
-    new_object(ValueType, type = type)
+    new_object(S7::S7_object(), type = type)
   }
 )
 
