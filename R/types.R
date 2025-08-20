@@ -137,7 +137,7 @@ ValueType <- new_class(
 
 
 method(dim, ValueType) <- function(x) {
-  dim(x@type)
+  shape(x@type)
 }
 
 method(dim, TensorType) <- function(x) {

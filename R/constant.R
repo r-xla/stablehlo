@@ -28,7 +28,7 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
     tolower(as.logical(data))
   }
 
-  if (simplify_dense && length(dim(data)) <= 1L) {
+  if (simplify_dense && length(shape(data)) <= 1L) {
     return(paste0(
       "array<",
       repr(type@elt_type),
@@ -46,10 +46,10 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
       repr(type)
     ))
   }
-  dim(value_reprs) <- dim(data)
+  dim(value_reprs) <- shape(data)
 
   f <- function(x) {
-    if (length(dim(x)) == 1L || is.vector(x)) {
+    if (length(shape(x)) == 1L || is.vector(x)) {
       paste0("[", paste(x, collapse = ", "), "]")
     } else {
       paste0("[", paste(apply(x, 1, f), collapse = ", "), "]")
@@ -94,7 +94,7 @@ method(r_to_constant, S7::class_logical) <- function(
     stop("Invalid elt_type for logical")
   }
   shape <- Shape(
-    if (is.array(value)) dim(value) else integer()
+    if (is.array(value)) shape(value) else integer()
   )
 
   stablehlo_type <- BooleanType()
@@ -127,7 +127,7 @@ method(r_to_constant, S7::class_double) <- function(
   }
 
   shape <- Shape(
-    if (is.array(value)) dim(value) else integer()
+    if (is.array(value)) shape(value) else integer()
   )
 
   element_type_obj <- TensorElementType(type = elt_type)
@@ -160,7 +160,7 @@ method(r_to_constant, S7::class_integer) <- function(
   }
 
   shape <- Shape(
-    if (is.array(value)) dim(value) else integer()
+    if (is.array(value)) shape(value) else integer()
   )
 
   element_type_obj <- TensorElementType(type = elt_type)
