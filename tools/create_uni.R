@@ -1,4 +1,4 @@
-write_univariate_op <- function(op_name, dir = "R/wrapper/R") {
+write_univariate_op <- function(op_name, dir = "./R") {
   op <- generate_op_wrapper(
     op_name = op_name,
     class_name = NULL,

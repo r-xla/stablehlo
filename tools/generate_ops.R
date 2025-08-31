@@ -1,3 +1,5 @@
+#' @include create_uni.R create_biv.R
+
 # univariate functions save to write
 univariates <- c(
   "abs",
@@ -20,7 +22,7 @@ univariates_experimental <- c(
 
 # create univariates: mind the right directory
 for (op in univariates) {
-  write_univariate_op(op, dir = "R")
+  write_univariate_op(op)
 }
 
 # bivariate function where lhs=rhs
