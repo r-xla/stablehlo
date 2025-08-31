@@ -1,14 +1,9 @@
-source("tools/wrapper.R")
-write_bivariate_op <- function(
-  op_name,
-  type_inference_fn = "infer_types_generic_biv",
-  dir = "./R"
-) {
+#' @include wrapper.R
+write_bivariate_op <- function(op_name, dir = "./R") {
   op <- generate_op_wrapper(
     op_name = op_name,
     class_name = NULL,
     params = list(lhs = NULL, rhs = NULL),
-    type_inference_fn = type_inference_fn,
     univariate = FALSE,
     export = TRUE
   )

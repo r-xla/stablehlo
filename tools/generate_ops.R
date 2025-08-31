@@ -1,6 +1,4 @@
-source("tools/create_uni.R")
-source("tools/create_biv.R")
-source("tools/generic_inference.R")
+#' @include create_uni.R create_biv.R
 
 # univariate functions save to write
 univariates <- c(
@@ -15,16 +13,14 @@ univariates <- c(
   "tanh",
   "log",
   "log_plus_one",
-  "logistic",
-  "negate",
-  "round_nearest_even",
-  "rsqrt",
-  "sign",
-  "sine",
-  "sqrt"
+  "logistic"
 )
 
-# create univariates:
+univariates_experimental <- c(
+  "is_finite"
+)
+
+# create univariates: mind the right directory
 for (op in univariates) {
   write_univariate_op(op)
 }
@@ -34,25 +30,10 @@ bivariates <- c(
   "add",
   "atan2",
   "subtract",
-  "divide",
-  "maximum",
-  "minimum",
-  "multiply",
-  "power",
-  "remainder"
+  "divide"
 )
 
-# create biivariates:
+# create biivariates: mind the right directory
 for (op in bivariates) {
   write_bivariate_op(op)
-}
-
-logic_ops <- c(
-  "and",
-  "or",
-  "xor"
-)
-
-for (op in logic_ops) {
-  write_bivariate_op(op, type_inference_fn = "infer_types_boolean_biv")
 }

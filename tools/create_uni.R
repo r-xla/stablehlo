@@ -1,14 +1,8 @@
-source("tools/wrapper.R")
-write_univariate_op <- function(
-  op_name,
-  type_inference_fn = "infer_types_generic_uni",
-  dir = "./R"
-) {
+write_univariate_op <- function(op_name, dir = "./R") {
   op <- generate_op_wrapper(
     op_name = op_name,
     class_name = NULL,
     params = list(operand = NULL),
-    type_inference_fn = type_inference_fn,
     univariate = TRUE,
     export = TRUE
   )
