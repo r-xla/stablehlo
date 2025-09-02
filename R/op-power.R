@@ -1,5 +1,5 @@
-#' @include op.R hlo.R 
-NULL 
+#' @include op.R hlo.R
+NULL
 
 Power <- new_Op("Power", "power")
 
@@ -9,7 +9,7 @@ infer_types_power <- function(lhs, rhs) {
   stopifnot(lhs@type == rhs@type)
   ValueTypes(list(lhs))
 }
-hlo_power_impl <- hlo_fn(Power, infer_types_power) 
+hlo_power_impl <- hlo_fn(Power, infer_types_power)
 
 #' @templateVar mnemonic power
 #' @template op

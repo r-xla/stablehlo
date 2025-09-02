@@ -1,5 +1,5 @@
-#' @include op.R hlo.R 
-NULL 
+#' @include op.R hlo.R
+NULL
 
 Minimum <- new_Op("Minimum", "minimum")
 
@@ -9,7 +9,7 @@ infer_types_minimum <- function(lhs, rhs) {
   stopifnot(lhs@type == rhs@type)
   ValueTypes(list(lhs))
 }
-hlo_minimum_impl <- hlo_fn(Minimum, infer_types_minimum) 
+hlo_minimum_impl <- hlo_fn(Minimum, infer_types_minimum)
 
 #' @templateVar mnemonic minimum
 #' @template op

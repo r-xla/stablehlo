@@ -5,12 +5,14 @@ if (requireNamespace("pjrt", quietly = TRUE)) {
   library("pjrt")
 }
 
-hlo_test_uni <- function(hlo_func,
-                         test_func,
-                         non_negative = FALSE,
-                         dimension = NULL,
-                         test_data = NULL,
-                         tol = NULL) {
+hlo_test_uni <- function(
+  hlo_func,
+  test_func,
+  non_negative = FALSE,
+  dimension = NULL,
+  test_data = NULL,
+  tol = NULL
+) {
   local_reset_id_gen()
   if (is.null(dimension)) {
     len <- min(rgeom(1, .3) + 1, 4)
@@ -45,14 +47,16 @@ hlo_test_uni <- function(hlo_func,
   expect_equal(out, test_func(x), tolerance = tol)
 }
 
-hlo_test_biv <- function(hlo_func,
-                         test_func,
-                         non_negative = FALSE,
-                         dimension = NULL,
-                         type = NULL,
-                         lhs = NULL,
-                         rhs = NULL,
-                         tol = NULL) {
+hlo_test_biv <- function(
+  hlo_func,
+  test_func,
+  non_negative = FALSE,
+  dimension = NULL,
+  type = NULL,
+  lhs = NULL,
+  rhs = NULL,
+  tol = NULL
+) {
   local_reset_id_gen()
   if (is.null(dimension)) {
     len <- min(rgeom(1, .3) + 1, 4)

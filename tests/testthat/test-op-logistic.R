@@ -17,5 +17,5 @@ test_that("basic tests", {
   out_buf <- pjrt_execute(executable, x_buf)
   expect_class(out_buf, "PJRTBuffer")
   out <- as_array(out_buf)
-  expect_equal(out, 1 / (1+ exp(-x)), tolerance = 1e-6)
+  expect_equal(out, 1 / (1 + exp(-x)), tolerance = 1e-6)
 })
