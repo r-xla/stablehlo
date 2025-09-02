@@ -46,6 +46,7 @@ Collate:
     'func_variable.R'
     'type_inference.R'
     'hlo.R'
+    'utils.R'
     'op.R'
     'op-abs.R'
     'op-add.R'
@@ -85,7 +86,6 @@ Collate:
     'op-tanh.R'
     'op-xor.R'
     'tracer.R'
-    'utils.R'
     'zzz.R'
 LinkingTo:
     Rcpp
