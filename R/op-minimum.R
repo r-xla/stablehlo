@@ -1,13 +1,17 @@
-#' @include op.R hlo.R type_inference.R
-NULL
+#' @include op.R hlo.R 
+NULL 
 
-OpMinimum <- new_Op("OpMinimum", "minimum")
+Minimum <- new_Op("Minimum", "minimum")
 
-hlo_minimum_impl <- hlo_fn(OpMinimum, infer_types_generic_biv)
+infer_types_minimum <- function(lhs, rhs) {
+  stopifnot(inherits(lhs@type, TensorType))
+  stopifnot(inherits(rhs@type, TensorType))
+  stopifnot(lhs@type == rhs@type)
+  ValueTypes(list(lhs))
+}
+hlo_minimum_impl <- hlo_fn(Minimum, infer_types_minimum) 
 
 #' @templateVar mnemonic minimum
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_minimum <- function(lhs, rhs) {
