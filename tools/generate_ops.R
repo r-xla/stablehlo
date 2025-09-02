@@ -17,7 +17,9 @@ univariates <- c(
   "logistic",
   "negate",
   "round_nearest_even",
-  "rsqrt"
+  "rsqrt",
+  "sign",
+  "sine"
 )
 
 # create univariates:
