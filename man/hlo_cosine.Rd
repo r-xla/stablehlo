@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-cosine.R
 \name{hlo_cosine}
 \alias{hlo_cosine}
-\title{Cosine Operator}
+\title{OpCosine Operator}
 \usage{
 hlo_cosine(operand)
 }

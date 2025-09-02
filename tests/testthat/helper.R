@@ -194,18 +194,31 @@ hlo_test_biv <- function(
   tol = NULL
 ) {
   local_reset_id_gen()
-  if (is.null(dimension)) {
-    len <- min(rgeom(1, .3) + 1, 4)
-    dimension <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
-  }
   if (is.null(type)) {
     type <- "f32"
   }
-  x <- hlo_input("x", type, shape = dimension, "main")
-  y <- hlo_input("y", type, shape = dimension, "main")
-  z <- hlo_func(x, y)
-  func <- hlo_return(z)
-  # expect_snapshot(repr(func))
+  make_fn <- function() {
+    if (is.null(dimension)) {
+      len <- min(rgeom(1, .3) + 1, 4)
+      dimension <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
+    }
+    x <- hlo_input("x", type, shape = dimension, "main")
+    y <- hlo_input("y", type, shape = dimension, "main")
+    z <- hlo_func(x, y)
+    list(
+      dimension = dimension,
+      f = hlo_return(z)
+    )
+  }
+
+  withr::with_seed(1, {
+    f <- make_fn()$f
+    expect_snapshot(repr(f))
+  })
+
+  res <- make_fn()
+  func <- res$f
+  dimension <- res$dimension
 
   skip_if_not_installed("pjrt")
   program <- pjrt_program(repr(func))
@@ -238,8 +251,16 @@ hlo_test_biv <- function(
     }
   }
 
-  x <- array(lhs, dim = dimension)
-  y <- array(rhs, dim = dimension)
+  x <- if (length(dimension)) {
+    array(lhs, dim = dimension)
+  } else {
+    lhs
+  }
+  y <- if (length(dimension)) {
+    array(rhs, dim = dimension)
+  } else {
+    rhs
+  }
   x_buf <- pjrt_buffer(x)
   y_buf <- pjrt_buffer(y)
   out_buf <- pjrt_execute(executable, x_buf, y_buf)

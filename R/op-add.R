@@ -1,7 +1,7 @@
 #' @include op.R hlo.R
 NULL
 
-Add <- new_Op("Add", "add")
+OpAdd <- new_Op("OpAdd", "add")
 
 infer_types_add <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
@@ -9,7 +9,7 @@ infer_types_add <- function(lhs, rhs) {
   stopifnot(lhs@type == rhs@type)
   ValueTypes(list(lhs))
 }
-hlo_add_impl <- hlo_fn(Add, infer_types_add)
+hlo_add_impl <- hlo_fn(OpAdd, infer_types_add)
 
 #' @templateVar mnemonic add
 #' @template op

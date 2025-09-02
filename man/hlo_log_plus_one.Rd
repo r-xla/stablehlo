@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-log_plus_one.R
 \name{hlo_log_plus_one}
 \alias{hlo_log_plus_one}
-\title{LogPlusOne Operator}
+\title{OpLogPlusOne Operator}
 \usage{
 hlo_log_plus_one(operand)
 }

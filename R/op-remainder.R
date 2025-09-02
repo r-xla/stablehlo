@@ -1,7 +1,7 @@
 #' @include op.R hlo.R
 NULL
 
-Remainder <- new_Op("Remainder", "remainder")
+OpRemainder <- new_Op("OpRemainder", "remainder")
 
 infer_types_remainder <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
@@ -9,7 +9,7 @@ infer_types_remainder <- function(lhs, rhs) {
   stopifnot(lhs@type == rhs@type)
   ValueTypes(list(lhs))
 }
-hlo_remainder_impl <- hlo_fn(Remainder, infer_types_remainder)
+hlo_remainder_impl <- hlo_fn(OpRemainder, infer_types_remainder)
 
 #' @templateVar mnemonic remainder
 #' @template op

@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-negate.R
 \name{hlo_negate}
 \alias{hlo_negate}
-\title{Negate Operator}
+\title{OpNegate Operator}
 \usage{
 hlo_negate(operand)
 }

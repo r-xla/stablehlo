@@ -22,7 +22,7 @@ generate_op_wrapper <- function(
 
   # 1. Generate the Op class definition
   op_class_line <- sprintf(
-    '%s <- new_Op("%s", "%s")\n',
+    'Op%s <- new_Op("Op%s", "%s")\n',
     class_name,
     class_name,
     op_name
@@ -78,7 +78,7 @@ generate_op_wrapper <- function(
 
   # 3. Generate hlo implementation
   hlo_impl_line <- sprintf(
-    'hlo_%s_impl <- hlo_fn(%s, %s) \n',
+    'hlo_%s_impl <- hlo_fn(Op%s, %s) \n',
     op_name,
     class_name,
     infer_fn_name

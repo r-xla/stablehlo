@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-and.R
 \name{hlo_and}
 \alias{hlo_and}
-\title{And Operator}
+\title{OpAnd Operator}
 \usage{
 hlo_and(lhs, rhs)
 }

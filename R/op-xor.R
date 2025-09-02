@@ -1,7 +1,7 @@
 #' @include op.R hlo.R
 NULL
 
-Xor <- new_Op("Xor", "xor")
+OpXor <- new_Op("OpXor", "xor")
 
 infer_types_xor <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
@@ -9,7 +9,7 @@ infer_types_xor <- function(lhs, rhs) {
   assert_one_of(lhs@type@elt_type@type, IntegerType, BooleanType)
   ValueTypes(list(lhs))
 }
-hlo_xor_impl <- hlo_fn(Xor, infer_types_xor)
+hlo_xor_impl <- hlo_fn(OpXor, infer_types_xor)
 
 #' @templateVar mnemonic xor
 #' @template op

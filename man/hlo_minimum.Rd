@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-minimum.R
 \name{hlo_minimum}
 \alias{hlo_minimum}
-\title{Minimum Operator}
+\title{OpMinimum Operator}
 \usage{
 hlo_minimum(lhs, rhs)
 }
