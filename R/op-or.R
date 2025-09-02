@@ -1,20 +1,20 @@
 #' @include op.R hlo.R 
 NULL 
 
-And <- new_Op("And", "and")
+Or <- new_Op("Or", "or")
 
-infer_types_and <- function (lhs, rhs) 
+infer_types_or <- function (lhs, rhs) 
 {
     stopifnot(inherits(lhs@type, TensorType))
     stopifnot(lhs@type == rhs@type)
     assert_one_of(lhs@type@elt_type@type, IntegerType, BooleanType)
     ValueTypes(list(lhs))
 }
-hlo_and_impl <- hlo_fn(And, infer_types_and) 
+hlo_or_impl <- hlo_fn(Or, infer_types_or) 
 
-#' @templateVar mnemonic and
+#' @templateVar mnemonic or
 #' @template op
 #' @export
-hlo_and <- function(lhs, rhs) {
-  hlo_and_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_or <- function(lhs, rhs) {
+  hlo_or_impl(values = list(lhs = lhs, rhs = rhs))
 }
