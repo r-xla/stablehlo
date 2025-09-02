@@ -1,13 +1,15 @@
-#' @include op.R hlo.R type_inference.R
-NULL
+#' @include op.R hlo.R 
+NULL 
 
-OpSine <- new_Op("OpSine", "sine")
+Sine <- new_Op("Sine", "sine")
 
-hlo_sine_impl <- hlo_fn(OpSine, infer_types_generic_uni)
+infer_types_sine <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
+hlo_sine_impl <- hlo_fn(Sine, infer_types_sine) 
 
 #' @templateVar mnemonic sine
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_sine <- function(operand) {

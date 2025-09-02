@@ -1,13 +1,15 @@
-#' @include op.R hlo.R type_inference.R
-NULL
+#' @include op.R hlo.R 
+NULL 
 
-OpSign <- new_Op("OpSign", "sign")
+Sign <- new_Op("Sign", "sign")
 
-hlo_sign_impl <- hlo_fn(OpSign, infer_types_generic_uni)
+infer_types_sign <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
+hlo_sign_impl <- hlo_fn(Sign, infer_types_sign) 
 
 #' @templateVar mnemonic sign
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_sign <- function(operand) {
