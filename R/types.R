@@ -131,13 +131,13 @@ ValueType <- new_class(
     if (is.character(type)) {
       return(make_value_type(type, shape = shape))
     }
-    new_object(ValueType, type = type)
+    new_object(S7::S7_object(), type = type)
   }
 )
 
 
 method(dim, ValueType) <- function(x) {
-  dim(x@type)
+  shape(x@type)
 }
 
 method(dim, TensorType) <- function(x) {

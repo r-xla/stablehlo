@@ -11,7 +11,7 @@ infer_types_broadcast_in_dim <- function(
   stopifnot(inherits(operand@type, TensorType))
 
   # Extract operand dims and target result dims
-  operand_dims <- dim(operand)
+  operand_dims <- shape(operand)
   result_dims <- as.integer(shape_out)
 
   bdims <- broadcast_dimensions@value@data
@@ -37,7 +37,7 @@ infer_types_broadcast_in_dim <- function(
   }
 
   # (C5) For all d in axes(operand):
-  #   dim(operand, d) = 1 OR dim(operand, d) = dim(result, broadcast_dimensions[d])
+  #   shape(operand, d) = 1 OR shape(operand, d) = shape(result, broadcast_dimensions[d])
   for (d in seq_along(operand_dims)) {
     op_dim <- operand_dims[d]
     res_dim <- result_dims[bdims[d] + 1L] # 0-based to 1-based

@@ -12,13 +12,13 @@ Return <- new_class(
     if (length(signature@output_types@items)) {
       stop("Invalid signature for Return op.")
     }
-    new_object(
-      Op,
+
+    new_object(Op(
       name = OpName(OpMnemonic("return")),
       inputs = inputs,
       outputs = outputs,
       signature = signature
-    )
+    ))
   }
 )
 

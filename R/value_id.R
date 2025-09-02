@@ -38,7 +38,7 @@ ValueId <- new_class(
       }
     }
     new_object(
-      ValueId,
+      S7::S7_object(),
       id = id
     )
   }

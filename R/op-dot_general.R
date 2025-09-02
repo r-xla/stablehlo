@@ -8,8 +8,8 @@ infer_types_dot_general <- function(
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(inherits(rhs@type, TensorType))
   stopifnot(lhs@type@elt_type == rhs@type@elt_type)
-  dim_lhs <- dim(lhs)
-  dim_rhs <- dim(rhs)
+  dim_lhs <- shape(lhs)
+  dim_rhs <- shape(rhs)
   contracting_dims <- dot_dimension_numbers@contracting_dims
   batching_dims <- dot_dimension_numbers@batching_dims
 

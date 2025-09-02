@@ -13,7 +13,7 @@ assert_tensor_constant <- function(
   if (!inherits(x@value, TensorConstant)) {
     cli::cli_abort("tnsr must be a TensorConstant")
   }
-  if (!is.null(ndims) && length(dim(x@value)) != ndims) {
+  if (!is.null(ndims) && length(shape(x@value)) != ndims) {
     cli::cli_abort("tnsr must have {ndims} dimensions")
   }
 
