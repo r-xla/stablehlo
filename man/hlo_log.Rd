@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-log.R
 \name{hlo_log}
 \alias{hlo_log}
-\title{OpLog Operator}
+\title{Log Operator}
 \usage{
 hlo_log(operand)
 }

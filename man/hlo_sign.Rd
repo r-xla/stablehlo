@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-sign.R
 \name{hlo_sign}
 \alias{hlo_sign}
-\title{OpSign Operator}
+\title{Sign Operator}
 \usage{
 hlo_sign(operand)
 }

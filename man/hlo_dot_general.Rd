@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-dot_general.R
 \name{hlo_dot_general}
 \alias{hlo_dot_general}
-\title{OpDotGeneral Operator}
+\title{DotGeneral Operator}
 \usage{
 hlo_dot_general(lhs, rhs, contracting_dims, batching_dims = NULL)
 }

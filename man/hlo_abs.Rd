@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-abs.R
 \name{hlo_abs}
 \alias{hlo_abs}
-\title{OpAbs Operator}
+\title{Abs Operator}
 \usage{
 hlo_abs(operand)
 }

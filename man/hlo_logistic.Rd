@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-logistic.R
 \name{hlo_logistic}
 \alias{hlo_logistic}
-\title{OpLogistic Operator}
+\title{Logistic Operator}
 \usage{
 hlo_logistic(operand)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-xor.R
 \name{hlo_xor}
 \alias{hlo_xor}
-\title{OpXor Operator}
+\title{Xor Operator}
 \usage{
 hlo_xor(lhs, rhs)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-subtract.R
 \name{hlo_subtract}
 \alias{hlo_subtract}
-\title{OpSubtract Operator}
+\title{Subtract Operator}
 \usage{
 hlo_subtract(lhs, rhs)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-round_nearest_even.R
 \name{hlo_round_nearest_even}
 \alias{hlo_round_nearest_even}
-\title{OpRoundNearestEven Operator}
+\title{RoundNearestEven Operator}
 \usage{
 hlo_round_nearest_even(operand)
 }

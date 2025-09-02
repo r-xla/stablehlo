@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-after_all.R
 \name{hlo_after_all}
 \alias{hlo_after_all}
-\title{OpAfterAll Operator}
+\title{AfterAll Operator}
 \usage{
 hlo_after_all(...)
 }

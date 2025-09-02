@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-remainder.R
 \name{hlo_remainder}
 \alias{hlo_remainder}
-\title{OpRemainder Operator}
+\title{Remainder Operator}
 \usage{
 hlo_remainder(lhs, rhs)
 }
