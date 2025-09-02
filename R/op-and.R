@@ -1,16 +1,15 @@
-#' @include op.R hlo.R 
-NULL 
+#' @include op.R hlo.R
+NULL
 
 And <- new_Op("And", "and")
 
-infer_types_and <- function (lhs, rhs) 
-{
-    stopifnot(inherits(lhs@type, TensorType))
-    stopifnot(lhs@type == rhs@type)
-    assert_one_of(lhs@type@elt_type@type, IntegerType, BooleanType)
-    ValueTypes(list(lhs))
+infer_types_and <- function(lhs, rhs) {
+  stopifnot(inherits(lhs@type, TensorType))
+  stopifnot(lhs@type == rhs@type)
+  assert_one_of(lhs@type@elt_type@type, IntegerType, BooleanType)
+  ValueTypes(list(lhs))
 }
-hlo_and_impl <- hlo_fn(And, infer_types_and) 
+hlo_and_impl <- hlo_fn(And, infer_types_and)
 
 #' @templateVar mnemonic and
 #' @template op

@@ -1,5 +1,5 @@
-#' @include op.R hlo.R 
-NULL 
+#' @include op.R hlo.R
+NULL
 
 Cosine <- new_Op("Cosine", "cosine")
 
@@ -7,7 +7,7 @@ infer_types_cosine <- function(operand) {
   stopifnot(inherits(operand@type, TensorType))
   ValueTypes(list(operand))
 }
-hlo_cosine_impl <- hlo_fn(Cosine, infer_types_cosine) 
+hlo_cosine_impl <- hlo_fn(Cosine, infer_types_cosine)
 
 #' @templateVar mnemonic cosine
 #' @template op

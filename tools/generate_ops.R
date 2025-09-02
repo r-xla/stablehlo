@@ -60,15 +60,5 @@ inference_logical <- function(lhs, rhs) {
 }
 
 for (op in logicals) {
-  write_bivariate_op(op,
-                     type_inference_fn = inference_logical)
+  write_bivariate_op(op, type_inference_fn = inference_logical)
 }
-
-
-
-# r_files <- list.files("./tests/testthat/", pattern = "\\.R$", full.names = TRUE)
-#
-# # Source each file
-# for (file in r_files) {
-#   source(file)
-# }
