@@ -1,4 +1,5 @@
-#' @include create_uni.R create_biv.R
+source("tools/create_uni.R")
+source("tools/create_biv.R")
 
 # univariate functions save to write
 univariates <- c(
@@ -13,14 +14,15 @@ univariates <- c(
   "tanh",
   "log",
   "log_plus_one",
-  "logistic"
+  "logistic",
+  "negate"
 )
 
-univariates_experimental <- c(
-  "is_finite"
-)
+# univariates_experimental <- c(
+#   "is_finite"
+# )
 
-# create univariates: mind the right directory
+# create univariates:
 for (op in univariates) {
   write_univariate_op(op)
 }
@@ -30,10 +32,13 @@ bivariates <- c(
   "add",
   "atan2",
   "subtract",
-  "divide"
+  "divide",
+  "maximum",
+  "minimum",
+  "multiply"
 )
 
-# create biivariates: mind the right directory
+# create biivariates:
 for (op in bivariates) {
   write_bivariate_op(op)
 }
