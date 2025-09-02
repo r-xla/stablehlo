@@ -1,13 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpLog <- new_Op("OpLog", "log")
 
-infer_types_log <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
-  ValueTypes(list(operand))
-}
-hlo_log_impl <- hlo_fn(OpLog, infer_types_log)
+hlo_log_impl <- hlo_fn(OpLog, infer_types_generic_uni) 
 
 #' @templateVar mnemonic log
 #' @template op

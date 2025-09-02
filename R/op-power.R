@@ -1,15 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpPower <- new_Op("OpPower", "power")
 
-infer_types_power <- function(lhs, rhs) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(inherits(rhs@type, TensorType))
-  stopifnot(lhs@type == rhs@type)
-  ValueTypes(list(lhs))
-}
-hlo_power_impl <- hlo_fn(OpPower, infer_types_power)
+hlo_power_impl <- hlo_fn(OpPower, infer_types_generic_biv) 
 
 #' @templateVar mnemonic power
 #' @template op

@@ -1,13 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpCbrt <- new_Op("OpCbrt", "cbrt")
 
-infer_types_cbrt <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
-  ValueTypes(list(operand))
-}
-hlo_cbrt_impl <- hlo_fn(OpCbrt, infer_types_cbrt)
+hlo_cbrt_impl <- hlo_fn(OpCbrt, infer_types_generic_uni) 
 
 #' @templateVar mnemonic cbrt
 #' @template op

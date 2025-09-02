@@ -1,13 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpNegate <- new_Op("OpNegate", "negate")
 
-infer_types_negate <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
-  ValueTypes(list(operand))
-}
-hlo_negate_impl <- hlo_fn(OpNegate, infer_types_negate)
+hlo_negate_impl <- hlo_fn(OpNegate, infer_types_generic_uni) 
 
 #' @templateVar mnemonic negate
 #' @template op

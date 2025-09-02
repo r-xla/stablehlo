@@ -1,15 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpAtan2 <- new_Op("OpAtan2", "atan2")
 
-infer_types_atan2 <- function(lhs, rhs) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(inherits(rhs@type, TensorType))
-  stopifnot(lhs@type == rhs@type)
-  ValueTypes(list(lhs))
-}
-hlo_atan2_impl <- hlo_fn(OpAtan2, infer_types_atan2)
+hlo_atan2_impl <- hlo_fn(OpAtan2, infer_types_generic_biv) 
 
 #' @templateVar mnemonic atan2
 #' @template op

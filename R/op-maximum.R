@@ -1,15 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpMaximum <- new_Op("OpMaximum", "maximum")
 
-infer_types_maximum <- function(lhs, rhs) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(inherits(rhs@type, TensorType))
-  stopifnot(lhs@type == rhs@type)
-  ValueTypes(list(lhs))
-}
-hlo_maximum_impl <- hlo_fn(OpMaximum, infer_types_maximum)
+hlo_maximum_impl <- hlo_fn(OpMaximum, infer_types_generic_biv) 
 
 #' @templateVar mnemonic maximum
 #' @template op

@@ -1,15 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpSubtract <- new_Op("OpSubtract", "subtract")
 
-infer_types_subtract <- function(lhs, rhs) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(inherits(rhs@type, TensorType))
-  stopifnot(lhs@type == rhs@type)
-  ValueTypes(list(lhs))
-}
-hlo_subtract_impl <- hlo_fn(OpSubtract, infer_types_subtract)
+hlo_subtract_impl <- hlo_fn(OpSubtract, infer_types_generic_biv) 
 
 #' @templateVar mnemonic subtract
 #' @template op

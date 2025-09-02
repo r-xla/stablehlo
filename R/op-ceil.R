@@ -1,13 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpCeil <- new_Op("OpCeil", "ceil")
 
-infer_types_ceil <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
-  ValueTypes(list(operand))
-}
-hlo_ceil_impl <- hlo_fn(OpCeil, infer_types_ceil)
+hlo_ceil_impl <- hlo_fn(OpCeil, infer_types_generic_uni) 
 
 #' @templateVar mnemonic ceil
 #' @template op
