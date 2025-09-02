@@ -62,7 +62,9 @@ generate_op_wrapper <- function(op_name,
       )
     }
   } else {
-    infer_fn_lines <- type_inference_fn
+    infer_fn_lines <- c(sprintf('infer_types_%s <- %s',
+                              op_name,
+                              deparse(type_inference_fn)[1]), deparse(type_inference_fn)[-1])
   }
 
   # 3. Generate hlo implementation

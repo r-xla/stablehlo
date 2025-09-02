@@ -1,9 +1,6 @@
-test_that("basic tests", {
-  hlo_test_biv(
-    hlo_xor,
-    function(lhs, rhs) {
-      (lhs | rhs) & !(lhs & rhs)
-    },
-    dtype = "pred"
-  )
-})
+test_that("XOR works",
+          {hlo_test_biv(hlo_xor,
+                        function(lhs, rhs) {
+                          (lhs | rhs) & !(lhs & rhs)
+                        },
+                        type = "pred")})

@@ -185,6 +185,7 @@ hlo_test_biv <- function(hlo_func,
                          test_func,
                          non_negative = FALSE,
                          dimension = NULL,
+                         type = NULL,
                          lhs = NULL,
                          rhs = NULL,
                          tol = NULL) {
@@ -193,8 +194,11 @@ hlo_test_biv <- function(hlo_func,
     len <- rgeom(1, .3) + 1
     dimension <- as.integer(rgeom(len, .2) + 1)
   }
-  x <- hlo_input("x", "f32", shape = dimension, "main")
-  y <- hlo_input("y", "f32", shape = dimension, "main")
+  if (is.null(type)) {
+    type <- "f32"
+  }
+  x <- hlo_input("x", type, shape = dimension, "main")
+  y <- hlo_input("y", type, shape = dimension, "main")
   z <- hlo_func(x, y)
   func <- hlo_return(z)
   expect_snapshot(repr(func))
@@ -207,18 +211,26 @@ hlo_test_biv <- function(hlo_func,
   expect_class(executable, "PJRTLoadedExecutable")
 
   if (is.null(lhs)) {
-    if (!non_negative) {
-      lhs <- rnorm(prod(dimension), mean = 0, sd = 1)
+    if (type == "pred") {
+      lhs <- sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
     } else {
-      lhs <- rchisq(prod(dimension), df = 1)
+      if (!non_negative) {
+        lhs <- rnorm(prod(dimension), mean = 0, sd = 1)
+      } else {
+        lhs <- rchisq(prod(dimension), df = 1)
+      }
     }
   }
 
   if (is.null(rhs)) {
-    if (!non_negative) {
-      rhs <- rnorm(prod(dimension), mean = 0, sd = 1)
+    if (type == "pred") {
+      rhs <- sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
     } else {
-      rhs <- rchisq(prod(dimension), df = 1)
+      if (!non_negative) {
+        rhs <- rnorm(prod(dimension), mean = 0, sd = 1)
+      } else {
+        rhs <- rchisq(prod(dimension), df = 1)
+      }
     }
   }
 

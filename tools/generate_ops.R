@@ -19,7 +19,8 @@ univariates <- c(
   "round_nearest_even",
   "rsqrt",
   "sign",
-  "sine"
+  "sine",
+  "sqrt"
 )
 
 # create univariates:
@@ -44,3 +45,23 @@ bivariates <- c(
 for (op in bivariates) {
   write_bivariate_op(op)
 }
+
+logicals <- c(
+  "and",
+  "or",
+  "xor"
+)
+
+inference_logical <- function(lhs, rhs) {
+  stopifnot(inherits(lhs@type, TensorType))
+  stopifnot(lhs@type == rhs@type)
+  assert_one_of(lhs@type@elt_type@type, IntegerType, BooleanType)
+  ValueTypes(list(lhs))
+}
+
+for (op in logicals) {
+  write_bivariate_op(op,
+                     type_inference_fn = inference_logical)
+}
+
+

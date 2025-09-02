@@ -1,13 +1,18 @@
-#' @include op.R hlo.R type_inference.R
-NULL
+#' @include op.R hlo.R 
+NULL 
 
-OpAnd <- new_Op("OpAnd", "and")
+And <- new_Op("And", "and")
 
-hlo_and_impl <- hlo_fn(OpAnd, infer_types_boolean_biv)
+infer_types_and <- function (lhs, rhs) 
+{
+    stopifnot(inherits(lhs@type, TensorType))
+    stopifnot(lhs@type == rhs@type)
+    assert_one_of(lhs@type@elt_type@type, IntegerType, BooleanType)
+    ValueTypes(list(lhs))
+}
+hlo_and_impl <- hlo_fn(And, infer_types_and) 
 
 #' @templateVar mnemonic and
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_and <- function(lhs, rhs) {
