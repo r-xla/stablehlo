@@ -1,9 +1,9 @@
-#' @include op.R hlo.R utils.R 
-NULL 
+#' @include op.R hlo.R utils.R
+NULL
 
 OpMinimum <- new_Op("OpMinimum", "minimum")
 
-hlo_minimum_impl <- hlo_fn(OpMinimum, infer_types_generic_biv) 
+hlo_minimum_impl <- hlo_fn(OpMinimum, infer_types_generic_biv)
 
 #' @templateVar mnemonic minimum
 #' @template op

@@ -1,9 +1,9 @@
-#' @include op.R hlo.R utils.R 
-NULL 
+#' @include op.R hlo.R utils.R
+NULL
 
 OpCbrt <- new_Op("OpCbrt", "cbrt")
 
-hlo_cbrt_impl <- hlo_fn(OpCbrt, infer_types_generic_uni) 
+hlo_cbrt_impl <- hlo_fn(OpCbrt, infer_types_generic_uni)
 
 #' @templateVar mnemonic cbrt
 #' @template op

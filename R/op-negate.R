@@ -1,9 +1,9 @@
-#' @include op.R hlo.R utils.R 
-NULL 
+#' @include op.R hlo.R utils.R
+NULL
 
 OpNegate <- new_Op("OpNegate", "negate")
 
-hlo_negate_impl <- hlo_fn(OpNegate, infer_types_generic_uni) 
+hlo_negate_impl <- hlo_fn(OpNegate, infer_types_generic_uni)
 
 #' @templateVar mnemonic negate
 #' @template op
