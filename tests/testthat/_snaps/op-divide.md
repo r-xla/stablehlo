@@ -8,6 +8,10 @@
 =======
       repr(func)
     Output
+<<<<<<< HEAD
       [1] "func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {\n%1 =\"stablehlo.divide\"(%x, %y):(tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)\n\"func.return\"(%1):(tensor<2x2xf32>) -> ()\n}\n"
 >>>>>>> 4d95069 (feat: op cosine)
+=======
+      [1] "func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {\n%1 = \"stablehlo.divide\" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)\n\"func.return\"(%1): (tensor<2x2xf32>) -> ()\n}\n"
+>>>>>>> 0599995 (updated documentation, fixed tests)
 
