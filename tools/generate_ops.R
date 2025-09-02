@@ -65,3 +65,10 @@ for (op in logicals) {
 }
 
 
+
+# r_files <- list.files("./tests/testthat/", pattern = "\\.R$", full.names = TRUE)
+#
+# # Source each file
+# for (file in r_files) {
+#   source(file)
+# }

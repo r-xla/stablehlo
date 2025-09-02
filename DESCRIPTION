@@ -5,7 +5,8 @@ Authors@R: c(
     person("Daniel", "Falbel", , "daniel@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0009-0006-0143-2392")),
     person("Sebastian", "Fischer", , "seb.fischer@tutamail.com", role = "aut",
-           comment = c(ORCID = "https://orcid.org/0000-0002-9609-3197"))
+           comment = c(ORCID = "https://orcid.org/0000-0002-9609-3197")),
+    person("Nikolai", "German", , "N.German@campus.lmu.de", role = "aut", )       
   )
 Description: The package offers a low level interface to create stableHLO programs.
     These programs can be compiled and run on different hardware backends (CPU, GPU, ...)
@@ -52,11 +53,10 @@ Collate:
     'op-after_all.R'
     'op-and.R'
     'op-atan2.R'
+    'op-broadcast_in_dim.R'
     'op-cbrt.R'
     'op-ceil.R'
-    'op-cholesky.R'
     'op-clamp.R'
-    'op-broadcast_in_dim.R'
     'op-constant.R'
     'op-cosine.R'
     'op-divide.R'
@@ -68,11 +68,23 @@ Collate:
     'op-log.R'
     'op-log_plus_one.R'
     'op-logistic.R'
+    'op-maximum.R'
+    'op-minimum.R'
+    'op-multiply.R'
+    'op-negate.R'
+    'op-or.R'
+    'op-power.R'
+    'op-remainder.R'
     'op-return.R'
+    'op-round_nearest_even.R'
+    'op-rsqrt.R'
+    'op-sign.R'
+    'op-sine.R'
+    'op-sqrt.R'
     'op-subtract.R'
     'op-tan.R'
     'op-tanh.R'
-    'op-transpose.R'
+    'op-xor.R'
     'tracer.R'
     'utils.R'
     'zzz.R'
