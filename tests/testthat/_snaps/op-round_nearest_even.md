@@ -1,7 +1,7 @@
 # basic tests
 
     Code
-      repr(f)
+      repr(func)
     Output
-      [1] "func.func @main (%x: tensor<3x3xf64>) -> tensor<3x3xf64> {\n%0 = \"stablehlo.round_nearest_even\" (%x): (tensor<3x3xf64>) -> (tensor<3x3xf64>)\n\"func.return\"(%0): (tensor<3x3xf64>) -> ()\n}\n"
+      [1] "func.func @main (%x: tensor<5xf32>) -> tensor<5xf32> {\n%1 = \"stablehlo.round_nearest_even\" (%x): (tensor<5xf32>) -> (tensor<5xf32>)\n\"func.return\"(%1): (tensor<5xf32>) -> ()\n}\n"
 

@@ -1,16 +1,15 @@
-#' @include op.R hlo.R type_inference.R
-NULL
+#' @include op.R hlo.R 
+NULL 
 
-OpRoundNearestEven <- new_Op("OpRoundNearestEven", "round_nearest_even")
+RoundNearestEven <- new_Op("RoundNearestEven", "round_nearest_even")
 
-hlo_round_nearest_even_impl <- hlo_fn(
-  OpRoundNearestEven,
-  infer_types_generic_uni
-)
+infer_types_round_nearest_even <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  ValueTypes(list(operand))
+}
+hlo_round_nearest_even_impl <- hlo_fn(RoundNearestEven, infer_types_round_nearest_even) 
 
 #' @templateVar mnemonic round_nearest_even
-#' @templateVar params %s
-#' @templateVar attrs %s
 #' @template op
 #' @export
 hlo_round_nearest_even <- function(operand) {

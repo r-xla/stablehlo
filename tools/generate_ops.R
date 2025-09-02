@@ -15,12 +15,10 @@ univariates <- c(
   "log",
   "log_plus_one",
   "logistic",
-  "negate"
+  "negate",
+  "round_nearest_even",
+  "rsqrt"
 )
-
-# univariates_experimental <- c(
-#   "is_finite"
-# )
 
 # create univariates:
 for (op in univariates) {
@@ -35,7 +33,9 @@ bivariates <- c(
   "divide",
   "maximum",
   "minimum",
-  "multiply"
+  "multiply",
+  "power",
+  "remainder"
 )
 
 # create biivariates:
