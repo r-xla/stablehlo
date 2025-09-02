@@ -1,5 +1,6 @@
 source("tools/create_uni.R")
 source("tools/create_biv.R")
+source("tools/generic_inference.R")
 
 # univariate functions save to write
 univariates <- c(
@@ -46,19 +47,12 @@ for (op in bivariates) {
   write_bivariate_op(op)
 }
 
-logicals <- c(
+logic_ops <- c(
   "and",
   "or",
   "xor"
 )
 
-inference_logical <- function(lhs, rhs) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(lhs@type == rhs@type)
-  assert_one_of(lhs@type@elt_type@type, IntegerType, BooleanType)
-  ValueTypes(list(lhs))
-}
-
-for (op in logicals) {
-  write_bivariate_op(op, type_inference_fn = inference_logical)
+for (op in logic_ops) {
+  write_bivariate_op(op, type_inference_fn = "infer_types_boolean_biv")
 }

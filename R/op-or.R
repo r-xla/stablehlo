@@ -1,15 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpOr <- new_Op("OpOr", "or")
 
-infer_types_or <- function(lhs, rhs) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(lhs@type == rhs@type)
-  assert_one_of(lhs@type@elt_type@type, IntegerType, BooleanType)
-  ValueTypes(list(lhs))
-}
-hlo_or_impl <- hlo_fn(OpOr, infer_types_or)
+hlo_or_impl <- hlo_fn(OpOr, infer_types_boolean_biv) 
 
 #' @templateVar mnemonic or
 #' @template op

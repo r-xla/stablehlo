@@ -1,13 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpRsqrt <- new_Op("OpRsqrt", "rsqrt")
 
-infer_types_rsqrt <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
-  ValueTypes(list(operand))
-}
-hlo_rsqrt_impl <- hlo_fn(OpRsqrt, infer_types_rsqrt)
+hlo_rsqrt_impl <- hlo_fn(OpRsqrt, infer_types_generic_uni) 
 
 #' @templateVar mnemonic rsqrt
 #' @template op

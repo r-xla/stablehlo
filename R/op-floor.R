@@ -1,13 +1,9 @@
-#' @include op.R hlo.R
-NULL
+#' @include op.R hlo.R utils.R 
+NULL 
 
 OpFloor <- new_Op("OpFloor", "floor")
 
-infer_types_floor <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
-  ValueTypes(list(operand))
-}
-hlo_floor_impl <- hlo_fn(OpFloor, infer_types_floor)
+hlo_floor_impl <- hlo_fn(OpFloor, infer_types_generic_uni) 
 
 #' @templateVar mnemonic floor
 #' @template op

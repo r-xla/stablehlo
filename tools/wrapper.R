@@ -3,7 +3,7 @@ generate_op_wrapper <- function(
   class_name = NULL,
   params = list(operand = NULL),
   attrs = list(),
-  type_inference_fn = NULL,
+  type_inference_fn,
   univariate = TRUE,
   export = TRUE
 ) {
@@ -18,7 +18,7 @@ generate_op_wrapper <- function(
   all_param_names <- c(param_names, attr_names)
 
   # 0. header
-  header <- sprintf("#' @include op.R hlo.R \nNULL \n")
+  header <- sprintf("#' @include op.R hlo.R utils.R \nNULL \n")
 
   # 1. Generate the Op class definition
   op_class_line <- sprintf(
@@ -29,59 +29,15 @@ generate_op_wrapper <- function(
   )
 
   # 2. Generate type inference function
-  infer_fn_name <- paste0("infer_types_", op_name)
-  if (is.null(type_inference_fn)) {
-    if (univariate && length(param_names) == 1) {
-      # Standard univariate type inference
-      infer_fn_lines <- c(
-        sprintf(
-          'infer_types_%s <- function(%s) {',
-          op_name,
-          paste(all_param_names, collapse = ", ")
-        ),
-        sprintf('  stopifnot(inherits(%s@type, TensorType))', param_names[1]),
-        sprintf('  ValueTypes(list(%s))', param_names[1]),
-        '}'
-      )
-    } else if (all(c("lhs", "rhs") %in% param_names)) {
-      # Two-parameter type inference
-      infer_fn_lines <- c(
-        sprintf(
-          'infer_types_%s <- function(%s) {',
-          op_name,
-          paste(all_param_names, collapse = ", ")
-        ),
-        sprintf('  stopifnot(inherits(%s@type, TensorType))', param_names),
-        "  stopifnot(lhs@type == rhs@type)",
-        sprintf('  ValueTypes(list(%s))', param_names[1]),
-        '}'
-      )
-    } else {
-      # Multi-parameter type inference - TODO
-      infer_fn_lines <- c(
-        sprintf(
-          'infer_types_%s <- function(%s) {',
-          op_name,
-          paste(all_param_names, collapse = ", ")
-        ),
-        sprintf('  stopifnot(inherits(%s@type, TensorType))', param_names),
-        sprintf('  ValueTypes(list(%s))', param_names[1]),
-        '}'
-      )
-    }
-  } else {
-    infer_fn_lines <- c(
-      sprintf('infer_types_%s <- %s', op_name, deparse(type_inference_fn)[1]),
-      deparse(type_inference_fn)[-1]
-    )
-  }
+  # depreceated
 
   # 3. Generate hlo implementation
   hlo_impl_line <- sprintf(
     'hlo_%s_impl <- hlo_fn(Op%s, %s) \n',
     op_name,
     class_name,
-    infer_fn_name
+    type_inference_fn
+    # infer_fn_name
   )
 
   # 4. Generate roxygen comments for main function
@@ -130,7 +86,6 @@ generate_op_wrapper <- function(
   result <- c(
     header,
     op_class_line,
-    infer_fn_lines,
     hlo_impl_line,
     main_fn_lines,
     ""
