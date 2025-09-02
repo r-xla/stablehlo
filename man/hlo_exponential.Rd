@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-exponential.R
 \name{hlo_exponential}
 \alias{hlo_exponential}
-\title{Exponential Operator}
+\title{OpExponential Operator}
 \usage{
 hlo_exponential(operand)
 }

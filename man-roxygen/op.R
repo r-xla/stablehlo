@@ -1,4 +1,4 @@
-#' <% op <- get(snake_to_camel(mnemonic)) %>
+#' <% op <- get(paste0("Op", snake_to_camel(mnemonic))) %>
 #' <% f <- get(paste0("hlo_", mnemonic)) %>
 #' @title <%= op@name %> Operator
 #' @description

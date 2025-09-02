@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-tanh.R
 \name{hlo_tanh}
 \alias{hlo_tanh}
-\title{Tanh Operator}
+\title{OpTanh Operator}
 \usage{
 hlo_tanh(operand)
 }

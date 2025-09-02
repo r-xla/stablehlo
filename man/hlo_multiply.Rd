@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-multiply.R
 \name{hlo_multiply}
 \alias{hlo_multiply}
-\title{Multiply Operator}
+\title{OpMultiply Operator}
 \usage{
 hlo_multiply(lhs, rhs)
 }

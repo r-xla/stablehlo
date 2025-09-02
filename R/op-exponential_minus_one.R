@@ -1,14 +1,17 @@
 #' @include op.R hlo.R
 NULL
 
-ExponentialMinusOne <- new_Op("ExponentialMinusOne", "exponential_minus_one")
+OpExponentialMinusOne <- new_Op(
+  "OpExponentialMinusOne",
+  "exponential_minus_one"
+)
 
 infer_types_exponential_minus_one <- function(operand) {
   stopifnot(inherits(operand@type, TensorType))
   ValueTypes(list(operand))
 }
 hlo_exponential_minus_one_impl <- hlo_fn(
-  ExponentialMinusOne,
+  OpExponentialMinusOne,
   infer_types_exponential_minus_one
 )
 

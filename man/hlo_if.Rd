@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-if.R
 \name{hlo_if}
 \alias{hlo_if}
-\title{If Operator}
+\title{OpIf Operator}
 \usage{
 hlo_if(pred, true_branch, false_branch)
 }

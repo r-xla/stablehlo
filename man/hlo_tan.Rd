@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-tan.R
 \name{hlo_tan}
 \alias{hlo_tan}
-\title{Tan Operator}
+\title{OpTan Operator}
 \usage{
 hlo_tan(operand)
 }

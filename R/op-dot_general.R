@@ -1,4 +1,4 @@
-DotGeneral <- new_Op("DotGeneral", "dot_general")
+OpDotGeneral <- new_Op("OpDotGeneral", "dot_general")
 
 infer_types_dot_general <- function(
   lhs,
@@ -46,7 +46,7 @@ DotDimensionNumbers <- new_class(
   )
 )
 
-dot_general_impl <- hlo_fn(DotGeneral, infer_types_dot_general)
+dot_general_impl <- hlo_fn(OpDotGeneral, infer_types_dot_general)
 
 #' @templateVar mnemonic dot_general
 #' @template op
@@ -88,7 +88,7 @@ method(repr, DotDimensionNumbers) <- function(x) {
   )
 }
 
-method(repr, DotGeneral) <- function(x) {
+method(repr, OpDotGeneral) <- function(x) {
   paste0(
     repr(x@outputs),
     " = ",

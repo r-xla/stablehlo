@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-clamp.R
 \name{hlo_clamp}
 \alias{hlo_clamp}
-\title{Clamp Operator}
+\title{OpClamp Operator}
 \usage{
 hlo_clamp(Min, operand, Max)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-add.R
 \name{hlo_add}
 \alias{hlo_add}
-\title{Add Operator}
+\title{OpAdd Operator}
 \usage{
 hlo_add(lhs, rhs)
 }

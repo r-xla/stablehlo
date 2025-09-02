@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-exponential_minus_one.R
 \name{hlo_exponential_minus_one}
 \alias{hlo_exponential_minus_one}
-\title{ExponentialMinusOne Operator}
+\title{OpExponentialMinusOne Operator}
 \usage{
 hlo_exponential_minus_one(operand)
 }

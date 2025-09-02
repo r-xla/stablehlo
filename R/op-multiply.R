@@ -1,7 +1,7 @@
 #' @include op.R hlo.R
 NULL
 
-Multiply <- new_Op("Multiply", "multiply")
+OpMultiply <- new_Op("OpMultiply", "multiply")
 
 infer_types_multiply <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
@@ -9,7 +9,7 @@ infer_types_multiply <- function(lhs, rhs) {
   stopifnot(lhs@type == rhs@type)
   ValueTypes(list(lhs))
 }
-hlo_multiply_impl <- hlo_fn(Multiply, infer_types_multiply)
+hlo_multiply_impl <- hlo_fn(OpMultiply, infer_types_multiply)
 
 #' @templateVar mnemonic multiply
 #' @template op

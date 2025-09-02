@@ -1,13 +1,13 @@
 #' @include op.R hlo.R
 NULL
 
-AfterAll <- new_Op("AfterAll", "after_all")
+OpAfterAll <- new_Op("OpAfterAll", "after_all")
 
 infer_types_after_all <- function(...) {
   ValueTypes(list(ValueType(TokenType())))
 }
 
-hlo_after_all_impl <- hlo_fn(AfterAll, infer_types_after_all)
+hlo_after_all_impl <- hlo_fn(OpAfterAll, infer_types_after_all)
 
 #' @templateVar mnemonic after_all
 #' @template op

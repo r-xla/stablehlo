@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-broadcast_in_dim.R
 \name{hlo_broadcast_in_dim}
 \alias{hlo_broadcast_in_dim}
-\title{BroadcastInDim Operator}
+\title{OpBroadcastInDim Operator}
 \usage{
 hlo_broadcast_in_dim(operand, broadcast_dimensions, shape_out)
 }
