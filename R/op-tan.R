@@ -1,9 +1,9 @@
-#' @include op.R hlo.R utils.R 
-NULL 
+#' @include op.R hlo.R utils.R
+NULL
 
 OpTan <- new_Op("OpTan", "tan")
 
-hlo_tan_impl <- hlo_fn(OpTan, infer_types_generic_uni) 
+hlo_tan_impl <- hlo_fn(OpTan, infer_types_generic_uni)
 
 #' @templateVar mnemonic tan
 #' @template op

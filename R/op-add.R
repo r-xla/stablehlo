@@ -1,9 +1,9 @@
-#' @include op.R hlo.R utils.R 
-NULL 
+#' @include op.R hlo.R utils.R
+NULL
 
 OpAdd <- new_Op("OpAdd", "add")
 
-hlo_add_impl <- hlo_fn(OpAdd, infer_types_generic_biv) 
+hlo_add_impl <- hlo_fn(OpAdd, infer_types_generic_biv)
 
 #' @templateVar mnemonic add
 #' @template op
