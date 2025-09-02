@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-cbrt.R
 \name{hlo_cbrt}
 \alias{hlo_cbrt}
-\title{OpCbrt Operator}
+\title{Cbrt Operator}
 \usage{
 hlo_cbrt(operand)
 }

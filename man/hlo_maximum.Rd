@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-maximum.R
 \name{hlo_maximum}
 \alias{hlo_maximum}
-\title{OpMaximum Operator}
+\title{Maximum Operator}
 \usage{
 hlo_maximum(lhs, rhs)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-sine.R
 \name{hlo_sine}
 \alias{hlo_sine}
-\title{OpSine Operator}
+\title{Sine Operator}
 \usage{
 hlo_sine(operand)
 }

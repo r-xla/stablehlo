@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-power.R
 \name{hlo_power}
 \alias{hlo_power}
-\title{OpPower Operator}
+\title{Power Operator}
 \usage{
 hlo_power(lhs, rhs)
 }

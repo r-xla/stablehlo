@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-atan2.R
 \name{hlo_atan2}
 \alias{hlo_atan2}
-\title{OpAtan2 Operator}
+\title{Atan2 Operator}
 \usage{
 hlo_atan2(lhs, rhs)
 }

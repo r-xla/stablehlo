@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-or.R
 \name{hlo_or}
 \alias{hlo_or}
-\title{OpOr Operator}
+\title{Or Operator}
 \usage{
 hlo_or(lhs, rhs)
 }

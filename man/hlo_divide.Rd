@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-divide.R
 \name{hlo_divide}
 \alias{hlo_divide}
-\title{OpDivide Operator}
+\title{Divide Operator}
 \usage{
 hlo_divide(lhs, rhs)
 }

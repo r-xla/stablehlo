@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-rsqrt.R
 \name{hlo_rsqrt}
 \alias{hlo_rsqrt}
-\title{OpRsqrt Operator}
+\title{Rsqrt Operator}
 \usage{
 hlo_rsqrt(operand)
 }

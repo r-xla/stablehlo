@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-floor.R
 \name{hlo_floor}
 \alias{hlo_floor}
-\title{OpFloor Operator}
+\title{Floor Operator}
 \usage{
 hlo_floor(operand)
 }

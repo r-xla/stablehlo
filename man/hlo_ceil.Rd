@@ -2,7 +2,7 @@
 % Please edit documentation in R/op-ceil.R
 \name{hlo_ceil}
 \alias{hlo_ceil}
-\title{OpCeil Operator}
+\title{Ceil Operator}
 \usage{
 hlo_ceil(operand)
 }
