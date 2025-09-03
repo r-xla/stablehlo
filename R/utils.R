@@ -74,8 +74,8 @@ snake_to_camel <- function(str) {
   paste(capitalize(strsplit(str, "_")[[1]]), collapse = "")
 }
 
-capitalize = function(str) {
-  substr(str, 1L, 1L) = toupper(substr(str, 1L, 1L))
+capitalize <- function(str) {
+  substr(str, 1L, 1L) <- toupper(substr(str, 1L, 1L))
   str
 }
 

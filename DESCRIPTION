@@ -20,13 +20,14 @@ Imports:
     rlang,
     withr,
     S7,
+    tengen,
     Rcpp
 Suggests:
     pjrt,
     testthat (>= 3.0.0)
 Remotes:
     r-xla/pjrt,
-    sebffischer/S7
+    r-xla/tengen
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -57,6 +58,7 @@ Collate:
     'op-dot_general.R'
     'op-if.R'
     'op-return.R'
+    'reexports.R'
     'utils.R'
     'zzz.R'
 LinkingTo:

@@ -31,7 +31,7 @@ ValueId <- new_class(
   ),
   constructor = function(id) {
     if (missing(id)) {
-      id = next_id()
+      id <- next_id()
     } else {
       if (startsWith(id, "xxvar")) {
         stop("ValueId cannot start with 'xxvar'")

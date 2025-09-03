@@ -145,6 +145,7 @@ method(dim, TensorType) <- function(x) {
 }
 
 method(`==`, list(ValueType, ValueType)) <- function(e1, e2) {
+  # nolint
   e1@type == e2@type
 }
 
