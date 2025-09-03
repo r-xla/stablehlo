@@ -79,8 +79,8 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     output_types <- rlang::exec(type_inference, !!!infer_args)
     nout <- length(output_types@items)
 
-    output_value_ids = replicate(nout, ValueId(), simplify = FALSE)
-    outputs = OpOutputs(lapply(output_value_ids, OpOutput))
+    output_value_ids <- replicate(nout, ValueId(), simplify = FALSE)
+    outputs <- OpOutputs(lapply(output_value_ids, OpOutput))
 
     signature <- OpSignature(
       input_types = ValueTypes(lapply(values, function(x) x@value_type)),

@@ -17,7 +17,7 @@ Shape <- new_class(
       stop("dims must be an integer vector")
     }
 
-    dims = self@dims
+    dims <- self@dims
     if (any(dims[!is.na(dims)] < 0L)) {
       stop("Dimensions must be >= 0")
     }
@@ -29,18 +29,10 @@ method(`==`, list(Shape, Shape)) <- function(e1, e2) {
 }
 
 method(repr, Shape) <- function(x) {
-  dims = x@dims
-  dims[is.na(dims)] = "?"
+  dims <- x@dims
+  dims[is.na(dims)] <- "?"
   paste0(dims, collapse = "x")
 }
-
-shape <- new_generic(
-  "shape",
-  "x",
-  function(x, ...) {
-    S7::S7_dispatch()
-  }
-)
 
 method(shape, Shape) <- function(x) {
   x@dims
