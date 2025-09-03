@@ -94,13 +94,13 @@
 <span><span class="va">z</span></span>
 <span><span class="co">#&gt; Variable %1 in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; %1 ="stablehlo.add"(%x, %y):(tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %1 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
 <span><span class="co">#&gt; }</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_return.html">hlo_return</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
 <span><span class="va">f</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt; tensor&lt;2x2xf32&gt; {</span></span>
-<span><span class="co">#&gt; %1 ="stablehlo.add"(%x, %y):(tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
-<span><span class="co">#&gt; "func.return"(%1):(tensor&lt;2x2xf32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt; %1 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; "func.return"(%1): (tensor&lt;2x2xf32&gt;) -&gt; ()</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 </div>
 <div class="section level2">
