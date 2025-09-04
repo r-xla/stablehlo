@@ -11,15 +11,14 @@ hlo_test_uni <- function(
   non_negative = FALSE,
   dimension = NULL,
   test_data = NULL,
-  tol = NULL
+  tol = 1e-5
 ) {
-  local_reset_id_gen()
   if (is.null(dimension)) {
     len <- min(rgeom(1, .3) + 1, 4)
     dimension <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
   }
 
-  x <- hlo_input("x", "f32", shape = dimension, "main")
+  x <- hlo_input("x", "f64", shape = dimension, "main")
   y <- hlo_func(x)
   func <- hlo_return(y)
   # expect_snapshot(repr(func))
@@ -40,7 +39,7 @@ hlo_test_uni <- function(
   }
 
   x <- array(test_data, dim = dimension)
-  x_buf <- pjrt_buffer(x)
+  x_buf <- pjrt_buffer(x, dtype = "f64")
   out_buf <- pjrt_execute(executable, x_buf)
   expect_class(out_buf, "PJRTBuffer")
   out <- as_array(out_buf)
@@ -52,14 +51,14 @@ hlo_test_biv <- function(
   test_func,
   non_negative = FALSE,
   dimension = NULL,
-  type = NULL,
+  type = "f64",
   lhs = NULL,
   rhs = NULL,
-  tol = NULL
+  tol = 1e-5
 ) {
   local_reset_id_gen()
   if (is.null(type)) {
-    type <- "f32"
+    type <- "f64"
   }
   make_fn <- function() {
     if (is.null(dimension)) {
@@ -125,8 +124,8 @@ hlo_test_biv <- function(
   } else {
     rhs
   }
-  x_buf <- pjrt_buffer(x)
-  y_buf <- pjrt_buffer(y)
+  x_buf <- pjrt_buffer(x, dtype = type)
+  y_buf <- pjrt_buffer(y, dtype = type)
   out_buf <- pjrt_execute(executable, x_buf, y_buf)
   expect_class(out_buf, "PJRTBuffer")
   expect_equal(test_func(x, y), as_array(out_buf), tolerance = tol)

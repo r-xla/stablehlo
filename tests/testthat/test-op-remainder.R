@@ -7,6 +7,5 @@ test_that("basic tests", {
       res[neg] <- res[neg] * -1
       res
     },
-    tol = 1e-5
   )
 })
