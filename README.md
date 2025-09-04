@@ -46,13 +46,13 @@ z <- hlo_add(x, y)
 z
 #> Variable %1 in:
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %1 ="stablehlo.add"(%x, %y):(tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %1 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
 #> }
 f <- hlo_return(z)
 f
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
-#> %1 ="stablehlo.add"(%x, %y):(tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
-#> "func.return"(%1):(tensor<2x2xf32>) -> ()
+#> %1 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> "func.return"(%1): (tensor<2x2xf32>) -> ()
 #> }
 ```
 

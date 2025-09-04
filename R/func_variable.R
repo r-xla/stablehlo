@@ -28,12 +28,12 @@ method(print, FuncVariable) <- function(x, ...) {
 }
 
 merge_funcs <- function(funcs) {
-  funcs = funcs[!duplicated(funcs)]
+  funcs <- funcs[!duplicated(funcs)]
   if (!length(funcs)) {
     stop("Zero partial funcs provided")
   }
   if (length(funcs) == 1L) {
-    return(funcs[[1]])
+    return(funcs[[1L]])
   }
 
   Func(
@@ -47,7 +47,7 @@ merge_funcs <- function(funcs) {
 merge_func_ids <- function(funcs) {
   ids <- unlist(
     lapply(funcs, function(x) {
-      id <- x@id@id
+      id <- x@id@id # nolint
       if (identical(id, "")) {
         return(NULL)
       }
@@ -157,13 +157,13 @@ merge_func_bodies <- function(funcs) {
   # case with the builder API.
   # Maybe we want a check for this?
   # But I think it's fine to only guarantee valid programs when using the builder API
-  bodies = lapply(unique(funcs), function(func) {
+  bodies <- lapply(unique(funcs), function(func) {
     func@body@items
   })
   # When creating functions with the builder API, we guarantee that
   # each individual body is ordered (variables appearing on line <n> can only access
   # variables from lines <n> - 1 and below), we can just merge them and maintain order
-  body = Reduce(c, bodies)
+  body <- Reduce(c, bodies)
   # It is possible, however, that the same line appears in more than one body
   # This can happen if we have one function
   # f1(x): a <- x^2
@@ -177,7 +177,7 @@ merge_func_bodies <- function(funcs) {
   # because we remove the second appearance of the creation of the variable, i.e. it's creation still
   # precedes the usage of the variable and the new function is still valid.
 
-  body = body[!duplicated(body)]
+  body <- body[!duplicated(body)]
   FuncBody(body)
 }
 
