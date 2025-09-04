@@ -4,3 +4,129 @@ library("checkmate")
 if (requireNamespace("pjrt", quietly = TRUE)) {
   library("pjrt")
 }
+
+hlo_test_uni <- function(
+  hlo_func,
+  test_func,
+  non_negative = FALSE,
+  dimension = NULL,
+  test_data = NULL,
+  tol = 1e-5
+) {
+  if (is.null(dimension)) {
+    len <- min(rgeom(1, .3) + 1, 4)
+    dimension <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
+  }
+
+  x <- hlo_input("x", "f64", shape = dimension, "main")
+  y <- hlo_func(x)
+  func <- hlo_return(y)
+  # expect_snapshot(repr(func))
+
+  skip_if_not_installed("pjrt")
+  program <- pjrt_program(repr(func))
+  expect_class(program, "PJRTProgram")
+
+  executable <- pjrt_compile(program)
+  expect_class(executable, "PJRTLoadedExecutable")
+
+  if (is.null(test_data)) {
+    if (!non_negative) {
+      test_data <- rnorm(prod(dimension), mean = 0, sd = 1)
+    } else {
+      test_data <- rchisq(prod(dimension), df = 1)
+    }
+  }
+
+  x <- array(test_data, dim = dimension)
+  x_buf <- pjrt_buffer(x, dtype = "f64")
+  out_buf <- pjrt_execute(executable, x_buf)
+  expect_class(out_buf, "PJRTBuffer")
+  out <- as_array(out_buf)
+  expect_equal(out, test_func(x), tolerance = tol)
+}
+
+hlo_test_biv <- function(
+  hlo_func,
+  test_func,
+  non_negative = FALSE,
+  dimension = NULL,
+  type = "f64",
+  lhs = NULL,
+  rhs = NULL,
+  tol = 1e-5
+) {
+  local_reset_id_gen()
+  if (is.null(type)) {
+    type <- "f64"
+  }
+  make_fn <- function() {
+    if (is.null(dimension)) {
+      len <- min(rgeom(1, .3) + 1, 4)
+      dimension <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
+    }
+    x <- hlo_input("x", type, shape = dimension, "main")
+    y <- hlo_input("y", type, shape = dimension, "main")
+    z <- hlo_func(x, y)
+    list(
+      dimension = dimension,
+      f = hlo_return(z)
+    )
+  }
+
+  withr::with_seed(1, {
+    f <- make_fn()$f
+    expect_snapshot(repr(f))
+  })
+
+  res <- make_fn()
+  func <- res$f
+  dimension <- res$dimension
+
+  skip_if_not_installed("pjrt")
+  program <- pjrt_program(repr(func))
+  expect_class(program, "PJRTProgram")
+
+  executable <- pjrt_compile(program)
+  expect_class(executable, "PJRTLoadedExecutable")
+
+  if (is.null(lhs)) {
+    if (type == "pred") {
+      lhs <- sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
+    } else {
+      if (!non_negative) {
+        lhs <- rnorm(prod(dimension), mean = 0, sd = 1)
+      } else {
+        lhs <- rchisq(prod(dimension), df = 1)
+      }
+    }
+  }
+
+  if (is.null(rhs)) {
+    if (type == "pred") {
+      rhs <- sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
+    } else {
+      if (!non_negative) {
+        rhs <- rnorm(prod(dimension), mean = 0, sd = 1)
+      } else {
+        rhs <- rchisq(prod(dimension), df = 1)
+      }
+    }
+  }
+
+  x <- if (length(dimension)) {
+    array(lhs, dim = dimension)
+  } else {
+    lhs
+  }
+  y <- if (length(dimension)) {
+    array(rhs, dim = dimension)
+  } else {
+    rhs
+  }
+  x_buf <- pjrt_buffer(x, dtype = type)
+  y_buf <- pjrt_buffer(y, dtype = type)
+  out_buf <- pjrt_execute(executable, x_buf, y_buf)
+  expect_class(out_buf, "PJRTBuffer")
+  expect_equal(test_func(x, y), as_array(out_buf), tolerance = tol)
+}

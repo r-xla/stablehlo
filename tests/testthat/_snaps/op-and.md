@@ -1,7 +1,7 @@
-# and works
+# basic tests
 
     Code
-      repr(func)
+      repr(f)
     Output
-      [1] "func.func @main (%x: tensor<i1>, %y: tensor<i1>) -> tensor<i1> {\n%1 = \"stablehlo.and\" (%x, %y): (tensor<i1>, tensor<i1>) -> (tensor<i1>)\n\"func.return\"(%1): (tensor<i1>) -> ()\n}\n"
+      [1] "func.func @main (%x: tensor<3x3xi1>, %y: tensor<3x3xi1>) -> tensor<3x3xi1> {\n%1 = \"stablehlo.and\" (%x, %y): (tensor<3x3xi1>, tensor<3x3xi1>) -> (tensor<3x3xi1>)\n\"func.return\"(%1): (tensor<3x3xi1>) -> ()\n}\n"
 

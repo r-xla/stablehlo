@@ -1,7 +1,7 @@
 #' @include op.R hlo.R
 NULL
 
-If <- new_Op("If", "if")
+OpIf <- new_Op("OpIf", "if")
 
 infer_types_if <- function(pred, true_branch, false_branch) {
   stopifnot(inherits(pred@type, TensorType))
@@ -22,7 +22,7 @@ infer_types_if <- function(pred, true_branch, false_branch) {
   out_types1
 }
 
-hlo_if_impl <- hlo_fn(If, infer_types_if)
+hlo_if_impl <- hlo_fn(OpIf, infer_types_if)
 
 #' @templateVar mnemonic if
 #' @template op

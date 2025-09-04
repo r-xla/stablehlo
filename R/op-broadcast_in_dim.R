@@ -1,7 +1,7 @@
 #' @include op.R hlo.R
 NULL
 
-BroadcastInDim <- new_Op("BroadcastInDim", "broadcast_in_dim")
+OpBroadcastInDim <- new_Op("OpBroadcastInDim", "broadcast_in_dim")
 
 infer_types_broadcast_in_dim <- function(
   operand,
@@ -61,7 +61,7 @@ infer_types_broadcast_in_dim <- function(
 }
 
 hlo_broadcast_in_dim_impl <- hlo_fn(
-  BroadcastInDim,
+  OpBroadcastInDim,
   infer_types_broadcast_in_dim
 )
 
@@ -82,7 +82,7 @@ hlo_broadcast_in_dim <- function(
   )
 }
 
-method(repr, BroadcastInDim) <- function(x) {
+method(repr, OpBroadcastInDim) <- function(x) {
   paste0(
     repr(x@outputs),
     " = ",

@@ -1,4 +1,4 @@
-# after_all works
+# basic tests
 
     Code
       repr(func)

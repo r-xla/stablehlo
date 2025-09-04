@@ -1,4 +1,4 @@
-test_that("basic broadcast", {
+test_that("basic tests", {
   local_reset_id_gen()
   x <- hlo_input("x", "f32", shape = c(1L, 3L), func_id = "main")
   y <- hlo_broadcast_in_dim(

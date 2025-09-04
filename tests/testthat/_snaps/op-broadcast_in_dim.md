@@ -1,4 +1,4 @@
-# basic broadcast
+# basic tests
 
     Code
       repr(f)

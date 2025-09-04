@@ -1,7 +1,7 @@
 # basic tests
 
     Code
-      repr(func)
+      repr(f)
     Output
-      [1] "func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {\n%1 = \"stablehlo.add\" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)\n\"func.return\"(%1): (tensor<2x2xf32>) -> ()\n}\n"
+      [1] "func.func @main (%x: tensor<3x3xf64>, %y: tensor<3x3xf64>) -> tensor<3x3xf64> {\n%1 = \"stablehlo.add\" (%x, %y): (tensor<3x3xf64>, tensor<3x3xf64>) -> (tensor<3x3xf64>)\n\"func.return\"(%1): (tensor<3x3xf64>) -> ()\n}\n"
 
