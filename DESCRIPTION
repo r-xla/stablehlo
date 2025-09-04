@@ -6,29 +6,33 @@ Authors@R: c(
            comment = c(ORCID = "https://orcid.org/0009-0006-0143-2392")),
     person("Sebastian", "Fischer", , "seb.fischer@tutamail.com", role = "aut",
            comment = c(ORCID = "https://orcid.org/0000-0002-9609-3197")),
-    person("Nikolai", "German", , "N.German@campus.lmu.de", role = "aut", )       
+    person("Nikolai", "German", , "N.German@campus.lmu.de", role = "aut")
   )
-Description: The package offers a low level interface to create stableHLO programs.
-    These programs can be compiled and run on different hardware backends (CPU, GPU, ...)
-    using the 'pjrt' package.
+Description: The package offers a low level interface to create stableHLO
+    programs.  These programs can be compiled and run on different
+    hardware backends (CPU, GPU, ...)  using the 'pjrt' package.
 License: MIT + file LICENSE
-URL: https://r-xla.github.io/stablehlo/, https://github.com/r-xla/stablehlo
+URL: https://r-xla.github.io/stablehlo/,
+    https://github.com/r-xla/stablehlo
 BugReports: https://github.com/r-xla/stablehlo/issues
 Imports:
     checkmate,
     cli,
     methods,
+    Rcpp,
     rlang,
-    withr,
     S7,
     tengen,
-    Rcpp
+    withr
 Suggests:
     pjrt,
     testthat (>= 3.0.0)
+LinkingTo:
+    Rcpp
 Remotes:
     r-xla/pjrt,
     r-xla/tengen
+Config/build/compilation-database: true
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -86,10 +90,6 @@ Collate:
     'op-tan.R'
     'op-tanh.R'
     'op-xor.R'
-    'tracer.R'
     'reexports.R'
     'utils.R'
     'zzz.R'
-LinkingTo:
-    Rcpp
-Config/build/compilation-database: true
