@@ -1,7 +1,7 @@
-# atan2 works
+# basic tests
 
     Code
-      repr(func)
+      repr(f)
     Output
-      [1] "func.func @main (%x: tensor<f32>, %y: tensor<f32>) -> tensor<f32> {\n%1 = \"stablehlo.atan2\" (%x, %y): (tensor<f32>, tensor<f32>) -> (tensor<f32>)\n\"func.return\"(%1): (tensor<f32>) -> ()\n}\n"
+      [1] "func.func @main (%x: tensor<3x3xf32>, %y: tensor<3x3xf32>) -> tensor<3x3xf32> {\n%1 = \"stablehlo.atan2\" (%x, %y): (tensor<3x3xf32>, tensor<3x3xf32>) -> (tensor<3x3xf32>)\n\"func.return\"(%1): (tensor<3x3xf32>) -> ()\n}\n"
 

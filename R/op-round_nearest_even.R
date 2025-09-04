@@ -1,4 +1,4 @@
-#' @include op.R hlo.R utils.R
+#' @include op.R hlo.R type_inference.R
 NULL
 
 OpRoundNearestEven <- new_Op("OpRoundNearestEven", "round_nearest_even")

@@ -1,4 +1,4 @@
-test_that("after_all works", {
+test_that("basic tests", {
   local_reset_id_gen()
   x <- hlo_input("x", "f32", shape = c(2L, 2L), "main")
   z <- hlo_after_all(x)

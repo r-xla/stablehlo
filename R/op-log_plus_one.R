@@ -1,4 +1,4 @@
-#' @include op.R hlo.R utils.R
+#' @include op.R hlo.R type_inference.R
 NULL
 
 OpLogPlusOne <- new_Op("OpLogPlusOne", "log_plus_one")

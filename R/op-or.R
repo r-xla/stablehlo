@@ -1,4 +1,4 @@
-#' @include op.R hlo.R utils.R
+#' @include op.R hlo.R type_inference.R
 NULL
 
 OpOr <- new_Op("OpOr", "or")

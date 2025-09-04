@@ -18,7 +18,7 @@ generate_op_wrapper <- function(
   all_param_names <- c(param_names, attr_names)
 
   # 0. header
-  header <- sprintf("#' @include op.R hlo.R utils.R \nNULL \n")
+  header <- sprintf("#' @include op.R hlo.R type_inference.R \nNULL \n")
 
   # 1. Generate the Op class definition
   op_class_line <- sprintf(

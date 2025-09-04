@@ -11,5 +11,3 @@ src/Makevars
 README.html
 docs
 attic
-R/wrapper/R/*
-*is_finite*
