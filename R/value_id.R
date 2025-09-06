@@ -7,7 +7,7 @@ ValueId <- new_class(
     if (!is.null(id)) {
       assert_valid_name(id)
     } else {
-      id <- new.env()
+      id <- new.env(size = 0L)
     }
     new_object(
       S7::S7_object(),
