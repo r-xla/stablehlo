@@ -4,6 +4,6 @@ test_that("basic tests", {
     function(lhs, rhs) {
       (lhs | rhs) & !(lhs & rhs)
     },
-    type = "pred"
+    dtype = "pred"
   )
 })
