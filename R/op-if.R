@@ -5,7 +5,7 @@ OpIf <- new_Op("OpIf", "if")
 
 infer_types_if <- function(pred, true_branch, false_branch) {
   stopifnot(inherits(pred@type, TensorType))
-  stopifnot(pred@type@dtype@type == BooleanType())
+  stopifnot(pred@type@dtype == BooleanType())
   stopifnot(length(pred@type@shape@dims) == 0)
 
   out_types1 <- ValueTypes(

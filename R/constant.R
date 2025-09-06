@@ -17,14 +17,14 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   data <- x@data
   type <- x@type
 
-  value_reprs <- if (inherits(type@dtype@type, FloatType)) {
+  value_reprs <- if (inherits(type@dtype, FloatType)) {
     format_double(
       data,
-      precision = if (type@dtype@type@value == "f32") 32 else 64
+      precision = if (type@dtype@value == "f32") 32 else 64
     )
-  } else if (inherits(type@dtype@type, IntegerType)) {
+  } else if (inherits(type@dtype, IntegerType)) {
     as.character(data)
-  } else if (inherits(type@dtype@type, BooleanType)) {
+  } else if (inherits(type@dtype, BooleanType)) {
     tolower(as.logical(data))
   }
 
@@ -97,9 +97,7 @@ method(r_to_constant, S7::class_logical) <- function(
     if (is.array(value)) shape(value) else integer()
   )
 
-  stablehlo_type <- BooleanType()
-  element_type_obj <- TensorElementType(type = stablehlo_type)
-  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
+  tensor_type <- TensorType(dtype = BooleanType(), shape = shape)
 
   tensor_constant <- TensorConstant(
     data = value,
@@ -130,8 +128,7 @@ method(r_to_constant, S7::class_double) <- function(
     if (is.array(value)) shape(value) else integer()
   )
 
-  element_type_obj <- TensorElementType(type = dtype)
-  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
+  tensor_type <- TensorType(dtype, shape)
 
   tensor_constant <- TensorConstant(
     data = value,
@@ -163,8 +160,7 @@ method(r_to_constant, S7::class_integer) <- function(
     if (is.array(value)) shape(value) else integer()
   )
 
-  element_type_obj <- TensorElementType(type = dtype)
-  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
+  tensor_type <- TensorType(dtype, shape)
 
   tensor_constant <- TensorConstant(
     data = value,

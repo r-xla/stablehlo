@@ -70,42 +70,27 @@ FloatType <- new_enum(
 
 #' @title TensorElementType
 #' @description
-#' Represents the element type of a tensor.
-#' @param type ([`BooleanType`] | [`IntegerType`] | [`FloatType`])
-#' @return `TensorElementType`
+#' Type union of all possible element types.
 #' @export
-TensorElementType <- new_class(
-  name = "TensorElementType",
-  properties = list(
-    type = S7::new_union(
-      BooleanType,
-      IntegerType,
-      FloatType
-    )
-  )
-)
-
-method(`==`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
-  e1@type == e2@type
-}
-
-method(repr, TensorElementType) <- function(x) {
-  repr(x@type)
-}
-
-element_type_union <- S7::new_union(
+TensorElementType <- S7::new_union(
   BooleanType,
   IntegerType,
   FloatType
 )
 
-method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
-  if (!identical(S7::S7_class(e1), S7::S7_class(e2))) {
-    return(FALSE)
-  }
-  if (inherits(e1, BooleanType)) {
-    return(TRUE)
-  }
+method(`==`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
+  FALSE
+}
+
+method(`==`, list(BooleanType, BooleanType)) <- function(e1, e2) {
+  TRUE
+}
+
+method(`==`, list(IntegerType, IntegerType)) <- function(e1, e2) {
+  e1@value == e2@value
+}
+
+method(`==`, list(FloatType, FloatType)) <- function(e1, e2) {
   e1@value == e2@value
 }
 
@@ -211,7 +196,7 @@ make_value_type <- function(str, shape = NULL) {
     } else {
       .NotYetImplemented()
     }
-    TensorType(TensorElementType(dtype), shape = Shape(shape))
+    TensorType(dtype, Shape(shape))
   }
 
   ValueType(type)

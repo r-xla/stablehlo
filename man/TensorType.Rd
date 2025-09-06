@@ -4,7 +4,7 @@
 \alias{TensorType}
 \title{TensorType}
 \usage{
-TensorType(dtype = TensorElementType(), shape = Shape())
+TensorType(dtype = BooleanType(), shape = Shape())
 }
 \arguments{
 \item{dtype}{(\code{\link{TensorElementType}})}

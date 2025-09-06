@@ -25,6 +25,7 @@ baseline_element_type <- function(x) {
 #'   The operand.
 #' @return (`ValueType`)\cr
 #'   The inferred type.
+#' @export
 infer_types_generic_uni <- function(operand) {
   stopifnot(inherits(operand@type, TensorType))
   ValueTypes(list(operand))
@@ -39,6 +40,7 @@ infer_types_generic_uni <- function(operand) {
 #'   The right-hand side operand.
 #' @return (`ValueType`)\cr
 #'   The inferred type.
+#' @export
 infer_types_generic_biv <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(inherits(rhs@type, TensorType))
@@ -55,9 +57,10 @@ infer_types_generic_biv <- function(lhs, rhs) {
 #'   The right-hand side operand.
 #' @return (`ValueType`)\cr
 #'   The inferred type.
+#' @export
 infer_types_boolean_biv <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(lhs@type == rhs@type)
-  assert_one_of(lhs@type@dtype@type, IntegerType, BooleanType)
+  assert_one_of(lhs@type@dtype, IntegerType, BooleanType)
   ValueTypes(list(lhs))
 }
