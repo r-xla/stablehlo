@@ -146,8 +146,13 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
 #'   hlo_input("x", "f32", shape = c(2, 2)),
 #'   hlo_input("y", "f32", shape = c(2, 2))
 #' )
-hlo_input <- function(name, dtype, shape = integer(), func_id = FuncId()) {
-  assert_string(name, pattern = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[0-9]+$)")
+hlo_input <- function(
+  name,
+  dtype,
+  shape = integer(),
+  func_id = FuncId("main")
+) {
+  assert_valid_name(name)
 
   value_id <- ValueId(name)
   value_type <- ValueType(dtype, shape = shape)

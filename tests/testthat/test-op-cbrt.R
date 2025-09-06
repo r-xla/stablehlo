@@ -1,5 +1,4 @@
 test_that("basic tests", {
-  local_reset_id_gen()
   x <- hlo_input("x", "f32", shape = c(2L, 2L), "main")
   y <- hlo_cbrt(x)
   func <- hlo_return(y)

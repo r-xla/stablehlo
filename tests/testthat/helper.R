@@ -1,10 +1,3 @@
-library("testthat")
-library("checkmate")
-
-if (requireNamespace("pjrt", quietly = TRUE)) {
-  library("pjrt")
-}
-
 hlo_test_uni <- function(
   hlo_func,
   test_func,
@@ -23,11 +16,11 @@ hlo_test_uni <- function(
   func <- hlo_return(y)
   # expect_snapshot(repr(func))
 
-  skip_if_not_installed("pjrt")
-  program <- pjrt_program(repr(func))
+  testthat::skip_if_not_installed("pjrt")
+  program <- pjrt::pjrt_program(repr(func))
   expect_class(program, "PJRTProgram")
 
-  executable <- pjrt_compile(program)
+  executable <- pjrt::pjrt_compile(program)
   expect_class(executable, "PJRTLoadedExecutable")
 
   if (is.null(test_data)) {
@@ -39,11 +32,11 @@ hlo_test_uni <- function(
   }
 
   x <- array(test_data, dim = dimension)
-  x_buf <- pjrt_buffer(x, dtype = "f64")
-  out_buf <- pjrt_execute(executable, x_buf)
+  x_buf <- pjrt::pjrt_buffer(x, dtype = "f64")
+  out_buf <- pjrt::pjrt_execute(executable, x_buf)
   expect_class(out_buf, "PJRTBuffer")
-  out <- as_array(out_buf)
-  expect_equal(out, test_func(x), tolerance = tol)
+  out <- pjrt::as_array(out_buf)
+  testthat::expect_equal(out, test_func(x), tolerance = tol)
 }
 
 hlo_test_biv <- function(
@@ -56,7 +49,6 @@ hlo_test_biv <- function(
   rhs = NULL,
   tol = 1e-5
 ) {
-  local_reset_id_gen()
   if (is.null(type)) {
     type <- "f64"
   }
@@ -76,18 +68,18 @@ hlo_test_biv <- function(
 
   withr::with_seed(1, {
     f <- make_fn()$f
-    expect_snapshot(repr(f))
+    testthat::expect_snapshot(repr(f))
   })
 
   res <- make_fn()
   func <- res$f
   dimension <- res$dimension
 
-  skip_if_not_installed("pjrt")
-  program <- pjrt_program(repr(func))
+  testthat::skip_if_not_installed("pjrt")
+  program <- pjrt::pjrt_program(repr(func))
   expect_class(program, "PJRTProgram")
 
-  executable <- pjrt_compile(program)
+  executable <- pjrt::pjrt_compile(program)
   expect_class(executable, "PJRTLoadedExecutable")
 
   if (is.null(lhs)) {
@@ -124,9 +116,13 @@ hlo_test_biv <- function(
   } else {
     rhs
   }
-  x_buf <- pjrt_buffer(x, dtype = type)
-  y_buf <- pjrt_buffer(y, dtype = type)
-  out_buf <- pjrt_execute(executable, x_buf, y_buf)
+  x_buf <- pjrt::pjrt_buffer(x, dtype = type)
+  y_buf <- pjrt::pjrt_buffer(y, dtype = type)
+  out_buf <- pjrt::pjrt_execute(executable, x_buf, y_buf)
   expect_class(out_buf, "PJRTBuffer")
-  expect_equal(test_func(x, y), as_array(out_buf), tolerance = tol)
+  testthat::expect_equal(
+    test_func(x, y),
+    pjrt::as_array(out_buf),
+    tolerance = tol
+  )
 }

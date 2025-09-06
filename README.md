@@ -30,17 +30,17 @@ of type `f32` and shape `(2, 2)` and adds them.
 
 ``` r
 library(stablehlo)
-x <- hlo_input("x", "f32", shape = c(2, 2), func_id = "main")
+x <- hlo_input("x", "f32", shape = c(2, 2))
 x
 #> Variable %x in:
 #> func.func @main (%x: tensor<2x2xf32>) ->  {
-#> 
+#>
 #> }
-y <- hlo_input("y", "f32", shape = c(2, 2), func_id = "main")
+y <- hlo_input("y", "f32", shape = c(2, 2))
 y
 #> Variable %y in:
 #> func.func @main (%y: tensor<2x2xf32>) ->  {
-#> 
+#>
 #> }
 z <- hlo_add(x, y)
 z

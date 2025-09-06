@@ -3,5 +3,5 @@
     Code
       repr(func)
     Output
-      [1] "func.func @main (%x: tensor<2x2xf32>) -> tensor<2x2xf32> {\n%1 = \"stablehlo.cbrt\" (%x): (tensor<2x2xf32>) -> (tensor<2x2xf32>)\n\"func.return\"(%1): (tensor<2x2xf32>) -> ()\n}\n"
+      [1] "func.func @main (%x: tensor<2x2xf32>) -> tensor<2x2xf32> {\n%0 = \"stablehlo.cbrt\" (%x): (tensor<2x2xf32>) -> (tensor<2x2xf32>)\n\"func.return\"(%0): (tensor<2x2xf32>) -> ()\n}\n"
 

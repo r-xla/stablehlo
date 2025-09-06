@@ -1,6 +1,5 @@
 test_that("basic tests", {
-  local_reset_id_gen()
-  x <- hlo_input("x", "f32", shape = c(1L, 3L), func_id = "main")
+  x <- hlo_input("x", "f32", shape = c(1L, 3L))
   y <- hlo_broadcast_in_dim(
     x,
     broadcast_dimensions = c(0L, 2L),

@@ -1,10 +1,8 @@
 test_that("If operator works", {
-  local_reset_id_gen()
-
   params <- c(
-    pred = hlo_input("pred", "i1", integer(), func_id = "main"),
-    x1 = hlo_input("x1", "f32", integer(), func_id = "main"),
-    x2 = hlo_input("x2", "f32", integer(), func_id = "main")
+    pred = hlo_input("pred", "i1", integer()),
+    x1 = hlo_input("x1", "f32", integer()),
+    x2 = hlo_input("x2", "f32", integer())
   )
 
   f1 <- hlo_return(hlo_closure(params$x1)[[1L]])

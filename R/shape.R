@@ -1,6 +1,12 @@
 #' @include repr.R
 NULL
 
+#' @title Shape
+#' @description
+#' Represents the shape of a tensor.
+#' @param dims (`integer()`)
+#' @return `Shape`
+#' @export
 Shape <- new_class(
   "Shape",
   properties = list(

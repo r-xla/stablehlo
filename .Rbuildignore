@@ -17,3 +17,5 @@ SPEC.md
 ^codecov.yaml$
 ^attic$
 ^man-roxygen$
+^.lintr$
+

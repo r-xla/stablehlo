@@ -17,7 +17,12 @@ assert_tensor_constant <- function(
     cli::cli_abort("tnsr must have {ndims} dimensions")
   }
 
-  if (!is.null(dtype) && x@value@type@dtype@type@Value != dtype) {
+  if (!is.null(dtype) && x@value@type@dtype@type@value != dtype) {
     cli::cli_abort("tnsr must have element type {dtype}")
   }
+}
+
+
+assert_valid_name <- function(name) {
+  assert_string(name, pattern = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[0-9]+$)")
 }

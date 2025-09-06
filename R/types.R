@@ -3,11 +3,22 @@
 #' @include list_of.R
 NULL
 
+#' @title BooleanType
+#' @description
+#' Represents the boolean type.
+#' @return `BooleanType`
+#' @export
 BooleanType <- new_class("BooleanType")
 method(repr, BooleanType) <- function(x) {
   "i1"
 }
 
+#' @title IntegerType
+#' @description
+#' Represents the integer type.
+#' @param value (`character(1)`)
+#' @return `IntegerType`
+#' @export
 IntegerType <- new_enum(
   "IntegerType",
   c(
@@ -27,9 +38,15 @@ IntegerType <- new_enum(
 )
 
 method(repr, IntegerType) <- function(x) {
-  x@Value
+  x@value
 }
 
+#' @title FloatType
+#' @description
+#' Represents the float type.
+#' @param value (`character(1)`)
+#' @return `FloatType`
+#' @export
 FloatType <- new_enum(
   "FloatType",
   c(
@@ -51,6 +68,12 @@ FloatType <- new_enum(
   )
 )
 
+#' @title TensorElementType
+#' @description
+#' Represents the element type of a tensor.
+#' @param type ([`BooleanType`] | [`IntegerType`] | [`FloatType`])
+#' @return `TensorElementType`
+#' @export
 TensorElementType <- new_class(
   name = "TensorElementType",
   properties = list(
@@ -83,9 +106,16 @@ method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
   if (inherits(e1, BooleanType)) {
     return(TRUE)
   }
-  e1@Value == e2@Value
+  e1@value == e2@value
 }
 
+#' @title TensorType
+#' @description
+#' Represents a tensor type with a specific data type and shape.
+#' @param dtype ([`TensorElementType`])
+#' @param shape ([`Shape`])
+#' @return `TensorType`
+#' @export
 TensorType <- new_class(
   "TensorType",
   properties = list(

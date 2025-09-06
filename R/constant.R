@@ -20,7 +20,7 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   value_reprs <- if (inherits(type@dtype@type, FloatType)) {
     format_double(
       data,
-      precision = if (type@dtype@type@Value == "f32") 32 else 64
+      precision = if (type@dtype@type@value == "f32") 32 else 64
     )
   } else if (inherits(type@dtype@type, IntegerType)) {
     as.character(data)

@@ -4,7 +4,7 @@
 \alias{hlo_input}
 \title{Create a input to a function}
 \usage{
-hlo_input(name, dtype, shape = integer(), func_id = FuncId())
+hlo_input(name, dtype, shape = integer(), func_id = FuncId("main"))
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr

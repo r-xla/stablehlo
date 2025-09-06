@@ -151,18 +151,13 @@ impl_hlo_constant <- function(value, dtype) {
     value_id = value_id,
     value_type = ValueType(const_value@value@type),
     func = Func(
+      id = FuncId("main"),
       body = FuncBody(
         items = list(
           op
         )
       ),
-      outputs = FuncOutputs(
-        items = list(
-          FuncOutput(
-            type = ValueType(const_value@value@type)
-          )
-        )
-      )
+      outputs = FuncOutputs()
     )
   )
 }
