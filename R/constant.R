@@ -17,21 +17,21 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   data <- x@data
   type <- x@type
 
-  value_reprs <- if (inherits(type@elt_type@type, FloatType)) {
+  value_reprs <- if (inherits(type@dtype@type, FloatType)) {
     format_double(
       data,
-      precision = if (type@elt_type@type@Value == "f32") 32 else 64
+      precision = if (type@dtype@type@Value == "f32") 32 else 64
     )
-  } else if (inherits(type@elt_type@type, IntegerType)) {
+  } else if (inherits(type@dtype@type, IntegerType)) {
     as.character(data)
-  } else if (inherits(type@elt_type@type, BooleanType)) {
+  } else if (inherits(type@dtype@type, BooleanType)) {
     tolower(as.logical(data))
   }
 
   if (simplify_dense && length(shape(data)) <= 1L) {
     return(paste0(
       "array<",
-      repr(type@elt_type),
+      repr(type@dtype),
       ": ",
       paste(value_reprs, collapse = ", "),
       ">"
@@ -77,21 +77,21 @@ method(repr, Constant) <- function(x, simplify_dense = TRUE) {
 r_to_constant <- S7::new_generic(
   "r_to_constant",
   "value",
-  function(value, elt_type = NULL, ...) {
+  function(value, dtype = NULL, ...) {
     S7::S7_dispatch()
   }
 )
 
 method(r_to_constant, S7::class_logical) <- function(
   value,
-  elt_type = NULL, # is ignored
+  dtype = NULL, # is ignored
   ...
 ) {
   if (!is.array(value) && length(value) != 1L) {
     stop("Either provide an R array or a length 1 vector.")
   }
-  if (!is.null(elt_type) && elt_type != "pred") {
-    stop("Invalid elt_type for logical")
+  if (!is.null(dtype) && dtype != "pred") {
+    stop("Invalid dtype for logical")
   }
   shape <- Shape(
     if (is.array(value)) shape(value) else integer()
@@ -99,7 +99,7 @@ method(r_to_constant, S7::class_logical) <- function(
 
   stablehlo_type <- BooleanType()
   element_type_obj <- TensorElementType(type = stablehlo_type)
-  tensor_type <- TensorType(elt_type = element_type_obj, shape = shape)
+  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
 
   tensor_constant <- TensorConstant(
     data = value,
@@ -111,27 +111,27 @@ method(r_to_constant, S7::class_logical) <- function(
 
 method(r_to_constant, S7::class_double) <- function(
   value,
-  elt_type = NULL,
+  dtype = NULL,
   ...
 ) {
   if (!is.array(value) && length(value) != 1L) {
     stop("Either provide an R array or a length 1 vector.")
   }
-  if (!is.null(elt_type) && !(elt_type %in% c("f32", "f64"))) {
-    stop("Invalid elt_type for double")
+  if (!is.null(dtype) && !(dtype %in% c("f32", "f64"))) {
+    stop("Invalid dtype for double")
   }
-  elt_type <- if (is.null(elt_type)) {
+  dtype <- if (is.null(dtype)) {
     FloatType("f32")
   } else {
-    string_to_type(elt_type)
+    string_to_type(dtype)
   }
 
   shape <- Shape(
     if (is.array(value)) shape(value) else integer()
   )
 
-  element_type_obj <- TensorElementType(type = elt_type)
-  tensor_type <- TensorType(elt_type = element_type_obj, shape = shape)
+  element_type_obj <- TensorElementType(type = dtype)
+  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
 
   tensor_constant <- TensorConstant(
     data = value,
@@ -143,28 +143,28 @@ method(r_to_constant, S7::class_double) <- function(
 
 method(r_to_constant, S7::class_integer) <- function(
   value,
-  elt_type = NULL,
+  dtype = NULL,
   ...
 ) {
   if (!is.array(value) && length(value) != 1L) {
     stop("Either provide an R array or a length 1 vector.")
   }
   valid_types <- c("i8", "i16", "i32", "i64", "ui8", "ui16", "ui32", "ui64")
-  if (!is.null(elt_type) && !(elt_type %in% valid_types)) {
-    stop("Invalid elt_type for integer")
+  if (!is.null(dtype) && !(dtype %in% valid_types)) {
+    stop("Invalid dtype for integer")
   }
-  elt_type <- if (is.null(elt_type)) {
+  dtype <- if (is.null(dtype)) {
     IntegerType("i32")
   } else {
-    string_to_type(elt_type)
+    string_to_type(dtype)
   }
 
   shape <- Shape(
     if (is.array(value)) shape(value) else integer()
   )
 
-  element_type_obj <- TensorElementType(type = elt_type)
-  tensor_type <- TensorType(elt_type = element_type_obj, shape = shape)
+  element_type_obj <- TensorElementType(type = dtype)
+  tensor_type <- TensorType(dtype = element_type_obj, shape = shape)
 
   tensor_constant <- TensorConstant(
     data = value,
@@ -176,7 +176,7 @@ method(r_to_constant, S7::class_integer) <- function(
 
 method(r_to_constant, S7::class_any) <- function(
   value,
-  elt_type = NULL,
+  dtype = NULL,
   ...
 ) {
   stop("Unsupported type for r_to_constant: ", class(value)[1])

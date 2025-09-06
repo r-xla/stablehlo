@@ -1,8 +1,8 @@
 test_that("scalars", {
   local_reset_id_gen()
-  check <- function(x, elt_type = NULL) {
-    f <- if (!is.null(elt_type)) {
-      hlo_scalar(x, elt_type)
+  check <- function(x, dtype = NULL) {
+    f <- if (!is.null(dtype)) {
+      hlo_scalar(x, dtype)
     } else {
       hlo_scalar(x)
     }
@@ -25,8 +25,8 @@ test_that("scalars", {
 test_that("compile scalars", {
   local_reset_id_gen()
   skip_if_not_installed("pjrt")
-  check <- function(x, elt_type) {
-    f <- hlo_return(hlo_scalar(x, elt_type))
+  check <- function(x, dtype) {
+    f <- hlo_return(hlo_scalar(x, dtype))
     f@id = FuncId("main")
     program <- pjrt::pjrt_program(repr(f))
     exec <- pjrt::pjrt_compile(program)
@@ -34,7 +34,7 @@ test_that("compile scalars", {
     expect_equal(
       pjrt::as_array(buffer),
       x,
-      tolerance = if (startsWith(elt_type, "f")) 1e-6 else 0
+      tolerance = if (startsWith(dtype, "f")) 1e-6 else 0
     )
   }
   check(3.14, "f32")
@@ -64,8 +64,8 @@ test_that("arrays", {
 test_that("compile tensors", {
   local_reset_id_gen()
   skip_if_not_installed("pjrt")
-  check <- function(x, elt_type) {
-    f <- hlo_return(hlo_tensor(x, elt_type))
+  check <- function(x, dtype) {
+    f <- hlo_return(hlo_tensor(x, dtype))
     f@id = FuncId("main")
     program <- pjrt::pjrt_program(repr(f))
     exec <- pjrt::pjrt_compile(program)
@@ -89,8 +89,8 @@ test_that("errors", {
   local_reset_id_gen()
   expect_error(hlo_scalar(-1L, "ui16"), "must be non-negative")
   expect_error(hlo_scalar(NA), "must not contain NA")
-  expect_error(hlo_scalar(3L, "f32"), "Invalid elt_type for integer")
-  expect_error(hlo_scalar(1, "i32"), "Invalid elt_type for double")
+  expect_error(hlo_scalar(3L, "f32"), "Invalid dtype for integer")
+  expect_error(hlo_scalar(1, "i32"), "Invalid dtype for double")
   expect_error(hlo_scalar(1:2), "a single value")
 })
 

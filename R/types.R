@@ -89,7 +89,7 @@ method(`==`, list(element_type_union, element_type_union)) <- function(e1, e2) {
 TensorType <- new_class(
   "TensorType",
   properties = list(
-    elt_type = TensorElementType,
+    dtype = TensorElementType,
     shape = Shape
   )
 )
@@ -99,7 +99,7 @@ method(repr, TensorType) <- function(x) {
     "tensor<",
     repr(x@shape),
     if (length(x@shape@dims) > 0) "x" else "",
-    repr(x@elt_type),
+    repr(x@dtype),
     ">"
   )
 }
@@ -161,7 +161,7 @@ method(`==`, list(value_type_union, value_type_union)) <- function(e1, e2) {
     return(TRUE)
   }
   # TensorType
-  e1@elt_type == e2@elt_type && e1@shape == e2@shape
+  e1@dtype == e2@dtype && e1@shape == e2@shape
 }
 
 make_value_type <- function(str, shape = NULL) {
@@ -172,7 +172,7 @@ make_value_type <- function(str, shape = NULL) {
     if (is.null(shape)) {
       shape <- integer(0)
     }
-    elt_type <- if (str %in% c("pred", "i1")) {
+    dtype <- if (str %in% c("pred", "i1")) {
       BooleanType()
     } else if (grepl("^(i|ui)[0-9]+$", str)) {
       IntegerType(str)
@@ -181,7 +181,7 @@ make_value_type <- function(str, shape = NULL) {
     } else {
       .NotYetImplemented()
     }
-    TensorType(TensorElementType(elt_type), shape = Shape(shape))
+    TensorType(TensorElementType(dtype), shape = Shape(shape))
   }
 
   ValueType(type)

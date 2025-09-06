@@ -1,7 +1,7 @@
 assert_tensor_constant <- function(
   x,
   ndims = NULL,
-  elt_type = NULL,
+  dtype = NULL,
   null_ok = FALSE
 ) {
   if (is.null(x) && null_ok) {
@@ -17,7 +17,7 @@ assert_tensor_constant <- function(
     cli::cli_abort("tnsr must have {ndims} dimensions")
   }
 
-  if (!is.null(elt_type) && x@value@type@elt_type@type@Value != elt_type) {
-    cli::cli_abort("tnsr must have element type {elt_type}")
+  if (!is.null(dtype) && x@value@type@dtype@type@Value != dtype) {
+    cli::cli_abort("tnsr must have element type {dtype}")
   }
 }

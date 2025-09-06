@@ -4,13 +4,13 @@
 \alias{hlo_input}
 \title{Create a input to a function}
 \usage{
-hlo_input(name, elt_type, shape = integer(), func_id = FuncId())
+hlo_input(name, dtype, shape = integer(), func_id = FuncId())
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr
 The name of the parameter.}
 
-\item{elt_type}{(\code{\link{ValueType}})\cr
+\item{dtype}{(\code{\link{ValueType}})\cr
 The element type of the parameter.
 Can contain digits, letters and underscores.
 If it starts with a digit, it can only contain digits.

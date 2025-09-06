@@ -10,7 +10,7 @@ baseline_type <- function(x) {
 baseline_element_type <- function(x) {
   stopifnot(inherits(x, ValueType))
   if (is(x@type, TensorType)) {
-    return(x@type@elt_type)
+    return(x@type@dtype)
   } else if (is(x@type, TokenType)) {
     stop("Invalid input")
   } else {
@@ -33,6 +33,6 @@ infer_types_generic_biv <- function(lhs, rhs) {
 infer_types_boolean_biv <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(lhs@type == rhs@type)
-  assert_one_of(lhs@type@elt_type@type, IntegerType, BooleanType)
+  assert_one_of(lhs@type@dtype@type, IntegerType, BooleanType)
   ValueTypes(list(lhs))
 }

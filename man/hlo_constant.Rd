@@ -13,29 +13,29 @@
 \alias{hlo_tensor.double}
 \title{Create a Constant}
 \usage{
-hlo_scalar(value, elt_type = NULL, ...)
+hlo_scalar(value, dtype = NULL, ...)
 
-\method{hlo_scalar}{logical}(value, elt_type = NULL, ...)
+\method{hlo_scalar}{logical}(value, dtype = NULL, ...)
 
-\method{hlo_scalar}{double}(value, elt_type = NULL, ...)
+\method{hlo_scalar}{double}(value, dtype = NULL, ...)
 
-\method{hlo_scalar}{integer}(value, elt_type = NULL, ...)
+\method{hlo_scalar}{integer}(value, dtype = NULL, ...)
 
-hlo_tensor(value, elt_type = NULL, ...)
+hlo_tensor(value, dtype = NULL, ...)
 
-\method{hlo_tensor}{array}(value, elt_type = NULL, ...)
+\method{hlo_tensor}{array}(value, dtype = NULL, ...)
 
-\method{hlo_tensor}{integer}(value, elt_type = NULL, shape = get_dims(value), ...)
+\method{hlo_tensor}{integer}(value, dtype = NULL, shape = get_dims(value), ...)
 
-\method{hlo_tensor}{logical}(value, elt_type = NULL, shape = get_dims(value), ...)
+\method{hlo_tensor}{logical}(value, dtype = NULL, shape = get_dims(value), ...)
 
-\method{hlo_tensor}{double}(value, elt_type = NULL, shape = get_dims(value), ...)
+\method{hlo_tensor}{double}(value, dtype = NULL, shape = get_dims(value), ...)
 }
 \arguments{
 \item{value}{(any)\cr
 Value from which to create a constant.}
 
-\item{elt_type}{(\code{character(1)})\cr
+\item{dtype}{(\code{character(1)})\cr
 String for element type.
 Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.}
 

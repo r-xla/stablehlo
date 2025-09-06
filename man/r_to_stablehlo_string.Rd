@@ -4,13 +4,13 @@
 \alias{r_to_stablehlo_string}
 \title{Represent an R value in stableHLO}
 \usage{
-r_to_stablehlo_string(value, elt_type)
+r_to_stablehlo_string(value, dtype)
 }
 \arguments{
 \item{value}{(any)\cr
 The R value to convert}
 
-\item{elt_type}{(\code{character(1)})\cr
+\item{dtype}{(\code{character(1)})\cr
 The element type to use.}
 }
 \value{
