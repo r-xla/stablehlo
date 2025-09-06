@@ -119,14 +119,14 @@ OpMnemonic <- new_enum(
 )
 
 method(`==`, list(OpMnemonic, OpMnemonic)) <- function(e1, e2) {
-  e1@Value == e2@Value
+  e1@value == e2@value
 }
 
 method(`!=`, list(OpMnemonic, OpMnemonic)) <- function(e1, e2) {
   !(e1 == e2)
 }
 method(repr, OpMnemonic) <- function(x) {
-  x@Value
+  x@value
 }
 
 OpName <- new_class(

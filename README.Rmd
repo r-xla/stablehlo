@@ -37,9 +37,9 @@ Below, we create a function that takes two input arguments `x` and `y` of type `
 
 ```{r}
 library(stablehlo)
-x <- hlo_input("x", "f32", shape = c(2, 2), func_id = "main")
+x <- hlo_input("x", "f32", shape = c(2, 2))
 x
-y <- hlo_input("y", "f32", shape = c(2, 2), func_id = "main")
+y <- hlo_input("y", "f32", shape = c(2, 2))
 y
 z <- hlo_add(x, y)
 z

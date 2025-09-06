@@ -126,7 +126,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
 #' @title Create a input to a function
 #' @param name (`character(1)`)\cr
 #'   The name of the parameter.
-#' @param elt_type ([`ValueType`])\cr
+#' @param dtype ([`ValueType`])\cr
 #'   The element type of the parameter.
 #'   Can contain digits, letters and underscores.
 #'   If it starts with a digit, it can only contain digits.
@@ -146,11 +146,16 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
 #'   hlo_input("x", "f32", shape = c(2, 2)),
 #'   hlo_input("y", "f32", shape = c(2, 2))
 #' )
-hlo_input <- function(name, elt_type, shape = integer(), func_id = FuncId()) {
-  assert_string(name, pattern = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[0-9]+$)")
+hlo_input <- function(
+  name,
+  dtype,
+  shape = integer(),
+  func_id = FuncId("main")
+) {
+  assert_valid_name(name)
 
   value_id <- ValueId(name)
-  value_type <- ValueType(elt_type, shape = shape)
+  value_type <- ValueType(dtype, shape = shape)
 
   if (is.character(func_id)) {
     func_id <- FuncId(func_id)

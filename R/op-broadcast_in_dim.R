@@ -53,7 +53,7 @@ infer_types_broadcast_in_dim <- function(
   ValueTypes(list(
     ValueType(
       TensorType(
-        elt_type = operand@type@elt_type,
+        dtype = operand@type@dtype,
         shape = Shape(result_dims)
       )
     )
@@ -73,7 +73,7 @@ hlo_broadcast_in_dim <- function(
   broadcast_dimensions,
   shape_out
 ) {
-  bd_attr <- hlo_tensor(as.integer(broadcast_dimensions), elt_type = "i64")
+  bd_attr <- hlo_tensor(as.integer(broadcast_dimensions), dtype = "i64")
 
   hlo_broadcast_in_dim_impl(
     values = list(operand = operand),

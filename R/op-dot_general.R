@@ -7,7 +7,7 @@ infer_types_dot_general <- function(
 ) {
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(inherits(rhs@type, TensorType))
-  stopifnot(lhs@type@elt_type == rhs@type@elt_type)
+  stopifnot(lhs@type@dtype == rhs@type@dtype)
   dim_lhs <- shape(lhs)
   dim_rhs <- shape(rhs)
   contracting_dims <- dot_dimension_numbers@contracting_dims
@@ -34,7 +34,7 @@ infer_types_dot_general <- function(
   out_dim <- c(dim_batch1, dim_lhs_remaining, dim_rhs_remaining)
 
   ValueTypes(list(
-    ValueType(TensorType(elt_type = lhs@type@elt_type, shape = Shape(out_dim)))
+    ValueType(TensorType(dtype = lhs@type@dtype, shape = Shape(out_dim)))
   ))
 }
 

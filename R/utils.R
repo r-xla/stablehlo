@@ -47,10 +47,10 @@ output_types_from_body <- function(body) {
 #' Convert R value to StableHLO string representation
 #' @param value (any)\cr
 #'  The R value to convert
-#' @param elt_type (`character(1)`)\cr
+#' @param dtype (`character(1)`)\cr
 #'   The element type to use.
 #' @return `character(1)`
-r_to_stablehlo_string <- function(value, elt_type) {
+r_to_stablehlo_string <- function(value, dtype) {
   if (is.logical(value)) {
     if (value) {
       return("true")
@@ -60,7 +60,7 @@ r_to_stablehlo_string <- function(value, elt_type) {
   } else if (is.integer(value)) {
     return(as.character(value))
   } else if (is.numeric(value)) {
-    if (elt_type == "f32") {
+    if (dtype == "f32") {
       format_double(value, precision = 32)
     } else {
       format_double(value, precision = 64)

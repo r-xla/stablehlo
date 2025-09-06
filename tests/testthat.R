@@ -6,7 +6,4 @@
 # * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
 # * https://testthat.r-lib.org/articles/special-files.html
 
-library(testthat)
-library(stablehlo)
-
-test_check("stablehlo")
+testthat::test_check("stablehlo")

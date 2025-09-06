@@ -192,7 +192,6 @@ method(c, FuncVariable) <- function(...) {
       func = func
     )
   })
-  names(out) <- vapply(variables, function(x) x@value_id@id, character(1L))
   out
 }
 

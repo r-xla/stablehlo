@@ -27,8 +27,8 @@ OpConstant <- S7::new_class(
   }
 )
 
-op_constant <- function(value, elt_type = NULL) {
-  const_value <- r_to_constant(value, elt_type = elt_type)
+op_constant <- function(value, dtype = NULL) {
+  const_value <- r_to_constant(value, dtype = dtype)
   OpConstant(const_value)
 }
 
@@ -38,7 +38,7 @@ op_constant <- function(value, elt_type = NULL) {
 #' Note that strictly speaking, stableHLO 'scalars' are simply tensors with 0 dimensions.
 #' @param value (any)\cr
 #'   Value from which to create a constant.
-#' @param elt_type (`character(1)`)\cr
+#' @param dtype (`character(1)`)\cr
 #'   String for element type.
 #'   Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.
 #' @param ... (any)\cr
@@ -50,21 +50,21 @@ op_constant <- function(value, elt_type = NULL) {
 #' hlo_scalar(1, "f32")
 #' hlo_scalar(TRUE)
 #' hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), "f32")
-hlo_scalar <- function(value, elt_type = NULL, ...) {
+hlo_scalar <- function(value, dtype = NULL, ...) {
   # Can't use S7 for now, because there is no array class
   UseMethod("hlo_scalar")
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_scalar.logical <- function(value, elt_type = NULL, ...) {
+hlo_scalar.logical <- function(value, dtype = NULL, ...) {
   if (length(value) != 1L) {
     stop("hlo_scalar expects a single value.")
   }
   if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
-  impl_hlo_constant(value, elt_type = elt_type)
+  impl_hlo_constant(value, dtype = dtype)
 }
 
 #' @rdname hlo_constant
@@ -73,41 +73,41 @@ hlo_scalar.double <- hlo_scalar.logical
 
 #' @rdname hlo_constant
 #' @export
-hlo_scalar.integer <- function(value, elt_type = NULL, ...) {
+hlo_scalar.integer <- function(value, dtype = NULL, ...) {
   if (length(value) != 1L) {
     stop("hlo_scalar expects a single value.")
   }
   if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
-  if (!is.null(elt_type) && grepl("^ui", elt_type) && any(value < 0L)) {
+  if (!is.null(dtype) && grepl("^ui", dtype) && any(value < 0L)) {
     stop("Data for unsigned integer must be non-negative")
   }
-  impl_hlo_constant(value, elt_type = elt_type)
+  impl_hlo_constant(value, dtype = dtype)
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor <- function(value, elt_type = NULL, ...) {
+hlo_tensor <- function(value, dtype = NULL, ...) {
   # Can't use S7 for now, because there is no array class
   UseMethod("hlo_tensor")
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.array <- function(value, elt_type = NULL, ...) {
+hlo_tensor.array <- function(value, dtype = NULL, ...) {
   if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
   if (
     is.integer(value) &&
-      !is.null(elt_type) &&
-      grepl(elt_type, "ui") &&
+      !is.null(dtype) &&
+      grepl(dtype, "ui") &&
       any(value < 0)
   ) {
     stop("Data for unsigned integer must be non-negative")
   }
-  impl_hlo_constant(value, elt_type = elt_type)
+  impl_hlo_constant(value, dtype = dtype)
 }
 
 #' @rdname hlo_constant
@@ -117,11 +117,11 @@ hlo_tensor.array <- function(value, elt_type = NULL, ...) {
 #' @export
 hlo_tensor.integer <- function(
   value,
-  elt_type = NULL,
+  dtype = NULL,
   shape = get_dims(value),
   ...
 ) {
-  impl_hlo_constant(array(value, dim = shape), elt_type = elt_type)
+  impl_hlo_constant(array(value, dim = shape), dtype = dtype)
 }
 
 #' @rdname hlo_constant
@@ -133,8 +133,8 @@ hlo_tensor.logical <- hlo_tensor.integer
 hlo_tensor.double <- hlo_tensor.integer
 
 
-impl_hlo_constant <- function(value, elt_type) {
-  const_value <- r_to_constant(value, elt_type = elt_type)
+impl_hlo_constant <- function(value, dtype) {
+  const_value <- r_to_constant(value, dtype = dtype)
   value_id <- ValueId()
   op <- OpConstant(
     const_value,
@@ -151,18 +151,13 @@ impl_hlo_constant <- function(value, elt_type) {
     value_id = value_id,
     value_type = ValueType(const_value@value@type),
     func = Func(
+      id = FuncId("main"),
       body = FuncBody(
         items = list(
           op
         )
       ),
-      outputs = FuncOutputs(
-        items = list(
-          FuncOutput(
-            type = ValueType(const_value@value@type)
-          )
-        )
-      )
+      outputs = FuncOutputs()
     )
   )
 }
