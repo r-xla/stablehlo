@@ -30,8 +30,6 @@ hlo_test_uni <- function(
   func <- res$func
   dimension <- res$dimension
 
-  # expect_snapshot(repr(func))
-
   testthat::skip_if_not_installed("pjrt")
   program <- pjrt::pjrt_program(repr(func))
   expect_class(program, "PJRTProgram")
