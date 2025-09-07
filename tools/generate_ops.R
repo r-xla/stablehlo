@@ -1,6 +1,5 @@
 source("tools/create_uni.R")
 source("tools/create_biv.R")
-source("tools/generic_inference.R")
 
 # univariate functions save to write
 univariates <- c(
