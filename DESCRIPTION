@@ -78,6 +78,8 @@ Collate:
     'op-return.R'
     'op-round_nearest_even.R'
     'op-rsqrt.R'
+    'op-shift_left.R'
+    'op-shift_right.R'
     'op-sign.R'
     'op-sine.R'
     'op-sqrt.R'

@@ -1,4 +1,4 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R
 NULL
 
 OpShiftLeft <- new_Op("OpShiftLeft", "shift_left")
