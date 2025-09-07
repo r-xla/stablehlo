@@ -1,9 +1,9 @@
-#' @include op.R hlo.R utils.R
-NULL
+#' @include op.R hlo.R type_inference.R 
+NULL 
 
 OpMaximum <- new_Op("OpMaximum", "maximum")
 
-hlo_maximum_impl <- hlo_fn(OpMaximum, infer_types_generic_biv)
+hlo_maximum_impl <- hlo_fn(OpMaximum, infer_types_generic_biv) 
 
 #' @templateVar mnemonic maximum
 #' @template op

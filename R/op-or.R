@@ -1,9 +1,9 @@
-#' @include op.R hlo.R utils.R
-NULL
+#' @include op.R hlo.R type_inference.R 
+NULL 
 
 OpOr <- new_Op("OpOr", "or")
 
-hlo_or_impl <- hlo_fn(OpOr, infer_types_boolean_biv)
+hlo_or_impl <- hlo_fn(OpOr, infer_types_boolean_biv) 
 
 #' @templateVar mnemonic or
 #' @template op

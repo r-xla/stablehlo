@@ -1,9 +1,9 @@
-#' @include op.R hlo.R utils.R
-NULL
+#' @include op.R hlo.R type_inference.R 
+NULL 
 
 OpLogistic <- new_Op("OpLogistic", "logistic")
 
-hlo_logistic_impl <- hlo_fn(OpLogistic, infer_types_generic_uni)
+hlo_logistic_impl <- hlo_fn(OpLogistic, infer_types_generic_uni) 
 
 #' @templateVar mnemonic logistic
 #' @template op

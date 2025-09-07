@@ -1,12 +1,9 @@
-#' @include op.R hlo.R utils.R
-NULL
+#' @include op.R hlo.R type_inference.R 
+NULL 
 
 OpRoundNearestEven <- new_Op("OpRoundNearestEven", "round_nearest_even")
 
-hlo_round_nearest_even_impl <- hlo_fn(
-  OpRoundNearestEven,
-  infer_types_generic_uni
-)
+hlo_round_nearest_even_impl <- hlo_fn(OpRoundNearestEven, infer_types_generic_uni) 
 
 #' @templateVar mnemonic round_nearest_even
 #' @template op

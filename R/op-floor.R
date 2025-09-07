@@ -1,9 +1,9 @@
-#' @include op.R hlo.R utils.R
-NULL
+#' @include op.R hlo.R type_inference.R 
+NULL 
 
 OpFloor <- new_Op("OpFloor", "floor")
 
-hlo_floor_impl <- hlo_fn(OpFloor, infer_types_generic_uni)
+hlo_floor_impl <- hlo_fn(OpFloor, infer_types_generic_uni) 
 
 #' @templateVar mnemonic floor
 #' @template op

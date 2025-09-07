@@ -1,9 +1,9 @@
-#' @include op.R hlo.R utils.R
-NULL
+#' @include op.R hlo.R type_inference.R 
+NULL 
 
 OpExponential <- new_Op("OpExponential", "exponential")
 
-hlo_exponential_impl <- hlo_fn(OpExponential, infer_types_generic_uni)
+hlo_exponential_impl <- hlo_fn(OpExponential, infer_types_generic_uni) 
 
 #' @templateVar mnemonic exponential
 #' @template op
