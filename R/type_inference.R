@@ -64,3 +64,17 @@ infer_types_boolean_biv <- function(lhs, rhs) {
   assert_one_of(lhs@type@dtype, IntegerType, BooleanType)
   ValueTypes(list(lhs))
 }
+
+#' @title Infer types for boolean unary operations
+#' @description
+#' Infer the types for boolean unary operations.
+#' @param operand (`ValueType`)\cr
+#'   The operand.
+#' @return (`ValueType`)\cr
+#'   The inferred type.
+#' @export
+infer_types_boolean_uni <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  assert_one_of(operand@type@dtype, IntegerType, BooleanType)
+  ValueTypes(list(operand))
+}

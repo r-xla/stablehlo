@@ -1,3 +1,3 @@
-test_that("AND works", {
-  hlo_test_biv(hlo_and, `&`, type = "pred")
+test_that("basic tests", {
+  hlo_test_biv(hlo_and, `&`, dtype = "pred")
 })

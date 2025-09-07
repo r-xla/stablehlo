@@ -46,7 +46,6 @@ Collate:
     'func_variable.R'
     'type_inference.R'
     'hlo.R'
-    'utils.R'
     'op.R'
     'op-abs.R'
     'op-add.R'
@@ -72,6 +71,7 @@ Collate:
     'op-minimum.R'
     'op-multiply.R'
     'op-negate.R'
+    'op-not.R'
     'op-or.R'
     'op-power.R'
     'op-remainder.R'
@@ -85,7 +85,8 @@ Collate:
     'op-tan.R'
     'op-tanh.R'
     'op-xor.R'
-    'tracer.R'
+    'reexports.R'
+    'utils.R'
     'zzz.R'
 LinkingTo:
     Rcpp

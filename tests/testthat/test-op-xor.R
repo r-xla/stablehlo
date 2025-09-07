@@ -4,6 +4,6 @@ test_that("XOR works", {
     function(lhs, rhs) {
       (lhs | rhs) & !(lhs & rhs)
     },
-    type = "pred"
+    dtype = "pred"
   )
 })
