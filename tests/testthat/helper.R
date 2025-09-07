@@ -39,24 +39,7 @@ hlo_test_uni <- function(
   expect_class(executable, "PJRTLoadedExecutable")
 
   if (is.null(test_data)) {
-    if (dtype == "pred") {
-      test_data <- sample(
-        c(TRUE, FALSE),
-        size = prod(dimension),
-        replace = TRUE
-      )
-    } else if (dtype == "i32") {
-      test_data <- as.integer(rgeom(prod(dimension), .1))
-      if (!non_negative) {
-        test_data <- as.integer((-1)^rbinom(prod(dimension), 1, .5) * test_data)
-      }
-    } else {
-      if (!non_negative) {
-        test_data <- rnorm(prod(dimension), mean = 0, sd = 1)
-      } else {
-        test_data <- rchisq(prod(dimension), df = 1)
-      }
-    }
+    test_data <- generate_test_data(dimension, dtype, non_negative)
   }
 
   x <- array(test_data, dim = dimension)
@@ -77,7 +60,7 @@ hlo_test_biv <- function(
   rhs = NULL,
   tol = 1e-5
 ) {
-  make_fn <- function() {
+  make_fn <- function(dtype) {
     if (is.null(dimension)) {
       len <- min(rgeom(1, .3) + 1, 4)
       dimension <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
@@ -85,19 +68,21 @@ hlo_test_biv <- function(
     x <- hlo_input("x", dtype, shape = dimension, "main")
     y <- hlo_input("y", dtype, shape = dimension, "main")
     z <- hlo_func(x, y)
+    func <- hlo_return(z)
     list(
       dimension = dimension,
-      f = hlo_return(z)
+      func = func
     )
   }
 
   withr::with_seed(1, {
-    f <- make_fn()$f
+    f <- make_fn(sample(dtype, 1))$func
     testthat::expect_snapshot(repr(f))
   })
 
-  res <- make_fn()
-  func <- res$f
+  dtype <- sample(dtype, 1)
+  res <- make_fn(dtype)
+  func <- res$func
   dimension <- res$dimension
 
   testthat::skip_if_not_installed("pjrt")
@@ -107,28 +92,12 @@ hlo_test_biv <- function(
   executable <- pjrt::pjrt_compile(program)
   expect_class(executable, "PJRTLoadedExecutable")
 
-  if (is.null(lhs)) {
-    if (dtype == "pred") {
-      lhs <- sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
-    } else {
-      if (!non_negative) {
-        lhs <- rnorm(prod(dimension), mean = 0, sd = 1)
-      } else {
-        lhs <- rchisq(prod(dimension), df = 1)
-      }
-    }
+  if (is.null(rhs)) {
+    rhs <- generate_test_data(dimension, dtype, non_negative)
   }
 
-  if (is.null(rhs)) {
-    if (dtype == "pred") {
-      rhs <- sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
-    } else {
-      if (!non_negative) {
-        rhs <- rnorm(prod(dimension), mean = 0, sd = 1)
-      } else {
-        rhs <- rchisq(prod(dimension), df = 1)
-      }
-    }
+  if (is.null(lhs)) {
+    lhs <- generate_test_data(dimension, dtype, non_negative)
   }
 
   x <- if (length(dimension)) {
@@ -150,4 +119,23 @@ hlo_test_biv <- function(
     pjrt::as_array(out_buf),
     tolerance = tol
   )
+}
+
+generate_test_data <- function(dimension, dtype = "f64", non_negative = FALSE) {
+  test_data <- NULL
+  if (dtype == "pred") {
+    test_data <- sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
+  } else if (dtype == "i32") {
+    test_data <- as.integer(rgeom(prod(dimension), .1))
+    if (!non_negative) {
+      test_data <- as.integer((-1)^rbinom(prod(dimension), 1, .5) * test_data)
+    }
+  } else {
+    if (!non_negative) {
+      test_data <- rnorm(prod(dimension), mean = 0, sd = 1)
+    } else {
+      test_data <- rchisq(prod(dimension), df = 1)
+    }
+  }
+  return(test_data)
 }
