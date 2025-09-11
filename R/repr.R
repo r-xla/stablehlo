@@ -1,6 +1,8 @@
-#' @title Generate stableHLO string representation
+#' @title Generate string representation for object
 #' @description
-#' This function generates a string representation of a stableHLO program.
+#' This function generates a string representation of an object.
+#' In this package, this is primarily used to convert a `Func`
+#' to its stableHLO string representation.
 #' @param x The object to generate a string representation of.
 #' @param ... Additional arguments passed to the method.
 #' @return `character(1)`

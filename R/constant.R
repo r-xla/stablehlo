@@ -46,10 +46,17 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
       repr(type)
     ))
   }
-  dim(value_reprs) <- shape(data)
+  dim2 <- function(data) {
+    if (is.array(data)) {
+      dim(data)
+    } else {
+      length(data)
+    }
+  }
+  dim(value_reprs) <- dim2(data)
 
   f <- function(x) {
-    if (length(shape(x)) == 1L || is.vector(x)) {
+    if (is.vector(x) || length(dim2(x)) == 1L) {
       paste0("[", paste(x, collapse = ", "), "]")
     } else {
       paste0("[", paste(apply(x, 1, f), collapse = ", "), "]")
@@ -178,6 +185,6 @@ method(r_to_constant, S7::class_any) <- function(
   stop("Unsupported type for r_to_constant: ", class(value)[1])
 }
 
-method(dim, TensorConstant) <- function(x) {
+method(shape, TensorConstant) <- function(x) {
   x@type@shape@dims
 }

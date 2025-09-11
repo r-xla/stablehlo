@@ -26,16 +26,27 @@ method(`!=`, list(ValueId, ValueId)) <- function(e1, e2) {
 
 method(repr, ValueId) <- function(x) {
   name <- if (is.environment(x@id)) {
-    FUNC_ENV$vars[[x@id]] %??%
-      {
-        # nolint
-        str <- as.character(FUNC_ENV$counter)
-        FUNC_ENV$counter <- FUNC_ENV$counter + 1L
-        FUNC_ENV$vars[[x@id]] <- str
-        str
-      }
+    repr_env2name(x@id)
   } else {
     x@id
   }
   paste0("%", name)
+}
+
+#' @title Convert environment to name
+#' @description
+#' This function converts an environment to a name.
+#' Can only be called within a `repr` call.
+#' @param x The environment to convert to a name.
+#' @return `character(1)`
+#' @export
+repr_env2name <- function(x) {
+  # nofmt
+  FUNC_ENV$vars[[x]] %??%
+    {
+      str <- as.character(FUNC_ENV$counter)
+      FUNC_ENV$counter <- FUNC_ENV$counter + 1L
+      FUNC_ENV$vars[[x]] <- str
+      str
+    }
 }

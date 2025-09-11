@@ -151,11 +151,11 @@ ValueType <- new_class(
 )
 
 
-method(dim, ValueType) <- function(x) {
+method(shape, ValueType) <- function(x) {
   shape(x@type)
 }
 
-method(dim, TensorType) <- function(x) {
+method(shape, TensorType) <- function(x) {
   x@shape@dims
 }
 

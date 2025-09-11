@@ -195,6 +195,6 @@ method(c, FuncVariable) <- function(...) {
   out
 }
 
-method(dim, FuncVariable) <- function(x) {
-  shape(x@value_type@shape@dims)
+method(shape, FuncVariable) <- function(x) {
+  x@value_type@shape@dims
 }

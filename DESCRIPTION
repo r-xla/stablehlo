@@ -19,6 +19,7 @@ Imports:
     checkmate,
     cli,
     methods,
+    R6,
     Rcpp,
     rlang,
     S7,
