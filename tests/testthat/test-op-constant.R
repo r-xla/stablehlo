@@ -94,3 +94,9 @@ test_that("specify shape in hlo_tensor", {
   expect_snapshot(repr(hlo_tensor(1:2)@func))
   expect_snapshot(repr(hlo_tensor(1)@func))
 })
+
+test_that("PJRTBuffer", {
+  skip_if_not_installed("pjrt")
+  expect_snapshot(repr(hlo_tensor(pjrt::pjrt_buffer(1), dtype = "i32")@func))
+  expect_snapshot(repr(hlo_scalar(pjrt::pjrt_scalar(1), dtype = "i32")@func))
+})

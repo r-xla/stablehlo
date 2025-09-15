@@ -36,7 +36,7 @@ op_constant <- function(value, dtype = NULL) {
 #' @description
 #' Create either a scalar or tensor constant.
 #' Note that strictly speaking, stableHLO 'scalars' are simply tensors with 0 dimensions.
-#' @param x (any)\cr
+#' @param value (any)\cr
 #'   Value from which to create a constant.
 #' @param ... (any)\cr
 #'   Additional arguments including:
@@ -53,23 +53,23 @@ op_constant <- function(value, dtype = NULL) {
 #' hlo_scalar(1, dtype = "f32")
 #' hlo_scalar(TRUE)
 #' hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), dtype = "f32")
-hlo_scalar <- function(x, ...) {
+hlo_scalar <- function(value, ...) {
   # Can't use S7 for now, because there is no array class
   UseMethod("hlo_scalar")
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_scalar.logical <- function(x, ...) {
+hlo_scalar.logical <- function(value, ...) {
   args <- list(...)
   dtype <- args$dtype
-  if (length(x) != 1L) {
+  if (length(value) != 1L) {
     stop("hlo_scalar expects a single value.")
   }
-  if (anyNA(x)) {
+  if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
-  impl_hlo_constant(x, dtype = dtype)
+  impl_hlo_constant(value, dtype = dtype)
 }
 
 #' @rdname hlo_constant
@@ -78,54 +78,59 @@ hlo_scalar.double <- hlo_scalar.logical
 
 #' @rdname hlo_constant
 #' @export
-hlo_scalar.integer <- function(x, ...) {
+hlo_scalar.integer <- function(value, ...) {
   args <- list(...)
   dtype <- args$dtype
-  if (length(x) != 1L) {
+  if (length(value) != 1L) {
     stop("hlo_scalar expects a single value.")
   }
-  if (anyNA(x)) {
+  if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
-  if (!is.null(dtype) && grepl("^ui", dtype) && any(x < 0L)) {
+  if (!is.null(dtype) && grepl("^ui", dtype) && any(value < 0L)) {
     stop("Data for unsigned integer must be non-negative")
   }
-  impl_hlo_constant(x, dtype = dtype)
+  impl_hlo_constant(value, dtype = dtype)
+}
+
+#' @export
+hlo_scalar.PJRTBuffer <- function(value, ...) {
+  impl_hlo_constant(pjrt::as_array(value), dtype = as.character(dtype(value)))
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor <- function(x, ...) {
+hlo_tensor <- function(value, ...) {
   # Can't use S7 for now, because there is no array class
   UseMethod("hlo_tensor")
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.array <- function(x, ...) {
+hlo_tensor.array <- function(value, ...) {
   args <- list(...)
   dtype <- args$dtype
-  if (anyNA(x)) {
+  if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
   if (
-    is.integer(x) &&
+    is.integer(value) &&
       !is.null(dtype) &&
       grepl(dtype, "ui") &&
-      any(x < 0)
+      any(value < 0)
   ) {
     stop("Data for unsigned integer must be non-negative")
   }
-  impl_hlo_constant(x, dtype = dtype)
+  impl_hlo_constant(value, dtype = dtype)
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.integer <- function(x, ...) {
+hlo_tensor.integer <- function(value, ...) {
   args <- list(...)
   dtype <- args$dtype
-  shape <- args$shape %||% get_dims(x)
-  impl_hlo_constant(array(x, dim = shape), dtype = dtype)
+  shape <- args$shape %||% get_dims(value)
+  impl_hlo_constant(array(value, dim = shape), dtype = dtype)
 }
 
 #' @rdname hlo_constant
@@ -138,8 +143,8 @@ hlo_tensor.double <- hlo_tensor.integer
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.PJRTBuffer <- function(x, ...) {
-  impl_hlo_constant(pjrt::as_array(x), dtype = as.character(dtype(x)))
+hlo_tensor.PJRTBuffer <- function(value, ...) {
+  impl_hlo_constant(pjrt::as_array(value), dtype = as.character(dtype(value)))
 }
 
 

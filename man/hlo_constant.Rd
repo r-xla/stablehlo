@@ -14,28 +14,28 @@
 \alias{hlo_tensor.PJRTBuffer}
 \title{Create a Constant}
 \usage{
-hlo_scalar(x, ...)
+hlo_scalar(value, ...)
 
-\method{hlo_scalar}{logical}(x, ...)
+\method{hlo_scalar}{logical}(value, ...)
 
-\method{hlo_scalar}{double}(x, ...)
+\method{hlo_scalar}{double}(value, ...)
 
-\method{hlo_scalar}{integer}(x, ...)
+\method{hlo_scalar}{integer}(value, ...)
 
-hlo_tensor(x, ...)
+hlo_tensor(value, ...)
 
-\method{hlo_tensor}{array}(x, ...)
+\method{hlo_tensor}{array}(value, ...)
 
-\method{hlo_tensor}{integer}(x, ...)
+\method{hlo_tensor}{integer}(value, ...)
 
-\method{hlo_tensor}{logical}(x, ...)
+\method{hlo_tensor}{logical}(value, ...)
 
-\method{hlo_tensor}{double}(x, ...)
+\method{hlo_tensor}{double}(value, ...)
 
-\method{hlo_tensor}{PJRTBuffer}(x, ...)
+\method{hlo_tensor}{PJRTBuffer}(value, ...)
 }
 \arguments{
-\item{x}{(any)\cr
+\item{value}{(any)\cr
 Value from which to create a constant.}
 
 \item{...}{(any)\cr
