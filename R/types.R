@@ -79,19 +79,19 @@ TensorElementType <- S7::new_union(
 )
 
 method(`==`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
-  FALSE
-}
-
-method(`==`, list(BooleanType, BooleanType)) <- function(e1, e2) {
-  TRUE
-}
-
-method(`==`, list(IntegerType, IntegerType)) <- function(e1, e2) {
-  e1@value == e2@value
-}
-
-method(`==`, list(FloatType, FloatType)) <- function(e1, e2) {
-  e1@value == e2@value
+  if (!identical(S7::S7_class(e1), S7::S7_class(e2))) {
+    return(FALSE)
+  }
+  if (inherits(e1, BooleanType)) {
+    return(TRUE)
+  }
+  if (inherits(e1, IntegerType)) {
+    return(e1@value == e2@value)
+  }
+  if (inherits(e1, FloatType)) {
+    return(e1@value == e2@value)
+  }
+  stop("Unknown TensorElementType")
 }
 
 #' @title TensorType

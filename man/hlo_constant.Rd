@@ -11,48 +11,49 @@
 \alias{hlo_tensor.integer}
 \alias{hlo_tensor.logical}
 \alias{hlo_tensor.double}
+\alias{hlo_tensor.PJRTBuffer}
 \title{Create a Constant}
 \usage{
-hlo_scalar(value, dtype = NULL, ...)
+hlo_scalar(x, ...)
 
-\method{hlo_scalar}{logical}(value, dtype = NULL, ...)
+\method{hlo_scalar}{logical}(x, ...)
 
-\method{hlo_scalar}{double}(value, dtype = NULL, ...)
+\method{hlo_scalar}{double}(x, ...)
 
-\method{hlo_scalar}{integer}(value, dtype = NULL, ...)
+\method{hlo_scalar}{integer}(x, ...)
 
-hlo_tensor(value, dtype = NULL, ...)
+hlo_tensor(x, ...)
 
-\method{hlo_tensor}{array}(value, dtype = NULL, ...)
+\method{hlo_tensor}{array}(x, ...)
 
-\method{hlo_tensor}{integer}(value, dtype = NULL, shape = get_dims(value), ...)
+\method{hlo_tensor}{integer}(x, ...)
 
-\method{hlo_tensor}{logical}(value, dtype = NULL, shape = get_dims(value), ...)
+\method{hlo_tensor}{logical}(x, ...)
 
-\method{hlo_tensor}{double}(value, dtype = NULL, shape = get_dims(value), ...)
+\method{hlo_tensor}{double}(x, ...)
+
+\method{hlo_tensor}{PJRTBuffer}(x, ...)
 }
 \arguments{
-\item{value}{(any)\cr
+\item{x}{(any)\cr
 Value from which to create a constant.}
 
-\item{dtype}{(\code{character(1)})\cr
-String for element type.
-Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.}
-
 \item{...}{(any)\cr
-Additional arguments.}
-
-\item{shape}{(\code{integer()})\cr
-Shape of the tensor.
-If not specified, the shape is inferred from the data.}
+Additional arguments including:
+\itemize{
+\item \code{dtype} (\code{character(1)}): String for element type.
+Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.
+\item \code{shape} (\code{integer()}): Shape of the tensor (for hlo_tensor only).
+If not specified, the shape is inferred from the data.
+}}
 }
 \description{
 Create either a scalar or tensor constant.
 Note that strictly speaking, stableHLO 'scalars' are simply tensors with 0 dimensions.
 }
 \examples{
-hlo_scalar(1L, "i32")
-hlo_scalar(1, "f32")
+hlo_scalar(1L, dtype = "i32")
+hlo_scalar(1, dtype = "f32")
 hlo_scalar(TRUE)
-hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), "f32")
+hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), dtype = "f32")
 }

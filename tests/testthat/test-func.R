@@ -58,7 +58,7 @@ test_that("Func repr", {
   expect_snapshot(repr(func))
 })
 
-txest_that("multiple returns", {
+test_that("multiple returns", {
   x <- hlo_input("x", "f32", shape = c(2L, 2L))
   f <- hlo_return(x, x)
   expect_snapshot(repr(f))
