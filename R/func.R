@@ -45,10 +45,18 @@ method(repr, FuncOutput) <- function(x) {
 FuncOutputs <- new_list_of("FuncOutputs", FuncOutput)
 
 method(repr, FuncOutputs) <- function(x) {
-  paste0(
-    "-> ",
-    paste0(sapply(x@items, repr), collapse = ", ")
-  )
+  if (length(x@items) <= 1L) {
+    paste0(
+      "-> ",
+      paste0(sapply(x@items, repr), collapse = ", ")
+    )
+  } else {
+    paste0(
+      "-> (",
+      paste0(sapply(x@items, repr), collapse = ", "),
+      ")"
+    )
+  }
 }
 
 #' @title FuncId

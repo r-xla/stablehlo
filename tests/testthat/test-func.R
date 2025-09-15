@@ -57,3 +57,13 @@ test_that("Func repr", {
 
   expect_snapshot(repr(func))
 })
+
+txest_that("multiple returns", {
+  x <- hlo_input("x", "f32", shape = c(2L, 2L))
+  f <- hlo_return(x, x)
+  expect_snapshot(repr(f))
+  skip_if_not_installed("pjrt")
+  exec <- pjrt_compile(pjrt_program(repr(f)))
+  out <- pjrt_execute(exec, pjrt_buffer(array(1:4, dim = c(2, 2))))
+  expect_identical(out[[1L]], out[[2L]])
+})
