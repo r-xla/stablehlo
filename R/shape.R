@@ -43,7 +43,3 @@ method(repr, Shape) <- function(x) {
 method(shape, Shape) <- function(x) {
   x@dims
 }
-
-method(shape, S7::class_any) <- function(x) {
-  dim(x)
-}
