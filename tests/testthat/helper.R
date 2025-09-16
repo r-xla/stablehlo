@@ -1,5 +1,5 @@
 hlo_test_uni <- function(
-  hlo_func,
+  hlo_fn,
   test_func,
   non_negative = FALSE,
   dimension = NULL,
@@ -8,12 +8,13 @@ hlo_test_uni <- function(
   tol = 1e-5
 ) {
   make_fn <- function() {
+    func <- local_func()
     if (is.null(dimension)) {
       len <- min(rgeom(1, .3) + 1, 4)
       dimension <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
     }
-    x <- hlo_input("x", dtype, shape = dimension, "main")
-    y <- hlo_func(x)
+    x <- hlo_input("x", dtype, shape = dimension)
+    y <- hlo_fn(x)
     func <- hlo_return(y)
     list(
       dimension = dimension,
@@ -54,7 +55,7 @@ hlo_test_uni <- function(
 }
 
 hlo_test_biv <- function(
-  hlo_func,
+  hlo_fn,
   test_func,
   non_negative = FALSE,
   dimension = NULL,
@@ -71,9 +72,10 @@ hlo_test_biv <- function(
       len <- min(rgeom(1, .3) + 1, 4)
       dimension <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
     }
-    x <- hlo_input("x", dtype, shape = dimension, "main")
-    y <- hlo_input("y", dtype, shape = dimension, "main")
-    z <- hlo_func(x, y)
+    func <- local_func()
+    x <- hlo_input("x", dtype, shape = dimension)
+    y <- hlo_input("y", dtype, shape = dimension)
+    z <- hlo_fn(x, y)
     list(
       dimension = dimension,
       f = hlo_return(z)

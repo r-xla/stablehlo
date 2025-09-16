@@ -73,7 +73,12 @@ hlo_broadcast_in_dim <- function(
   broadcast_dimensions,
   shape_out
 ) {
-  bd_attr <- hlo_tensor(as.integer(broadcast_dimensions), dtype = "i64")
+  # TODO(hack): do this cleanrer
+  bd_attr <- hlo_tensor(
+    as.integer(broadcast_dimensions),
+    dtype = "i64",
+    func = Func()
+  )
 
   hlo_broadcast_in_dim_impl(
     values = list(operand = operand),

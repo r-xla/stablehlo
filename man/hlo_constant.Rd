@@ -14,25 +14,25 @@
 \alias{hlo_tensor.PJRTBuffer}
 \title{Create a Constant}
 \usage{
-hlo_scalar(value, ...)
+hlo_scalar(value, ..., func = .current_fn())
 
-\method{hlo_scalar}{logical}(value, ...)
+\method{hlo_scalar}{logical}(value, ..., func = .current_fn())
 
-\method{hlo_scalar}{double}(value, ...)
+\method{hlo_scalar}{double}(value, ..., func = .current_fn())
 
-\method{hlo_scalar}{integer}(value, ...)
+\method{hlo_scalar}{integer}(value, ..., func = .current_fn())
 
-hlo_tensor(value, ...)
+hlo_tensor(value, ..., func = .current_fn())
 
-\method{hlo_tensor}{array}(value, ...)
+\method{hlo_tensor}{array}(value, ..., func = .current_fn())
 
-\method{hlo_tensor}{integer}(value, ...)
+\method{hlo_tensor}{integer}(value, ..., func = .current_fn())
 
-\method{hlo_tensor}{logical}(value, ...)
+\method{hlo_tensor}{logical}(value, ..., func = .current_fn())
 
-\method{hlo_tensor}{double}(value, ...)
+\method{hlo_tensor}{double}(value, ..., func = .current_fn())
 
-\method{hlo_tensor}{PJRTBuffer}(value, ...)
+\method{hlo_tensor}{PJRTBuffer}(value, ..., func = .current_fn())
 }
 \arguments{
 \item{value}{(any)\cr
@@ -46,6 +46,10 @@ Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.
 \item \code{shape} (\code{integer()}): Shape of the tensor (for hlo_tensor only).
 If not specified, the shape is inferred from the data.
 }}
+
+\item{func}{(\code{\link{Func}})\cr
+The function to add the constant to.
+Per default, uses the last function created with \code{\link{hlo_func}} or \code{\link{local_func}}.}
 }
 \description{
 Create either a scalar or tensor constant.

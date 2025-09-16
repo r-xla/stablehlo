@@ -1,4 +1,5 @@
 test_that("matmul", {
+  func <- local_func()
   lhs <- hlo_input("lhs", "f32", shape = c(5, 4))
   rhs <- hlo_input("rhs", "f32", shape = c(4, 3))
   z <- hlo_dot_general(
@@ -29,6 +30,7 @@ test_that("matmul", {
 
 test_that("batching_dims", {
   skip_if_not_installed("pjrt")
+  func <- local_func()
   lhs <- hlo_input("lhs", "f32", shape = c(1, 5, 4))
   rhs <- hlo_input("rhs", "f32", shape = c(4, 3, 1L))
   z <- hlo_dot_general(

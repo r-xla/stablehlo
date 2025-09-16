@@ -46,6 +46,9 @@ op_constant <- function(value, dtype = NULL) {
 #'     \item \code{shape} (`integer()`): Shape of the tensor (for hlo_tensor only).
 #'       If not specified, the shape is inferred from the data.
 #'   }
+#' @param func ([`Func`])\cr
+#'   The function to add the constant to.
+#'   Per default, uses the last function created with [`hlo_func`] or [`local_func`].
 #' @name hlo_constant
 #' @export
 #' @examples
@@ -53,14 +56,14 @@ op_constant <- function(value, dtype = NULL) {
 #' hlo_scalar(1, dtype = "f32")
 #' hlo_scalar(TRUE)
 #' hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), dtype = "f32")
-hlo_scalar <- function(value, ...) {
+hlo_scalar <- function(value, ..., func = .current_fn()) {
   # Can't use S7 for now, because there is no array class
   UseMethod("hlo_scalar")
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_scalar.logical <- function(value, ...) {
+hlo_scalar.logical <- function(value, ..., func = .current_fn()) {
   args <- list(...)
   dtype <- args$dtype
   if (length(value) != 1L) {
@@ -69,7 +72,7 @@ hlo_scalar.logical <- function(value, ...) {
   if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
-  impl_hlo_constant(value, dtype = dtype)
+  impl_hlo_constant(value, dtype = dtype, func = func)
 }
 
 #' @rdname hlo_constant
@@ -78,7 +81,7 @@ hlo_scalar.double <- hlo_scalar.logical
 
 #' @rdname hlo_constant
 #' @export
-hlo_scalar.integer <- function(value, ...) {
+hlo_scalar.integer <- function(value, ..., func = .current_fn()) {
   args <- list(...)
   dtype <- args$dtype
   if (length(value) != 1L) {
@@ -90,24 +93,28 @@ hlo_scalar.integer <- function(value, ...) {
   if (!is.null(dtype) && grepl("^ui", dtype) && any(value < 0L)) {
     stop("Data for unsigned integer must be non-negative")
   }
-  impl_hlo_constant(value, dtype = dtype)
+  impl_hlo_constant(value, dtype = dtype, func = func)
 }
 
 #' @export
-hlo_scalar.PJRTBuffer <- function(value, ...) {
-  impl_hlo_constant(pjrt::as_array(value), dtype = as.character(dtype(value)))
+hlo_scalar.PJRTBuffer <- function(value, ..., func = .current_fn()) {
+  impl_hlo_constant(
+    pjrt::as_array(value),
+    dtype = as.character(dtype(value)),
+    func = func
+  )
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor <- function(value, ...) {
+hlo_tensor <- function(value, ..., func = .current_fn()) {
   # Can't use S7 for now, because there is no array class
   UseMethod("hlo_tensor")
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.array <- function(value, ...) {
+hlo_tensor.array <- function(value, ..., func = .current_fn()) {
   args <- list(...)
   dtype <- args$dtype
   if (anyNA(value)) {
@@ -121,16 +128,16 @@ hlo_tensor.array <- function(value, ...) {
   ) {
     stop("Data for unsigned integer must be non-negative")
   }
-  impl_hlo_constant(value, dtype = dtype)
+  impl_hlo_constant(value, dtype = dtype, func = func)
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.integer <- function(value, ...) {
+hlo_tensor.integer <- function(value, ..., func = .current_fn()) {
   args <- list(...)
   dtype <- args$dtype
   shape <- args$shape %||% get_dims(value)
-  impl_hlo_constant(array(value, dim = shape), dtype = dtype)
+  impl_hlo_constant(array(value, dim = shape), dtype = dtype, func = func)
 }
 
 #' @rdname hlo_constant
@@ -143,12 +150,16 @@ hlo_tensor.double <- hlo_tensor.integer
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.PJRTBuffer <- function(value, ...) {
-  impl_hlo_constant(pjrt::as_array(value), dtype = as.character(dtype(value)))
+hlo_tensor.PJRTBuffer <- function(value, ..., func = .current_fn()) {
+  impl_hlo_constant(
+    pjrt::as_array(value),
+    dtype = as.character(dtype(value)),
+    func = func
+  )
 }
 
 
-impl_hlo_constant <- function(value, dtype) {
+impl_hlo_constant <- function(value, dtype, func) {
   const_value <- r_to_constant(value, dtype = dtype)
   value_id <- ValueId()
   op <- OpConstant(
@@ -161,19 +172,12 @@ impl_hlo_constant <- function(value, dtype) {
       )
     )
   )
+  func@body <- FuncBody(c(func@body@items, list(op)))
 
   FuncVariable(
     value_id = value_id,
     value_type = ValueType(const_value@value@type),
-    func = Func(
-      id = FuncId("main"),
-      body = FuncBody(
-        items = list(
-          op
-        )
-      ),
-      outputs = FuncOutputs()
-    )
+    func = func
   )
 }
 

@@ -17,6 +17,7 @@ The variables to capture.}
 Creates a new function without any arguments that captures the provided variables.
 }
 \examples{
+func <- local_func()
 x <- hlo_input("x", "f32", shape = c(2, 2))
 y <- hlo_input("y", "f32", shape = c(2, 2))
 f <- hlo_closure(x, y)

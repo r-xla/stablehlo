@@ -1,15 +1,14 @@
 test_that("If operator works", {
-  params <- c(
-    pred = hlo_input("pred", "i1", integer()),
-    x1 = hlo_input("x1", "f32", integer()),
-    x2 = hlo_input("x2", "f32", integer())
-  )
+  func <- local_func()
+  pred <- hlo_input("pred", "i1", integer())
+  x1 <- hlo_input("x1", "f32", integer())
+  x2 <- hlo_input("x2", "f32", integer())
 
-  f1 <- hlo_return(hlo_closure(params$x1)[[1L]])
-  f2 <- hlo_return(hlo_closure(params$x2)[[1L]])
+  f1 <- hlo_return(hlo_closure(x1)[[1L]])
+  f2 <- hlo_return(hlo_closure(x2)[[1L]])
 
   out <- hlo_if(
-    pred = params$pred,
+    pred = pred,
     true_branch = f1,
     false_branch = f2
   )
