@@ -1,4 +1,5 @@
 test_that("basic tests", {
+  func <- local_func()
   x <- hlo_input("x", "f32", shape = c(1L, 3L))
   y <- hlo_broadcast_in_dim(
     x,

@@ -30,29 +30,32 @@ of type `f32` and shape `(2, 2)` and adds them.
 
 ``` r
 library(stablehlo)
-x <- hlo_input("x", "f32", shape = c(2, 2))
+func <- hlo_func("myfn")
+x <- hlo_input("x", "f32", shape = c(2, 2), func = func)
 x
 #> Variable %x in:
-#> func.func @main (%x: tensor<2x2xf32>) ->  {
-#>
+#> func.func @myfn ((), %x: tensor<2x2xf32>) ->  {
+#> 
 #> }
-y <- hlo_input("y", "f32", shape = c(2, 2))
+y <- hlo_input("y", "f32", shape = c(2, 2), func = func)
 y
 #> Variable %y in:
-#> func.func @main (%y: tensor<2x2xf32>) ->  {
-#>
+#> func.func @myfn (((), %x: tensor<2x2xf32>), %y: tensor<2x2xf32>) ->  {
+#> 
 #> }
 z <- hlo_add(x, y)
 z
-#> Variable %1 in:
-#> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %1 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> Variable %0 in:
+#> func.func @myfn (((), %x: tensor<2x2xf32>), %y: tensor<2x2xf32>) ->  {
+#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
 #> }
 f <- hlo_return(z)
+identical(f, func)
+#> [1] TRUE
 f
-#> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
-#> %1 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
-#> "func.return"(%1): (tensor<2x2xf32>) -> ()
+#> func.func @myfn (((), %x: tensor<2x2xf32>), %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
+#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> "func.return"(%0): (tensor<2x2xf32>) -> ()
 #> }
 ```
 

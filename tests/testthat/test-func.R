@@ -59,6 +59,7 @@ test_that("Func repr", {
 })
 
 test_that("multiple returns", {
+  func <- local_func()
   x <- hlo_input("x", "f32", shape = c(2L, 2L))
   f <- hlo_return(x, x)
   expect_snapshot(repr(f))

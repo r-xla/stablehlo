@@ -1,19 +1,21 @@
 test_that("hlo_input works", {
-  x <- hlo_input("x", "f32", shape = c(2L, 2L))
+  x <- hlo_input("x", "f32", shape = c(2L, 2L), func = hlo_func())
   f <- hlo_return(x)
   expect_snapshot(repr(f))
 })
 
 test_that("hlo_closure works", {
-  x <- hlo_input("x", "f32", shape = c(2L, 2L))
+  x <- hlo_input("x", "f32", shape = c(2L, 2L), func = hlo_func())
   xcap <- hlo_closure(x)
   expect_list(xcap, types = "stablehlo::FuncVariable", len = 1L)
   expect_equal(xcap[[1L]]@value_id@id, x@value_id@id)
   expect_equal(xcap[[1L]]@value_type, x@value_type)
   expect_snapshot(repr(xcap[[1L]]@func))
 
+  func <- hlo_func
+
   outs <- hlo_closure(
-    hlo_input("y", "f32", shape = c(2L, 2L)),
+    hlo_input("y", "f32", shape = c(2L, 2L), func = hlo_func()),
     hlo_input("z", "f32", shape = c(2L, 2L))
   )
   y <- outs[[1L]]
@@ -31,13 +33,40 @@ test_that("hlo_closure works", {
 })
 
 test_that("checks on input names", {
-  expect_error(hlo_input("_", "f32", shape = c(2L, 2L)), "pattern")
-  expect_error(hlo_input("_1", "f32", shape = c(2L, 2L)), "pattern")
-  expect_error(hlo_input("1a", "f32", shape = c(2L, 2L)), "pattern")
-  expect_error(hlo_input("1_", "f32", shape = c(2L, 2L)), "pattern")
-  expect_error(hlo_input("1", "f32", shape = c(2L, 2L)), regexp = NA)
-  expect_error(hlo_input("12", "f32", shape = c(2L, 2L)), regexp = NA)
-  expect_error(hlo_input("a1", "f32", shape = c(2L, 2L)), regexp = NA)
-  expect_error(hlo_input("a_1", "f32", shape = c(2L, 2L)), regexp = NA)
-  expect_error(hlo_input("a1_", "f32", shape = c(2L, 2L)), regexp = NA)
+  expect_error(
+    hlo_input("_", "f32", shape = c(2L, 2L), func = hlo_func()),
+    "pattern"
+  )
+  expect_error(
+    hlo_input("_1", "f32", shape = c(2L, 2L), func = hlo_func()),
+    "pattern"
+  )
+  expect_error(
+    hlo_input("1a", "f32", shape = c(2L, 2L), func = hlo_func()),
+    "pattern"
+  )
+  expect_error(
+    hlo_input("1_", "f32", shape = c(2L, 2L), func = hlo_func()),
+    "pattern"
+  )
+  expect_error(
+    hlo_input("1", "f32", shape = c(2L, 2L), func = hlo_func()),
+    regexp = NA
+  )
+  expect_error(
+    hlo_input("12", "f32", shape = c(2L, 2L), func = hlo_func()),
+    regexp = NA
+  )
+  expect_error(
+    hlo_input("a1", "f32", shape = c(2L, 2L), func = hlo_func()),
+    regexp = NA
+  )
+  expect_error(
+    hlo_input("a_1", "f32", shape = c(2L, 2L), func = hlo_func()),
+    regexp = NA
+  )
+  expect_error(
+    hlo_input("a1_", "f32", shape = c(2L, 2L), func = hlo_func()),
+    regexp = NA
+  )
 })

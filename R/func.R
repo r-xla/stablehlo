@@ -88,14 +88,98 @@ method(repr, FuncBody) <- function(x) {
   paste0(sapply(x@items, repr), collapse = "\n")
 }
 
+globals[["CURRENT_FN"]] <- NULL
+
+#' @title Get the last function created
+#' @description
+#' Get the last function created, which is not returned yet.
+#' @return A [`Func`] object.
+#' @internal
+#' @export
+.current_fn <- function() {
+  globals[["CURRENT_FN"]] %??% stop("No function is currently being built")
+}
+
+#' @title Create a function
+#' @description
+#' Create a function with the given id.
+#' @param id (`character(1)`\cr
+#'   The id of the function.
+#' @return A [`Func`] object.
+#' @export
+hlo_func <- function(id = "main") {
+  globals[["CURRENT_FN"]] <- Func(id = FuncId(id))
+}
+
+#' @title Create a function
+#' @description
+#' Create a local function.
+#' @param id (`character(1)`\cr
+#'   The id of the function.
+#' @return A [`Func`] object.
+#' @export
+local_func <- function() {
+  func <- hlo_func()
+  globals[["CURRENT_FN"]] <- func
+  withr::defer(envir = parent.frame(), {
+    globals[["CURRENT_FN"]] <- NULL
+  })
+  return(func)
+}
+
 Func <- new_class(
   "Func",
   properties = list(
-    id = FuncId,
-    inputs = FuncInputs,
-    outputs = FuncOutputs,
-    body = FuncBody
-  )
+    id = new_property(
+      FuncId,
+      getter = function(self) self@.env[["id"]],
+      setter = function(self, value) {
+        self@.env[["id"]] <- value
+        self
+      }
+    ),
+    inputs = new_property(
+      FuncInputs,
+      getter = function(self) self@.env[["inputs"]],
+      setter = function(self, value) {
+        self@.env[["inputs"]] <- value
+        self
+      }
+    ),
+    outputs = new_property(
+      FuncOutputs,
+      getter = function(self) self@.env[["outputs"]],
+      setter = function(self, value) {
+        self@.env[["outputs"]] <- value
+        self
+      }
+    ),
+    body = new_property(
+      FuncBody,
+      getter = function(self) self@.env[["body"]],
+      setter = function(self, value) {
+        self@.env[["body"]] <- value
+        self
+      }
+    ),
+    .env = S7::new_S3_class("hashtab")
+  ),
+  constructor = function(
+    id = FuncId(),
+    inputs = FuncInputs(),
+    outputs = FuncOutputs(),
+    body = FuncBody()
+  ) {
+    env <- hashtab()
+    env[["id"]] <- id
+    env[["inputs"]] <- inputs
+    env[["outputs"]] <- outputs
+    env[["body"]] <- body
+    new_object(
+      S7::S7_object(),
+      .env = env
+    )
+  }
 )
 
 method(repr, Func) <- function(x) {

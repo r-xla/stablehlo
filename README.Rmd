@@ -37,13 +37,15 @@ Below, we create a function that takes two input arguments `x` and `y` of type `
 
 ```{r}
 library(stablehlo)
-x <- hlo_input("x", "f32", shape = c(2, 2))
+func <- hlo_func("myfn")
+x <- hlo_input("x", "f32", shape = c(2, 2), func = func)
 x
-y <- hlo_input("y", "f32", shape = c(2, 2))
+y <- hlo_input("y", "f32", shape = c(2, 2), func = func)
 y
 z <- hlo_add(x, y)
 z
 f <- hlo_return(z)
+identical(f, func)
 f
 ```
 

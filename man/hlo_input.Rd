@@ -4,7 +4,7 @@
 \alias{hlo_input}
 \title{Create a input to a function}
 \usage{
-hlo_input(name, dtype, shape = integer(), func_id = FuncId("main"))
+hlo_input(name, dtype, shape = integer(), func = .current_fn())
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr
@@ -20,8 +20,9 @@ Otherwise it must start with a letter.}
 The shape of the parameter.
 Use \code{integer()} for scalars.}
 
-\item{func_id}{(\code{\link{FuncId}} | \code{character(1)})\cr
-The function id of the parameter.}
+\item{func}{(\code{\link{Func}})\cr
+The function id of the parameter.
+Per default, uses the last function created with \code{\link{hlo_func}}.}
 }
 \description{
 Create a input to a function

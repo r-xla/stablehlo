@@ -1,12 +1,13 @@
 test_that("basic tests", {
-  lo <- hlo_input("lo", "f32", shape = c(2L, 2L), "main")
-  hi <- hlo_input("hi", "f32", shape = c(2L, 2L), "main")
-  x <- hlo_input("x", "f32", shape = c(2L, 2L), "main")
+  func <- local_func()
+  lo <- hlo_input("lo", "f32", shape = c(2L, 2L))
+  x <- hlo_input("x", "f32", shape = c(2L, 2L))
+  hi <- hlo_input("hi", "f32", shape = c(2L, 2L))
   y <- hlo_clamp(lo, x, hi)
-  func <- hlo_return(y)
-  expect_snapshot(repr(func))
+  result_func <- hlo_return(y)
+  expect_snapshot(repr(result_func))
 
-  program <- pjrt_program(repr(func))
+  program <- pjrt_program(repr(result_func))
   expect_class(program, "PJRTProgram")
 
   executable <- pjrt_compile(program)

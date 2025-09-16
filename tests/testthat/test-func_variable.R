@@ -1,4 +1,5 @@
 test_that("c works", {
+  func <- local_func()
   x <- hlo_input("x", "f32", shape = c(2, 2))
   y <- hlo_input("y", "f32", shape = c(2, 2))
   z <- c(x, y)
@@ -15,6 +16,7 @@ test_that("c works", {
 })
 
 test_that("repr", {
+  func <- local_func()
   x <- hlo_input("x", "f32", shape = c(2, 2))
   expect_snapshot(x)
 })

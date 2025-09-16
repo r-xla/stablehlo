@@ -1,11 +1,12 @@
 test_that("basic tests", {
-  x <- hlo_input("x", "f32", shape = c(2L, 2L), "main")
+  func <- local_func()
+  x <- hlo_input("x", "f32", shape = c(2L, 2L))
   y <- hlo_cbrt(x)
-  func <- hlo_return(y)
-  expect_snapshot(repr(func))
+  result_func <- hlo_return(y)
+  expect_snapshot(repr(result_func))
 
   skip_if_not_installed("pjrt")
-  program <- pjrt_program(repr(func))
+  program <- pjrt_program(repr(result_func))
   expect_class(program, "PJRTProgram")
 
   executable <- pjrt_compile(program)
