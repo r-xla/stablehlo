@@ -68,3 +68,23 @@ test_that("multiple returns", {
   out <- pjrt_execute(exec, pjrt_buffer(array(1:4, dim = c(2, 2))))
   expect_identical(out[[1L]], out[[2L]])
 })
+
+test_that("local_func", {
+  globals[["CURRENT_FN"]] <- NULL
+  f <- (function() {
+    local_func("abc")
+  })()
+  expect_null(globals[["CURRENT_FN"]])
+  expect_true(inherits(f, Func))
+  expect_equal(f@id@id, "abc")
+})
+
+test_that("hlo_func", {
+  globals[["CURRENT_FN"]] <- NULL
+  f <- (function() {
+    hlo_func("abc")
+  })()
+  expect_false(is.null(globals[["CURRENT_FN"]]))
+  expect_true(inherits(f, Func))
+  expect_equal(f@id@id, "abc")
+})

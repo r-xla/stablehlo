@@ -28,6 +28,7 @@ Per default, uses the last function created with \code{\link{hlo_func}}.}
 Create a input to a function
 }
 \examples{
+func <- hlo_func()
 x <- hlo_input("x", "f32", shape = c(2, 2))
 print(x)
 

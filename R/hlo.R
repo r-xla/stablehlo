@@ -139,6 +139,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
 #'   Per default, uses the last function created with [`hlo_func`].
 #' @export
 #' @examples
+#' func <- hlo_func()
 #' x <- hlo_input("x", "f32", shape = c(2, 2))
 #' print(x)
 #'
@@ -177,6 +178,7 @@ hlo_input <- function(
 #' @return (`list()` of [`FuncVariable`])
 #' @export
 #' @examples
+#' func <- local_func()
 #' x <- hlo_input("x", "f32", shape = c(2, 2))
 #' y <- hlo_input("y", "f32", shape = c(2, 2))
 #' f <- hlo_closure(x, y)

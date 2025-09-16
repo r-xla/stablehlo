@@ -46,6 +46,9 @@ op_constant <- function(value, dtype = NULL) {
 #'     \item \code{shape} (`integer()`): Shape of the tensor (for hlo_tensor only).
 #'       If not specified, the shape is inferred from the data.
 #'   }
+#' @param func ([`Func`])\cr
+#'   The function to add the constant to.
+#'   Per default, uses the last function created with [`hlo_func`] or [`local_func`].
 #' @name hlo_constant
 #' @export
 #' @examples

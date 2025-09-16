@@ -2,9 +2,12 @@
 % Please edit documentation in R/func.R
 \name{hlo_func}
 \alias{hlo_func}
+\alias{local_func}
 \title{Create a function}
 \usage{
 hlo_func(id = "main")
+
+local_func(id = "main")
 }
 \arguments{
 \item{id}{(\code{character(1)}\cr
@@ -15,4 +18,8 @@ A \code{\link{Func}} object.
 }
 \description{
 Create a function with the given id.
+\code{\link{local_func}} removes the function when exiting the current scope, whereas
+\code{\link{hlo_func}} does not.
+After calling this function, the created function is stored in a global variable and accessible via \link{.current_fn}.
+Functions receiving a \code{\link{Func}} as an argument usually use \code{\link[=.current_fn]{.current_fn()}} by default.
 }

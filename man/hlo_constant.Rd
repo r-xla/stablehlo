@@ -46,6 +46,10 @@ Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.
 \item \code{shape} (\code{integer()}): Shape of the tensor (for hlo_tensor only).
 If not specified, the shape is inferred from the data.
 }}
+
+\item{func}{(\code{\link{Func}})\cr
+The function to add the constant to.
+Per default, uses the last function created with \code{\link{hlo_func}} or \code{\link{local_func}}.}
 }
 \description{
 Create either a scalar or tensor constant.

@@ -10,5 +10,6 @@
 A \code{\link{Func}} object.
 }
 \description{
-Get the last function created, which is not returned yet.
+Get the last function created (either via \code{\link{hlo_func}} or \code{\link{local_func}}),
+which is not returned yet.
 }

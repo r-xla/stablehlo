@@ -92,9 +92,9 @@ globals[["CURRENT_FN"]] <- NULL
 
 #' @title Get the last function created
 #' @description
-#' Get the last function created, which is not returned yet.
+#' Get the last function created (either via [`hlo_func`] or [`local_func`]),
+#' which is not returned yet.
 #' @return A [`Func`] object.
-#' @internal
 #' @export
 .current_fn <- function() {
   globals[["CURRENT_FN"]] %??% stop("No function is currently being built")
@@ -103,30 +103,46 @@ globals[["CURRENT_FN"]] <- NULL
 #' @title Create a function
 #' @description
 #' Create a function with the given id.
+#' [`local_func`] removes the function when exiting the current scope, whereas
+#' [`hlo_func`] does not.
+#' After calling this function, the created function is stored in a global variable and accessible via [.current_fn].
+#' Functions receiving a [`Func`] as an argument usually use [`.current_fn()`] by default.
 #' @param id (`character(1)`\cr
 #'   The id of the function.
 #' @return A [`Func`] object.
 #' @export
 hlo_func <- function(id = "main") {
-  globals[["CURRENT_FN"]] <- Func(id = FuncId(id))
+  func <- Func(id = FuncId(id))
+  globals[["CURRENT_FN"]] <- func
+  return(func)
 }
 
-#' @title Create a function
-#' @description
-#' Create a local function.
-#' @param id (`character(1)`\cr
-#'   The id of the function.
-#' @return A [`Func`] object.
+
+#' @rdname hlo_func
 #' @export
-local_func <- function() {
-  func <- hlo_func()
+local_func <- function(id = "main") {
+  func <- hlo_func(id)
   globals[["CURRENT_FN"]] <- func
+
   withr::defer(envir = parent.frame(), {
     globals[["CURRENT_FN"]] <- NULL
   })
   return(func)
 }
 
+#' @title Func
+#' @description
+#' This represents a function.
+#' @param id (`FuncId`\cr
+#'   The id of the function.
+#' @param inputs (`FuncInputs`\cr
+#'   The inputs of the function.
+#' @param outputs (`FuncOutputs`\cr
+#'   The outputs of the function.
+#' @param body (`FuncBody`\cr
+#'   The body of the function.
+#' @return A [`Func`] object.
+#' @export
 Func <- new_class(
   "Func",
   properties = list(
