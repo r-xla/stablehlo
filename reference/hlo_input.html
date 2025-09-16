@@ -78,7 +78,7 @@ Use <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">in
 
 
 <dt id="arg-func">func<a class="anchor" aria-label="anchor" href="#arg-func"></a></dt>
-<dd><p>(<code>Func</code>)<br>
+<dd><p>(<code><a href="Func.html">Func</a></code>)<br>
 The function id of the parameter.
 Per default, uses the last function created with <code><a href="hlo_func.html">hlo_func</a></code>.</p></dd>
 
@@ -86,17 +86,31 @@ Per default, uses the last function created with <code><a href="hlo_func.html">h
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">hlo_input</span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"f32"</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in globals[["CURRENT_FN"]] %??% stop("No function is currently being built"):</span> No function is currently being built</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">func</span> <span class="op">&lt;-</span> <span class="fu"><a href="hlo_func.html">hlo_func</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">hlo_input</span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"f32"</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'x' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable <span style="color: #0000BB;">%x</span> in:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> func.func @main (<span style="color: #0000BB;">%x</span>: tensor&lt;2x2xf32&gt;) -&gt;  {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># You can combine multiple inputs as follows:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu">hlo_input</span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"f32"</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu">hlo_input</span><span class="op">(</span><span class="st">"y"</span>, <span class="st">"f32"</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in globals[["CURRENT_FN"]] %??% stop("No function is currently being built"):</span> No function is currently being built</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable <span style="color: #0000BB;">%x</span> in:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> func.func @main (<span style="color: #0000BB;">%x</span>: tensor&lt;2x2xf32&gt;, %x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variable <span style="color: #0000BB;">%y</span> in:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> func.func @main (%x: tensor&lt;2x2xf32&gt;, %x: tensor&lt;2x2xf32&gt;, <span style="color: #0000BB;">%y</span>: tensor&lt;2x2xf32&gt;) -&gt;  {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

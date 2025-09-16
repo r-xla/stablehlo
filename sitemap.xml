@@ -9,6 +9,7 @@
 <url><loc>/news/index.html</loc></url>
 <url><loc>/reference/BooleanType.html</loc></url>
 <url><loc>/reference/FloatType.html</loc></url>
+<url><loc>/reference/Func.html</loc></url>
 <url><loc>/reference/FuncId.html</loc></url>
 <url><loc>/reference/FuncVariable.html</loc></url>
 <url><loc>/reference/IntegerType.html</loc></url>
@@ -62,7 +63,6 @@
 <url><loc>/reference/infer_types_boolean_biv.html</loc></url>
 <url><loc>/reference/infer_types_generic_biv.html</loc></url>
 <url><loc>/reference/infer_types_generic_uni.html</loc></url>
-<url><loc>/reference/local_func.html</loc></url>
 <url><loc>/reference/r_to_stablehlo_string.html</loc></url>
 <url><loc>/reference/reexports.html</loc></url>
 <url><loc>/reference/repr.html</loc></url>
