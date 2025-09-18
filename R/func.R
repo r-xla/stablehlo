@@ -101,11 +101,17 @@ method(repr, FuncBody) <- function(x) {
 #' @title Create a function
 #' @description
 #' Create a function with the given id.
-#' [`local_func`] removes the function when exiting the current scope, whereas
-#' [`hlo_func`] does not.
-#' After a `local_func` is cleaned up
-#' After calling this function, the created function is stored in a global variable and accessible via [.current_func].
+#' After calling either function, the created function is stored in a global variable and accessible
+#' via [.current_func].
 #' Functions receiving a [`Func`] as an argument usually use [`.current_func()`] by default.
+#'
+#' Differences between the two functions:
+#' * [`local_func`] removes the function when exiting the current scope, whereas [`hlo_func`] does not.
+#' * [`hlo_func`] discards the previously built function, whereas [`local_func`] does not:
+#'   after a function created by [`local_func`] is either cleaned up automatically or the function
+#'   is finalized via [`hlo_return`], the previously built function is restored and accessible via [.current_func].
+#'   To built nested functions (e.g. to create a closure that is passed to another op), use
+#'   [`local_func`] instead of [`hlo_func`].
 #' @param id (`character(1)`\cr
 #'   The id of the function.
 #' @return A [`Func`] object.

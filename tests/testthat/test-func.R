@@ -88,3 +88,10 @@ test_that("local_func", {
   }
   expect_equal(f1, .current_func())
 })
+
+test_that("hlo_func discards previous func", {
+  f1 <- hlo_func("f1")
+  f2 <- hlo_func("f2")
+  hlo_return(hlo_input("x", "f32", shape = c(2, 2)))
+  expect_error(.current_func(), "is currently being built")
+})

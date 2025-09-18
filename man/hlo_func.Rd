@@ -18,8 +18,17 @@ A \code{\link{Func}} object.
 }
 \description{
 Create a function with the given id.
-\code{\link{local_func}} removes the function when exiting the current scope, whereas
-\code{\link{hlo_func}} does not.
-After calling this function, the created function is stored in a global variable and accessible via \link{.current_func}.
+After calling either function, the created function is stored in a global variable and accessible
+via \link{.current_func}.
 Functions receiving a \code{\link{Func}} as an argument usually use \code{\link[=.current_func]{.current_func()}} by default.
+
+Differences between the two functions:
+\itemize{
+\item \code{\link{local_func}} removes the function when exiting the current scope, whereas \code{\link{hlo_func}} does not.
+\item \code{\link{hlo_func}} discards the previously built function, whereas \code{\link{local_func}} does not:
+after a function created by \code{\link{local_func}} is either cleaned up automatically or the function
+is finalized via \code{\link{hlo_return}}, the previously built function is restored and accessible via \link{.current_func}.
+To built nested functions (e.g. to create a closure that is passed to another op), use
+\code{\link{local_func}} instead of \code{\link{hlo_func}}.
+}
 }
