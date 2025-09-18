@@ -8,12 +8,12 @@
 </script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create a function — hlo_func"><meta name="description" content="Create a function with the given id.
 local_func removes the function when exiting the current scope, whereas
 hlo_func does not.
-After calling this function, the created function is stored in a global variable and accessible via .current_fn.
-Functions receiving a Func as an argument usually use .current_fn() by default."><meta property="og:description" content="Create a function with the given id.
+After calling this function, the created function is stored in a global variable and accessible via .current_func.
+Functions receiving a Func as an argument usually use .current_func() by default."><meta property="og:description" content="Create a function with the given id.
 local_func removes the function when exiting the current scope, whereas
 hlo_func does not.
-After calling this function, the created function is stored in a global variable and accessible via .current_fn.
-Functions receiving a Func as an argument usually use .current_fn() by default."></head><body>
+After calling this function, the created function is stored in a global variable and accessible via .current_func.
+Functions receiving a Func as an argument usually use .current_func() by default."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -49,7 +49,7 @@ Functions receiving a Func as an argument usually use .current_fn() by default."
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Create a function</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/main/R/func.R" class="external-link"><code>R/func.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/fix-tests/R/func.R" class="external-link"><code>R/func.R</code></a></small>
       <div class="d-none name"><code>hlo_func.Rd</code></div>
     </div>
 
@@ -57,8 +57,8 @@ Functions receiving a Func as an argument usually use .current_fn() by default."
     <p>Create a function with the given id.
 <code>local_func</code> removes the function when exiting the current scope, whereas
 <code>hlo_func</code> does not.
-After calling this function, the created function is stored in a global variable and accessible via <a href="dot-current_fn.html">.current_fn</a>.
-Functions receiving a <code><a href="Func.html">Func</a></code> as an argument usually use <code><a href="dot-current_fn.html">.current_fn()</a></code> by default.</p>
+After calling this function, the created function is stored in a global variable and accessible via <a href="dot-current_fn.html">.current_func</a>.
+Functions receiving a <code><a href="Func.html">Func</a></code> as an argument usually use <code><a href="dot-current_fn.html">.current_func()</a></code> by default.</p>
     </div>
 
     <div class="section level2">
