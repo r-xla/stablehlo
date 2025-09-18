@@ -88,3 +88,13 @@ get_dims <- function(data) {
   }
   dim(data)
 }
+
+restore_previous_func <- function() {
+  stash_size <- length(globals[["FUNC_STASH"]])
+  if (stash_size) {
+    globals[["CURRENT_FUNC"]] <- globals[["FUNC_STASH"]][[stash_size]]
+    globals[["FUNC_STASH"]] <- globals[["FUNC_STASH"]][-stash_size]
+  } else {
+    globals[["CURRENT_FUNC"]] <- NULL
+  }
+}

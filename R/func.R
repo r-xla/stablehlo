@@ -88,8 +88,6 @@ method(repr, FuncBody) <- function(x) {
   paste0(sapply(x@items, repr), collapse = "\n")
 }
 
-globals[["CURRENT_FUNC"]] <- NULL
-
 #' @title Get the last function created
 #' @description
 #' Get the last function created (either via [`hlo_func`] or [`local_func`]),
@@ -105,6 +103,7 @@ globals[["CURRENT_FUNC"]] <- NULL
 #' Create a function with the given id.
 #' [`local_func`] removes the function when exiting the current scope, whereas
 #' [`hlo_func`] does not.
+#' After a `local_func` is cleaned up
 #' After calling this function, the created function is stored in a global variable and accessible via [.current_func].
 #' Functions receiving a [`Func`] as an argument usually use [`.current_func()`] by default.
 #' @param id (`character(1)`\cr
@@ -122,10 +121,13 @@ hlo_func <- function(id = "main") {
 #' @export
 local_func <- function(id = "main") {
   func <- hlo_func(id)
+  if (!is.null(globals[["CURRENT_FUNC"]])) {
+    globals[["FUNC_STASH"]] <- c(globals[["FUNC_STASH"]], list(func))
+  }
   globals[["CURRENT_FUNC"]] <- func
 
   withr::defer(envir = parent.frame(), {
-    globals[["CURRENT_FUNC"]] <- NULL
+    restore_previous_func()
   })
   return(func)
 }
