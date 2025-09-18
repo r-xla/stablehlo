@@ -56,14 +56,14 @@ op_constant <- function(value, dtype = NULL) {
 #' hlo_scalar(1, dtype = "f32")
 #' hlo_scalar(TRUE)
 #' hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), dtype = "f32")
-hlo_scalar <- function(value, ..., func = .current_fn()) {
+hlo_scalar <- function(value, ..., func = .current_func()) {
   # Can't use S7 for now, because there is no array class
   UseMethod("hlo_scalar")
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_scalar.logical <- function(value, ..., func = .current_fn()) {
+hlo_scalar.logical <- function(value, ..., func = .current_func()) {
   args <- list(...)
   dtype <- args$dtype
   if (length(value) != 1L) {
@@ -81,7 +81,7 @@ hlo_scalar.double <- hlo_scalar.logical
 
 #' @rdname hlo_constant
 #' @export
-hlo_scalar.integer <- function(value, ..., func = .current_fn()) {
+hlo_scalar.integer <- function(value, ..., func = .current_func()) {
   args <- list(...)
   dtype <- args$dtype
   if (length(value) != 1L) {
@@ -97,7 +97,7 @@ hlo_scalar.integer <- function(value, ..., func = .current_fn()) {
 }
 
 #' @export
-hlo_scalar.PJRTBuffer <- function(value, ..., func = .current_fn()) {
+hlo_scalar.PJRTBuffer <- function(value, ..., func = .current_func()) {
   impl_hlo_constant(
     pjrt::as_array(value),
     dtype = as.character(dtype(value)),
@@ -107,14 +107,14 @@ hlo_scalar.PJRTBuffer <- function(value, ..., func = .current_fn()) {
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor <- function(value, ..., func = .current_fn()) {
+hlo_tensor <- function(value, ..., func = .current_func()) {
   # Can't use S7 for now, because there is no array class
   UseMethod("hlo_tensor")
 }
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.array <- function(value, ..., func = .current_fn()) {
+hlo_tensor.array <- function(value, ..., func = .current_func()) {
   args <- list(...)
   dtype <- args$dtype
   if (anyNA(value)) {
@@ -133,7 +133,7 @@ hlo_tensor.array <- function(value, ..., func = .current_fn()) {
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.integer <- function(value, ..., func = .current_fn()) {
+hlo_tensor.integer <- function(value, ..., func = .current_func()) {
   args <- list(...)
   dtype <- args$dtype
   shape <- args$shape %||% get_dims(value)
@@ -150,7 +150,7 @@ hlo_tensor.double <- hlo_tensor.integer
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.PJRTBuffer <- function(value, ..., func = .current_fn()) {
+hlo_tensor.PJRTBuffer <- function(value, ..., func = .current_func()) {
   impl_hlo_constant(
     pjrt::as_array(value),
     dtype = as.character(dtype(value)),

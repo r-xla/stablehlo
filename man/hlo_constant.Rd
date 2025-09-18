@@ -14,25 +14,25 @@
 \alias{hlo_tensor.PJRTBuffer}
 \title{Create a Constant}
 \usage{
-hlo_scalar(value, ..., func = .current_fn())
+hlo_scalar(value, ..., func = .current_func())
 
-\method{hlo_scalar}{logical}(value, ..., func = .current_fn())
+\method{hlo_scalar}{logical}(value, ..., func = .current_func())
 
-\method{hlo_scalar}{double}(value, ..., func = .current_fn())
+\method{hlo_scalar}{double}(value, ..., func = .current_func())
 
-\method{hlo_scalar}{integer}(value, ..., func = .current_fn())
+\method{hlo_scalar}{integer}(value, ..., func = .current_func())
 
-hlo_tensor(value, ..., func = .current_fn())
+hlo_tensor(value, ..., func = .current_func())
 
-\method{hlo_tensor}{array}(value, ..., func = .current_fn())
+\method{hlo_tensor}{array}(value, ..., func = .current_func())
 
-\method{hlo_tensor}{integer}(value, ..., func = .current_fn())
+\method{hlo_tensor}{integer}(value, ..., func = .current_func())
 
-\method{hlo_tensor}{logical}(value, ..., func = .current_fn())
+\method{hlo_tensor}{logical}(value, ..., func = .current_func())
 
-\method{hlo_tensor}{double}(value, ..., func = .current_fn())
+\method{hlo_tensor}{double}(value, ..., func = .current_func())
 
-\method{hlo_tensor}{PJRTBuffer}(value, ..., func = .current_fn())
+\method{hlo_tensor}{PJRTBuffer}(value, ..., func = .current_func())
 }
 \arguments{
 \item{value}{(any)\cr

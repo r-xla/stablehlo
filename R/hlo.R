@@ -152,7 +152,7 @@ hlo_input <- function(
   name,
   dtype,
   shape = integer(),
-  func = .current_fn()
+  func = .current_func()
 ) {
   assert_valid_name(name)
   value_id <- ValueId(name)

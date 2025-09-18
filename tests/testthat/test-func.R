@@ -70,21 +70,21 @@ test_that("multiple returns", {
 })
 
 test_that("local_func", {
-  globals[["CURRENT_FN"]] <- NULL
+  globals[["CURRENT_FUNC"]] <- NULL
   f <- (function() {
     local_func("abc")
   })()
-  expect_null(globals[["CURRENT_FN"]])
+  expect_null(globals[["CURRENT_FUNC"]])
   expect_true(inherits(f, Func))
   expect_equal(f@id@id, "abc")
 })
 
 test_that("hlo_func", {
-  globals[["CURRENT_FN"]] <- NULL
+  globals[["CURRENT_FUNC"]] <- NULL
   f <- (function() {
     hlo_func("abc")
   })()
-  expect_false(is.null(globals[["CURRENT_FN"]]))
+  expect_false(is.null(globals[["CURRENT_FUNC"]]))
   expect_true(inherits(f, Func))
   expect_equal(f@id@id, "abc")
 })
