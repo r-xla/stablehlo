@@ -1,1 +1,1 @@
-globals <- hashtab()
+globals <- new.env()

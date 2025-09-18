@@ -29,7 +29,7 @@ hlo_return_impl <- hlo_fn(Return, infer_types_return, TRUE)
 #' @export
 hlo_return <- function(...) {
   dots <- list(...)
-  globals[["CURRENT_FN"]] <- NULL
+  globals[["CURRENT_FUNC"]] <- NULL
   hlo_return_impl(values = dots)
 }
 
