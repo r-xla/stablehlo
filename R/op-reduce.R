@@ -7,7 +7,7 @@ infer_types_reduce <- function(..., body, dimensions, num_inputs) {
   value_types <- list(...)
 
   if (length(value_types) != 2L * num_inputs) {
-    cli::cli_abort(
+    stop(
       "Number of values must be 2 * num_inputs (inputs + init_values)"
     )
   }
@@ -31,13 +31,13 @@ infer_types_reduce <- function(..., body, dimensions, num_inputs) {
   if (
     !all(vapply(input_shapes, function(s) identical(s, ref_shape), logical(1L)))
   ) {
-    cli::cli_abort("All inputs to reduce must have the same shape")
+    stop("All inputs to reduce must have the same shape")
   }
 
   # (C2) element types must match between inputs and init_values (per position)
   for (i in seq_len(num_inputs)) {
     if (input_value_types[[i]]@type@dtype != init_value_types[[i]]@type@dtype) {
-      cli::cli_abort("Element types of inputs and init_values must match")
+      stop("Element types of inputs and init_values must match")
     }
   }
 
@@ -46,10 +46,10 @@ infer_types_reduce <- function(..., body, dimensions, num_inputs) {
   if (length(dims0) > 0L) {
     rank <- length(ref_shape)
     if (any(dims0 < 0L | dims0 >= rank)) {
-      cli::cli_abort("dimensions must be within [0, rank(operand))")
+      stop("dimensions must be within [0, rank(operand))")
     }
     if (any(duplicated(dims0))) {
-      cli::cli_abort("dimensions must be unique")
+      stop("dimensions must be unique")
     }
   }
 
@@ -65,7 +65,7 @@ infer_types_reduce <- function(..., body, dimensions, num_inputs) {
     lapply(body@outputs@items, function(x) x@type)
   )
   if (length(body_out_types@items) != num_inputs) {
-    cli::cli_abort("Body must return one tensor per input")
+    stop("Body must return one tensor per input")
   }
 
   # Build output ValueTypes with shapes after reduction
@@ -95,7 +95,7 @@ hlo_reduce <- function(inputs, init_values, dimensions, body) {
   init_values <- if (is.list(init_values)) init_values else list(init_values)
 
   if (length(inputs) != length(init_values)) {
-    cli::cli_abort("inputs and init_values must have the same length")
+    stop("inputs and init_values must have the same length")
   }
 
   # dimensions is an i64 1-D tensor attribute
