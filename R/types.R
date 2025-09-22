@@ -94,6 +94,10 @@ method(`==`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
   stop("Unknown TensorElementType")
 }
 
+method(`!=`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
+  !(e1 == e2)
+}
+
 #' @title TensorType
 #' @description
 #' Represents a tensor type with a specific data type and shape.
