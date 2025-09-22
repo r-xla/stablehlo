@@ -24,7 +24,7 @@ Functions receiving a \code{\link{Func}} as an argument (such as \code{\link{hlo
 Differences between the two functions:
 \itemize{
 \item \code{\link{local_func}} removes the function when exiting the current scope, whereas \code{\link{hlo_func}} does not.
-\item \code{\link{hlo_func}} discards the previously built function, whereas \code{\link{local_func}} does not:
+\item \code{\link{hlo_func}} discards the previously built function(s), whereas \code{\link{local_func}} does not:
 after a function created by \code{\link{local_func}} is either cleaned up automatically (by exiting the scope) or the function
 is finalized via \code{\link{hlo_return}}, the previously built function is restored, i.e., accessible via \code{\link[=.current_func]{.current_func()}}.
 To build nested functions (e.g. to create a closure that is passed to another op), use

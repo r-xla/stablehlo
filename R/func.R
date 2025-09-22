@@ -106,9 +106,9 @@ method(repr, FuncBody) <- function(x) {
 #'
 #' Differences between the two functions:
 #' * [`local_func`] removes the function when exiting the current scope, whereas [`hlo_func`] does not.
-#' * [`hlo_func`] discards the previously built function, whereas [`local_func`] does not:
+#' * [`hlo_func`] discards the previously built function(s), whereas [`local_func`] does not:
 #'   after a function created by [`local_func`] is either cleaned up automatically (by exiting the scope) or the function
-#'   is finalized via [`hlo_return`], the previously built function is restored, i.e., accessible via [.current_func()].
+#'   is finalized via [`hlo_return`], the previously built function is restored, i.e., accessible via [`.current_func()`].
 #'   To build nested functions (e.g. to create a closure that is passed to another op), use
 #'   [`local_func`] instead of [`hlo_func`].
 #' @param id (`character(1)`\cr
