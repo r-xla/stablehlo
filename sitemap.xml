@@ -48,6 +48,7 @@
 <url><loc>/reference/hlo_negate.html</loc></url>
 <url><loc>/reference/hlo_or.html</loc></url>
 <url><loc>/reference/hlo_power.html</loc></url>
+<url><loc>/reference/hlo_reduce.html</loc></url>
 <url><loc>/reference/hlo_remainder.html</loc></url>
 <url><loc>/reference/hlo_return.html</loc></url>
 <url><loc>/reference/hlo_round_nearest_even.html</loc></url>
