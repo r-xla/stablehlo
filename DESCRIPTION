@@ -80,6 +80,7 @@ Collate:
     'op-negate.R'
     'op-or.R'
     'op-power.R'
+    'op-reduce.R'
     'op-remainder.R'
     'op-return.R'
     'op-round_nearest_even.R'
