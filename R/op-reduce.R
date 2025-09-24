@@ -3,20 +3,14 @@ NULL
 
 OpReduce <- new_Op("OpReduce", "reduce")
 
-infer_types_reduce <- function(..., body, dimensions, num_inputs) {
+infer_types_reduce <- function(..., body, dimensions) {
   value_types <- list(...)
 
-  if (length(value_types) != 2L * num_inputs) {
-    stop(
-      "Number of values must be 2 * num_inputs (inputs + init_values)"
-    )
-  }
+  num_inputs <- length(value_types) / 2L
 
-  # Split inputs and init_values
   input_value_types <- value_types[seq_len(num_inputs)]
   init_value_types <- value_types[seq_len(num_inputs) + num_inputs]
 
-  # Validate tensor types and shapes
   lapply(input_value_types, function(vt) {
     stopifnot(inherits(vt@type, TensorType))
   })
@@ -41,7 +35,6 @@ infer_types_reduce <- function(..., body, dimensions, num_inputs) {
     }
   }
 
-  # Dimensions attribute: 0-based indices
   dims0 <- as.integer(dimensions@value@data)
   if (length(dims0) > 0L) {
     rank <- length(ref_shape)
@@ -108,8 +101,7 @@ hlo_reduce <- function(inputs, init_values, dimensions, body) {
   hlo_reduce_impl(
     values = c(inputs, init_values),
     funcs = list(body = body),
-    attrs = list(dimensions = dim_attr),
-    custom_attrs = list(num_inputs = length(inputs))
+    attrs = list(dimensions = dim_attr)
   )
 }
 
