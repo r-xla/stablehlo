@@ -111,9 +111,14 @@
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="important-notes">Important notes<a class="anchor" aria-label="anchor" href="#important-notes"></a>
+</h2>
+<p>stableHLO uses 0-based indexing. Wherever operations take dimension indices (e.g., axes, start indices, permutation dimensions), use 0-based values. This differs from R’s 1-based indexing.</p>
+</div>
+<div class="section level2">
 <h2 id="restrictions">Restrictions<a class="anchor" aria-label="anchor" href="#restrictions"></a>
 </h2>
-<p>The R package should be considered a <em>partial</em> implementation of the stableHLO specification. At least initially, it will:</p>
+<p>The R package is a <em>partial</em> implementation of the stableHLO specification. At least initially, it will:</p>
 <ul>
 <li>only support a subset of the available operations, see <a href="https://github.com/r-xla/stablehlo/issues/6" class="external-link">this issue</a> for an overview.</li>
 <li>not support all datatypes, e.g. quantized types and complex numbers are not supported.</li>
