@@ -113,17 +113,18 @@ hlo_reduce <- function(inputs, init_values, dimensions, body) {
   )
 }
 
-#method(repr, OpReduce) <- function(x) {
-#  paste0(
-#    repr(x@outputs),
-#    " = ",
-#    repr(x@name),
-#    " ",
-#    repr(x@inputs, simplify_dense = TRUE),
-#    ": ",
-#    repr(x@signature)
-#  )
-#}
+method(repr, OpReduce) <- function(x) {
+  paste0(
+    repr(x@outputs),
+    " = ",
+    repr(x@name),
+    " ",
+    repr(x@inputs, simplify_dense = TRUE),
+    ": ",
+    repr(x@signature)
+  )
+}
+
 #
 #
 #

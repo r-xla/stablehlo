@@ -1,11 +1,23 @@
-# reduce with addition prints correctly
+# basic tests
 
     Code
-      repr(func)
+      func
     Output
-      [1] "func.func @main (%x: tensor<1x6xi64>) -> tensor<1xi64> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<0> : tensor<i64>\n}: () -> (tensor<i64>)\n%1 = \"stablehlo.reduce\" (%x, %0)({\n  ^bb0(%a: tensor<i64>, %b: tensor<i64>):\n    %2 = \"stablehlo.add\" (%a, %b): (tensor<i64>, tensor<i64>) -> (tensor<i64>)\n    \"stablehlo.return\"(%2): (tensor<i64>) -> ()\n}) {\ndimensions = array<i64: 1>\n}: (tensor<1x6xi64>, tensor<i64>) -> (tensor<1xi64>)\n\"func.return\"(%1): (tensor<1xi64>) -> ()\n"
+      func.func @main (%x: tensor<2x3xf32>) -> tensor<2xf32> {
+      %0 = "stablehlo.constant" () {
+      value = dense<0.00000000e+00> : tensor<f32>
+      }: () -> (tensor<f32>)
+      %1 = "stablehlo.reduce" (%x, %0)({
+        ^bb0(%a: tensor<f32>, %b: tensor<f32>):
+          %2 = "stablehlo.add" (%a, %b): (tensor<f32>, tensor<f32>) -> (tensor<f32>)
+          "stablehlo.return"(%2): (tensor<f32>) -> ()
+      }) {
+      dimensions = array<i64: 1>
+      }: (tensor<2x3xf32>, tensor<f32>) -> (tensor<2xf32>)
+      "func.return"(%1): (tensor<2xf32>) -> ()
+      }
 
-# reduce with addition executes
+---
 
     Code
       repr(func)

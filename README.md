@@ -65,10 +65,16 @@ f
 #> }
 ```
 
+## Important notes
+
+stableHLO uses 0-based indexing. Wherever operations take dimension
+indices (e.g., axes, start indices, permutation dimensions), use 0-based
+values. This differs from R’s 1-based indexing.
+
 ## Restrictions
 
-The R package should be considered a *partial* implementation of the
-stableHLO specification. At least initially, it will:
+The R package is a *partial* implementation of the stableHLO
+specification. At least initially, it will:
 
 - only support a subset of the available operations, see [this
   issue](https://github.com/r-xla/stablehlo/issues/6) for an overview.

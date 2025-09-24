@@ -63,6 +63,7 @@ Collate:
     'op-cbrt.R'
     'op-ceil.R'
     'op-clamp.R'
+    'op-compare.R'
     'op-constant.R'
     'op-cosine.R'
     'op-divide.R'
