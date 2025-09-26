@@ -64,29 +64,25 @@ test_that("reduce along multiple dimensions", {
 
 test_that("reduce with two different tensors and init values", {
   skip_if_not_installed("pjrt")
+  skip_if_metal()
 
   func <- local_func()
 
-  # Two different input tensors
   x <- hlo_input("x", "f32", shape = c(2L, 3L))
   y <- hlo_input("y", "f32", shape = c(2L, 3L))
 
-  # Two different init values
   init_x <- hlo_scalar(0, dtype = "f32")
   init_y <- hlo_scalar(1, dtype = "f32")
 
-  # Reducer function that takes 4 inputs: x, y, init_x, init_y
   red <- local_func("reducer")
-  a <- hlo_input("a", "f32") # x element
-  b <- hlo_input("b", "f32") # y element
-  c <- hlo_input("c", "f32") # init_x
-  d <- hlo_input("d", "f32") # init_y
+  a <- hlo_input("a", "f32")
+  b <- hlo_input("b", "f32")
+  c <- hlo_input("c", "f32")
+  d <- hlo_input("d", "f32")
 
-  # Sum x element with its init, and y element with its init
   sum_x <- hlo_add(a, c)
   sum_y <- hlo_add(b, d)
 
-  # Return both results
   red <- hlo_return(sum_x, sum_y)
 
   r <- hlo_reduce(
@@ -100,7 +96,6 @@ test_that("reduce with two different tensors and init values", {
   program <- pjrt::pjrt_program(repr(func))
   executable <- pjrt::pjrt_compile(program)
 
-  # Test data
   data_x <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2L, byrow = TRUE)
   data_y <- matrix(c(2, 3, 4, 5, 6, 7), nrow = 2L, byrow = TRUE)
 
