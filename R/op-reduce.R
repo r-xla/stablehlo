@@ -6,6 +6,13 @@ OpReduce <- new_Op("OpReduce", "reduce")
 infer_types_reduce <- function(..., body, dimensions) {
   value_types <- list(...)
 
+  if (length(value_types) %% 2L != 0L) {
+    stop("Number of arguments must be divisible by 2")
+  }
+  if (length(value_types) == 0L) {
+    stop("No arguments provided")
+  }
+
   num_inputs <- length(value_types) / 2L
 
   input_value_types <- value_types[seq_len(num_inputs)]
@@ -83,21 +90,11 @@ hlo_reduce_impl <- hlo_fn(OpReduce, infer_types_reduce)
 #' @template op
 #' @export
 hlo_reduce <- function(inputs, init_values, dimensions, body) {
-  # Normalize to lists
-  inputs <- if (is.list(inputs)) inputs else list(inputs)
-  init_values <- if (is.list(init_values)) init_values else list(init_values)
-
-  if (length(inputs) != length(init_values)) {
-    stop("inputs and init_values must have the same length")
-  }
-
-  # dimensions is an i64 1-D tensor attribute
   dim_attr <- hlo_tensor(
     as.integer(dimensions),
     dtype = "i64",
     func = Func()
   )
-
   hlo_reduce_impl(
     values = c(inputs, init_values),
     funcs = list(body = body),
@@ -116,7 +113,3 @@ method(repr, OpReduce) <- function(x) {
     repr(x@signature)
   )
 }
-
-#
-#
-#
