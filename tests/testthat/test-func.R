@@ -65,7 +65,7 @@ test_that("multiple returns", {
   expect_snapshot(repr(f))
   skip_if_not_installed("pjrt")
   exec <- pjrt_compile(pjrt_program(repr(f)))
-  out <- pjrt_execute(exec, pjrt_buffer(array(1:4, dim = c(2, 2))))
+  out <- pjrt_execute(exec, pjrt_buffer(array(1:4, dim = c(2, 2)), "f32"))
   expect_identical(out[[1L]], out[[2L]])
 })
 
