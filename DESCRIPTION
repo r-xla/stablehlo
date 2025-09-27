@@ -92,6 +92,7 @@ Collate:
     'op-subtract.R'
     'op-tan.R'
     'op-tanh.R'
+    'op-transpose.R'
     'op-xor.R'
     'reexports.R'
     'utils.R'

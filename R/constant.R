@@ -29,12 +29,27 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   }
 
   if (simplify_dense && length(dim(data)) <= 1L) {
+    if (length(value_reprs) == 0) {
+      return(paste0(
+        "array<",
+        repr(type@dtype),
+        ">"
+      ))
+    } else {
+      return(paste0(
+        "array<",
+        repr(type@dtype),
+        ": ",
+        paste(value_reprs, collapse = ", "),
+        ">"
+      ))
+    }
+  }
+
+  if (length(value_reprs) == 0) {
     return(paste0(
-      "array<",
-      repr(type@dtype),
-      ": ",
-      paste(value_reprs, collapse = ", "),
-      ">"
+      "dense<[]> : ",
+      repr(type)
     ))
   }
 
@@ -94,8 +109,8 @@ method(r_to_constant, S7::class_logical) <- function(
   dtype = NULL, # is ignored
   ...
 ) {
-  if (!is.array(value) && length(value) != 1L) {
-    stop("Either provide an R array or a length 1 vector.")
+  if (!is.array(value) && length(value) > 1L) {
+    stop("Either provide an R array or a length <=1 vector.")
   }
   if (!is.null(dtype) && dtype != "pred") {
     stop("Invalid dtype for logical")
@@ -119,8 +134,8 @@ method(r_to_constant, S7::class_double) <- function(
   dtype = NULL,
   ...
 ) {
-  if (!is.array(value) && length(value) != 1L) {
-    stop("Either provide an R array or a length 1 vector.")
+  if (!is.array(value) && length(value) > 1L) {
+    stop("Either provide an R array or a length <=1 vector.")
   }
   if (!is.null(dtype) && !(dtype %in% c("f32", "f64"))) {
     stop("Invalid dtype for double")
@@ -150,8 +165,8 @@ method(r_to_constant, S7::class_integer) <- function(
   dtype = NULL,
   ...
 ) {
-  if (!is.array(value) && length(value) != 1L) {
-    stop("Either provide an R array or a length 1 vector.")
+  if (!is.array(value) && length(value) > 1L) {
+    stop("Either provide an R array or a length <=1 vector.")
   }
   valid_types <- c("i8", "i16", "i32", "i64", "ui8", "ui16", "ui32", "ui64")
   if (!is.null(dtype) && !(dtype %in% valid_types)) {

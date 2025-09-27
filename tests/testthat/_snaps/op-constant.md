@@ -138,3 +138,31 @@
     Output
       [1] "func.func @main () ->  {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1.00000000e+00> : tensor<f32>\n}: () -> (tensor<f32>)\n}\n"
 
+# empty array formatting
+
+    Code
+      repr(constant_op@inputs@attrs@items[[1]]@value@value, simplify_dense = TRUE)
+    Output
+      [1] "array<i64>"
+
+---
+
+    Code
+      repr(constant_op@inputs@attrs@items[[1]]@value@value, simplify_dense = FALSE)
+    Output
+      [1] "dense<[]> : tensor<0xi64>"
+
+---
+
+    Code
+      repr(constant_op_f32@inputs@attrs@items[[1]]@value@value, simplify_dense = TRUE)
+    Output
+      [1] "array<i64>"
+
+---
+
+    Code
+      repr(constant_op_bool@inputs@attrs@items[[1]]@value@value, simplify_dense = TRUE)
+    Output
+      [1] "array<i64>"
+
