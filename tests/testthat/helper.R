@@ -1,3 +1,7 @@
+if (requireNamespace("pjrt", quietly = TRUE)) {
+  library("pjrt")
+}
+
 generate_test_data <- function(dtype, dimension, non_negative = FALSE) {
   if (dtype == "pred" || dtype == "i1") {
     sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
@@ -75,7 +79,7 @@ hlo_test_uni <- function(
   x_buf <- pjrt::pjrt_buffer(x, dtype = dtype)
   out_buf <- pjrt::pjrt_execute(executable, x_buf)
   expect_class(out_buf, "PJRTBuffer")
-  out <- pjrt::as_array(out_buf)
+  out <- as_array(out_buf)
   testthat::expect_equal(out, test_func(x), tolerance = tol)
 }
 
