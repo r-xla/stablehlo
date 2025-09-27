@@ -158,6 +158,23 @@ hlo_tensor.PJRTBuffer <- function(value, ..., func = .current_func()) {
   )
 }
 
+hlo_empty <- function(dtype, shape, func = .current_func()) {
+  data <- if (dtype == "pred") {
+    logical()
+  } else {
+    integer()
+  }
+
+  if (!any(shape == 0L)) {
+    stop("Shape must contain at least one 0-dimension")
+  }
+
+  impl_hlo_constant(
+    array(data, dim = shape),
+    dtype = dtype,
+    func = func
+  )
+}
 
 impl_hlo_constant <- function(value, dtype, func) {
   const_value <- r_to_constant(value, dtype = dtype)

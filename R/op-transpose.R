@@ -70,6 +70,8 @@ hlo_transpose <- function(
   # For scalars (rank 0), permutation should be empty
   perm_attr <- hlo_tensor(
     as.integer(permutation),
+    # permutation might be integer()
+    shape = length(permutation),
     dtype = "i64",
     func = Func()
   )

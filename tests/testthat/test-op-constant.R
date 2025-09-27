@@ -123,3 +123,28 @@ test_that("PJRTBuffer", {
     hlo_scalar(pjrt_scalar(1), dtype = "i32", func = hlo_func())@func
   ))
 })
+
+test_that("empty array: dense<[]> formatting", {
+  skip_if_not_installed("pjrt")
+  func <- local_func()
+  empty_tensor <- hlo_empty("i64", 0L)
+  constant_op <- empty_tensor@func@body@items[[1]]
+  f <- hlo_return(empty_tensor)
+  expect_snapshot(repr(f))
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+  buffer <- pjrt_execute(exec)
+  expect_equal(as_array(buffer), array(integer(), 0L))
+})
+
+test_that("empty array: array<> formatting", {
+  local_func()
+  empty_tensor <- hlo_input("x", "i64", shape = integer())
+  y <- hlo_transpose(empty_tensor, permutation = integer())
+  f <- hlo_return(y)
+  expect_snapshot(repr(f))
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+  buffer <- pjrt_execute(exec, pjrt_scalar(1L, "i64"))
+  expect_equal(buffer, pjrt_scalar(1L, "i64"))
+})
