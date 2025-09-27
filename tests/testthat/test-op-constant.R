@@ -28,11 +28,11 @@ test_that("compile scalars", {
     func <- local_func()
     f <- hlo_return(hlo_scalar(x, dtype = dtype))
     f@id <- FuncId("main")
-    program <- pjrt::pjrt_program(repr(f))
-    exec <- pjrt::pjrt_compile(program)
-    buffer <- pjrt::pjrt_execute(exec)
+    program <- pjrt_program(repr(f))
+    exec <- pjrt_compile(program)
+    buffer <- pjrt_execute(exec)
     expect_equal(
-      pjrt::as_array(buffer),
+      as_array(buffer),
       x,
       tolerance = if (startsWith(dtype, "f")) 1e-6 else 0
     )
@@ -69,12 +69,12 @@ test_that("compile tensors", {
   check <- function(x, dtype) {
     func <- local_func()
     f <- hlo_return(hlo_tensor(x, dtype = dtype))
-    program <- pjrt::pjrt_program(repr(f))
-    exec <- pjrt::pjrt_compile(program)
-    buffer <- pjrt::pjrt_execute(exec)
+    program <- pjrt_program(repr(f))
+    exec <- pjrt_compile(program)
+    buffer <- pjrt_execute(exec)
     expect_equal(
       buffer,
-      pjrt::pjrt_buffer(x)
+      pjrt_buffer(x)
     )
   }
   check(array(1:2), "i32")
@@ -117,9 +117,9 @@ test_that("PJRTBuffer", {
   skip_if_not_installed("pjrt")
   func <- local_func()
   expect_snapshot(repr(
-    hlo_tensor(pjrt::pjrt_buffer(1), dtype = "i32", func = hlo_func())@func
+    hlo_tensor(pjrt_buffer(1), dtype = "i32", func = hlo_func())@func
   ))
   expect_snapshot(repr(
-    hlo_scalar(pjrt::pjrt_scalar(1), dtype = "i32", func = hlo_func())@func
+    hlo_scalar(pjrt_scalar(1), dtype = "i32", func = hlo_func())@func
   ))
 })

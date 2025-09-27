@@ -14,17 +14,17 @@ test_that("simple test", {
 
   skip_if_not_installed("pjrt")
 
-  program <- pjrt::pjrt_program(repr(f))
-  executable <- pjrt::pjrt_compile(program)
+  program <- pjrt_program(repr(f))
+  executable <- pjrt_compile(program)
 
   x <- array(c(1, 2, 3, 4), dim = c(2, 2))
-  x_buf <- pjrt::pjrt_buffer(x)
-  out_buf <- pjrt::pjrt_execute(
+  x_buf <- pjrt_buffer(x)
+  out_buf <- pjrt_execute(
     executable,
-    pjrt::pjrt_scalar(1),
-    pjrt::pjrt_scalar(2)
+    pjrt_scalar(1),
+    pjrt_scalar(2)
   )
-  expect_equal(out_buf, pjrt::pjrt_scalar(TRUE))
+  expect_equal(out_buf, pjrt_scalar(TRUE))
 })
 
 test_that("exhaustive test", {

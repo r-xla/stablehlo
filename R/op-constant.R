@@ -99,7 +99,7 @@ hlo_scalar.integer <- function(value, ..., func = .current_func()) {
 #' @export
 hlo_scalar.PJRTBuffer <- function(value, ..., func = .current_func()) {
   impl_hlo_constant(
-    pjrt::as_array(value),
+    as_array(value),
     dtype = as.character(dtype(value)),
     func = func
   )
@@ -152,7 +152,7 @@ hlo_tensor.double <- hlo_tensor.integer
 #' @export
 hlo_tensor.PJRTBuffer <- function(value, ..., func = .current_func()) {
   impl_hlo_constant(
-    pjrt::as_array(value),
+    as_array(value),
     dtype = as.character(dtype(value)),
     func = func
   )

@@ -18,13 +18,13 @@ test_that("basic tests", {
 
   expect_snapshot(repr(func))
 
-  program <- pjrt::pjrt_program(repr(func))
-  executable <- pjrt::pjrt_compile(program)
+  program <- pjrt_program(repr(func))
+  executable <- pjrt_compile(program)
 
   data <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2L, byrow = TRUE)
-  x_buf <- pjrt::pjrt_buffer(data, dtype = "f32")
-  out_buf <- pjrt::pjrt_execute(executable, x_buf)
-  out <- pjrt::as_array(out_buf)
+  x_buf <- pjrt_buffer(data, dtype = "f32")
+  out_buf <- pjrt_execute(executable, x_buf)
+  out <- as_array(out_buf)
 
   expect_equal(as.numeric(out), rowSums(data), tolerance = 1e-5)
 })
@@ -51,13 +51,13 @@ test_that("reduce along multiple dimensions", {
   )
   func <- hlo_return(r)
 
-  program <- pjrt::pjrt_program(repr(func))
-  executable <- pjrt::pjrt_compile(program)
+  program <- pjrt_program(repr(func))
+  executable <- pjrt_compile(program)
 
   data <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2L, byrow = TRUE)
-  x_buf <- pjrt::pjrt_buffer(data, dtype = "f32")
-  out_buf <- pjrt::pjrt_execute(executable, x_buf)
-  out <- pjrt::as_array(out_buf)
+  x_buf <- pjrt_buffer(data, dtype = "f32")
+  out_buf <- pjrt_execute(executable, x_buf)
+  out <- as_array(out_buf)
 
   expect_equal(as.numeric(out), sum(data), tolerance = 1e-5)
 })
@@ -93,17 +93,17 @@ test_that("reduce with two different tensors and init values", {
   )
   func <- hlo_return(r[[1]], r[[2]])
 
-  program <- pjrt::pjrt_program(repr(func))
-  executable <- pjrt::pjrt_compile(program)
+  program <- pjrt_program(repr(func))
+  executable <- pjrt_compile(program)
 
   data_x <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2L, byrow = TRUE)
   data_y <- matrix(c(2, 3, 4, 5, 6, 7), nrow = 2L, byrow = TRUE)
 
-  x_buf <- pjrt::pjrt_buffer(data_x, dtype = "f32")
-  y_buf <- pjrt::pjrt_buffer(data_y, dtype = "f32")
-  out_buf <- pjrt::pjrt_execute(executable, x_buf, y_buf)
-  out1 <- pjrt::as_array(out_buf[[1]])
-  out2 <- pjrt::as_array(out_buf[[2]])
+  x_buf <- pjrt_buffer(data_x, dtype = "f32")
+  y_buf <- pjrt_buffer(data_y, dtype = "f32")
+  out_buf <- pjrt_execute(executable, x_buf, y_buf)
+  out1 <- as_array(out_buf[[1]])
+  out2 <- as_array(out_buf[[2]])
 
   expect_equal(out1, array(c(6, 15), dim = 2L))
   expect_equal(out2, array(c(10, 19), dim = 2L))
