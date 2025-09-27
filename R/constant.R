@@ -28,7 +28,7 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
     tolower(as.logical(data))
   }
 
-  if (simplify_dense && length(shape(data)) <= 1L) {
+  if (simplify_dense && length(dim(data)) <= 1L) {
     return(paste0(
       "array<",
       repr(type@dtype),

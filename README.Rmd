@@ -51,10 +51,21 @@ identical(f, func)
 f
 ```
 
-## Restrictions
+## Important notes
 
-The R package should be considered a *partial* implementation of the stableHLO specification.
+stableHLO uses 0-based indexing. Wherever operations take dimension indices
+(e.g., axes, start indices, permutation dimensions), use 0-based values.
+This differs from R's 1-based indexing.
+
+## Limitations
+
+The R package is a *partial* implementation of the stableHLO specification.
 At least initially, it will:
 
 * only support a subset of the available operations, see [this issue](https://github.com/r-xla/stablehlo/issues/6) for an overview.
 * not support all datatypes, e.g. quantized types and complex numbers are not supported.
+
+## Acknowledgments
+
+* This work is supported by [MaRDI](https://www.mardi4nfdi.de).
+* This work is build upon the [stableHLO specification](https://openxla.org/stablehlo/spec) from the OpenXLA project.

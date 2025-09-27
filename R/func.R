@@ -88,8 +88,6 @@ method(repr, FuncBody) <- function(x) {
   paste0(sapply(x@items, repr), collapse = "\n")
 }
 
-globals[["CURRENT_FUNC"]] <- NULL
-
 #' @title Get the last function created
 #' @description
 #' Get the last function created (either via [`hlo_func`] or [`local_func`]),
@@ -102,11 +100,17 @@ globals[["CURRENT_FUNC"]] <- NULL
 
 #' @title Create a function
 #' @description
-#' Create a function with the given id.
-#' [`local_func`] removes the function when exiting the current scope, whereas
-#' [`hlo_func`] does not.
-#' After calling this function, the created function is stored in a global variable and accessible via [.current_func].
-#' Functions receiving a [`Func`] as an argument usually use [`.current_func()`] by default.
+#' Both functions create a new [`Func`] with the given id which is afterwards affessible via [`.current_func()`].
+#' Functions receiving a [`Func`] as an argument (such as [`hlo_input`], [`hlo_add`], ...) usually use
+#' [`.current_func()`] by default.
+#'
+#' Differences between the two functions:
+#' * [`local_func`] removes the function when exiting the current scope, whereas [`hlo_func`] does not.
+#' * [`hlo_func`] discards the previously built function(s), whereas [`local_func`] does not:
+#'   after a function created by [`local_func`] is either cleaned up automatically (by exiting the scope) or the function
+#'   is finalized via [`hlo_return`], the previously built function is restored, i.e., accessible via [`.current_func()`].
+#'   To build nested functions (e.g. to create a closure that is passed to another op), use
+#'   [`local_func`] instead of [`hlo_func`].
 #' @param id (`character(1)`\cr
 #'   The id of the function.
 #' @return A [`Func`] object.
@@ -122,10 +126,13 @@ hlo_func <- function(id = "main") {
 #' @export
 local_func <- function(id = "main") {
   func <- hlo_func(id)
+  if (!is.null(globals[["CURRENT_FUNC"]])) {
+    globals[["FUNC_STASH"]] <- c(globals[["FUNC_STASH"]], list(func))
+  }
   globals[["CURRENT_FUNC"]] <- func
 
   withr::defer(envir = parent.frame(), {
-    globals[["CURRENT_FUNC"]] <- NULL
+    restore_previous_func()
   })
   return(func)
 }
