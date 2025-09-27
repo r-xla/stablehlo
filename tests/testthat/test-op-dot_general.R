@@ -82,7 +82,7 @@ test_that("dot product", {
   expect_equal(out, pjrt::pjrt_scalar(sum(1:10 * 2:11), "f32"))
 })
 
-test_that("no contracting dims ", {
+test_that("no contracting dims", {
   skip_if_not_installed("pjrt")
   local_func()
   lhs <- hlo_input("lhs", "f32", shape = 10L)
