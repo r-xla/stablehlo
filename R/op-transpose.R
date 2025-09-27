@@ -16,15 +16,31 @@ infer_types_transpose <- function(
   # Extract permutation values from the constant
   perm_values <- permutation@value@data
 
+  # Handle scalar case (rank 0)
+  if (rank == 0) {
+    # For scalars, permutation should be empty and result is the same scalar
+    if (length(perm_values) != 0) {
+      stop("Length of permutation must be 0 for scalar operands")
+    }
+    return(ValueTypes(list(
+      ValueType(
+        TensorType(
+          dtype = operand@type@dtype,
+          shape = Shape(integer())
+        )
+      )
+    )))
+  }
   # (C2) permutation is a permutation of range(rank(operand))
+
   if (length(perm_values) != rank) {
-    cli::cli_abort("Length of permutation must equal rank of operand")
+    stop("Length of permutation must equal rank of operand")
   }
 
   # Check if permutation is valid (contains all values from 0 to rank-1)
   expected_perm <- seq(0, rank - 1)
   if (!setequal(perm_values, expected_perm)) {
-    cli::cli_abort("permutation must be a permutation of range(rank(operand))")
+    stop("permutation must be a permutation of range(rank(operand))")
   }
 
   # (C3) shape(result) = dim(operand, permutation...)
@@ -51,6 +67,7 @@ hlo_transpose <- function(
   permutation
 ) {
   # Convert permutation to tensor constant
+  # For scalars (rank 0), permutation should be empty
   perm_attr <- hlo_tensor(
     as.integer(permutation),
     dtype = "i64",
