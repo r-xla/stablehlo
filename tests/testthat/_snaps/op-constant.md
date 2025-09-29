@@ -138,31 +138,17 @@
     Output
       [1] "func.func @main () ->  {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1.00000000e+00> : tensor<f32>\n}: () -> (tensor<f32>)\n}\n"
 
-# empty array formatting
+# empty array: dense<[]> formatting
 
     Code
-      repr(constant_op@inputs@attrs@items[[1]]@value@value, simplify_dense = TRUE)
+      repr(f)
     Output
-      [1] "array<i64>"
+      [1] "func.func @main () -> tensor<0xi64> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<[]> : tensor<0xi64>\n}: () -> (tensor<0xi64>)\n\"func.return\"(%0): (tensor<0xi64>) -> ()\n}\n"
 
----
+# empty array: array<> formatting
 
     Code
-      repr(constant_op@inputs@attrs@items[[1]]@value@value, simplify_dense = FALSE)
+      repr(f)
     Output
-      [1] "dense<[]> : tensor<0xi64>"
-
----
-
-    Code
-      repr(constant_op_f32@inputs@attrs@items[[1]]@value@value, simplify_dense = TRUE)
-    Output
-      [1] "array<i64>"
-
----
-
-    Code
-      repr(constant_op_bool@inputs@attrs@items[[1]]@value@value, simplify_dense = TRUE)
-    Output
-      [1] "array<i64>"
+      [1] "func.func @main (%x: tensor<i64>) -> tensor<i64> {\n%0 = \"stablehlo.transpose\" (%x) {\npermutation = array<i64>\n}: (tensor<i64>) -> (tensor<i64>)\n\"func.return\"(%0): (tensor<i64>) -> ()\n}\n"
 
