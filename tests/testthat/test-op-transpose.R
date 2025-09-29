@@ -51,6 +51,7 @@ test_that("identity permutation", {
 })
 
 test_that("scalar transpose", {
+  skip_if_metal()
   skip_if_not_installed("pjrt")
   local_func()
   x <- hlo_input("x", "f64", shape = integer()) # scalar (0 dimensions)
