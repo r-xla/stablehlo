@@ -18,4 +18,5 @@ SPEC.md
 ^attic$
 ^man-roxygen$
 ^.lintr$
-
+^AGENTS.md$
+^Makefile$

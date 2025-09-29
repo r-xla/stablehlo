@@ -63,6 +63,6 @@ test_that("scalar transpose", {
   input <- 42.0 # scalar value
   expected <- input # transpose of scalar should return the same value
 
-  output <- pjrt_execute(exec, pjrt_buffer(input, dtype = "f64"))
+  output <- pjrt_execute(exec, pjrt_scalar(input, dtype = "f64"))
   expect_equal(as_array(output), expected)
 })
