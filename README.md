@@ -80,10 +80,11 @@ specification. At least initially, it will:
   issue](https://github.com/r-xla/stablehlo/issues/6) for an overview.
 - not support all datatypes, e.g. quantized types and complex numbers
   are not supported.
+- not support shape dynamism.
 
 ## Acknowledgments
 
 - This work is supported by [MaRDI](https://www.mardi4nfdi.de).
-- This work is build upon the [stableHLO
+- This work is built upon the [stableHLO
   specification](https://openxla.org/stablehlo/spec) from the OpenXLA
   project.

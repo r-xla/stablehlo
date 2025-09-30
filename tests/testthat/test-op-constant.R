@@ -24,9 +24,14 @@ test_that("scalars", {
 
 test_that("compile scalars", {
   skip_if_not_installed("pjrt")
-  check <- function(x, dtype) {
+  check <- function(x, dtype = NULL) {
     func <- local_func()
-    f <- hlo_return(hlo_scalar(x, dtype = dtype))
+    y <- if (is.null(dtype)) {
+      hlo_scalar(x)
+    } else {
+      hlo_scalar(x, dtype = dtype)
+    }
+    f <- hlo_return(y)
     f@id <- FuncId("main")
     program <- pjrt_program(repr(f))
     exec <- pjrt_compile(program)
@@ -34,7 +39,7 @@ test_that("compile scalars", {
     expect_equal(
       as_array(buffer),
       x,
-      tolerance = if (startsWith(dtype, "f")) 1e-6 else 0
+      tolerance = if (is.null(dtype) || startsWith(dtype, "f")) 1e-6 else 0
     )
   }
   check(3.14, "f32")
@@ -44,8 +49,8 @@ test_that("compile scalars", {
   check(3L, "i16")
   check(3L, "ui32")
   check(3L, "ui16")
-  check(TRUE, "pred")
-  check(FALSE, "pred")
+  check(TRUE)
+  check(FALSE)
 
   skip_if_metal("types not supported on Metal")
 
@@ -105,7 +110,7 @@ test_that("errors", {
 })
 
 test_that("specify shape in hlo_tensor", {
-  func <- local_func()
+  local_func()
   expect_snapshot(repr(
     hlo_tensor(1:2, shape = c(2, 1), func = hlo_func())@func
   ))
@@ -115,11 +120,36 @@ test_that("specify shape in hlo_tensor", {
 
 test_that("PJRTBuffer", {
   skip_if_not_installed("pjrt")
-  func <- local_func()
+  local_func()
   expect_snapshot(repr(
-    hlo_tensor(pjrt_buffer(1), dtype = "i32", func = hlo_func())@func
+    hlo_tensor(pjrt_buffer(1L, dtype = "i32"), func = hlo_func())@func
   ))
   expect_snapshot(repr(
-    hlo_scalar(pjrt_scalar(1), dtype = "i32", func = hlo_func())@func
+    hlo_scalar(pjrt_scalar(1, dtype = "f32"), func = hlo_func())@func
   ))
+})
+
+test_that("empty array: dense<[]> formatting", {
+  skip_if_not_installed("pjrt")
+  local_func()
+  empty_tensor <- hlo_empty("i64", 0L)
+  constant_op <- empty_tensor@func@body@items[[1]]
+  f <- hlo_return(empty_tensor)
+  expect_snapshot(repr(f))
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+  buffer <- pjrt_execute(exec)
+  expect_equal(as_array(buffer), array(integer(), 0L))
+})
+
+test_that("empty array: array<> formatting", {
+  local_func()
+  empty_tensor <- hlo_input("x", "i64", shape = integer())
+  y <- hlo_transpose(empty_tensor, permutation = integer())
+  f <- hlo_return(y)
+  expect_snapshot(repr(f))
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+  buffer <- pjrt_execute(exec, pjrt_scalar(1L, "i64"))
+  expect_equal(buffer, pjrt_scalar(1L, "i64"))
 })

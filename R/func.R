@@ -103,6 +103,7 @@ method(repr, FuncBody) <- function(x) {
 #' Both functions create a new [`Func`] with the given id which is afterwards affessible via [`.current_func()`].
 #' Functions receiving a [`Func`] as an argument (such as [`hlo_input`], [`hlo_add`], ...) usually use
 #' [`.current_func()`] by default.
+#' You can also directly create a function using [`Func()`], which will *not* be accessible this way.
 #'
 #' Differences between the two functions:
 #' * [`local_func`] removes the function when exiting the current scope, whereas [`hlo_func`] does not.
@@ -111,6 +112,7 @@ method(repr, FuncBody) <- function(x) {
 #'   is finalized via [`hlo_return`], the previously built function is restored, i.e., accessible via [`.current_func()`].
 #'   To build nested functions (e.g. to create a closure that is passed to another op), use
 #'   [`local_func`] instead of [`hlo_func`].
+#'
 #' @param id (`character(1)`\cr
 #'   The id of the function.
 #' @return A [`Func`] object.

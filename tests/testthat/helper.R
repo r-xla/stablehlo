@@ -79,7 +79,7 @@ hlo_test_uni <- function(
   x_buf <- pjrt::pjrt_buffer(x, dtype = dtype)
   out_buf <- pjrt::pjrt_execute(executable, x_buf)
   expect_class(out_buf, "PJRTBuffer")
-  out <- as_array(out_buf)
+  out <- pjrt::as_array(out_buf)
   testthat::expect_equal(out, test_func(x), tolerance = tol)
 }
 

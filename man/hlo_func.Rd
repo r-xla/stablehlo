@@ -20,6 +20,7 @@ A \code{\link{Func}} object.
 Both functions create a new \code{\link{Func}} with the given id which is afterwards affessible via \code{\link[=.current_func]{.current_func()}}.
 Functions receiving a \code{\link{Func}} as an argument (such as \code{\link{hlo_input}}, \code{\link{hlo_add}}, ...) usually use
 \code{\link[=.current_func]{.current_func()}} by default.
+You can also directly create a function using \code{\link[=Func]{Func()}}, which will \emph{not} be accessible this way.
 
 Differences between the two functions:
 \itemize{
