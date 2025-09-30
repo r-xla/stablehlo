@@ -47,7 +47,7 @@
 
 <div class="section level2">
 <h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a></h2>
-<p><code>stablehlo</code> is an R package that provides R bindings for StableHLO, a portable computation representation used in machine learning. It allows creating, manipulating, and transforming StableHLO operations in R.</p>
+<p><code>stablehlo</code> is an R package that allows to create StableHLO programs, a portable computation representation used in machine learning. It allows creating, manipulating, and transforming StableHLO operations in R. The Func object uses reference semantic, while other objects use value semantics.</p>
 </div>
 <div class="section level2">
 <h2 id="development-commands">Development Commands<a class="anchor" aria-label="anchor" href="#development-commands"></a></h2>
@@ -88,9 +88,9 @@
 <div class="section level2">
 <h2 id="development-practices">Development Practices<a class="anchor" aria-label="anchor" href="#development-practices"></a></h2>
 <ol style="list-style-type: decimal"><li>Use S7 (object-oriented system) for defining types and classes.</li>
-<li>Follow the established pattern for adding new operations and types</li>
-<li>Add tests in <code>tests/testthat/</code> with appropriate snapshots for validation</li>
-<li>Document functions with roxygen2 comments</li>
+<li>Follow the established pattern for adding new operations and types.</li>
+<li>Add tests in <code>tests/testthat/</code> with appropriate snapshots and execution tests for validation.</li>
+<li>Document functions with roxygen2 comments.</li>
 </ol></div>
 
 
