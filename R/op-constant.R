@@ -34,8 +34,9 @@ op_constant <- function(value, dtype = NULL) {
 
 #' @title Create a Constant
 #' @description
-#' Create either a scalar or tensor constant.
-#' Note that strictly speaking, stableHLO 'scalars' are simply tensors with 0 dimensions.
+#' Create either a "scalar" ([`hlo_scalar`]) or tensor ([`hlo_tensor`]) constant.
+#' Strictly speaking, stableHLO "scalars" are simply tensors with 0 dimensions.
+#' To create an emtpy constant (at least one dimension is 0), use [`hlo_empty`].
 #' @param value (any)\cr
 #'   Value from which to create a constant.
 #' @param ... (any)\cr
@@ -158,6 +159,8 @@ hlo_tensor.PJRTBuffer <- function(value, ..., func = .current_func()) {
   )
 }
 
+#' @rdname hlo_constant
+#' @export
 hlo_empty <- function(dtype, shape, func = .current_func()) {
   data <- if (dtype == "pred") {
     logical()

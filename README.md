@@ -84,6 +84,6 @@ specification. At least initially, it will:
 ## Acknowledgments
 
 - This work is supported by [MaRDI](https://www.mardi4nfdi.de).
-- This work is build upon the [stableHLO
+- This work is built upon the [stableHLO
   specification](https://openxla.org/stablehlo/spec) from the OpenXLA
   project.

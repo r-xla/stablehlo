@@ -12,6 +12,7 @@
 \alias{hlo_tensor.logical}
 \alias{hlo_tensor.double}
 \alias{hlo_tensor.PJRTBuffer}
+\alias{hlo_empty}
 \title{Create a Constant}
 \usage{
 hlo_scalar(value, ..., func = .current_func())
@@ -33,6 +34,8 @@ hlo_tensor(value, ..., func = .current_func())
 \method{hlo_tensor}{double}(value, ..., func = .current_func())
 
 \method{hlo_tensor}{PJRTBuffer}(value, ..., func = .current_func())
+
+hlo_empty(dtype, shape, func = .current_func())
 }
 \arguments{
 \item{value}{(any)\cr
@@ -52,8 +55,9 @@ The function to add the constant to.
 Per default, uses the last function created with \code{\link{hlo_func}} or \code{\link{local_func}}.}
 }
 \description{
-Create either a scalar or tensor constant.
-Note that strictly speaking, stableHLO 'scalars' are simply tensors with 0 dimensions.
+Create either a "scalar" (\code{\link{hlo_scalar}}) or tensor (\code{\link{hlo_tensor}}) constant.
+Strictly speaking, stableHLO "scalars" are simply tensors with 0 dimensions.
+To create an emtpy constant (at least one dimension is 0), use \code{\link{hlo_empty}}.
 }
 \examples{
 hlo_scalar(1L, dtype = "i32")
