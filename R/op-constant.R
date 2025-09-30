@@ -47,6 +47,12 @@ op_constant <- function(value, dtype = NULL) {
 #'     \item \code{shape} (`integer()`): Shape of the tensor (for hlo_tensor only).
 #'       If not specified, the shape is inferred from the data.
 #'   }
+#' @param dtype (`character(1)`)\cr
+#'   String for element type.
+#'   Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.
+#' @param shape (`integer()`)\cr
+#'   Shape of the tensor (for hlo_tensor only).
+#'   If not specified, the shape is inferred from the data.
 #' @param func ([`Func`])\cr
 #'   The function to add the constant to.
 #'   Per default, uses the last function created with [`hlo_func`] or [`local_func`].
@@ -57,6 +63,7 @@ op_constant <- function(value, dtype = NULL) {
 #' hlo_scalar(1, dtype = "f32")
 #' hlo_scalar(TRUE)
 #' hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), dtype = "f32")
+#' hlo_empty(dtype = "f32", shape = c(0, 3))
 hlo_scalar <- function(value, ..., func = .current_func()) {
   # Can't use S7 for now, because there is no array class
   UseMethod("hlo_scalar")
@@ -65,8 +72,25 @@ hlo_scalar <- function(value, ..., func = .current_func()) {
 #' @rdname hlo_constant
 #' @export
 hlo_scalar.logical <- function(value, ..., func = .current_func()) {
-  args <- list(...)
-  dtype <- args$dtype
+  rlang::check_dots_empty()
+  if (length(value) != 1L) {
+    stop("hlo_scalar expects a single value.")
+  }
+  if (anyNA(value)) {
+    stop("Data for constants must not contain NA values.")
+  }
+  impl_hlo_constant(value, dtype = "pred", func = func)
+}
+
+#' @rdname hlo_constant
+#' @export
+hlo_scalar.double <- function(
+  value,
+  ...,
+  dtype = NULL,
+  func = .current_func()
+) {
+  rlang::check_dots_empty()
   if (length(value) != 1L) {
     stop("hlo_scalar expects a single value.")
   }
@@ -78,13 +102,13 @@ hlo_scalar.logical <- function(value, ..., func = .current_func()) {
 
 #' @rdname hlo_constant
 #' @export
-hlo_scalar.double <- hlo_scalar.logical
-
-#' @rdname hlo_constant
-#' @export
-hlo_scalar.integer <- function(value, ..., func = .current_func()) {
-  args <- list(...)
-  dtype <- args$dtype
+hlo_scalar.integer <- function(
+  value,
+  ...,
+  dtype = NULL,
+  func = .current_func()
+) {
+  rlang::check_dots_empty()
   if (length(value) != 1L) {
     stop("hlo_scalar expects a single value.")
   }
@@ -99,6 +123,7 @@ hlo_scalar.integer <- function(value, ..., func = .current_func()) {
 
 #' @export
 hlo_scalar.PJRTBuffer <- function(value, ..., func = .current_func()) {
+  rlang::check_dots_empty()
   impl_hlo_constant(
     tengen::as_array(value),
     dtype = as.character(dtype(value)),
@@ -115,9 +140,8 @@ hlo_tensor <- function(value, ..., func = .current_func()) {
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.array <- function(value, ..., func = .current_func()) {
-  args <- list(...)
-  dtype <- args$dtype
+hlo_tensor.array <- function(value, ..., dtype = NULL, func = .current_func()) {
+  rlang::check_dots_empty()
   if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
@@ -134,10 +158,15 @@ hlo_tensor.array <- function(value, ..., func = .current_func()) {
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor.integer <- function(value, ..., func = .current_func()) {
-  args <- list(...)
-  dtype <- args$dtype
-  shape <- args$shape %||% get_dims(value)
+hlo_tensor.integer <- function(
+  value,
+  ...,
+  dtype = NULL,
+  shape = NULL,
+  func = .current_func()
+) {
+  rlang::check_dots_empty()
+  shape <- shape %??% get_dims(value)
   impl_hlo_constant(array(value, dim = shape), dtype = dtype, func = func)
 }
 
@@ -152,6 +181,7 @@ hlo_tensor.double <- hlo_tensor.integer
 #' @rdname hlo_constant
 #' @export
 hlo_tensor.PJRTBuffer <- function(value, ..., func = .current_func()) {
+  rlang::check_dots_empty()
   impl_hlo_constant(
     tengen::as_array(value),
     dtype = as.character(dtype(value)),
