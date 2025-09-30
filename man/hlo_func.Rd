@@ -30,4 +30,6 @@ is finalized via \code{\link{hlo_return}}, the previously built function is rest
 To build nested functions (e.g. to create a closure that is passed to another op), use
 \code{\link{local_func}} instead of \code{\link{hlo_func}}.
 }
+
+To
 }

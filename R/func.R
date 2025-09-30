@@ -111,6 +111,8 @@ method(repr, FuncBody) <- function(x) {
 #'   is finalized via [`hlo_return`], the previously built function is restored, i.e., accessible via [`.current_func()`].
 #'   To build nested functions (e.g. to create a closure that is passed to another op), use
 #'   [`local_func`] instead of [`hlo_func`].
+#'
+#' To
 #' @param id (`character(1)`\cr
 #'   The id of the function.
 #' @return A [`Func`] object.

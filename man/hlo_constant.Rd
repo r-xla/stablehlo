@@ -6,6 +6,7 @@
 \alias{hlo_scalar.logical}
 \alias{hlo_scalar.double}
 \alias{hlo_scalar.integer}
+\alias{hlo_scalar.PJRTBuffer}
 \alias{hlo_tensor}
 \alias{hlo_tensor.array}
 \alias{hlo_tensor.integer}
@@ -19,9 +20,11 @@ hlo_scalar(value, ..., func = .current_func())
 
 \method{hlo_scalar}{logical}(value, ..., func = .current_func())
 
-\method{hlo_scalar}{double}(value, ..., func = .current_func())
+\method{hlo_scalar}{double}(value, ..., dtype = NULL, func = .current_func())
 
 \method{hlo_scalar}{integer}(value, ..., dtype = NULL, func = .current_func())
+
+\method{hlo_scalar}{PJRTBuffer}(value, ..., func = .current_func())
 
 hlo_tensor(value, ..., func = .current_func())
 
@@ -68,9 +71,9 @@ Strictly speaking, stableHLO "scalars" are simply tensors with 0 dimensions.
 To create an emtpy constant (at least one dimension is 0), use \code{\link{hlo_empty}}.
 }
 \examples{
-hlo_scalar(1L, dtype = "i32")
-hlo_scalar(1, dtype = "f32")
-hlo_scalar(TRUE)
-hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), dtype = "f32")
-hlo_empty(dtype = "f32", shape = c(0, 3))
+hlo_scalar(1L, dtype = "i32", func = Func())
+hlo_scalar(1, dtype = "f32", func = Func())
+hlo_scalar(TRUE, func = Func())
+hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), dtype = "f32", func = Func())
+hlo_empty(dtype = "f32", shape = c(0, 3), func = Func())
 }
