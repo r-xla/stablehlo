@@ -13,6 +13,10 @@ test_that("TensorType repr", {
     dtype = FloatType("f32"),
     shape = Shape(c(1L, 2L))
   )
-
   expect_equal(repr(tt), "tensor<1x2xf32>")
+})
+
+test_that("as_dtype", {
+  expect_equal(as_dtype("f32"), FloatType("f32"))
+  expect_equal(as_dtype(BooleanType()), BooleanType())
 })

@@ -4,9 +4,10 @@
 #' @importFrom methods is
 #' @importFrom utils strcapture
 #' @import checkmate
-#' @importFrom tengen shape dtype
+#' @import tengen
 #' @importFrom utils hashtab
 NULL
+
 .onLoad <- function(...) {
   S7::methods_register()
 }

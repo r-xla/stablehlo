@@ -68,17 +68,17 @@ FloatType <- new_enum(
   )
 )
 
-#' @title TensorElementType
+#' @title TensorDataType
 #' @description
-#' Type union of all possible element types.
+#' Type union of all possible data types.
 #' @export
-TensorElementType <- S7::new_union(
+TensorDataType <- S7::new_union(
   BooleanType,
   IntegerType,
   FloatType
 )
 
-method(`==`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
+method(`==`, list(TensorDataType, TensorDataType)) <- function(e1, e2) {
   if (!identical(S7::S7_class(e1), S7::S7_class(e2))) {
     return(FALSE)
   }
@@ -91,24 +91,75 @@ method(`==`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
   if (inherits(e1, FloatType)) {
     return(e1@value == e2@value)
   }
-  stop("Unknown TensorElementType")
+  stop("Unknown TensorDataType")
 }
 
-method(`!=`, list(TensorElementType, TensorElementType)) <- function(e1, e2) {
+#' @title Convert to TensorDataType
+#' @description
+#' Convert to TensorDataType.
+#' @param x (any)\cr
+#'   Object to convert.
+#'   Can currently be a string (one of `r roxy_dtypes()`) or a [`TensorDataType`] object.
+#' @return `TensorDataType`
+#' @export
+as_dtype <- S7::new_generic("as_dtype", "x", function(x) {
+  S7::S7_dispatch()
+})
+
+method(as.character, BooleanType) <- function(x, ...) {
+  "i1"
+}
+
+method(as.character, IntegerType) <- function(x, ...) {
+  x@value
+}
+
+method(as.character, FloatType) <- function(x, ...) {
+  x@value
+}
+
+method(as_dtype, class_character) <- function(x) {
+  switch(
+    x,
+    "pred" = BooleanType(),
+    "i1" = BooleanType(),
+
+    "i8" = IntegerType("i8"),
+    "i16" = IntegerType("i16"),
+    "i32" = IntegerType("i32"),
+    "i64" = IntegerType("i64"),
+
+    "ui8" = IntegerType("ui8"),
+    "ui16" = IntegerType("ui16"),
+    "ui32" = IntegerType("ui32"),
+    "ui64" = IntegerType("ui64"),
+
+    "f32" = FloatType("f32"),
+    "f64" = FloatType("f64"),
+
+    stop("Unsupported dtype: ", x)
+  )
+}
+
+method(as_dtype, TensorDataType) <- function(x) {
+  x
+}
+
+method(`!=`, list(TensorDataType, TensorDataType)) <- function(e1, e2) {
   !(e1 == e2)
 }
 
 #' @title TensorType
 #' @description
 #' Represents a tensor type with a specific data type and shape.
-#' @param dtype ([`TensorElementType`])
+#' @param dtype ([`TensorDataType`])
 #' @param shape ([`Shape`])
 #' @return `TensorType`
 #' @export
 TensorType <- new_class(
   "TensorType",
   properties = list(
-    dtype = TensorElementType,
+    dtype = TensorDataType,
     shape = Shape
   )
 )

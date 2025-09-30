@@ -95,5 +95,6 @@ Collate:
     'op-transpose.R'
     'op-xor.R'
     'reexports.R'
+    'roxygen.R'
     'utils.R'
     'zzz.R'
