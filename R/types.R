@@ -145,6 +145,9 @@ method(as_dtype, TensorDataType) <- function(x) {
   x
 }
 
+# Alias for as_dtype for backward compatibility
+string_to_type <- as_dtype
+
 method(`!=`, list(TensorDataType, TensorDataType)) <- function(e1, e2) {
   !(e1 == e2)
 }

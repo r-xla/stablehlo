@@ -84,6 +84,8 @@ Collate:
     'op-reduce.R'
     'op-remainder.R'
     'op-return.R'
+    'op-rng.R'
+    'op-rng_bit_generator.R'
     'op-round_nearest_even.R'
     'op-rsqrt.R'
     'op-sign.R'

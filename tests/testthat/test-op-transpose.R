@@ -27,7 +27,7 @@ test_that("2D transpose", {
   exec <- pjrt_compile(program)
 
   input <- array(1:12, dim = c(3, 4))
-  expected <- t(input)
+  expected <- t(input) # R's t() function for matrix transpose
 
   output <- pjrt_execute(exec, pjrt_buffer(input))
   expect_equal(as_array(output), expected)
@@ -44,24 +44,25 @@ test_that("identity permutation", {
   exec <- pjrt_compile(program)
 
   input <- array(1:6, dim = c(2, 3))
+  expected <- input # Identity permutation should return the same array
 
   output <- pjrt_execute(exec, pjrt_buffer(input))
-  expect_equal(as_array(output), input)
+  expect_equal(as_array(output), expected)
 })
 
 test_that("scalar transpose", {
-  skip_if_metal()
   skip_if_not_installed("pjrt")
   local_func()
-  x <- hlo_input("x", "f64", shape = integer())
-  y <- hlo_transpose(x, permutation = integer())
+  x <- hlo_input("x", "f64", shape = integer())  # scalar (0 dimensions)
+  y <- hlo_transpose(x, permutation = integer())  # empty permutation for scalar
   f <- hlo_return(y)
 
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
 
-  input <- 42.0
+  input <- 42.0  # scalar value
+  expected <- input  # transpose of scalar should return the same value
 
-  output <- pjrt_execute(exec, pjrt_scalar(input, dtype = "f64"))
-  expect_equal(as_array(output), input)
+  output <- pjrt_execute(exec, pjrt_buffer(input))
+  expect_equal(as_array(output), expected)
 })
