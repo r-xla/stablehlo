@@ -54,6 +54,8 @@
 <url><loc>/reference/hlo_reduce.html</loc></url>
 <url><loc>/reference/hlo_remainder.html</loc></url>
 <url><loc>/reference/hlo_return.html</loc></url>
+<url><loc>/reference/hlo_rng.html</loc></url>
+<url><loc>/reference/hlo_rng_bit_generator.html</loc></url>
 <url><loc>/reference/hlo_round_nearest_even.html</loc></url>
 <url><loc>/reference/hlo_rsqrt.html</loc></url>
 <url><loc>/reference/hlo_sign.html</loc></url>
