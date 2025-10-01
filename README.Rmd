@@ -63,7 +63,7 @@ The R package is a *partial* implementation of the stableHLO specification.
 At least initially, it will:
 
 * only support a subset of the available operations, see [this issue](https://github.com/r-xla/stablehlo/issues/6) for an overview.
-* not support all datatypes, e.g. quantized types and complex numbers are not supported.
+* not support all data types, e.g. quantized types and complex numbers are not supported.
 * not support shape dynamism.
 
 ## Acknowledgments
