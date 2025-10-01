@@ -31,7 +31,7 @@ These programs can be executed using the R package [pjrt](https://github.com/r-x
 pak::pak("r-xla/stablehlo")
 ```
 
-## Quickstart
+## Quick Start
 
 Below, we create a function that takes two input arguments `x` and `y` of type `f32` and shape `(2, 2)` and adds them.
 Passing `func` to `hlo_input()` is optional, because it will automatically use the last function created with `hlo_func()`.
