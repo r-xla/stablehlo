@@ -41,12 +41,11 @@ method(repr, ValueId) <- function(x) {
 #' @return `character(1)`
 #' @export
 repr_env2name <- function(x) {
-  # nofmt
-  FUNC_ENV$vars[[x]] %??%
-    {
-      str <- as.character(FUNC_ENV$counter)
-      FUNC_ENV$counter <- FUNC_ENV$counter + 1L
-      FUNC_ENV$vars[[x]] <- str
-      str
-    }
+  # fmt: skip
+  FUNC_ENV$vars[[x]] %??% {
+    str <- as.character(FUNC_ENV$counter)
+    FUNC_ENV$counter <- FUNC_ENV$counter + 1L
+    FUNC_ENV$vars[[x]] <- str
+    str
+  }
 }

@@ -31,3 +31,4 @@ precisions
 pred
 quantized
 stableHLO
+Func
