@@ -33,30 +33,22 @@ op_constant <- function(value, dtype = NULL) {
 }
 
 #' @title Create a Constant
+#' @name hlo_constant
 #' @description
 #' Create either a "scalar" ([`hlo_scalar`]) or tensor ([`hlo_tensor`]) constant.
 #' Strictly speaking, stableHLO "scalars" are simply tensors with 0 dimensions.
 #' To create an empty constant (at least one dimension is 0), use [`hlo_empty`].
 #' @param value (any)\cr
 #'   Value from which to create a constant.
-#' @param ... (any)\cr
-#'   Additional arguments including:
-#'   \itemize{
-#'     \item \code{dtype} (`character(1)`): String for element type.
-#'       Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.
-#'     \item \code{shape} (`integer()`): Shape of the tensor (for hlo_tensor only).
-#'       If not specified, the shape is inferred from the data.
-#'   }
-#' @param dtype (`character(1)`)\cr
-#'   String for element type.
-#'   Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.
-#' @param shape (`integer()`)\cr
-#'   Shape of the tensor (for hlo_tensor only).
-#'   If not specified, the shape is inferred from the data.
 #' @param func ([`Func`])\cr
 #'   The function to add the constant to.
 #'   Per default, uses the last function created with [`hlo_func`] or [`local_func`].
-#' @name hlo_constant
+#' @param dtype (`character(1)`)\cr
+#'   One of: `r roxy_dtypes()`.
+#' @param shape (`integer()`)\cr
+#'   The shape
+#' @param ... (any)\cr
+#'   Additional arguments.
 #' @export
 #' @examples
 #' hlo_scalar(1L, dtype = "i32", func = Func())
@@ -64,14 +56,19 @@ op_constant <- function(value, dtype = NULL) {
 #' hlo_scalar(TRUE, func = Func())
 #' hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), dtype = "f32", func = Func())
 #' hlo_empty(dtype = "f32", shape = c(0, 3), func = Func())
-hlo_scalar <- function(value, ..., func = .current_func()) {
-  # Can't use S7 for now, because there is no array class
-  UseMethod("hlo_scalar")
-}
+hlo_scalar <- S7::new_generic(
+  "hlo_scalar",
+  "value",
+  function(value, ..., func = .current_func()) {
+    S7::S7_dispatch()
+  }
+)
 
-#' @rdname hlo_constant
-#' @export
-hlo_scalar.logical <- function(value, ..., func = .current_func()) {
+S7::method(hlo_scalar, S7::class_logical) <- function(
+  value,
+  ...,
+  func = .current_func()
+) {
   if (length(value) != 1L) {
     stop("hlo_scalar expects a single value.")
   }
@@ -81,9 +78,7 @@ hlo_scalar.logical <- function(value, ..., func = .current_func()) {
   impl_hlo_constant(value, dtype = "pred", func = func)
 }
 
-#' @rdname hlo_constant
-#' @export
-hlo_scalar.double <- function(
+S7::method(hlo_scalar, S7::class_double) <- function(
   value,
   ...,
   dtype = NULL,
@@ -98,9 +93,7 @@ hlo_scalar.double <- function(
   impl_hlo_constant(value, dtype = dtype, func = func)
 }
 
-#' @rdname hlo_constant
-#' @export
-hlo_scalar.integer <- function(
+S7::method(hlo_scalar, S7::class_integer) <- function(
   value,
   ...,
   dtype = NULL,
@@ -118,9 +111,11 @@ hlo_scalar.integer <- function(
   impl_hlo_constant(value, dtype = dtype, func = func)
 }
 
-#' @rdname hlo_constant
-#' @export
-hlo_scalar.PJRTBuffer <- function(value, ..., func = .current_func()) {
+S7::method(hlo_scalar, S7::new_S3_class("PJRTBuffer")) <- function(
+  value,
+  ...,
+  func = .current_func()
+) {
   impl_hlo_constant(
     tengen::as_array(value),
     dtype = as.character(pjrt::elt_type(value)),
@@ -130,14 +125,20 @@ hlo_scalar.PJRTBuffer <- function(value, ..., func = .current_func()) {
 
 #' @rdname hlo_constant
 #' @export
-hlo_tensor <- function(value, ..., func = .current_func()) {
-  # Can't use S7 for now, because there is no array class
-  UseMethod("hlo_tensor")
-}
+hlo_tensor <- S7::new_generic(
+  "hlo_tensor",
+  "value",
+  function(value, ..., func = .current_func()) {
+    S7::S7_dispatch()
+  }
+)
 
-#' @rdname hlo_constant
-#' @export
-hlo_tensor.array <- function(value, ..., dtype = NULL, func = .current_func()) {
+S7::method(hlo_tensor, S7::new_S3_class("array")) <- function(
+  value,
+  ...,
+  dtype = NULL,
+  func = .current_func()
+) {
   if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
@@ -152,9 +153,7 @@ hlo_tensor.array <- function(value, ..., dtype = NULL, func = .current_func()) {
   impl_hlo_constant(value, dtype = dtype, func = func)
 }
 
-#' @rdname hlo_constant
-#' @export
-hlo_tensor.integer <- function(
+S7::method(hlo_tensor, S7::class_integer) <- function(
   value,
   ...,
   dtype = NULL,
@@ -165,17 +164,32 @@ hlo_tensor.integer <- function(
   impl_hlo_constant(array(value, dim = shape), dtype = dtype, func = func)
 }
 
-#' @rdname hlo_constant
-#' @export
-hlo_tensor.logical <- hlo_tensor.integer
+S7::method(hlo_tensor, S7::class_logical) <- function(
+  value,
+  ...,
+  shape = NULL,
+  func = .current_func()
+) {
+  shape <- shape %??% get_dims(value)
+  impl_hlo_constant(array(value, dim = shape), dtype = "i1", func = func)
+}
 
-#' @rdname hlo_constant
-#' @export
-hlo_tensor.double <- hlo_tensor.integer
+S7::method(hlo_tensor, S7::class_double) <- function(
+  value,
+  ...,
+  dtype = NULL,
+  shape = NULL,
+  func = .current_func()
+) {
+  shape <- shape %??% get_dims(value)
+  impl_hlo_constant(array(value, dim = shape), dtype = dtype, func = func)
+}
 
-#' @rdname hlo_constant
-#' @export
-hlo_tensor.PJRTBuffer <- function(value, ..., func = .current_func()) {
+S7::method(hlo_tensor, S7::new_S3_class("PJRTBuffer")) <- function(
+  value,
+  ...,
+  func = .current_func()
+) {
   impl_hlo_constant(
     tengen::as_array(value),
     dtype = as.character(pjrt::elt_type(value)),

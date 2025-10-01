@@ -106,13 +106,13 @@ r_to_constant <- S7::new_generic(
 
 method(r_to_constant, S7::class_logical) <- function(
   value,
-  dtype = NULL, # is ignored
+  dtype = NULL,
   ...
 ) {
   if (!is.array(value) && length(value) > 1L) {
     stop("Either provide an R array or a length <=1 vector.")
   }
-  if (!is.null(dtype) && dtype != "pred") {
+  if (!is.null(dtype) && !(dtype %in% c("i1", "pred"))) {
     stop("Invalid dtype for logical")
   }
   shape <- Shape(
@@ -143,7 +143,7 @@ method(r_to_constant, S7::class_double) <- function(
   dtype <- if (is.null(dtype)) {
     FloatType("f32")
   } else {
-    string_to_type(dtype)
+    as_dtype(dtype)
   }
 
   shape <- Shape(
@@ -175,7 +175,7 @@ method(r_to_constant, S7::class_integer) <- function(
   dtype <- if (is.null(dtype)) {
     IntegerType("i32")
   } else {
-    string_to_type(dtype)
+    as_dtype(dtype)
   }
 
   shape <- Shape(
