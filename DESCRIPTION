@@ -65,6 +65,7 @@ Collate:
     'op-clamp.R'
     'op-compare.R'
     'op-constant.R'
+    'op-convert.R'
     'op-cosine.R'
     'op-divide.R'
     'op-dot_general.R'
