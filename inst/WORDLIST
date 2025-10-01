@@ -20,15 +20,15 @@ RoundNearestEven
 Rsqrt
 StableHLO
 Tanh
-TensorElementType
+TensorDataType
 TensorType
 ValueType
 codecov
 dev
-hlo
 pjrt
 precisions
 pred
 quantized
 stableHLO
+ui
 Func
