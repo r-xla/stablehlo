@@ -17,7 +17,7 @@ The id of the function.}
 A \code{\link{Func}} object.
 }
 \description{
-Both functions create a new \code{\link{Func}} with the given id which is afterwards affessible via \code{\link[=.current_func]{.current_func()}}.
+Both functions create a new \code{\link{Func}} with the given id which is afterwards accessible via \code{\link[=.current_func]{.current_func()}}.
 Functions receiving a \code{\link{Func}} as an argument (such as \code{\link{hlo_input}}, \code{\link{hlo_add}}, ...) usually use
 \code{\link[=.current_func]{.current_func()}} by default.
 You can also directly create a function using \code{\link[=Func]{Func()}}, which will \emph{not} be accessible this way.
@@ -26,9 +26,9 @@ Differences between the two functions:
 \itemize{
 \item \code{\link{local_func}} removes the function when exiting the current scope, whereas \code{\link{hlo_func}} does not.
 \item \code{\link{hlo_func}} discards the previously built function(s), whereas \code{\link{local_func}} does not:
-after a function created by \code{\link{local_func}} is either cleaned up automatically (by exiting the scope) or the function
-is finalized via \code{\link{hlo_return}}, the previously built function is restored, i.e., accessible via \code{\link[=.current_func]{.current_func()}}.
-To build nested functions (e.g. to create a closure that is passed to another op), use
-\code{\link{local_func}} instead of \code{\link{hlo_func}}.
+after a function created by \code{\link{local_func}} is either cleaned up automatically (by exiting the scope)
+or the function is finalized via \code{\link{hlo_return}}, the previously built function is restored,
+i.e., accessible via \code{\link[=.current_func]{.current_func()}}. To build nested functions (e.g. to create a closure
+that is passed to another op), use \code{\link{local_func}} instead of \code{\link{hlo_func}}.
 }
 }

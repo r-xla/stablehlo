@@ -68,7 +68,7 @@ If not specified, the shape is inferred from the data.}
 \description{
 Create either a "scalar" (\code{\link{hlo_scalar}}) or tensor (\code{\link{hlo_tensor}}) constant.
 Strictly speaking, stableHLO "scalars" are simply tensors with 0 dimensions.
-To create an emtpy constant (at least one dimension is 0), use \code{\link{hlo_empty}}.
+To create an empty constant (at least one dimension is 0), use \code{\link{hlo_empty}}.
 }
 \examples{
 hlo_scalar(1L, dtype = "i32", func = Func())

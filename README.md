@@ -35,19 +35,19 @@ library(stablehlo)
 func <- hlo_func("myfn")
 func
 #> func.func @myfn () ->  {
-#> 
+#>
 #> }
 x <- hlo_input("x", "f32", shape = c(2, 2), func = func)
 x
 #> Variable %x in:
 #> func.func @myfn (%x: tensor<2x2xf32>) ->  {
-#> 
+#>
 #> }
 y <- hlo_input("y", "f32", shape = c(2, 2), func = func)
 y
 #> Variable %y in:
 #> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> 
+#>
 #> }
 z <- hlo_add(x, y)
 z
@@ -78,7 +78,7 @@ specification. At least initially, it will:
 
 - only support a subset of the available operations, see [this
   issue](https://github.com/r-xla/stablehlo/issues/6) for an overview.
-- not support all datatypes, e.g. quantized types and complex numbers
+- not support all data types, e.g. quantized types and complex numbers
   are not supported.
 - not support shape dynamism.
 

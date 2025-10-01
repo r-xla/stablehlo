@@ -36,7 +36,7 @@ op_constant <- function(value, dtype = NULL) {
 #' @description
 #' Create either a "scalar" ([`hlo_scalar`]) or tensor ([`hlo_tensor`]) constant.
 #' Strictly speaking, stableHLO "scalars" are simply tensors with 0 dimensions.
-#' To create an emtpy constant (at least one dimension is 0), use [`hlo_empty`].
+#' To create an empty constant (at least one dimension is 0), use [`hlo_empty`].
 #' @param value (any)\cr
 #'   Value from which to create a constant.
 #' @param ... (any)\cr
