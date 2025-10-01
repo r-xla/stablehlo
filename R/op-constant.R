@@ -118,7 +118,7 @@ S7::method(hlo_scalar, S7::new_S3_class("PJRTBuffer")) <- function(
 ) {
   impl_hlo_constant(
     tengen::as_array(value),
-    dtype = as.character(dtype(value)),
+    dtype = as.character(pjrt::elt_type(value)),
     func = func
   )
 }
@@ -192,7 +192,7 @@ S7::method(hlo_tensor, S7::new_S3_class("PJRTBuffer")) <- function(
 ) {
   impl_hlo_constant(
     tengen::as_array(value),
-    dtype = as.character(dtype(value)),
+    dtype = as.character(pjrt::elt_type(value)),
     func = func
   )
 }
