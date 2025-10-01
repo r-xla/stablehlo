@@ -79,7 +79,7 @@ hlo_test_uni <- function(
   x_buf <- pjrt::pjrt_buffer(x, dtype = dtype)
   out_buf <- pjrt::pjrt_execute(executable, x_buf)
   expect_class(out_buf, "PJRTBuffer")
-  out <- pjrt::as_array(out_buf)
+  out <- tengen::as_array(out_buf)
   testthat::expect_equal(out, test_func(x), tolerance = tol)
 }
 
@@ -155,7 +155,7 @@ hlo_test_biv <- function(
   expect_class(out_buf, "PJRTBuffer")
   testthat::expect_equal(
     test_func(x, y),
-    pjrt::as_array(out_buf),
+    tengen::as_array(out_buf),
     tolerance = tol
   )
 }
