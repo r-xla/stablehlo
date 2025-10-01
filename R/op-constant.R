@@ -123,7 +123,7 @@ hlo_scalar.integer <- function(
 hlo_scalar.PJRTBuffer <- function(value, ..., func = .current_func()) {
   impl_hlo_constant(
     tengen::as_array(value),
-    dtype = as.character(dtype(value)),
+    dtype = as.character(pjrt::elt_type(value)),
     func = func
   )
 }
@@ -178,7 +178,7 @@ hlo_tensor.double <- hlo_tensor.integer
 hlo_tensor.PJRTBuffer <- function(value, ..., func = .current_func()) {
   impl_hlo_constant(
     tengen::as_array(value),
-    dtype = as.character(dtype(value)),
+    dtype = as.character(pjrt::elt_type(value)),
     func = func
   )
 }
