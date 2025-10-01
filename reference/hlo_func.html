@@ -5,29 +5,29 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create a function — hlo_func"><meta name="description" content="Both functions create a new Func with the given id which is afterwards affessible via .current_func().
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create a function — hlo_func"><meta name="description" content="Both functions create a new Func with the given id which is afterwards accessible via .current_func().
 Functions receiving a Func as an argument (such as hlo_input, hlo_add, ...) usually use
 .current_func() by default.
 You can also directly create a function using Func(), which will not be accessible this way.
 Differences between the two functions:
 local_func removes the function when exiting the current scope, whereas hlo_func does not.
 hlo_func discards the previously built function(s), whereas local_func does not:
-after a function created by local_func is either cleaned up automatically (by exiting the scope) or the function
-is finalized via hlo_return, the previously built function is restored, i.e., accessible via .current_func().
-To build nested functions (e.g. to create a closure that is passed to another op), use
-local_func instead of hlo_func.
+after a function created by local_func is either cleaned up automatically (by exiting the scope)
+or the function is finalized via hlo_return, the previously built function is restored,
+i.e., accessible via .current_func(). To build nested functions (e.g. to create a closure
+that is passed to another op), use local_func instead of hlo_func.
 
-"><meta property="og:description" content="Both functions create a new Func with the given id which is afterwards affessible via .current_func().
+"><meta property="og:description" content="Both functions create a new Func with the given id which is afterwards accessible via .current_func().
 Functions receiving a Func as an argument (such as hlo_input, hlo_add, ...) usually use
 .current_func() by default.
 You can also directly create a function using Func(), which will not be accessible this way.
 Differences between the two functions:
 local_func removes the function when exiting the current scope, whereas hlo_func does not.
 hlo_func discards the previously built function(s), whereas local_func does not:
-after a function created by local_func is either cleaned up automatically (by exiting the scope) or the function
-is finalized via hlo_return, the previously built function is restored, i.e., accessible via .current_func().
-To build nested functions (e.g. to create a closure that is passed to another op), use
-local_func instead of hlo_func.
+after a function created by local_func is either cleaned up automatically (by exiting the scope)
+or the function is finalized via hlo_return, the previously built function is restored,
+i.e., accessible via .current_func(). To build nested functions (e.g. to create a closure
+that is passed to another op), use local_func instead of hlo_func.
 
 "></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -70,16 +70,16 @@ local_func instead of hlo_func.
     </div>
 
     <div class="ref-description section level2">
-    <p>Both functions create a new <code><a href="Func.html">Func</a></code> with the given id which is afterwards affessible via <code><a href="dot-current_func.html">.current_func()</a></code>.
+    <p>Both functions create a new <code><a href="Func.html">Func</a></code> with the given id which is afterwards accessible via <code><a href="dot-current_func.html">.current_func()</a></code>.
 Functions receiving a <code><a href="Func.html">Func</a></code> as an argument (such as <code><a href="hlo_input.html">hlo_input</a></code>, <code><a href="hlo_add.html">hlo_add</a></code>, ...) usually use
 <code><a href="dot-current_func.html">.current_func()</a></code> by default.
 You can also directly create a function using <code><a href="Func.html">Func()</a></code>, which will <em>not</em> be accessible this way.</p>
 <p>Differences between the two functions:</p><ul><li><p><code>local_func</code> removes the function when exiting the current scope, whereas <code>hlo_func</code> does not.</p></li>
 <li><p><code>hlo_func</code> discards the previously built function(s), whereas <code>local_func</code> does not:
-after a function created by <code>local_func</code> is either cleaned up automatically (by exiting the scope) or the function
-is finalized via <code><a href="hlo_return.html">hlo_return</a></code>, the previously built function is restored, i.e., accessible via <code><a href="dot-current_func.html">.current_func()</a></code>.
-To build nested functions (e.g. to create a closure that is passed to another op), use
-<code>local_func</code> instead of <code>hlo_func</code>.</p></li>
+after a function created by <code>local_func</code> is either cleaned up automatically (by exiting the scope)
+or the function is finalized via <code><a href="hlo_return.html">hlo_return</a></code>, the previously built function is restored,
+i.e., accessible via <code><a href="dot-current_func.html">.current_func()</a></code>. To build nested functions (e.g. to create a closure
+that is passed to another op), use <code>local_func</code> instead of <code>hlo_func</code>.</p></li>
 </ul></div>
 
     <div class="section level2">
