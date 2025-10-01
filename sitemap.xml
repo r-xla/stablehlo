@@ -14,9 +14,10 @@
 <url><loc>/reference/FuncVariable.html</loc></url>
 <url><loc>/reference/IntegerType.html</loc></url>
 <url><loc>/reference/Shape.html</loc></url>
-<url><loc>/reference/TensorElementType.html</loc></url>
+<url><loc>/reference/TensorDataType.html</loc></url>
 <url><loc>/reference/TensorType.html</loc></url>
 <url><loc>/reference/ValueType.html</loc></url>
+<url><loc>/reference/as_dtype.html</loc></url>
 <url><loc>/reference/dot-current_func.html</loc></url>
 <url><loc>/reference/format_double.html</loc></url>
 <url><loc>/reference/hlo_abs.html</loc></url>
