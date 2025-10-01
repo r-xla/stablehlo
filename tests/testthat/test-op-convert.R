@@ -15,8 +15,8 @@ test_that("integer to float conversion", {
   out_buf <- pjrt_execute(executable, x_buf)
 
   expect_equal(
-    as_array(out_buf),
-    array(c(1, 2, 3, 4), dim = 4),
+    out_buf,
+    pjrt_buffer(array(c(1, 2, 3, 4), dim = 4), dtype = "f32"),
     tolerance = 1e-5
   )
 })
