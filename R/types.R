@@ -16,13 +16,13 @@ method(repr, BooleanType) <- function(x) {
 #' @title IntegerType (signed)
 #' @description
 #' Represents a signed integer type with a given bit width.
-#' @param bits (`integer(1)`)
+#' @param value (`integer(1)`)
 #' @return `IntegerType`
 #' @export
 IntegerType <- new_class(
   "IntegerType",
   properties = list(
-    bits = S7::new_property(
+    value = S7::new_property(
       class = S7::class_integer,
       validator = function(value) {
         assert_int(value)
@@ -32,25 +32,25 @@ IntegerType <- new_class(
       }
     )
   ),
-  constructor = function(bits) {
-    new_object(S7::S7_object(), bits = as.integer(bits))
+  constructor = function(value) {
+    new_object(S7::S7_object(), value = as.integer(value))
   }
 )
 
 method(repr, IntegerType) <- function(x) {
-  paste0("i", x@bits)
+  paste0("i", x@value)
 }
 
 #' @title UnsignedType
 #' @description
 #' Represents an unsigned integer type with a given bit width.
-#' @param bits (`integer(1)`)
+#' @param value (`integer(1)`)
 #' @return `UnsignedType`
 #' @export
 UnsignedType <- new_class(
   "UnsignedType",
   properties = list(
-    bits = S7::new_property(
+    value = S7::new_property(
       class = S7::class_integer,
       validator = function(value) {
         assert_int(value)
@@ -60,25 +60,25 @@ UnsignedType <- new_class(
       }
     )
   ),
-  constructor = function(bits) {
-    new_object(S7::S7_object(), bits = as.integer(bits))
+  constructor = function(value) {
+    new_object(S7::S7_object(), value = as.integer(value))
   }
 )
 
 method(repr, UnsignedType) <- function(x) {
-  paste0("ui", x@bits)
+  paste0("ui", x@value)
 }
 
 #' @title FloatType
 #' @description
 #' Represents a floating point type with a given bit width.
-#' @param bits (`integer(1)`)
+#' @param value (`integer(1)`)
 #' @return `FloatType`
 #' @export
 FloatType <- new_class(
   "FloatType",
   properties = list(
-    bits = S7::new_property(
+    value = S7::new_property(
       class = S7::class_integer,
       validator = function(value) {
         assert_int(value)
@@ -88,13 +88,13 @@ FloatType <- new_class(
       }
     )
   ),
-  constructor = function(bits) {
-    new_object(S7::S7_object(), bits = as.integer(bits))
+  constructor = function(value) {
+    new_object(S7::S7_object(), value = as.integer(value))
   }
 )
 
 method(repr, FloatType) <- function(x) {
-  paste0("f", x@bits)
+  paste0("f", x@value)
 }
 
 #' @title TensorDataType
@@ -116,13 +116,13 @@ method(`==`, list(TensorDataType, TensorDataType)) <- function(e1, e2) {
     return(TRUE)
   }
   if (inherits(e1, IntegerType)) {
-    return(e1@bits == e2@bits)
+    return(e1@value == e2@value)
   }
   if (inherits(e1, UnsignedType)) {
-    return(e1@bits == e2@bits)
+    return(e1@value == e2@value)
   }
   if (inherits(e1, FloatType)) {
-    return(e1@bits == e2@bits)
+    return(e1@value == e2@value)
   }
   stop("Unknown TensorDataType")
 }
