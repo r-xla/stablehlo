@@ -3,14 +3,14 @@ test_that("FuncInputs repr", {
     FuncInput(
       id = ValueId("x"),
       type = ValueType(TensorType(
-        dtype = FloatType("f32"),
+        dtype = FloatType(32L),
         shape = Shape(c(1L, 2L))
       ))
     ),
     FuncInput(
       id = ValueId("y"),
       type = ValueType(TensorType(
-        dtype = FloatType("f32"),
+        dtype = FloatType(32L),
         shape = Shape(c(1L, 2L))
       ))
     )
@@ -24,14 +24,14 @@ test_that("Func repr", {
     FuncInput(
       id = ValueId("x"),
       type = ValueType(TensorType(
-        dtype = FloatType("f32"),
+        dtype = FloatType(32L),
         shape = Shape(c(1L, 2L))
       ))
     ),
     FuncInput(
       id = ValueId("y"),
       type = ValueType(TensorType(
-        dtype = FloatType("f32"),
+        dtype = FloatType(32L),
         shape = Shape(c(1L, 2L))
       ))
     )
@@ -40,7 +40,7 @@ test_that("Func repr", {
   outputs <- FuncOutputs(list(
     FuncOutput(
       type = ValueType(TensorType(
-        dtype = FloatType("f32"),
+        dtype = FloatType(32L),
         shape = Shape(c(1L, 2L))
       ))
     )

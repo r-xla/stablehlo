@@ -13,60 +13,89 @@ method(repr, BooleanType) <- function(x) {
   "i1"
 }
 
-#' @title IntegerType
+#' @title IntegerType (signed)
 #' @description
-#' Represents the integer type.
-#' @param value (`character(1)`)
+#' Represents a signed integer type with a given bit width.
+#' @param value (`integer(1)`)
 #' @return `IntegerType`
 #' @export
-IntegerType <- new_enum(
+IntegerType <- new_class(
   "IntegerType",
-  c(
-    #"i2",
-    #"i4",
-    #"u2",
-    #"u4",
-    "i8",
-    "i16",
-    "i32",
-    "i64",
-    "ui8",
-    "ui16",
-    "ui32",
-    "ui64"
-  )
+  properties = list(
+    value = S7::new_property(
+      class = S7::class_integer,
+      validator = function(value) {
+        assert_int(value)
+        if (!(value %in% c(8L, 16L, 32L, 64L))) {
+          cli::cli_abort("Unsupported signed integer bit width: {value}")
+        }
+      }
+    )
+  ),
+  constructor = function(value) {
+    new_object(S7::S7_object(), value = as.integer(value))
+  }
 )
 
 method(repr, IntegerType) <- function(x) {
-  x@value
+  paste0("i", x@value)
+}
+
+#' @title UnsignedType
+#' @description
+#' Represents an unsigned integer type with a given bit width.
+#' @param value (`integer(1)`)
+#' @return `UnsignedType`
+#' @export
+UnsignedType <- new_class(
+  "UnsignedType",
+  properties = list(
+    value = S7::new_property(
+      class = S7::class_integer,
+      validator = function(value) {
+        assert_int(value)
+        if (!(value %in% c(8L, 16L, 32L, 64L))) {
+          cli::cli_abort("Unsupported unsigned integer bit width: {value}")
+        }
+      }
+    )
+  ),
+  constructor = function(value) {
+    new_object(S7::S7_object(), value = as.integer(value))
+  }
+)
+
+method(repr, UnsignedType) <- function(x) {
+  paste0("ui", x@value)
 }
 
 #' @title FloatType
 #' @description
-#' Represents the float type.
-#' @param value (`character(1)`)
+#' Represents a floating point type with a given bit width.
+#' @param value (`integer(1)`)
 #' @return `FloatType`
 #' @export
-FloatType <- new_enum(
+FloatType <- new_class(
   "FloatType",
-  c(
-    #"f4E2M1FN",
-    #"f6E2M3FN",
-    #"f6E3M2FN",
-    #"f8E3M4",
-    #"f8E4M3",
-    #"f8E4M3FN",
-    #"f8E4M3FNUZ",
-    #"f8E4M3B11FNUZ",
-    #"f8E5M2",
-    #"f8E5M2FNUZ",
-    #"f8E8M0FNU",
-    #"bf16",
-    #"f16",
-    "f32",
-    "f64"
-  )
+  properties = list(
+    value = S7::new_property(
+      class = S7::class_integer,
+      validator = function(value) {
+        assert_int(value)
+        if (!(value %in% c(32L, 64L))) {
+          cli::cli_abort("Unsupported float bit width: {value}")
+        }
+      }
+    )
+  ),
+  constructor = function(value) {
+    new_object(S7::S7_object(), value = as.integer(value))
+  }
 )
+
+method(repr, FloatType) <- function(x) {
+  paste0("f", x@value)
+}
 
 #' @title TensorDataType
 #' @description
@@ -75,6 +104,7 @@ FloatType <- new_enum(
 TensorDataType <- S7::new_union(
   BooleanType,
   IntegerType,
+  UnsignedType,
   FloatType
 )
 
@@ -86,6 +116,9 @@ method(`==`, list(TensorDataType, TensorDataType)) <- function(e1, e2) {
     return(TRUE)
   }
   if (inherits(e1, IntegerType)) {
+    return(e1@value == e2@value)
+  }
+  if (inherits(e1, UnsignedType)) {
     return(e1@value == e2@value)
   }
   if (inherits(e1, FloatType)) {
@@ -111,34 +144,31 @@ method(as.character, BooleanType) <- function(x, ...) {
 }
 
 method(as.character, IntegerType) <- function(x, ...) {
-  x@value
+  repr(x)
+}
+
+method(as.character, UnsignedType) <- function(x, ...) {
+  repr(x)
 }
 
 method(as.character, FloatType) <- function(x, ...) {
-  x@value
+  repr(x)
 }
 
 method(as_dtype, class_character) <- function(x) {
-  switch(
-    x,
-    "pred" = BooleanType(),
-    "i1" = BooleanType(),
-
-    "i8" = IntegerType("i8"),
-    "i16" = IntegerType("i16"),
-    "i32" = IntegerType("i32"),
-    "i64" = IntegerType("i64"),
-
-    "ui8" = IntegerType("ui8"),
-    "ui16" = IntegerType("ui16"),
-    "ui32" = IntegerType("ui32"),
-    "ui64" = IntegerType("ui64"),
-
-    "f32" = FloatType("f32"),
-    "f64" = FloatType("f64"),
-
-    stop("Unsupported dtype: ", x)
-  )
+  if (x %in% c("pred", "i1")) {
+    return(BooleanType())
+  }
+  if (grepl("^i[0-9]+$", x)) {
+    return(IntegerType(as.integer(sub("^i", "", x))))
+  }
+  if (grepl("^ui[0-9]+$", x)) {
+    return(UnsignedType(as.integer(sub("^ui", "", x))))
+  }
+  if (grepl("^f[0-9]+$", x)) {
+    return(FloatType(as.integer(sub("^f", "", x))))
+  }
+  stop("Unsupported dtype: ", x)
 }
 
 method(as_dtype, TensorDataType) <- function(x) {
@@ -244,10 +274,12 @@ make_value_type <- function(str, shape = NULL) {
     }
     dtype <- if (str %in% c("pred", "i1")) {
       BooleanType()
-    } else if (grepl("^(i|ui)[0-9]+$", str)) {
-      IntegerType(str)
+    } else if (grepl("^i[0-9]+$", str)) {
+      IntegerType(as.integer(sub("^i", "", str)))
+    } else if (grepl("^ui[0-9]+$", str)) {
+      UnsignedType(as.integer(sub("^ui", "", str)))
     } else if (grepl("^f[0-9]+$", str)) {
-      FloatType(str)
+      FloatType(as.integer(sub("^f", "", str)))
     } else {
       .NotYetImplemented()
     }

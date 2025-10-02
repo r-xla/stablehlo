@@ -32,3 +32,4 @@ quantized
 stableHLO
 ui
 Func
+UnsignedType

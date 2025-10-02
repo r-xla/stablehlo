@@ -1,5 +1,5 @@
 test_that("FloatType repr", {
-  ft <- FloatType("f32")
+  ft <- FloatType(32L)
   expect_equal(repr(ft), "f32")
 })
 
@@ -10,13 +10,13 @@ test_that("Boolean Type repr", {
 
 test_that("TensorType repr", {
   tt <- TensorType(
-    dtype = FloatType("f32"),
+    dtype = FloatType(32L),
     shape = Shape(c(1L, 2L))
   )
   expect_equal(repr(tt), "tensor<1x2xf32>")
 })
 
 test_that("as_dtype", {
-  expect_equal(as_dtype("f32"), FloatType("f32"))
+  expect_equal(as_dtype("f32"), FloatType(32L))
   expect_equal(as_dtype(BooleanType()), BooleanType())
 })
