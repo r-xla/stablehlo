@@ -22,12 +22,15 @@ method(repr, BooleanType) <- function(x) {
 IntegerType <- new_class(
   "IntegerType",
   properties = list(
-    bits = S7::new_property(class = S7::class_integer, validator = function(x) {
-      assert_integer(x, len = 1, any.missing = FALSE)
-      if (!(x %in% c(8L, 16L, 32L, 64L))) {
-        cli::cli_abort("Unsupported signed integer bit width: {x}")
+    bits = S7::new_property(
+      class = S7::class_integer,
+      validator = function(value) {
+        assert_int(value)
+        if (!(value %in% c(8L, 16L, 32L, 64L))) {
+          cli::cli_abort("Unsupported signed integer bit width: {value}")
+        }
       }
-    })
+    )
   ),
   constructor = function(bits) {
     new_object(S7::S7_object(), bits = as.integer(bits))
@@ -47,12 +50,15 @@ method(repr, IntegerType) <- function(x) {
 UnsignedType <- new_class(
   "UnsignedType",
   properties = list(
-    bits = S7::new_property(class = S7::class_integer, validator = function(x) {
-      assert_int(x)
-      if (!(x %in% c(8L, 16L, 32L, 64L))) {
-        cli::cli_abort("Unsupported unsigned integer bit width: {x}")
+    bits = S7::new_property(
+      class = S7::class_integer,
+      validator = function(value) {
+        assert_int(value)
+        if (!(value %in% c(8L, 16L, 32L, 64L))) {
+          cli::cli_abort("Unsupported unsigned integer bit width: {value}")
+        }
       }
-    })
+    )
   ),
   constructor = function(bits) {
     new_object(S7::S7_object(), bits = as.integer(bits))
@@ -72,15 +78,17 @@ method(repr, UnsignedType) <- function(x) {
 FloatType <- new_class(
   "FloatType",
   properties = list(
-    bits = S7::new_property(class = S7::class_integer, validator = function(x) {
-      assert_int(x)
-      if (!(x %in% c(32L, 64L))) {
-        cli::cli_abort("Unsupported float bit width: {x}")
+    bits = S7::new_property(
+      class = S7::class_integer,
+      validator = function(value) {
+        assert_int(value)
+        if (!(value %in% c(32L, 64L))) {
+          cli::cli_abort("Unsupported float bit width: {value}")
+        }
       }
-    })
+    )
   ),
   constructor = function(bits) {
-    assert_int(bits)
     new_object(S7::S7_object(), bits = as.integer(bits))
   }
 )
