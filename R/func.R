@@ -5,6 +5,15 @@
 #' @importFrom S7 new_class new_property method
 NULL
 
+#' @title FuncInput
+#' @description
+#' This represents an input of a [`Func`].
+#' @param id (`ValueId`)\cr
+#'   The id of the input.
+#' @param type (`ValueType`)\cr
+#'   The type of the input.
+#' @return (`FuncInput`)
+#' @export
 FuncInput <- new_class(
   "FuncInput",
   properties = list(
@@ -21,6 +30,13 @@ method(repr, FuncInput) <- function(x) {
   )
 }
 
+#' @title FuncInputs
+#' @description
+#' List of [`FuncInput`]s.
+#' @param items (`list()` of [`FuncInput`])\cr
+#'   The inputs of the function.
+#' @return (`FuncInputs`)
+#' @export
 FuncInputs <- new_list_of("FuncInputs", FuncInput)
 
 method(repr, FuncInputs) <- function(x) {

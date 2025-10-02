@@ -1,3 +1,12 @@
+#' @title ValueId
+#' @description
+#' This represents the name of a [`ValueType`].
+#' @param id (`character(1)` or [`environment`])\cr
+#'   Either a fixed name or an environment.
+#'   If using an environment (default), the name will be generated automatically
+#'   when calling [`repr()`], i.e. the first value id will be `%0`, the second `%1`, etc..
+#' @return (`ValueId`)
+#' @export
 ValueId <- new_class(
   "ValueId",
   properties = list(
