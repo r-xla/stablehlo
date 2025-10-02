@@ -33,3 +33,6 @@ stableHLO
 ui
 Func
 UnsignedType
+FuncInput
+FuncInputs
+ValueId
