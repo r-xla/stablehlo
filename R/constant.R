@@ -20,9 +20,11 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   value_reprs <- if (inherits(type@dtype, FloatType)) {
     format_double(
       data,
-      precision = if (type@dtype@value == "f32") 32 else 64
+      precision = type@dtype@bits
     )
-  } else if (inherits(type@dtype, IntegerType)) {
+  } else if (
+    inherits(type@dtype, IntegerType) || inherits(type@dtype, UnsignedType)
+  ) {
     as.character(data)
   } else if (inherits(type@dtype, BooleanType)) {
     tolower(as.logical(data))
@@ -141,7 +143,7 @@ method(r_to_constant, S7::class_double) <- function(
     stop("Invalid dtype for double")
   }
   dtype <- if (is.null(dtype)) {
-    FloatType("f32")
+    FloatType(32L)
   } else {
     as_dtype(dtype)
   }
@@ -173,7 +175,7 @@ method(r_to_constant, S7::class_integer) <- function(
     stop("Invalid dtype for integer")
   }
   dtype <- if (is.null(dtype)) {
-    IntegerType("i32")
+    IntegerType(32L)
   } else {
     as_dtype(dtype)
   }
