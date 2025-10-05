@@ -7,16 +7,16 @@ hlo_test_uni <- function(
   dtype = "f64",
   tol = 1e-5
 ) {
-  make_fn <- function(dtype) {
-    if (is.null(dimension)) {
+  make_fn <- function(dtype, dim = NULL) {
+    if (is.null(dim)) {
       len <- min(rgeom(1, .3) + 1, 4)
-      dimension <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
+      dim <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
     }
-    x <- hlo_input("x", dtype, shape = dimension, "main")
+    x <- hlo_input("x", dtype, shape = dim, "main")
     y <- hlo_func(x)
     func <- hlo_return(y)
     list(
-      dimension = dimension,
+      dimension = dim,
       func = func
     )
   }
@@ -53,24 +53,24 @@ hlo_test_uni <- function(
 hlo_test_biv <- function(
   hlo_func,
   test_func,
-  non_negative = FALSE,
+  non_negative = list(FALSE, FALSE),
   dimension = NULL,
   dtype = "f64",
   lhs = NULL,
   rhs = NULL,
   tol = 1e-5
 ) {
-  make_fn <- function(dtype) {
-    if (is.null(dimension)) {
+  make_fn <- function(dtype, dim = NULL) {
+    if (is.null(dim)) {
       len <- min(rgeom(1, .3) + 1, 4)
-      dimension <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
+      dim <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
     }
-    x <- hlo_input("x", dtype, shape = dimension, "main")
-    y <- hlo_input("y", dtype, shape = dimension, "main")
+    x <- hlo_input("x", dtype, shape = dim, "main")
+    y <- hlo_input("y", dtype, shape = dim, "main")
     z <- hlo_func(x, y)
     func <- hlo_return(z)
     list(
-      dimension = dimension,
+      dimension = dim,
       func = func
     )
   }
@@ -81,7 +81,7 @@ hlo_test_biv <- function(
   })
 
   dtype <- sample(dtype, 1)
-  res <- make_fn(dtype)
+  res <- make_fn(dtype, dim = dimension)
   func <- res$func
   dimension <- res$dimension
 
@@ -92,20 +92,32 @@ hlo_test_biv <- function(
   executable <- pjrt::pjrt_compile(program)
   expect_class(executable, "PJRTLoadedExecutable")
 
+  if (length(non_negative) < 2) {
+    non_negative <- rep(non_negative, 2)
+  }
+
   if (is.null(rhs)) {
-    rhs <- generate_test_data(dimension, dtype, non_negative)
+    rhs <- generate_test_data(
+      dimension,
+      dtype,
+      non_negative = non_negative[[2]]
+    )
   }
 
   if (is.null(lhs)) {
-    lhs <- generate_test_data(dimension, dtype, non_negative)
+    lhs <- generate_test_data(
+      dimension,
+      dtype,
+      non_negative = non_negative[[1]]
+    )
   }
 
-  x <- if (length(dimension)) {
+  x <- if (length(dim)) {
     array(lhs, dim = dimension)
   } else {
     lhs
   }
-  y <- if (length(dimension)) {
+  y <- if (length(dim)) {
     array(rhs, dim = dimension)
   } else {
     rhs
