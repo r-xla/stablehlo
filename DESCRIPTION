@@ -74,6 +74,7 @@ Collate:
     'op-negate.R'
     'op-not.R'
     'op-or.R'
+    'op-popcnt.R'
     'op-power.R'
     'op-remainder.R'
     'op-return.R'

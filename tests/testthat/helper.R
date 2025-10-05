@@ -137,7 +137,7 @@ generate_test_data <- function(dimension, dtype = "f64", non_negative = FALSE) {
   test_data <- NULL
   if (dtype == "pred") {
     test_data <- sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
-  } else if (dtype == "i32") {
+  } else if (dtype %in% c("i32", "i64")) {
     test_data <- as.integer(rgeom(prod(dimension), .5))
     if (!non_negative) {
       test_data <- as.integer((-1)^rbinom(prod(dimension), 1, .5) * test_data)
