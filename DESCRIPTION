@@ -64,6 +64,7 @@ Collate:
     'op-exponential_minus_one.R'
     'op-floor.R'
     'op-if.R'
+    'op-is_finite.R'
     'op-log.R'
     'op-log_plus_one.R'
     'op-logistic.R'
