@@ -78,6 +78,7 @@ Collate:
     'op-power.R'
     'op-remainder.R'
     'op-return.R'
+    'op-reverse.R'
     'op-round_nearest_even.R'
     'op-rsqrt.R'
     'op-shift_left.R'
