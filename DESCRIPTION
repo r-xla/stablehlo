@@ -77,6 +77,7 @@ Collate:
     'op-popcnt.R'
     'op-power.R'
     'op-remainder.R'
+    'op-reshape.R'
     'op-return.R'
     'op-reverse.R'
     'op-round_nearest_even.R'
