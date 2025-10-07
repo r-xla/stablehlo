@@ -89,6 +89,7 @@ Collate:
     'op-shift_right_logical.R'
     'op-sign.R'
     'op-sine.R'
+    'op-slice.R'
     'op-sqrt.R'
     'op-subtract.R'
     'op-tan.R'
