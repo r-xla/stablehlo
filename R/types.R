@@ -108,6 +108,24 @@ TensorDataType <- S7::new_union(
   FloatType
 )
 
+#' @title Is TensorDataType
+#' @description
+#' Check if an object is a [`TensorDataType`].
+#' @param x (any)\cr
+#'   Object to check.
+#' @return `logical(1)`
+#' @export
+is_dtype <- function(x) {
+  if (inherits(x, "S7_object")) {
+    S7::S7_inherits(x, IntegerType) ||
+      S7::S7_inherits(x, UnsignedType) ||
+      S7::S7_inherits(x, FloatType) ||
+      S7::S7_inherits(x, BooleanType)
+  } else {
+    FALSE
+  }
+}
+
 method(`==`, list(TensorDataType, TensorDataType)) <- function(e1, e2) {
   if (!identical(S7::S7_class(e1), S7::S7_class(e2))) {
     return(FALSE)

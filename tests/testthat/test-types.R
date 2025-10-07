@@ -20,3 +20,8 @@ test_that("as_dtype", {
   expect_equal(as_dtype("f32"), FloatType(32L))
   expect_equal(as_dtype(BooleanType()), BooleanType())
 })
+
+test_that("is_dtype", {
+  expect_true(is_dtype(BooleanType()))
+  expect_false(is_dtype("i32"))
+})

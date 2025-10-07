@@ -129,6 +129,13 @@ method(repr, OpMnemonic) <- function(x) {
   x@value
 }
 
+#' @title OpName
+#' @description
+#' This represents the name of an operation, containing a mnemonic.
+#' @param mnemonic (`OpMnemonic`)\cr
+#'   The mnemonic of the operation.
+#' @return (`OpName`)
+#' @export
 OpName <- new_class(
   "OpName",
   properties = list(
@@ -144,6 +151,13 @@ method(repr, OpName) <- function(x) {
   paste0("\"stablehlo.", repr(x@mnemonic), "\"")
 }
 
+#' @title OpInputValue
+#' @description
+#' This represents a value that can be used as input to an operation.
+#' @param id (`ValueId`)\cr
+#'   The id of the value.
+#' @return (`OpInputValue`)
+#' @export
 OpInputValue <- new_class(
   "OpInputValue",
   properties = list(
@@ -159,6 +173,13 @@ method(`==`, list(OpInputValue, OpInputValue)) <- function(e1, e2) {
   e1@id == e2@id
 }
 
+#' @title OpInputValues
+#' @description
+#' List of [`OpInputValue`]s.
+#' @param items (`list()` of [`OpInputValue`])\cr
+#'   The values that can be used as inputs to operations.
+#' @return (`OpInputValues`)
+#' @export
 OpInputValues <- new_list_of("OpInputValues", OpInputValue)
 
 method(repr, OpInputValues) <- function(x) {
@@ -166,6 +187,15 @@ method(repr, OpInputValues) <- function(x) {
 }
 
 
+#' @title OpInputAttr
+#' @description
+#' This represents an attribute that can be used as input to an operation.
+#' @param name (`character(1)`)\cr
+#'   The name of the attribute.
+#' @param value (`Constant`)\cr
+#'   The value of the attribute.
+#' @return (`OpInputAttr`)
+#' @export
 OpInputAttr <- new_class(
   "OpInputAttr",
   properties = list(
@@ -181,6 +211,13 @@ method(repr, OpInputAttr) <- function(x, simplify_dense = TRUE) {
   )
 }
 
+#' @title OpInputAttrs
+#' @description
+#' List of [`OpInputAttr`]s.
+#' @param items (`list()` of [`OpInputAttr`])\cr
+#'   The attributes that can be used as inputs to operations.
+#' @return (`OpInputAttrs`)
+#' @export
 OpInputAttrs <- new_list_of("OpInputAttrs", OpInputAttr)
 method(repr, OpInputAttrs) <- function(x, simplify_dense = TRUE) {
   if (length(x@items) == 0) {
@@ -193,6 +230,19 @@ method(repr, OpInputAttrs) <- function(x, simplify_dense = TRUE) {
   paste0(" {\n", a, "\n}")
 }
 
+#' @title OpInputs
+#' @description
+#' This represents all the inputs to an operation, including values, functions, and attributes.
+#' @param values (`OpInputValues`)\cr
+#'   The values used as inputs.
+#' @param funcs (`OpInputFuncs`)\cr
+#'   The functions used as inputs.
+#' @param attrs (`OpInputAttrs`)\cr
+#'   The attributes used as inputs.
+#' @param custom_attrs (`list`)\cr
+#'   Custom attributes.
+#' @return (`OpInputs`)
+#' @export
 OpInputs <- new_class(
   "OpInputs",
   properties = list(
@@ -220,6 +270,13 @@ method(`==`, list(OpInputs, OpInputs)) <- function(e1, e2) {
     e1@attrs == e2@attrs
 }
 
+#' @title OpOutput
+#' @description
+#' This represents an output of an operation.
+#' @param id (`ValueId`)\cr
+#'   The id of the output.
+#' @return (`OpOutput`)
+#' @export
 OpOutput <- new_class(
   "OpOutput",
   properties = list(
@@ -241,6 +298,13 @@ method(repr, OpOutput) <- function(x) {
   repr(x@id)
 }
 
+#' @title OpOutputs
+#' @description
+#' List of [`OpOutput`]s.
+#' @param items (`list()` of [`OpOutput`])\cr
+#'   The outputs of an operation.
+#' @return (`OpOutputs`)
+#' @export
 OpOutputs <- new_list_of("OpOutputs", OpOutput)
 
 method(repr, OpOutputs) <- function(x) {
@@ -251,6 +315,15 @@ method(repr, OpOutputs) <- function(x) {
   }
 }
 
+#' @title OpSignature
+#' @description
+#' This represents the signature of an operation, defining its input and output types.
+#' @param input_types (`ValueTypes`)\cr
+#'   The types of the inputs.
+#' @param output_types (`ValueTypes`)\cr
+#'   The types of the outputs.
+#' @return (`OpSignature`)
+#' @export
 OpSignature <- new_class(
   "OpSignature",
   properties = list(
@@ -276,6 +349,19 @@ method(`==`, list(OpSignature, OpSignature)) <- function(e1, e2) {
     e1@output_types == e2@output_types
 }
 
+#' @title Op
+#' @description
+#' This represents a StableHLO operation.
+#' @param name (`OpName`)\cr
+#'   The name of the operation.
+#' @param inputs (`OpInputs`)\cr
+#'   The inputs to the operation.
+#' @param outputs (`OpOutputs`)\cr
+#'   The outputs of the operation.
+#' @param signature (`OpSignature`)\cr
+#'   The signature of the operation.
+#' @return (`Op`)
+#' @export
 Op <- new_class(
   "Op",
   properties = list(

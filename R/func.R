@@ -10,8 +10,6 @@ NULL
 #' This represents an input of a [`Func`].
 #' @param id (`ValueId`)\cr
 #'   The id of the input.
-#' @param type (`ValueType`)\cr
-#'   The type of the input.
 #' @return (`FuncInput`)
 #' @export
 FuncInput <- new_class(
@@ -47,6 +45,13 @@ method(repr, FuncInputs) <- function(x) {
   )
 }
 
+#' @title FuncOutput
+#' @description
+#' This represents an output of a [`Func`].
+#' @param type (`ValueType`)\cr
+#'   The type of the output.
+#' @return (`FuncOutput`)
+#' @export
 FuncOutput <- new_class(
   "FuncOutput",
   properties = list(
@@ -58,6 +63,13 @@ method(repr, FuncOutput) <- function(x) {
   repr(x@type)
 }
 
+#' @title FuncOutputs
+#' @description
+#' List of [`FuncOutput`]s.
+#' @param items (`list()` of [`FuncOutput`])\cr
+#'   The outputs of the function.
+#' @return (`FuncOutputs`)
+#' @export
 FuncOutputs <- new_list_of("FuncOutputs", FuncOutput)
 
 method(repr, FuncOutputs) <- function(x) {
@@ -95,6 +107,13 @@ method(`==`, list(FuncId, FuncId)) <- function(e1, e2) {
   identical(e1@id, e2@id)
 }
 
+#' @title FuncBody
+#' @description
+#' The body of a [`Func`], containing a list of operations.
+#' @param items (`list()` of [`Op`])\cr
+#'   The operations in the function body.
+#' @return (`FuncBody`)
+#' @export
 FuncBody <- new_list_of(
   "FuncBody",
   item_type = Op
@@ -242,6 +261,15 @@ method(print, Func) <- function(x, ...) {
   cat(repr(x))
 }
 
+#' @title OpInputFunc
+#' @description
+#' This represents a function that can be used as input to an operation.
+#' @param inputs (`FuncInputs`)\cr
+#'   The inputs of the function.
+#' @param body (`FuncBody`)\cr
+#'   The body of the function.
+#' @return (`OpInputFunc`)
+#' @export
 OpInputFunc <- new_class(
   "OpInputFunc",
   properties = list(
@@ -277,6 +305,13 @@ method(`==`, list(OpInputFunc, OpInputFunc)) <- function(e1, e2) {
   e1@inputs == e2@inputs && e1@body == e2@body
 }
 
+#' @title OpInputFuncs
+#' @description
+#' List of [`OpInputFunc`]s.
+#' @param items (`list()` of [`OpInputFunc`])\cr
+#'   The functions that can be used as inputs to operations.
+#' @return (`OpInputFuncs`)
+#' @export
 OpInputFuncs <- new_list_of("OpInputFuncs", OpInputFunc)
 
 method(repr, OpInputFuncs) <- function(x) {
