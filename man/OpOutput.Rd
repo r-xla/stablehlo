@@ -4,7 +4,7 @@
 \alias{OpOutput}
 \title{OpOutput}
 \usage{
-OpOutput(value_id = ValueId())
+OpOutput(id = ValueId())
 }
 \arguments{
 \item{id}{(\code{\link{ValueId}})\cr

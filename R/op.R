@@ -9,6 +9,8 @@ NULL
 #' @title OpMnemonic
 #' @description
 #' This represents the mnemonic of an operation.
+#' @param value (`character(1)`)\cr
+#'   The mnemonic of the operation.
 #' @return `OpMnemonic`
 #' @export
 OpMnemonic <- new_enum(
@@ -287,10 +289,10 @@ OpOutput <- new_class(
   properties = list(
     id = ValueId
   ),
-  constructor = function(value_id = ValueId()) {
+  constructor = function(id = ValueId()) {
     new_object(
       S7::S7_object(),
-      id = value_id
+      id = id
     )
   }
 )

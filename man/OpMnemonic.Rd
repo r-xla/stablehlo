@@ -6,6 +6,10 @@
 \usage{
 OpMnemonic(value)
 }
+\arguments{
+\item{value}{(\code{character(1)})\cr
+The mnemonic of the operation.}
+}
 \value{
 \code{OpMnemonic}
 }
