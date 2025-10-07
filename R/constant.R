@@ -2,6 +2,15 @@
 #' @include repr.R
 NULL
 
+#' @title TensorConstant
+#' @description
+#' This represents a constant value.
+#' @param data (any)\cr
+#'   The value of the constant.
+#' @param type ([`TensorType`])\cr
+#'   The type of the constant.
+#' @return `TensorConstant`
+#' @export
 TensorConstant <- new_class(
   "TensorConstant",
   properties = list(
@@ -83,12 +92,20 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   paste0("dense<", f(value_reprs), "> : ", repr(type))
 }
 
+#' @title Constant
+#' @description
+#' This represents a constant value.
+#' @param value ([`TensorConstant`])\cr
+#'   The value of the constant.
+#' @return `Constant`
+#' @export
 Constant <- new_class(
   "Constant",
   properties = list(
     value = S7::new_union(
       # It's not clear to me, why we need the other constant types (FloatType) as there are no real
       # scalars
+      # TODO: Simplify this
       TensorConstant
     )
   )

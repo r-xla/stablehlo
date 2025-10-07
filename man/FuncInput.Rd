@@ -7,7 +7,7 @@
 FuncInput(id = ValueId(), type = ValueType())
 }
 \arguments{
-\item{id}{(\code{ValueId})\cr
+\item{id}{(\code{\link{ValueId}})\cr
 The id of the input.}
 
 \item{type}{(\code{ValueType})\cr

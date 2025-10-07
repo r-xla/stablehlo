@@ -2,15 +2,15 @@
 NULL
 
 # Technicall this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
-Return <- new_class(
+OpReturn <- new_class(
   "Return",
   parent = Op,
   constructor = function(inputs, outputs = OpOutputs(), signature = NULL) {
     if (length(outputs@items)) {
-      stop("Return op must not have outputs.")
+      stop("OpReturn op must not have outputs.")
     }
     if (length(signature@output_types@items)) {
-      stop("Invalid signature for Return op.")
+      stop("Invalid signature for ReturnOp.")
     }
 
     new_object(Op(
@@ -22,7 +22,7 @@ Return <- new_class(
   }
 )
 
-hlo_return_impl <- hlo_fn(Return, infer_types_return, TRUE)
+hlo_return_impl <- hlo_fn(OpReturn, infer_types_return, TRUE)
 
 #' @title Create a return operation
 #' @param ... ([`FuncVariable`])\cr
@@ -41,7 +41,7 @@ infer_types_return <- function(...) {
   ValueTypes()
 }
 
-method(repr, Return) <- function(x, toplevel = TRUE) {
+method(repr, OpReturn) <- function(x, toplevel = TRUE) {
   paste0(
     repr(x@outputs),
     if (toplevel) "\"func.return\"" else "\"stablehlo.return\"",
