@@ -10,6 +10,8 @@ NULL
 #' This represents an input of a [`Func`].
 #' @param id (`ValueId`)\cr
 #'   The id of the input.
+#' @param type (`ValueType`)\cr
+#'   The type of the input.
 #' @return (`FuncInput`)
 #' @export
 FuncInput <- new_class(
