@@ -311,6 +311,13 @@ method(repr, ValueType) <- function(x) {
   repr(x@type)
 }
 
+#' @title ValueTypes
+#' @description
+#' List of [`ValueType`]s.
+#' @param items (`list()` of [`ValueType`])\cr
+#'   The types of the values.
+#' @return `ValueTypes`
+#' @export
 ValueTypes <- new_list_of("ValueTypes", ValueType)
 method(repr, ValueTypes) <- function(x) {
   paste0(

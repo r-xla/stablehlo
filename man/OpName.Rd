@@ -7,7 +7,7 @@
 OpName(mnemonic = OpMnemonic())
 }
 \arguments{
-\item{mnemonic}{(\code{OpMnemonic})\cr
+\item{mnemonic}{(\code{\link{OpMnemonic}})\cr
 The mnemonic of the operation.}
 }
 \value{

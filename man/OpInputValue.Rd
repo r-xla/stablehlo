@@ -7,7 +7,7 @@
 OpInputValue(id = ValueId())
 }
 \arguments{
-\item{id}{(\code{ValueId})\cr
+\item{id}{(\code{\link{ValueId}})\cr
 The id of the value.}
 }
 \value{

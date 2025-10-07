@@ -12,17 +12,17 @@ OpInputs(
 )
 }
 \arguments{
-\item{values}{(\code{OpInputValues})\cr
+\item{values}{(\code{\link{OpInputValues}})\cr
 The values used as inputs.}
 
-\item{funcs}{(\code{OpInputFuncs})\cr
+\item{funcs}{(\code{\link{OpInputFuncs}})\cr
 The functions used as inputs.}
 
-\item{attrs}{(\code{OpInputAttrs})\cr
+\item{attrs}{(\code{\link{OpInputAttrs}})\cr
 The attributes used as inputs.}
 
 \item{custom_attrs}{(\code{list})\cr
-Custom attributes.}
+Custom attributes. Use this attributes that require custom formatting.}
 }
 \value{
 (\code{OpInputs})

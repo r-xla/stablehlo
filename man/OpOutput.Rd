@@ -7,7 +7,7 @@
 OpOutput(value_id = ValueId())
 }
 \arguments{
-\item{id}{(\code{ValueId})\cr
+\item{id}{(\code{\link{ValueId}})\cr
 The id of the output.}
 }
 \value{

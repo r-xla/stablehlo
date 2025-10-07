@@ -7,10 +7,10 @@
 OpSignature(input_types = ValueTypes(), output_types = ValueTypes())
 }
 \arguments{
-\item{input_types}{(\code{ValueTypes})\cr
+\item{input_types}{(\code{\link{ValueTypes}})\cr
 The types of the inputs.}
 
-\item{output_types}{(\code{ValueTypes})\cr
+\item{output_types}{(\code{\link{ValueTypes}})\cr
 The types of the outputs.}
 }
 \value{

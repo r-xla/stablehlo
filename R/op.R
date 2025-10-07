@@ -6,6 +6,11 @@
 #'
 NULL
 
+#' @title OpMnemonic
+#' @description
+#' This represents the mnemonic of an operation.
+#' @return `OpMnemonic`
+#' @export
 OpMnemonic <- new_enum(
   "OpMnemonic",
   c(
@@ -132,7 +137,7 @@ method(repr, OpMnemonic) <- function(x) {
 #' @title OpName
 #' @description
 #' This represents the name of an operation, containing a mnemonic.
-#' @param mnemonic (`OpMnemonic`)\cr
+#' @param mnemonic ([`OpMnemonic`])\cr
 #'   The mnemonic of the operation.
 #' @return (`OpName`)
 #' @export
@@ -154,7 +159,7 @@ method(repr, OpName) <- function(x) {
 #' @title OpInputValue
 #' @description
 #' This represents a value that can be used as input to an operation.
-#' @param id (`ValueId`)\cr
+#' @param id ([`ValueId`])\cr
 #'   The id of the value.
 #' @return (`OpInputValue`)
 #' @export
@@ -233,14 +238,14 @@ method(repr, OpInputAttrs) <- function(x, simplify_dense = TRUE) {
 #' @title OpInputs
 #' @description
 #' This represents all the inputs to an operation, including values, functions, and attributes.
-#' @param values (`OpInputValues`)\cr
+#' @param values ([`OpInputValues`])\cr
 #'   The values used as inputs.
-#' @param funcs (`OpInputFuncs`)\cr
+#' @param funcs ([`OpInputFuncs`])\cr
 #'   The functions used as inputs.
-#' @param attrs (`OpInputAttrs`)\cr
+#' @param attrs ([`OpInputAttrs`])\cr
 #'   The attributes used as inputs.
 #' @param custom_attrs (`list`)\cr
-#'   Custom attributes.
+#'   Custom attributes. Use this attributes that require custom formatting.
 #' @return (`OpInputs`)
 #' @export
 OpInputs <- new_class(
@@ -273,7 +278,7 @@ method(`==`, list(OpInputs, OpInputs)) <- function(e1, e2) {
 #' @title OpOutput
 #' @description
 #' This represents an output of an operation.
-#' @param id (`ValueId`)\cr
+#' @param id ([`ValueId`])\cr
 #'   The id of the output.
 #' @return (`OpOutput`)
 #' @export
@@ -318,9 +323,9 @@ method(repr, OpOutputs) <- function(x) {
 #' @title OpSignature
 #' @description
 #' This represents the signature of an operation, defining its input and output types.
-#' @param input_types (`ValueTypes`)\cr
+#' @param input_types ([`ValueTypes`])\cr
 #'   The types of the inputs.
-#' @param output_types (`ValueTypes`)\cr
+#' @param output_types ([`ValueTypes`])\cr
 #'   The types of the outputs.
 #' @return (`OpSignature`)
 #' @export
@@ -352,13 +357,13 @@ method(`==`, list(OpSignature, OpSignature)) <- function(e1, e2) {
 #' @title Op
 #' @description
 #' This represents a StableHLO operation.
-#' @param name (`OpName`)\cr
+#' @param name ([`OpName`])\cr
 #'   The name of the operation.
-#' @param inputs (`OpInputs`)\cr
+#' @param inputs ([`OpInputs`])\cr
 #'   The inputs to the operation.
-#' @param outputs (`OpOutputs`)\cr
+#' @param outputs ([`OpOutputs`])\cr
 #'   The outputs of the operation.
-#' @param signature (`OpSignature`)\cr
+#' @param signature ([`OpSignature`])\cr
 #'   The signature of the operation.
 #' @return (`Op`)
 #' @export

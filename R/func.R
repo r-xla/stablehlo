@@ -8,7 +8,7 @@ NULL
 #' @title FuncInput
 #' @description
 #' This represents an input of a [`Func`].
-#' @param id (`ValueId`)\cr
+#' @param id ([`ValueId`])\cr
 #'   The id of the input.
 #' @param type (`ValueType`)\cr
 #'   The type of the input.

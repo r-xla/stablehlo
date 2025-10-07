@@ -12,16 +12,16 @@ Op(
 )
 }
 \arguments{
-\item{name}{(\code{OpName})\cr
+\item{name}{(\code{\link{OpName}})\cr
 The name of the operation.}
 
-\item{inputs}{(\code{OpInputs})\cr
+\item{inputs}{(\code{\link{OpInputs}})\cr
 The inputs to the operation.}
 
-\item{outputs}{(\code{OpOutputs})\cr
+\item{outputs}{(\code{\link{OpOutputs}})\cr
 The outputs of the operation.}
 
-\item{signature}{(\code{OpSignature})\cr
+\item{signature}{(\code{\link{OpSignature}})\cr
 The signature of the operation.}
 }
 \value{
