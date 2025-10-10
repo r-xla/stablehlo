@@ -70,10 +70,10 @@ S7::method(hlo_scalar, S7::class_logical) <- function(
   func = .current_func()
 ) {
   if (length(value) != 1L) {
-    stop("hlo_scalar expects a single value.")
+    cli_abort("hlo_scalar expects a single value.")
   }
   if (anyNA(value)) {
-    stop("Data for constants must not contain NA values.")
+    cli_abort("Data for constants must not contain NA values.")
   }
   impl_hlo_constant(value, dtype = "pred", func = func)
 }
@@ -85,10 +85,10 @@ S7::method(hlo_scalar, S7::class_double) <- function(
   func = .current_func()
 ) {
   if (length(value) != 1L) {
-    stop("hlo_scalar expects a single value.")
+    cli_abort("hlo_scalar expects a single value.")
   }
   if (anyNA(value)) {
-    stop("Data for constants must not contain NA values.")
+    cli_abort("Data for constants must not contain NA values.")
   }
   impl_hlo_constant(value, dtype = dtype, func = func)
 }
@@ -100,13 +100,13 @@ S7::method(hlo_scalar, S7::class_integer) <- function(
   func = .current_func()
 ) {
   if (length(value) != 1L) {
-    stop("hlo_scalar expects a single value.")
+    cli_abort("hlo_scalar expects a single value.")
   }
   if (anyNA(value)) {
-    stop("Data for constants must not contain NA values.")
+    cli_abort("Data for constants must not contain NA values.")
   }
   if (!is.null(dtype) && grepl("^ui", dtype) && any(value < 0L)) {
-    stop("Data for unsigned integer must be non-negative")
+    cli_abort("Data for unsigned integer must be non-negative")
   }
   impl_hlo_constant(value, dtype = dtype, func = func)
 }
@@ -140,7 +140,7 @@ S7::method(hlo_tensor, S7::new_S3_class("array")) <- function(
   func = .current_func()
 ) {
   if (anyNA(value)) {
-    stop("Data for constants must not contain NA values.")
+    cli_abort("Data for constants must not contain NA values.")
   }
   if (
     is.integer(value) &&
@@ -148,7 +148,7 @@ S7::method(hlo_tensor, S7::new_S3_class("array")) <- function(
       grepl(dtype, "ui") &&
       any(value < 0)
   ) {
-    stop("Data for unsigned integer must be non-negative")
+    cli_abort("Data for unsigned integer must be non-negative")
   }
   impl_hlo_constant(value, dtype = dtype, func = func)
 }
@@ -209,7 +209,7 @@ hlo_empty <- function(dtype, shape, func = .current_func()) {
   }
 
   if (!any(shape == 0L)) {
-    stop("Shape must contain at least one 0-dimension")
+    cli_abort("Shape must contain at least one 0-dimension")
   }
 
   impl_hlo_constant(

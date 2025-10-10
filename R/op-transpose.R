@@ -16,7 +16,7 @@ infer_types_transpose <- function(
 
   if (rank == 0) {
     if (length(perm_values) != 0) {
-      stop("Length of permutation must be 0 for scalar operands")
+      cli_abort("Length of permutation must be 0 for scalar operands")
     }
     return(ValueTypes(list(
       ValueType(
@@ -30,12 +30,12 @@ infer_types_transpose <- function(
 
   # (C2) permutation is a permutation of range(rank(operand))
   if (length(perm_values) != rank) {
-    stop("Length of permutation must equal rank of operand")
+    cli_abort("Length of permutation must equal rank of operand")
   }
 
   expected_perm <- seq(0, rank - 1)
   if (!setequal(perm_values, expected_perm)) {
-    stop("permutation must be a permutation of range(rank(operand))")
+    cli_abort("permutation must be a permutation of range(rank(operand))")
   }
 
   # (C3) shape(result) = dim(operand, permutation...)

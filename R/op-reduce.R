@@ -7,10 +7,10 @@ infer_types_reduce <- function(..., body, dimensions) {
   value_types <- list(...)
 
   if (length(value_types) %% 2L != 0L) {
-    stop("Number of arguments must be divisible by 2")
+    cli_abort("Number of arguments must be divisible by 2")
   }
   if (length(value_types) == 0L) {
-    stop("No arguments provided")
+    cli_abort("No arguments provided")
   }
 
   num_inputs <- length(value_types) / 2L
@@ -32,13 +32,13 @@ infer_types_reduce <- function(..., body, dimensions) {
   if (
     !all(vapply(input_shapes, function(s) identical(s, ref_shape), logical(1L)))
   ) {
-    stop("All inputs to reduce must have the same shape")
+    cli_abort("All inputs to reduce must have the same shape")
   }
 
   # (C2) element types must match between inputs and init_values (per position)
   for (i in seq_len(num_inputs)) {
     if (input_value_types[[i]]@type@dtype != init_value_types[[i]]@type@dtype) {
-      stop("Element types of inputs and init_values must match")
+      cli_abort("Element types of inputs and init_values must match")
     }
   }
 
@@ -46,10 +46,10 @@ infer_types_reduce <- function(..., body, dimensions) {
   if (length(dims0) > 0L) {
     rank <- length(ref_shape)
     if (any(dims0 < 0L | dims0 >= rank)) {
-      stop("dimensions must be within [0, rank(operand))")
+      cli_abort("dimensions must be within [0, rank(operand))")
     }
     if (any(duplicated(dims0))) {
-      stop("dimensions must be unique")
+      cli_abort("dimensions must be unique")
     }
   }
 
@@ -65,7 +65,7 @@ infer_types_reduce <- function(..., body, dimensions) {
     lapply(body@outputs@items, function(x) x@type)
   )
   if (length(body_out_types@items) != num_inputs) {
-    stop("Body must return one tensor per input")
+    cli_abort("Body must return one tensor per input")
   }
 
   # Build output ValueTypes with shapes after reduction

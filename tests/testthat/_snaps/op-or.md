@@ -1,4 +1,4 @@
-# OR works
+# basic tests
 
     Code
       repr(f)

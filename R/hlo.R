@@ -10,27 +10,27 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
   function(values, funcs = NULL, attrs = NULL, custom_attrs = NULL) {
     lapply(values, function(x) {
       if (!inherits(x, FuncVariable)) {
-        stop("All arguments must be FuncVariables")
+        cli_abort("All arguments must be FuncVariables")
       }
     })
     lapply(funcs, function(x) {
       if (!inherits(x, Func)) {
-        stop("All functions must be Func objects")
+        cli_abort("All functions must be Func objects")
       }
     })
 
     attrs <- lapply(attrs, function(x) {
       err <- "All attributes must be FuncVariables with a single constant Op."
       if (!inherits(x, FuncVariable)) {
-        stop(err)
+        cli_abort(err)
       }
       items <- x@func@body@items
       if (length(items) != 1L) {
-        stop(err)
+        cli_abort(err)
       }
 
       if (!inherits(items[[1L]], OpConstant)) {
-        stop(err)
+        cli_abort(err)
       }
       items[[1]]@inputs@attrs@items[[1]]@value
     })
@@ -187,7 +187,7 @@ hlo_closure <- function(...) {
   vars <- list(...)
   ids <- vapply(vars, function(v) v@value_id@id, character(1))
   if (any(duplicated(ids))) {
-    stop(
+    cli_abort(
       "Each variable can only be captured once in hlo_closure (duplicate value_id detected)"
     )
   }

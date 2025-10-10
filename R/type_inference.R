@@ -2,7 +2,7 @@ baseline_type <- function(x) {
   if (inherits(x, TensorType)) {
     return(x)
   }
-  stop("Not implemented")
+  cli_abort("Not implemented")
   # this function is defined in the stablhlo spec and primarily for quantized tensors
 }
 
@@ -12,9 +12,9 @@ baseline_element_type <- function(x) {
   if (is(x@type, TensorType)) {
     return(x@type@dtype)
   } else if (is(x@type, TokenType)) {
-    stop("Invalid input")
+    cli_abort("Invalid input")
   } else {
-    stop("Not implemented yet")
+    cli_abort("Not implemented yet")
   }
 }
 

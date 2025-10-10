@@ -35,11 +35,11 @@ merge_funcs <- function(funcs) {
     identical(f@.env, funcs[[1]]@.env)
   }))
   if (!all_same) {
-    stop("All functions must be identical")
+    cli_abort("All functions must be identical")
   }
   #funcs <- funcs[!duplicated(funcs)]
   #if (!length(funcs)) {
-  #  stop("Zero partial funcs provided")
+  #  cli_abort("Zero partial funcs provided")
   #}
   #if (length(funcs) == 1L) {
   #  return(funcs[[1L]])
@@ -68,7 +68,7 @@ merge_funcs <- function(funcs) {
 #
 #  uids <- unique(ids)
 #  if (length(uids) > 1L) {
-#    stop("Cannot merge partial funcs with different ids")
+#    cli_abort("Cannot merge partial funcs with different ids")
 #  } else if (length(uids) == 1L) {
 #    FuncId(uids)
 #  } else {
@@ -139,7 +139,7 @@ merge_funcs <- function(funcs) {
 #      # that we reject here.
 #      # But as long as we create functions with our builder API, this won't happen
 #      if (anyDuplicated(c(xvars, yvars))) {
-#        stop(
+#        cli_abort
 #          "The two functions that are being merged define the same variable differently"
 #        )
 #      }
@@ -156,7 +156,7 @@ merge_funcs <- function(funcs) {
 #    if (length(output@items)) {
 #      # I think that this never throws, because whenever we have a return statement,
 #      # a function is complete, as there can be no early returns in branches.
-#      stop("Cannot merge partial funcs with outputs for now")
+#      cli_abort("Cannot merge partial funcs with outputs for now")
 #    }
 #  })
 #  FuncOutputs()

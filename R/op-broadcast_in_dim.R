@@ -18,22 +18,22 @@ infer_types_broadcast_in_dim <- function(
 
   # (C2) size(broadcast_dimensions) = rank(operand)
   if (length(bdims) != length(operand_dims)) {
-    cli::cli_abort("Length of broadcast_dimensions must equal rank of operand")
+    cli_abort("Length of broadcast_dimensions must equal rank of operand")
   }
 
   # (C3) 0 <= broadcast_dimensions < rank(result)
   if (length(result_dims) == 0L) {
-    cli::cli_abort(
+    cli_abort(
       "shape_out must specify the full result shape (rank > 0 for non-scalars)"
     )
   }
   if (any(bdims < 0L | bdims >= length(result_dims))) {
-    cli::cli_abort("broadcast_dimensions must be within [0, rank(result))")
+    cli_abort("broadcast_dimensions must be within [0, rank(result))")
   }
 
   # (C4) is_unique(broadcast_dimensions)
   if (any(duplicated(bdims))) {
-    cli::cli_abort("broadcast_dimensions must be unique")
+    cli_abort("broadcast_dimensions must be unique")
   }
 
   # (C5) For all d in axes(operand):
@@ -44,7 +44,7 @@ infer_types_broadcast_in_dim <- function(
 
     # Allow unknown dims (NA) to pass checks where appropriate
     if (op_dim != 1L && op_dim != res_dim) {
-      cli::cli_abort(
+      cli_abort(
         "Operand dimension and result dimension must match unless operand dim is 1"
       )
     }

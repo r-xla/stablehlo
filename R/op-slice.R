@@ -10,12 +10,6 @@ infer_types_slice <- function(
   strides
 ) {
   stopifnot(inherits(operand@type, TensorType))
-  # stopifnot(inherits(start_indices@type, TensorType))
-  # stopifnot(inherits(limit_indices@type, TensorType))
-  # stopifnot(inherits(strides@type, TensorType))
-  # assert_one_of(start_indices@type@dtype, IntegerType)
-  # assert_one_of(limit_indices@type@dtype, IntegerType)
-  # assert_one_of(strides@type@dtype, IntegerType)
 
   # Extract indices and operand rank
   operand_rank <- length(shape(operand))
@@ -25,37 +19,37 @@ infer_types_slice <- function(
 
   # (C2) size(start_indices) = size(limit_indices) = size(strides) = rank(operand)
   if (length(start_idx) != length(limit_idx)) {
-    cli::cli_abort("start_indices must have same length as limit indices")
+    cli_abort("start_indices must have same length as limit indices")
   }
 
   if (length(start_idx) != length(stride_vals)) {
-    cli::cli_abort(
+    cli_abort(
       "strides must have same length as start_indices and limit_indices"
     )
   }
 
   if (length(start_idx) != operand_rank) {
-    cli::cli_abort(
+    cli_abort(
       "length of start_indices, limit_indices and strides must be equal to operand's rank"
     )
   }
 
   # (C3) 0 <= start_indices <= limit_indices <= shape(operand)
   if (any(start_idx < 0)) {
-    cli::cli_abort("start_indices must be non_negative")
+    cli_abort("start_indices must be non_negative")
   }
 
   if (any(start_idx > limit_idx)) {
-    cli::cli_abort("start_indices must not be greater than limit_indices")
+    cli_abort("start_indices must not be greater than limit_indices")
   }
 
   if (any(limit_idx > shape(operand))) {
-    cli::cli_abort("limit_indices must not be greater than operand's shape")
+    cli_abort("limit_indices must not be greater than operand's shape")
   }
 
   # (C4) 0 < strides.
   if (any(stride_vals < 0)) {
-    cli::cli_abort("strides must be non-negative")
+    cli_abort("strides must be non-negative")
   }
 
   # (C5) shape(result) = ceil((limit_indices - start_indices) / strides)

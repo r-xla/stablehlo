@@ -9,13 +9,11 @@ infer_types_reshape <- function(
 ) {
   stopifnot(inherits(operand@type, TensorType))
 
-  # Extract operand dims and target result dims
-  operand_dims <- shape(operand)
   result_dims <- as.integer(shape_out)
 
   # (C2) size(operand) = size(result)
-  if (prod(operand_dims) != prod(result_dims)) {
-    cli::cli_abort("Size of output must equal to size of operand")
+  if (prod(shape(operand)) != prod(result_dims)) {
+    cli_abort("Size of output must equal to size of operand")
   }
 
   ValueTypes(list(

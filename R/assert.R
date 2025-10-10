@@ -8,17 +8,17 @@ assert_tensor_constant <- function(
     return()
   }
   if (!inherits(x, Constant)) {
-    cli::cli_abort("x must be a Constant")
+    cli_abort("x must be a Constant")
   }
   if (!inherits(x@value, TensorConstant)) {
-    cli::cli_abort("tnsr must be a TensorConstant")
+    cli_abort("tnsr must be a TensorConstant")
   }
   if (!is.null(ndims) && length(shape(x@value)) != ndims) {
-    cli::cli_abort("tnsr must have {ndims} dimensions")
+    cli_abort("tnsr must have {ndims} dimensions")
   }
 
   if (!is.null(dtype) && repr(x@value@type@dtype) != dtype) {
-    cli::cli_abort("tensor must have element type {dtype}")
+    cli_abort("tensor must have element type {dtype}")
   }
 }
 

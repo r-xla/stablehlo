@@ -13,22 +13,21 @@ infer_types_select <- function(
   stopifnot(inherits(on_true@type, TensorType))
   stopifnot(inherits(on_false@type, TensorType))
 
-  # Extract target result dims
   result_dims <- shape(on_true)
 
   # (C0) implicit constraints: rank(on_true) = rank(on_false)
   if (!identical(shape(on_true), shape(on_false))) {
-    cli::cli_abort("on_false and on_true must have same dimension")
+    cli_abort("on_false and on_true must have same dimension")
   }
 
   # (C1) rank(pred) = 0 or shape(pred) = shape(on_true)
-  if (length(shape(pred)) != 0 & !identical(shape(pred), shape(on_true))) {
-    cli::cli_abort("rank of pred must be 0 or equal to rank of on_true")
+  if (length(shape(pred)) != 0 && !identical(shape(pred), shape(on_true))) {
+    cli_abort("rank of pred must be 0 or equal to rank of on_true")
   }
 
   # (C2) baseline_type(on_true) = baseline_type(on_false) = baseline_type(result)
   if (!identical(on_true@type@dtype, on_false@type@dtype)) {
-    cli::cli_abort("element types of on_true and on_false must be equal")
+    cli_abort("element types of on_true and on_false must be equal")
   }
 
   ValueTypes(list(

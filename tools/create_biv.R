@@ -15,7 +15,7 @@ write_bivariate_op <- function(
 
   # throw error if directory doesn't exist
   if (!dir.exists(dir)) {
-    stop("directory does not exist!")
+    cli_abort("directory does not exist!")
   }
 
   filename <- file.path(dir, paste0("op-", op_name, ".R"))

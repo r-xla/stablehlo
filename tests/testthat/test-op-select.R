@@ -28,4 +28,20 @@ test_that("basic tests", {
     pjrt_buffer(x2)
   )
   expect_equal(as_array(output), expected)
+
+  # also works with scalar
+
+  local_func()
+  x <- hlo_input("x", "pred")
+  z <- hlo_select(x, hlo_tensor(1:2), hlo_tensor(2:3))
+  f <- hlo_return(z)
+  exec <- pjrt_compile(pjrt_program(src = repr(f)))
+  expect_equal(
+    pjrt_execute(exec, pjrt_scalar(TRUE)),
+    pjrt_buffer(1:2)
+  )
+  expect_equal(
+    pjrt_execute(exec, pjrt_scalar(FALSE)),
+    pjrt_buffer(2:3)
+  )
 })
