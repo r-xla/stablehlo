@@ -1,4 +1,5 @@
 test_that("basic tests", {
+  local_func()
   x <- hlo_input("x", "f32", shape = c(4L, 3L))
   y <- hlo_slice(
     x,

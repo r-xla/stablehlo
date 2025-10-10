@@ -26,42 +26,65 @@ pak::pak("r-xla/stablehlo")
 ## Quickstart
 
 Below, we create a function that takes two input arguments `x` and `y`
-of type `f32` and shape `(2, 2)` and adds them.
+of type `f32` and shape `(2, 2)` and adds them. Passing `func` to
+`hlo_input()` is optional, because it will automatically use the last
+function created with `hlo_func()`.
 
 ``` r
 library(stablehlo)
-x <- hlo_input("x", "f32", shape = c(2, 2))
-x
-#> Variable %x in:
-#> func.func @main (%x: tensor<2x2xf32>) ->  {
+func <- hlo_func("myfn")
+func
+#> func.func @myfn () ->  {
 #>
 #> }
-y <- hlo_input("y", "f32", shape = c(2, 2))
+x <- hlo_input("x", "f32", shape = c(2, 2), func = func)
+x
+#> Variable %x in:
+#> func.func @myfn (%x: tensor<2x2xf32>) ->  {
+#>
+#> }
+y <- hlo_input("y", "f32", shape = c(2, 2), func = func)
 y
 #> Variable %y in:
-#> func.func @main (%y: tensor<2x2xf32>) ->  {
+#> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #>
 #> }
 z <- hlo_add(x, y)
 z
-#> Variable %1 in:
-#> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %1 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> Variable %0 in:
+#> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
+#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
 #> }
 f <- hlo_return(z)
+identical(f, func)
+#> [1] TRUE
 f
-#> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
-#> %1 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
-#> "func.return"(%1): (tensor<2x2xf32>) -> ()
+#> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
+#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> "func.return"(%0): (tensor<2x2xf32>) -> ()
 #> }
 ```
 
-## Restrictions
+## Important notes
 
-The R package should be considered a *partial* implementation of the
-stableHLO specification. At least initially, it will:
+stableHLO uses 0-based indexing. Wherever operations take dimension
+indices (e.g., axes, start indices, permutation dimensions), use 0-based
+values. This differs from R’s 1-based indexing.
+
+## Limitations
+
+The R package is a *partial* implementation of the stableHLO
+specification. At least initially, it will:
 
 - only support a subset of the available operations, see [this
   issue](https://github.com/r-xla/stablehlo/issues/6) for an overview.
-- not support all datatypes, e.g. quantized types and complex numbers
+- not support all data types, e.g. quantized types and complex numbers
   are not supported.
+- not support shape dynamism.
+
+## Acknowledgments
+
+- This work is supported by [MaRDI](https://www.mardi4nfdi.de).
+- This work is built upon the [stableHLO
+  specification](https://openxla.org/stablehlo/spec) from the OpenXLA
+  project.

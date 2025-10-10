@@ -10,6 +10,6 @@ test_that("basic tests", {
       res[is.na(res)] <- 0
       return(res)
     },
-    dtype = "i32"
+    dtypes = "i32"
   )
 })

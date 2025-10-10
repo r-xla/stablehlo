@@ -1,9 +1,9 @@
-#' @include op.R hlo.R type_inference.R 
-NULL 
+#' @include op.R hlo.R type_inference.R
+NULL
 
 OpRemainder <- new_Op("OpRemainder", "remainder")
 
-hlo_remainder_impl <- hlo_fn(OpRemainder, infer_types_generic_biv) 
+hlo_remainder_impl <- hlo_fn(OpRemainder, infer_types_generic_biv)
 
 #' @templateVar mnemonic remainder
 #' @template op

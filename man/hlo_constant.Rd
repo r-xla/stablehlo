@@ -3,56 +3,42 @@
 \name{hlo_constant}
 \alias{hlo_constant}
 \alias{hlo_scalar}
-\alias{hlo_scalar.logical}
-\alias{hlo_scalar.double}
-\alias{hlo_scalar.integer}
 \alias{hlo_tensor}
-\alias{hlo_tensor.array}
-\alias{hlo_tensor.integer}
-\alias{hlo_tensor.logical}
-\alias{hlo_tensor.double}
+\alias{hlo_empty}
 \title{Create a Constant}
 \usage{
-hlo_scalar(value, dtype = NULL, ...)
+hlo_scalar(value, ..., func = .current_func())
 
-\method{hlo_scalar}{logical}(value, dtype = NULL, ...)
+hlo_tensor(value, ..., func = .current_func())
 
-\method{hlo_scalar}{double}(value, dtype = NULL, ...)
-
-\method{hlo_scalar}{integer}(value, dtype = NULL, ...)
-
-hlo_tensor(value, dtype = NULL, ...)
-
-\method{hlo_tensor}{array}(value, dtype = NULL, ...)
-
-\method{hlo_tensor}{integer}(value, dtype = NULL, shape = get_dims(value), ...)
-
-\method{hlo_tensor}{logical}(value, dtype = NULL, shape = get_dims(value), ...)
-
-\method{hlo_tensor}{double}(value, dtype = NULL, shape = get_dims(value), ...)
+hlo_empty(dtype, shape, func = .current_func())
 }
 \arguments{
 \item{value}{(any)\cr
 Value from which to create a constant.}
 
-\item{dtype}{(\code{character(1)})\cr
-String for element type.
-Can be one of f64, f32, u8, u16, u32, u64, i8, i16, i32, i64, pred.}
-
 \item{...}{(any)\cr
 Additional arguments.}
 
+\item{func}{(\code{\link{Func}})\cr
+The function to add the constant to.
+Per default, uses the last function created with \code{\link{hlo_func}} or \code{\link{local_func}}.}
+
+\item{dtype}{(\code{character(1)})\cr
+One of: pred, i8, i16, i32, i64, ui8, ui16, ui32, ui64, f32, f64.}
+
 \item{shape}{(\code{integer()})\cr
-Shape of the tensor.
-If not specified, the shape is inferred from the data.}
+The shape}
 }
 \description{
-Create either a scalar or tensor constant.
-Note that strictly speaking, stableHLO 'scalars' are simply tensors with 0 dimensions.
+Create either a "scalar" (\code{\link{hlo_scalar}}) or tensor (\code{\link{hlo_tensor}}) constant.
+Strictly speaking, stableHLO "scalars" are simply tensors with 0 dimensions.
+To create an empty constant (at least one dimension is 0), use \code{\link{hlo_empty}}.
 }
 \examples{
-hlo_scalar(1L, "i32")
-hlo_scalar(1, "f32")
-hlo_scalar(TRUE)
-hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), "f32")
+hlo_scalar(1L, dtype = "i32", func = Func())
+hlo_scalar(1, dtype = "f32", func = Func())
+hlo_scalar(TRUE, func = Func())
+hlo_tensor(array(c(1, 2, 3, 4), dim = c(1, 4)), dtype = "f32", func = Func())
+hlo_empty(dtype = "f32", shape = c(0, 3), func = Func())
 }

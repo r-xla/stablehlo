@@ -22,7 +22,7 @@ generate_op_wrapper <- function(
 
   # 1. Generate the Op class definition
   op_class_line <- sprintf(
-    'Op%s <- new_Op("Op%s", "%s")\n',
+    "Op%s <- new_Op(\"Op%s\", \"%s\")\n",
     class_name,
     class_name,
     op_name
@@ -33,7 +33,7 @@ generate_op_wrapper <- function(
 
   # 3. Generate hlo implementation
   hlo_impl_line <- sprintf(
-    'hlo_%s_impl <- hlo_fn(Op%s, %s) \n',
+    "hlo_%s_impl <- hlo_fn(Op%s, %s) \n",
     op_name,
     class_name,
     type_inference_fn
@@ -77,9 +77,9 @@ generate_op_wrapper <- function(
 
   main_fn_lines <- c(
     roxygen_lines,
-    sprintf('hlo_%s <- function(%s) {', op_name, all_args),
-    sprintf('  hlo_%s_impl(values = %s%s)', op_name, values_call, attrs_call),
-    '}'
+    sprintf("hlo_%s <- function(%s) {", op_name, all_args),
+    sprintf("  hlo_%s_impl(values = %s%s)", op_name, values_call, attrs_call),
+    "}"
   )
 
   # Combine all parts in correct order

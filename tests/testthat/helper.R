@@ -1,19 +1,25 @@
+if (requireNamespace("pjrt", quietly = TRUE)) {
+  library("pjrt")
+}
+
 hlo_test_uni <- function(
-  hlo_func,
+  hlo_fn,
   test_func,
   non_negative = FALSE,
   dimension = NULL,
   test_data = NULL,
   dtype = "f64",
-  tol = 1e-5
+  tol = 1e-5,
+  snapshot = TRUE
 ) {
   make_fn <- function(dtype, dim = NULL) {
+    func <- local_func()
     if (is.null(dim)) {
       len <- min(rgeom(1, .3) + 1, 4)
       dim <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
     }
-    x <- hlo_input("x", dtype, shape = dim, "main")
-    y <- hlo_func(x)
+    x <- hlo_input("x", dtype, shape = dim)
+    y <- hlo_fn(x)
     func <- hlo_return(y)
     list(
       dimension = dim,
@@ -21,10 +27,12 @@ hlo_test_uni <- function(
     )
   }
 
-  withr::with_seed(1, {
-    f <- make_fn(sample(dtype, 1))$func
-    testthat::expect_snapshot(repr(f))
-  })
+  if (snapshot) {
+    withr::with_seed(1, {
+      f <- make_fn(sample(dtype, 1))$func
+      testthat::expect_snapshot(repr(f))
+    })
+  }
 
   dtype <- sample(dtype, 1)
   res <- make_fn(dtype)
@@ -51,23 +59,26 @@ hlo_test_uni <- function(
 }
 
 hlo_test_biv <- function(
-  hlo_func,
+  hlo_fn,
   test_func,
   non_negative = list(FALSE, FALSE),
   dimension = NULL,
-  dtype = "f64",
+  dtypes = "f64",
   lhs = NULL,
   rhs = NULL,
-  tol = 1e-5
+  tol = 1e-5,
+  snapshot = TRUE,
+  args = list()
 ) {
   make_fn <- function(dtype, dim = NULL) {
+    local_func()
     if (is.null(dim)) {
       len <- min(rgeom(1, .3) + 1, 4)
       dim <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
     }
-    x <- hlo_input("x", dtype, shape = dim, "main")
-    y <- hlo_input("y", dtype, shape = dim, "main")
-    z <- hlo_func(x, y)
+    x <- hlo_input("x", dtype, shape = dim)
+    y <- hlo_input("y", dtype, shape = dim)
+    z <- do.call(hlo_fn, c(list(x, y), args))
     func <- hlo_return(z)
     list(
       dimension = dim,
@@ -75,12 +86,14 @@ hlo_test_biv <- function(
     )
   }
 
-  withr::with_seed(1, {
-    f <- make_fn(sample(dtype, 1))$func
-    testthat::expect_snapshot(repr(f))
-  })
+  if (snapshot) {
+    withr::with_seed(1, {
+      f <- make_fn(sample(dtypes, 1))$func
+      testthat::expect_snapshot(repr(f))
+    })
+  }
 
-  dtype <- sample(dtype, 1)
+  dtype <- sample(dtypes, 1)
   res <- make_fn(dtype, dim = dimension)
   func <- res$func
   dimension <- res$dimension
@@ -134,20 +147,22 @@ hlo_test_biv <- function(
 }
 
 generate_test_data <- function(dimension, dtype = "f64", non_negative = FALSE) {
-  test_data <- NULL
   if (dtype == "pred") {
-    test_data <- sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
-  } else if (dtype %in% c("i32", "i64")) {
+    sample(c(TRUE, FALSE), size = prod(dimension), replace = TRUE)
+  } else if (dtype %in% c("ui8", "ui16", "ui32", "ui64")) {
+    # Signed integers
+    sample(0:20, size = prod(dimension), replace = TRUE)
+  } else if (dtype %in% c("i8", "i16", "i32", "i64")) {
     test_data <- as.integer(rgeom(prod(dimension), .5))
     if (!non_negative) {
       test_data <- as.integer((-1)^rbinom(prod(dimension), 1, .5) * test_data)
     }
+    test_data
   } else {
     if (!non_negative) {
-      test_data <- rnorm(prod(dimension), mean = 0, sd = 1)
+      rnorm(prod(dimension), mean = 0, sd = 1)
     } else {
-      test_data <- rchisq(prod(dimension), df = 1)
+      rchisq(prod(dimension), df = 1)
     }
   }
-  return(test_data)
 }

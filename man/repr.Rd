@@ -2,7 +2,7 @@
 % Please edit documentation in R/repr.R
 \name{repr}
 \alias{repr}
-\title{Generate stableHLO string representation}
+\title{Generate string representation for object}
 \usage{
 repr(x, ...)
 }
@@ -15,5 +15,7 @@ repr(x, ...)
 \code{character(1)}
 }
 \description{
-This function generates a string representation of a stableHLO program.
+This function generates a string representation of an object.
+In this package, this is primarily used to convert a \code{Func}
+to its stableHLO string representation.
 }

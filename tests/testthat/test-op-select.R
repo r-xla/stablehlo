@@ -1,4 +1,5 @@
 test_that("basic tests", {
+  local_func()
   pred <- hlo_input("pred", "i1", shape = c(2L, 3L, 2L))
   on_true <- hlo_input("on_true", "f32", shape = c(2L, 3L, 2L))
   on_false <- hlo_input("on_false", "f32", shape = c(2L, 3L, 2L))

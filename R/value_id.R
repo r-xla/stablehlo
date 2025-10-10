@@ -1,3 +1,12 @@
+#' @title ValueId
+#' @description
+#' This represents the name of a [`ValueType`].
+#' @param id (`character(1)` or [`environment`])\cr
+#'   Either a fixed name or an environment.
+#'   If using an environment (default), the name will be generated automatically
+#'   when calling [`repr()`], i.e. the first value id will be `%0`, the second `%1`, etc..
+#' @return (`ValueId`)
+#' @export
 ValueId <- new_class(
   "ValueId",
   properties = list(
@@ -26,16 +35,26 @@ method(`!=`, list(ValueId, ValueId)) <- function(e1, e2) {
 
 method(repr, ValueId) <- function(x) {
   name <- if (is.environment(x@id)) {
-    FUNC_ENV$vars[[x@id]] %??%
-      {
-        # nolint
-        str <- as.character(FUNC_ENV$counter)
-        FUNC_ENV$counter <- FUNC_ENV$counter + 1L
-        FUNC_ENV$vars[[x@id]] <- str
-        str
-      }
+    repr_env2name(x@id)
   } else {
     x@id
   }
   paste0("%", name)
+}
+
+#' @title Convert environment to name
+#' @description
+#' This function converts an environment to a name.
+#' Can only be called within a `repr` call.
+#' @param x The environment to convert to a name.
+#' @return `character(1)`
+#' @export
+repr_env2name <- function(x) {
+  # fmt: skip
+  FUNC_ENV$vars[[x]] %??% {
+    str <- as.character(FUNC_ENV$counter)
+    FUNC_ENV$counter <- FUNC_ENV$counter + 1L
+    FUNC_ENV$vars[[x]] <- str
+    str
+  }
 }

@@ -7,7 +7,7 @@
 TensorType(dtype = BooleanType(), shape = Shape())
 }
 \arguments{
-\item{dtype}{(\code{\link{TensorElementType}})}
+\item{dtype}{(\code{\link{TensorDataType}})}
 
 \item{shape}{(\code{\link{Shape}})}
 }

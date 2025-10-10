@@ -1,9 +1,9 @@
-#' @include op.R hlo.R type_inference.R 
-NULL 
+#' @include op.R hlo.R type_inference.R
+NULL
 
 OpSqrt <- new_Op("OpSqrt", "sqrt")
 
-hlo_sqrt_impl <- hlo_fn(OpSqrt, infer_types_generic_uni) 
+hlo_sqrt_impl <- hlo_fn(OpSqrt, infer_types_generic_uni)
 
 #' @templateVar mnemonic sqrt
 #' @template op

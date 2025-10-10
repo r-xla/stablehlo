@@ -134,10 +134,12 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
 #' @param shape (`integer()`)\cr
 #'   The shape of the parameter.
 #'   Use `integer()` for scalars.
-#' @param func_id ([`FuncId`] | `character(1)`)\cr
+#' @param func ([`Func`])\cr
 #'   The function id of the parameter.
+#'   Per default, uses the last function created with [`hlo_func`].
 #' @export
 #' @examples
+#' func <- hlo_func()
 #' x <- hlo_input("x", "f32", shape = c(2, 2))
 #' print(x)
 #'
@@ -150,21 +152,17 @@ hlo_input <- function(
   name,
   dtype,
   shape = integer(),
-  func_id = FuncId("main")
+  func = .current_func()
 ) {
   assert_valid_name(name)
-
   value_id <- ValueId(name)
   value_type <- ValueType(dtype, shape = shape)
 
-  if (is.character(func_id)) {
-    func_id <- FuncId(func_id)
-  }
+  func@inputs <- FuncInputs(c(
+    func@inputs@items,
+    FuncInput(id = ValueId(name), type = ValueType(dtype, shape = shape))
+  ))
 
-  func <- Func(
-    inputs = FuncInputs(list(FuncInput(id = value_id, type = value_type))),
-    id = func_id
-  )
   FuncVariable(
     value_id = value_id,
     value_type = value_type,
@@ -180,6 +178,7 @@ hlo_input <- function(
 #' @return (`list()` of [`FuncVariable`])
 #' @export
 #' @examples
+#' func <- local_func()
 #' x <- hlo_input("x", "f32", shape = c(2, 2))
 #' y <- hlo_input("y", "f32", shape = c(2, 2))
 #' f <- hlo_closure(x, y)

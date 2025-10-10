@@ -34,23 +34,39 @@ pak::pak("r-xla/stablehlo")
 ## Quickstart
 
 Below, we create a function that takes two input arguments `x` and `y` of type `f32` and shape `(2, 2)` and adds them.
+Passing `func` to `hlo_input()` is optional, because it will automatically use the last function created with `hlo_func()`.
 
 ```{r}
 library(stablehlo)
-x <- hlo_input("x", "f32", shape = c(2, 2))
+func <- hlo_func("myfn")
+func
+x <- hlo_input("x", "f32", shape = c(2, 2), func = func)
 x
-y <- hlo_input("y", "f32", shape = c(2, 2))
+y <- hlo_input("y", "f32", shape = c(2, 2), func = func)
 y
 z <- hlo_add(x, y)
 z
 f <- hlo_return(z)
+identical(f, func)
 f
 ```
 
-## Restrictions
+## Important notes
 
-The R package should be considered a *partial* implementation of the stableHLO specification.
+stableHLO uses 0-based indexing. Wherever operations take dimension indices
+(e.g., axes, start indices, permutation dimensions), use 0-based values.
+This differs from R's 1-based indexing.
+
+## Limitations
+
+The R package is a *partial* implementation of the stableHLO specification.
 At least initially, it will:
 
 * only support a subset of the available operations, see [this issue](https://github.com/r-xla/stablehlo/issues/6) for an overview.
-* not support all datatypes, e.g. quantized types and complex numbers are not supported.
+* not support all data types, e.g. quantized types and complex numbers are not supported.
+* not support shape dynamism.
+
+## Acknowledgments
+
+* This work is supported by [MaRDI](https://www.mardi4nfdi.de).
+* This work is built upon the [stableHLO specification](https://openxla.org/stablehlo/spec) from the OpenXLA project.

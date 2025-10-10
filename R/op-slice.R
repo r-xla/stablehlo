@@ -85,9 +85,17 @@ hlo_slice <- function(
   limit_indices,
   strides
 ) {
-  start_attr <- hlo_tensor(as.integer(start_indices), dtype = "i64")
-  limit_attr <- hlo_tensor(as.integer(limit_indices), dtype = "i64")
-  stride_attr <- hlo_tensor(as.integer(strides), dtype = "i64")
+  start_attr <- hlo_tensor(
+    as.integer(start_indices),
+    dtype = "i64",
+    func = Func()
+  )
+  limit_attr <- hlo_tensor(
+    as.integer(limit_indices),
+    dtype = "i64",
+    func = Func()
+  )
+  stride_attr <- hlo_tensor(as.integer(strides), dtype = "i64", func = Func())
 
   hlo_slice_impl(
     values = list(operand = operand),

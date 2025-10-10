@@ -7,11 +7,11 @@
 FloatType(value)
 }
 \arguments{
-\item{value}{(\code{character(1)})}
+\item{value}{(\code{integer(1)})}
 }
 \value{
 \code{FloatType}
 }
 \description{
-Represents the float type.
+Represents a floating point type with a given bit width.
 }

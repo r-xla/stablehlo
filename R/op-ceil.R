@@ -1,9 +1,9 @@
-#' @include op.R hlo.R type_inference.R 
-NULL 
+#' @include op.R hlo.R type_inference.R
+NULL
 
 OpCeil <- new_Op("OpCeil", "ceil")
 
-hlo_ceil_impl <- hlo_fn(OpCeil, infer_types_generic_uni) 
+hlo_ceil_impl <- hlo_fn(OpCeil, infer_types_generic_uni)
 
 #' @templateVar mnemonic ceil
 #' @template op

@@ -1,9 +1,9 @@
-#' @include op.R hlo.R type_inference.R 
-NULL 
+#' @include op.R hlo.R type_inference.R
+NULL
 
 OpSubtract <- new_Op("OpSubtract", "subtract")
 
-hlo_subtract_impl <- hlo_fn(OpSubtract, infer_types_generic_biv) 
+hlo_subtract_impl <- hlo_fn(OpSubtract, infer_types_generic_biv)
 
 #' @templateVar mnemonic subtract
 #' @template op

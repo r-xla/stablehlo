@@ -7,6 +7,6 @@ test_that("basic tests", {
       result
     },
     non_negative = list(FALSE, TRUE),
-    dtype = "i32"
+    dtypes = "i32"
   )
 })

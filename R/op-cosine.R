@@ -1,9 +1,9 @@
-#' @include op.R hlo.R type_inference.R 
-NULL 
+#' @include op.R hlo.R type_inference.R
+NULL
 
 OpCosine <- new_Op("OpCosine", "cosine")
 
-hlo_cosine_impl <- hlo_fn(OpCosine, infer_types_generic_uni) 
+hlo_cosine_impl <- hlo_fn(OpCosine, infer_types_generic_uni)
 
 #' @templateVar mnemonic cosine
 #' @template op

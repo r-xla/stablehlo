@@ -2,16 +2,16 @@
 % Please edit documentation in R/types.R
 \name{IntegerType}
 \alias{IntegerType}
-\title{IntegerType}
+\title{IntegerType (signed)}
 \usage{
 IntegerType(value)
 }
 \arguments{
-\item{value}{(\code{character(1)})}
+\item{value}{(\code{integer(1)})}
 }
 \value{
 \code{IntegerType}
 }
 \description{
-Represents the integer type.
+Represents a signed integer type with a given bit width.
 }

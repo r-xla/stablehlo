@@ -25,12 +25,18 @@ infer_types_dot_general <- function(
     cli::cli_abort("Batching dimensions must be the same")
   }
 
-  dim_lhs_remaining <- dim_lhs[
-    -(c(contracting_dims[[1L]], batching_dims[[1L]]) + 1L)
-  ]
-  dim_rhs_remaining <- dim_rhs[
-    -(c(contracting_dims[[2L]], batching_dims[[2L]]) + 1L)
-  ]
+  ii1 <- c(contracting_dims[[1L]], batching_dims[[1L]])
+  dim_lhs_remaining <- if (length(ii1)) {
+    dim_lhs[-(ii1 + 1L)]
+  } else {
+    dim_lhs
+  }
+  ii2 <- c(contracting_dims[[2L]], batching_dims[[2L]])
+  dim_rhs_remaining <- if (length(ii2)) {
+    dim_rhs[-(ii2 + 1L)]
+  } else {
+    dim_rhs
+  }
   out_dim <- c(dim_batch1, dim_lhs_remaining, dim_rhs_remaining)
 
   ValueTypes(list(

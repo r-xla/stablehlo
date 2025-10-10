@@ -2,32 +2,6 @@
 #' @include types.R
 NULL
 
-string_to_type <- function(element_type) {
-  if (is.null(element_type)) {
-    return(NULL)
-  }
-
-  switch(
-    element_type,
-    "pred" = BooleanType(),
-
-    "i8" = IntegerType("i8"),
-    "i16" = IntegerType("i16"),
-    "i32" = IntegerType("i32"),
-    "i64" = IntegerType("i64"),
-
-    "ui8" = IntegerType("ui8"),
-    "ui16" = IntegerType("ui16"),
-    "ui32" = IntegerType("ui32"),
-    "ui64" = IntegerType("ui64"),
-
-    "f32" = FloatType("f32"),
-    "f64" = FloatType("f64"),
-
-    stop("Unsupported element type: ", element_type)
-  )
-}
-
 
 assert_one_of <- function(x, ...) {
   for (type in list(...)) {
@@ -80,11 +54,24 @@ capitalize <- function(str) {
 }
 
 get_dims <- function(data) {
-  if (is.null(shape(data))) {
+  if (is.null(dim(data))) {
     if (length(data) == 1) {
       return(1L)
+    } else if (length(data) == 0) {
+      return(integer())
+    } else {
+      return(length(data))
     }
-    return(length(data))
   }
-  shape(data)
+  dim(data)
+}
+
+restore_previous_func <- function() {
+  stash_size <- length(globals[["FUNC_STASH"]])
+  if (stash_size) {
+    globals[["CURRENT_FUNC"]] <- globals[["FUNC_STASH"]][[stash_size]]
+    globals[["FUNC_STASH"]] <- globals[["FUNC_STASH"]][-stash_size]
+  } else {
+    globals[["CURRENT_FUNC"]] <- NULL
+  }
 }

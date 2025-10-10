@@ -2,6 +2,15 @@
 #' @include repr.R
 NULL
 
+#' @title TensorConstant
+#' @description
+#' This represents a constant value.
+#' @param data (any)\cr
+#'   The value of the constant.
+#' @param type ([`TensorType`])\cr
+#'   The type of the constant.
+#' @return `TensorConstant`
+#' @export
 TensorConstant <- new_class(
   "TensorConstant",
   properties = list(
@@ -20,21 +29,38 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   value_reprs <- if (inherits(type@dtype, FloatType)) {
     format_double(
       data,
-      precision = if (type@dtype@value == "f32") 32 else 64
+      precision = type@dtype@value
     )
-  } else if (inherits(type@dtype, IntegerType)) {
+  } else if (
+    inherits(type@dtype, IntegerType) || inherits(type@dtype, UnsignedType)
+  ) {
     as.character(data)
   } else if (inherits(type@dtype, BooleanType)) {
     tolower(as.logical(data))
   }
 
-  if (simplify_dense && length(shape(data)) <= 1L) {
+  if (simplify_dense && length(dim(data)) <= 1L) {
+    if (length(value_reprs) == 0) {
+      return(paste0(
+        "array<",
+        repr(type@dtype),
+        ">"
+      ))
+    } else {
+      return(paste0(
+        "array<",
+        repr(type@dtype),
+        ": ",
+        paste(value_reprs, collapse = ", "),
+        ">"
+      ))
+    }
+  }
+
+  if (length(value_reprs) == 0) {
     return(paste0(
-      "array<",
-      repr(type@dtype),
-      ": ",
-      paste(value_reprs, collapse = ", "),
-      ">"
+      "dense<[]> : ",
+      repr(type)
     ))
   }
 
@@ -46,10 +72,17 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
       repr(type)
     ))
   }
-  dim(value_reprs) <- shape(data)
+  dim2 <- function(data) {
+    if (is.array(data)) {
+      dim(data)
+    } else {
+      length(data)
+    }
+  }
+  dim(value_reprs) <- dim2(data)
 
   f <- function(x) {
-    if (length(shape(x)) == 1L || is.vector(x)) {
+    if (is.vector(x) || length(dim2(x)) == 1L) {
       paste0("[", paste(x, collapse = ", "), "]")
     } else {
       paste0("[", paste(apply(x, 1, f), collapse = ", "), "]")
@@ -59,12 +92,20 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   paste0("dense<", f(value_reprs), "> : ", repr(type))
 }
 
+#' @title Constant
+#' @description
+#' This represents a constant value.
+#' @param value ([`TensorConstant`])\cr
+#'   The value of the constant.
+#' @return `Constant`
+#' @export
 Constant <- new_class(
   "Constant",
   properties = list(
     value = S7::new_union(
       # It's not clear to me, why we need the other constant types (FloatType) as there are no real
       # scalars
+      # TODO: Simplify this
       TensorConstant
     )
   )
@@ -84,13 +125,13 @@ r_to_constant <- S7::new_generic(
 
 method(r_to_constant, S7::class_logical) <- function(
   value,
-  dtype = NULL, # is ignored
+  dtype = NULL,
   ...
 ) {
-  if (!is.array(value) && length(value) != 1L) {
-    stop("Either provide an R array or a length 1 vector.")
+  if (!is.array(value) && length(value) > 1L) {
+    stop("Either provide an R array or a length <=1 vector.")
   }
-  if (!is.null(dtype) && dtype != "pred") {
+  if (!is.null(dtype) && !(dtype %in% c("i1", "pred"))) {
     stop("Invalid dtype for logical")
   }
   shape <- Shape(
@@ -112,16 +153,16 @@ method(r_to_constant, S7::class_double) <- function(
   dtype = NULL,
   ...
 ) {
-  if (!is.array(value) && length(value) != 1L) {
-    stop("Either provide an R array or a length 1 vector.")
+  if (!is.array(value) && length(value) > 1L) {
+    stop("Either provide an R array or a length <=1 vector.")
   }
   if (!is.null(dtype) && !(dtype %in% c("f32", "f64"))) {
     stop("Invalid dtype for double")
   }
   dtype <- if (is.null(dtype)) {
-    FloatType("f32")
+    FloatType(32L)
   } else {
-    string_to_type(dtype)
+    as_dtype(dtype)
   }
 
   shape <- Shape(
@@ -143,17 +184,17 @@ method(r_to_constant, S7::class_integer) <- function(
   dtype = NULL,
   ...
 ) {
-  if (!is.array(value) && length(value) != 1L) {
-    stop("Either provide an R array or a length 1 vector.")
+  if (!is.array(value) && length(value) > 1L) {
+    stop("Either provide an R array or a length <=1 vector.")
   }
   valid_types <- c("i8", "i16", "i32", "i64", "ui8", "ui16", "ui32", "ui64")
   if (!is.null(dtype) && !(dtype %in% valid_types)) {
     stop("Invalid dtype for integer")
   }
   dtype <- if (is.null(dtype)) {
-    IntegerType("i32")
+    IntegerType(32L)
   } else {
-    string_to_type(dtype)
+    as_dtype(dtype)
   }
 
   shape <- Shape(
@@ -178,6 +219,6 @@ method(r_to_constant, S7::class_any) <- function(
   stop("Unsupported type for r_to_constant: ", class(value)[1])
 }
 
-method(dim, TensorConstant) <- function(x) {
+method(shape, TensorConstant) <- function(x) {
   x@type@shape@dims
 }

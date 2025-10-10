@@ -61,7 +61,7 @@ infer_types_generic_biv <- function(lhs, rhs) {
 infer_types_boolean_biv <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(lhs@type == rhs@type)
-  assert_one_of(lhs@type@dtype, IntegerType, BooleanType)
+  assert_one_of(lhs@type@dtype, IntegerType, UnsignedType, BooleanType)
   ValueTypes(list(lhs))
 }
 

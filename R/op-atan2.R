@@ -1,9 +1,9 @@
-#' @include op.R hlo.R type_inference.R 
-NULL 
+#' @include op.R hlo.R type_inference.R
+NULL
 
 OpAtan2 <- new_Op("OpAtan2", "atan2")
 
-hlo_atan2_impl <- hlo_fn(OpAtan2, infer_types_generic_biv) 
+hlo_atan2_impl <- hlo_fn(OpAtan2, infer_types_generic_biv)
 
 #' @templateVar mnemonic atan2
 #' @template op

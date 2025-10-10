@@ -5,6 +5,15 @@
 #' @importFrom S7 new_class new_property method
 NULL
 
+#' @title FuncInput
+#' @description
+#' This represents an input of a [`Func`].
+#' @param id ([`ValueId`])\cr
+#'   The id of the input.
+#' @param type (`ValueType`)\cr
+#'   The type of the input.
+#' @return (`FuncInput`)
+#' @export
 FuncInput <- new_class(
   "FuncInput",
   properties = list(
@@ -21,6 +30,13 @@ method(repr, FuncInput) <- function(x) {
   )
 }
 
+#' @title FuncInputs
+#' @description
+#' List of [`FuncInput`]s.
+#' @param items (`list()` of [`FuncInput`])\cr
+#'   The inputs of the function.
+#' @return (`FuncInputs`)
+#' @export
 FuncInputs <- new_list_of("FuncInputs", FuncInput)
 
 method(repr, FuncInputs) <- function(x) {
@@ -31,6 +47,13 @@ method(repr, FuncInputs) <- function(x) {
   )
 }
 
+#' @title FuncOutput
+#' @description
+#' This represents an output of a [`Func`].
+#' @param type (`ValueType`)\cr
+#'   The type of the output.
+#' @return (`FuncOutput`)
+#' @export
 FuncOutput <- new_class(
   "FuncOutput",
   properties = list(
@@ -42,13 +65,28 @@ method(repr, FuncOutput) <- function(x) {
   repr(x@type)
 }
 
+#' @title FuncOutputs
+#' @description
+#' List of [`FuncOutput`]s.
+#' @param items (`list()` of [`FuncOutput`])\cr
+#'   The outputs of the function.
+#' @return (`FuncOutputs`)
+#' @export
 FuncOutputs <- new_list_of("FuncOutputs", FuncOutput)
 
 method(repr, FuncOutputs) <- function(x) {
-  paste0(
-    "-> ",
-    paste0(sapply(x@items, repr), collapse = ", ")
-  )
+  if (length(x@items) <= 1L) {
+    paste0(
+      "-> ",
+      paste0(sapply(x@items, repr), collapse = ", ")
+    )
+  } else {
+    paste0(
+      "-> (",
+      paste0(sapply(x@items, repr), collapse = ", "),
+      ")"
+    )
+  }
 }
 
 #' @title FuncId
@@ -71,6 +109,13 @@ method(`==`, list(FuncId, FuncId)) <- function(e1, e2) {
   identical(e1@id, e2@id)
 }
 
+#' @title FuncBody
+#' @description
+#' The body of a [`Func`], containing a list of operations.
+#' @param items (`list()` of [`Op`])\cr
+#'   The operations in the function body.
+#' @return (`FuncBody`)
+#' @export
 FuncBody <- new_list_of(
   "FuncBody",
   item_type = Op
@@ -80,14 +125,123 @@ method(repr, FuncBody) <- function(x) {
   paste0(sapply(x@items, repr), collapse = "\n")
 }
 
+#' @title Get the last function created
+#' @description
+#' Get the last function created (either via [`hlo_func`] or [`local_func`]),
+#' which is not returned yet.
+#' @return A [`Func`] object.
+#' @export
+.current_func <- function() {
+  globals[["CURRENT_FUNC"]] %??% stop("No function is currently being built")
+}
+
+#' @title Create a function
+#' @description
+#' Both functions create a new [`Func`] with the given id which is afterwards accessible via [`.current_func()`].
+#' Functions receiving a [`Func`] as an argument (such as [`hlo_input`], [`hlo_add`], ...) usually use
+#' [`.current_func()`] by default.
+#' You can also directly create a function using [`Func()`], which will *not* be accessible this way.
+#'
+#' Differences between the two functions:
+#' * [`local_func`] removes the function when exiting the current scope, whereas [`hlo_func`] does not.
+#' * [`hlo_func`] discards the previously built function(s), whereas [`local_func`] does not:
+#'   after a function created by [`local_func`] is either cleaned up automatically (by exiting the scope)
+#'   or the function is finalized via [`hlo_return`], the previously built function is restored,
+#'   i.e., accessible via [`.current_func()`]. To build nested functions (e.g. to create a closure
+#'   that is passed to another op), use [`local_func`] instead of [`hlo_func`].
+#'
+#' @param id (`character(1)`\cr
+#'   The id of the function.
+#' @return A [`Func`] object.
+#' @export
+hlo_func <- function(id = "main") {
+  func <- Func(id = FuncId(id))
+  globals[["CURRENT_FUNC"]] <- func
+  return(func)
+}
+
+
+#' @rdname hlo_func
+#' @export
+local_func <- function(id = "main") {
+  func <- hlo_func(id)
+  if (!is.null(globals[["CURRENT_FUNC"]])) {
+    globals[["FUNC_STASH"]] <- c(globals[["FUNC_STASH"]], list(func))
+  }
+  globals[["CURRENT_FUNC"]] <- func
+
+  withr::defer(envir = parent.frame(), {
+    restore_previous_func()
+  })
+  return(func)
+}
+
+#' @title Func
+#' @description
+#' This represents a function.
+#' @param id (`FuncId`\cr
+#'   The id of the function.
+#' @param inputs (`FuncInputs`\cr
+#'   The inputs of the function.
+#' @param outputs (`FuncOutputs`\cr
+#'   The outputs of the function.
+#' @param body (`FuncBody`\cr
+#'   The body of the function.
+#' @return A [`Func`] object.
+#' @export
 Func <- new_class(
   "Func",
   properties = list(
-    id = FuncId,
-    inputs = FuncInputs,
-    outputs = FuncOutputs,
-    body = FuncBody
-  )
+    id = new_property(
+      FuncId,
+      getter = function(self) self@.env[["id"]],
+      setter = function(self, value) {
+        self@.env[["id"]] <- value
+        self
+      }
+    ),
+    inputs = new_property(
+      FuncInputs,
+      getter = function(self) self@.env[["inputs"]],
+      setter = function(self, value) {
+        self@.env[["inputs"]] <- value
+        self
+      }
+    ),
+    outputs = new_property(
+      FuncOutputs,
+      getter = function(self) self@.env[["outputs"]],
+      setter = function(self, value) {
+        self@.env[["outputs"]] <- value
+        self
+      }
+    ),
+    body = new_property(
+      FuncBody,
+      getter = function(self) self@.env[["body"]],
+      setter = function(self, value) {
+        self@.env[["body"]] <- value
+        self
+      }
+    ),
+    .env = S7::new_S3_class("hashtab")
+  ),
+  constructor = function(
+    id = FuncId(),
+    inputs = FuncInputs(),
+    outputs = FuncOutputs(),
+    body = FuncBody()
+  ) {
+    env <- hashtab()
+    env[["id"]] <- id
+    env[["inputs"]] <- inputs
+    env[["outputs"]] <- outputs
+    env[["body"]] <- body
+    new_object(
+      S7::S7_object(),
+      .env = env
+    )
+  }
 )
 
 method(repr, Func) <- function(x) {
@@ -109,6 +263,15 @@ method(print, Func) <- function(x, ...) {
   cat(repr(x))
 }
 
+#' @title OpInputFunc
+#' @description
+#' This represents a function that can be used as input to an operation.
+#' @param inputs (`FuncInputs`)\cr
+#'   The inputs of the function.
+#' @param body (`FuncBody`)\cr
+#'   The body of the function.
+#' @return (`OpInputFunc`)
+#' @export
 OpInputFunc <- new_class(
   "OpInputFunc",
   properties = list(
@@ -144,6 +307,13 @@ method(`==`, list(OpInputFunc, OpInputFunc)) <- function(e1, e2) {
   e1@inputs == e2@inputs && e1@body == e2@body
 }
 
+#' @title OpInputFuncs
+#' @description
+#' List of [`OpInputFunc`]s.
+#' @param items (`list()` of [`OpInputFunc`])\cr
+#'   The functions that can be used as inputs to operations.
+#' @return (`OpInputFuncs`)
+#' @export
 OpInputFuncs <- new_list_of("OpInputFuncs", OpInputFunc)
 
 method(repr, OpInputFuncs) <- function(x) {
