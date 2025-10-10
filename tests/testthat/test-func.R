@@ -95,3 +95,12 @@ test_that("hlo_func discards previous func", {
   hlo_return(hlo_input("x", "f32", shape = c(2, 2)))
   expect_error(.current_func(), "is currently being built")
 })
+
+test_that("hlo_func and local_func", {
+  f <- hlo_func()
+  expect_identical(f, .current_func())
+  local_func()
+  expect_identical(f, globals$FUNC_STASH[[length(globals$FUNC_STASH)]])
+  hlo_return(hlo_scalar(1))
+  expect_identical(f, .current_func())
+})

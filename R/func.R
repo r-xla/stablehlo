@@ -164,9 +164,9 @@ hlo_func <- function(id = "main") {
 #' @rdname hlo_func
 #' @export
 local_func <- function(id = "main") {
-  func <- hlo_func(id)
+  func <- Func(id)
   if (!is.null(globals[["CURRENT_FUNC"]])) {
-    globals[["FUNC_STASH"]] <- c(globals[["FUNC_STASH"]], list(func))
+    globals[["FUNC_STASH"]] <- c(globals[["FUNC_STASH"]], list(globals[["CURRENT_FUNC"]]))
   }
   globals[["CURRENT_FUNC"]] <- func
 
