@@ -30,7 +30,7 @@ Suggests:
 LinkingTo:
     Rcpp
 Remotes:
-    r-xla/pjrt@,
+    r-xla/pjrt,
     r-xla/tengen
 Config/build/compilation-database: true
 Config/testthat/edition: 3
