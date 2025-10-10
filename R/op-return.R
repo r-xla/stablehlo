@@ -29,8 +29,12 @@ hlo_return_impl <- hlo_fn(OpReturn, infer_types_return, TRUE)
 #' @export
 hlo_return <- function(...) {
   dots <- list(...)
-  restore_previous_func()
-  hlo_return_impl(values = dots)
+  if (!length(dots)) {
+    stop("hlo_return must have at least one argument")
+  }
+  func <- hlo_return_impl(values = dots)
+  maybe_restore_previous_func()
+  return(func)
 }
 
 infer_types_return <- function(...) {
