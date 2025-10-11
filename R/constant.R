@@ -208,6 +208,9 @@ method(r_to_constant, S7::class_any) <- function(
   stop("Unsupported type for r_to_constant: ", class(value)[1])
 }
 
-method(shape, TensorConstant) <- function(x) {
+
+#' @export
+#' @method shape stablehlo::TensorConstant
+`shape.stablehlo::TensorConstant` <- function(x, ...) {
   x@type@shape@dims
 }
