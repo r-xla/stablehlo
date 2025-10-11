@@ -27,11 +27,6 @@ OpConstant <- S7::new_class(
   }
 )
 
-op_constant <- function(value, dtype = NULL) {
-  const_value <- r_to_constant(value, dtype = dtype)
-  OpConstant(const_value)
-}
-
 #' @title Create a Constant
 #' @name hlo_constant
 #' @description
@@ -75,7 +70,7 @@ S7::method(hlo_scalar, S7::class_logical) <- function(
   if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
-  impl_hlo_constant(value, dtype = "pred", func = func)
+  impl_hlo_constant(value, dtype = "pred", func = func, shape = integer())
 }
 
 S7::method(hlo_scalar, S7::class_double) <- function(
@@ -90,7 +85,7 @@ S7::method(hlo_scalar, S7::class_double) <- function(
   if (anyNA(value)) {
     stop("Data for constants must not contain NA values.")
   }
-  impl_hlo_constant(value, dtype = dtype, func = func)
+  impl_hlo_constant(value, dtype = dtype, func = func, shape = integer())
 }
 
 S7::method(hlo_scalar, S7::class_integer) <- function(
@@ -108,7 +103,7 @@ S7::method(hlo_scalar, S7::class_integer) <- function(
   if (!is.null(dtype) && grepl("^ui", dtype) && any(value < 0L)) {
     stop("Data for unsigned integer must be non-negative")
   }
-  impl_hlo_constant(value, dtype = dtype, func = func)
+  impl_hlo_constant(value, dtype = dtype, func = func, shape = integer())
 }
 
 S7::method(hlo_scalar, S7::new_S3_class("PJRTBuffer")) <- function(
@@ -119,7 +114,8 @@ S7::method(hlo_scalar, S7::new_S3_class("PJRTBuffer")) <- function(
   impl_hlo_constant(
     tengen::as_array(value),
     dtype = as.character(pjrt::elt_type(value)),
-    func = func
+    func = func,
+    shape = integer()
   )
 }
 
@@ -150,7 +146,7 @@ S7::method(hlo_tensor, S7::new_S3_class("array")) <- function(
   ) {
     stop("Data for unsigned integer must be non-negative")
   }
-  impl_hlo_constant(value, dtype = dtype, func = func)
+  impl_hlo_constant(value, dtype = dtype, func = func, shape = dim(value))
 }
 
 S7::method(hlo_tensor, S7::class_integer) <- function(
@@ -161,7 +157,7 @@ S7::method(hlo_tensor, S7::class_integer) <- function(
   func = .current_func()
 ) {
   shape <- shape %??% get_dims(value)
-  impl_hlo_constant(array(value, dim = shape), dtype = dtype, func = func)
+  impl_hlo_constant(value, dtype = dtype, func = func, shape = shape)
 }
 
 S7::method(hlo_tensor, S7::class_logical) <- function(
@@ -171,7 +167,7 @@ S7::method(hlo_tensor, S7::class_logical) <- function(
   func = .current_func()
 ) {
   shape <- shape %??% get_dims(value)
-  impl_hlo_constant(array(value, dim = shape), dtype = "i1", func = func)
+  impl_hlo_constant(value, dtype = "i1", func = func, shape = shape)
 }
 
 S7::method(hlo_tensor, S7::class_double) <- function(
@@ -182,7 +178,7 @@ S7::method(hlo_tensor, S7::class_double) <- function(
   func = .current_func()
 ) {
   shape <- shape %??% get_dims(value)
-  impl_hlo_constant(array(value, dim = shape), dtype = dtype, func = func)
+  impl_hlo_constant(value, dtype = dtype, func = func, shape = shape)
 }
 
 S7::method(hlo_tensor, S7::new_S3_class("PJRTBuffer")) <- function(
@@ -193,7 +189,8 @@ S7::method(hlo_tensor, S7::new_S3_class("PJRTBuffer")) <- function(
   impl_hlo_constant(
     tengen::as_array(value),
     dtype = as.character(pjrt::elt_type(value)),
-    func = func
+    func = func,
+    shape = shape(value)
   )
 }
 
@@ -213,14 +210,18 @@ hlo_empty <- function(dtype, shape, func = .current_func()) {
   }
 
   impl_hlo_constant(
-    array(data, dim = shape),
+    data,
     dtype = dtype,
-    func = func
+    func = func,
+    shape = shape
   )
 }
 
-impl_hlo_constant <- function(value, dtype, func) {
-  const_value <- r_to_constant(value, dtype = dtype)
+impl_hlo_constant <- function(value, dtype, func, shape) {
+  if (length(shape)) {
+    value <- array(value, dim = shape)
+  }
+  const_value <- r_to_constant(value, dtype = dtype, shape = shape)
   value_id <- ValueId()
   op <- OpConstant(
     const_value,

@@ -164,15 +164,22 @@ hlo_func <- function(id = "main") {
 #' @rdname hlo_func
 #' @export
 local_func <- function(id = "main") {
-  func <- hlo_func(id)
+  func <- Func(FuncId(id))
   if (!is.null(globals[["CURRENT_FUNC"]])) {
-    globals[["FUNC_STASH"]] <- c(globals[["FUNC_STASH"]], list(func))
+    globals[["FUNC_STASH"]] <- c(
+      globals[["FUNC_STASH"]],
+      list(globals[["CURRENT_FUNC"]])
+    )
   }
   globals[["CURRENT_FUNC"]] <- func
 
-  withr::defer(envir = parent.frame(), {
-    restore_previous_func()
-  })
+  withr::defer(
+    envir = parent.frame(),
+    {
+      maybe_restore_previous_func(func)
+    },
+    priority = "first"
+  )
   return(func)
 }
 

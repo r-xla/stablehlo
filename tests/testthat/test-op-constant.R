@@ -153,3 +153,8 @@ test_that("empty array: array<> formatting", {
   buffer <- pjrt_execute(exec, pjrt_scalar(1L, "i64"))
   expect_equal(buffer, pjrt_scalar(1L, "i64"))
 })
+
+test_that("scalar constant with hlo_tensor", {
+  local_func()
+  expect_snapshot(repr(hlo_tensor(1L, shape = integer())@func))
+})
