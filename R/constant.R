@@ -118,7 +118,7 @@ method(repr, Constant) <- function(x, simplify_dense = TRUE) {
 r_to_constant <- S7::new_generic(
   "r_to_constant",
   "value",
-  function(value, dtype = NULL, ...) {
+  function(value, dtype = NULL, shape, ...) {
     S7::S7_dispatch()
   }
 )
@@ -126,17 +126,13 @@ r_to_constant <- S7::new_generic(
 method(r_to_constant, S7::class_logical) <- function(
   value,
   dtype = NULL,
+  shape,
   ...
 ) {
-  if (!is.array(value) && length(value) > 1L) {
-    stop("Either provide an R array or a length <=1 vector.")
-  }
   if (!is.null(dtype) && !(dtype %in% c("i1", "pred"))) {
     stop("Invalid dtype for logical")
   }
-  shape <- Shape(
-    if (is.array(value)) shape(value) else integer()
-  )
+  shape <- Shape(shape)
 
   tensor_type <- TensorType(dtype = BooleanType(), shape = shape)
 
@@ -151,11 +147,9 @@ method(r_to_constant, S7::class_logical) <- function(
 method(r_to_constant, S7::class_double) <- function(
   value,
   dtype = NULL,
+  shape,
   ...
 ) {
-  if (!is.array(value) && length(value) > 1L) {
-    stop("Either provide an R array or a length <=1 vector.")
-  }
   if (!is.null(dtype) && !(dtype %in% c("f32", "f64"))) {
     stop("Invalid dtype for double")
   }
@@ -165,9 +159,7 @@ method(r_to_constant, S7::class_double) <- function(
     as_dtype(dtype)
   }
 
-  shape <- Shape(
-    if (is.array(value)) shape(value) else integer()
-  )
+  shape <- Shape(shape)
 
   tensor_type <- TensorType(dtype, shape)
 
@@ -182,11 +174,9 @@ method(r_to_constant, S7::class_double) <- function(
 method(r_to_constant, S7::class_integer) <- function(
   value,
   dtype = NULL,
+  shape,
   ...
 ) {
-  if (!is.array(value) && length(value) > 1L) {
-    stop("Either provide an R array or a length <=1 vector.")
-  }
   valid_types <- c("i8", "i16", "i32", "i64", "ui8", "ui16", "ui32", "ui64")
   if (!is.null(dtype) && !(dtype %in% valid_types)) {
     stop("Invalid dtype for integer")
@@ -197,9 +187,7 @@ method(r_to_constant, S7::class_integer) <- function(
     as_dtype(dtype)
   }
 
-  shape <- Shape(
-    if (is.array(value)) shape(value) else integer()
-  )
+  shape <- Shape(shape)
 
   tensor_type <- TensorType(dtype, shape)
 
@@ -214,6 +202,7 @@ method(r_to_constant, S7::class_integer) <- function(
 method(r_to_constant, S7::class_any) <- function(
   value,
   dtype = NULL,
+  shape,
   ...
 ) {
   stop("Unsupported type for r_to_constant: ", class(value)[1])
