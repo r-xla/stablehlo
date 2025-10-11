@@ -6,6 +6,7 @@ OpShiftRightLogical <- new_Op(
   "shift_right_logical"
 )
 
+# fmt: skip
 infer_types_shift_right_logical <- function(lhs, rhs) { # nolint
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(lhs@type == rhs@type)
