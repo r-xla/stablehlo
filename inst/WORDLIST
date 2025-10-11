@@ -53,3 +53,10 @@ quantized
 stableHLO
 ui
 Func
+IsFinite
+Popcnt
+RoundNearestAfz
+ShiftLeft
+ShiftRightArithmetic
+ShiftRightLogical
+

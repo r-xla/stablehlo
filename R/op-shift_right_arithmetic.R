@@ -6,7 +6,7 @@ OpShiftRightArithmetic <- new_Op(
   "shift_right_arithmetic"
 )
 
-infer_types_shift_right_arithmetic <- function(lhs, rhs) {
+infer_types_shift_right_arithmetic <- function(lhs, rhs) { # nolint
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(lhs@type == rhs@type)
   stopifnot(inherits(lhs@type@dtype, IntegerType))
@@ -14,7 +14,7 @@ infer_types_shift_right_arithmetic <- function(lhs, rhs) {
   ValueTypes(list(lhs))
 }
 
-hlo_shift_right_arithmetic_impl <- hlo_fn(
+hlo_shift_right_arithmetic_impl <- hlo_fn( # nolint
   OpShiftRightArithmetic,
   infer_types_shift_right_arithmetic
 )
