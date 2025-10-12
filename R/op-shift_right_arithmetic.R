@@ -6,8 +6,8 @@ OpShiftRightArithmetic <- new_Op(
   "shift_right_arithmetic"
 )
 
-infer_types_shift_right_arithmetic <- function(lhs, rhs) {
-  # nolint
+# fmt: skip
+infer_types_shift_right_arithmetic <- function(lhs, rhs) { # nolint
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(lhs@type == rhs@type)
   stopifnot(inherits(lhs@type@dtype, IntegerType))
