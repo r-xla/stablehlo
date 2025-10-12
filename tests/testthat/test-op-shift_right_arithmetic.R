@@ -2,19 +2,16 @@ test_that("basic tests", {
   hlo_test_biv(
     hlo_shift_right_arithmetic,
     \(x, n) {
-      x_ <- c(x)
-      n_ <- c(n)
-      M <- data.frame(x_, n_)
-      M$bits <- lapply(x_, \(y) rev(as.integer(intToBits(y))))
+      M <- data.frame(c(x), c(n))
       inner_shift <- function(x, n) {
-        l <- length(x)
+        x_bits <- rev(as.integer(intToBits(x)))
+        l <- length(x_bits)
         temp <- integer(l)
         if (n >= l) {
-          temp <- rep(x[[1]], l)
+          temp <- rep(x_bits[[1]], l)
         } else {
-          temp <- c(rep(x[[1]], n), x[1:(l - n)])
+          temp <- c(rep(x_bits[[1]], n), x_bits[1:(l - n)])
         }
-
         if (temp[[1]]) {
           temp <- as.integer(!temp)
           return(-sum(2^rev(seq_len(l) - 1) * temp) - 1)
@@ -23,7 +20,7 @@ test_that("basic tests", {
         }
       }
       array(
-        apply(M, MARGIN = 1, FUN = \(z) inner_shift(z[[3]], z[[2]])),
+        apply(M, MARGIN = 1, FUN = \(z) inner_shift(z[[1]], z[[2]])),
         dim = dim(x)
       )
     },
