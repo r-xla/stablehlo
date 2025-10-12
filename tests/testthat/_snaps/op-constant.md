@@ -152,3 +152,10 @@
     Output
       [1] "func.func @main (%x: tensor<i64>) -> tensor<i64> {\n%0 = \"stablehlo.transpose\" (%x) {\npermutation = array<i64>\n}: (tensor<i64>) -> (tensor<i64>)\n\"func.return\"(%0): (tensor<i64>) -> ()\n}\n"
 
+# scalar constant with hlo_tensor
+
+    Code
+      repr(hlo_tensor(1L, shape = integer())@func)
+    Output
+      [1] "func.func @main () ->  {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1> : tensor<i32>\n}: () -> (tensor<i32>)\n}\n"
+

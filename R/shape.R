@@ -40,6 +40,21 @@ method(repr, Shape) <- function(x) {
   paste0(dims, collapse = "x")
 }
 
-method(shape, Shape) <- function(x) {
+#' @export
+#' @method shape stablehlo::Shape
+`shape.stablehlo::Shape` <- function(x, ...) {
   x@dims
+}
+
+
+#' @export
+#' @method dtype stablehlo::TensorConstant
+`dtype.stablehlo::TensorConstant` <- function(x, ...) {
+  x@type@dtype
+}
+
+#' @export
+#' @method dtype stablehlo::FuncVariable
+`dtype.stablehlo::FuncVariable` <- function(x, ...) {
+  dtype(x@value_type)
 }

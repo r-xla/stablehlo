@@ -254,12 +254,35 @@ ValueType <- new_class(
 )
 
 
-method(shape, ValueType) <- function(x) {
+#' @export
+#' @method dtype stablehlo::ValueType
+`dtype.stablehlo::ValueType` <- function(x, ...) {
+  if (inherits(x@type, TensorType)) {
+    x@type@dtype
+  } else if (inherits(x@type, TokenType)) {
+    stop("ValueType with TokenType has no dtype")
+  } else {
+    stop("Unsupported ValueType for dtype")
+  }
+}
+
+#' @export
+#' @method shape stablehlo::ValueType
+`shape.stablehlo::ValueType` <- function(x, ...) {
   shape(x@type)
 }
 
-method(shape, TensorType) <- function(x) {
+
+#' @export
+#' @method shape stablehlo::TensorType
+`shape.stablehlo::TensorType` <- function(x, ...) {
   x@shape@dims
+}
+
+#' @export
+#' @method dtype stablehlo::TensorType
+`dtype.stablehlo::TensorType` <- function(x, ...) {
+  x@dtype
 }
 
 method(`==`, list(ValueType, ValueType)) <- function(e1, e2) {

@@ -66,7 +66,12 @@ get_dims <- function(data) {
   dim(data)
 }
 
-restore_previous_func <- function() {
+maybe_restore_previous_func <- function(func = NULL) {
+  if (!is.null(func) && !identical(func, globals[["CURRENT_FUNC"]])) {
+    # function has already been returned
+    return()
+  }
+
   stash_size <- length(globals[["FUNC_STASH"]])
   if (stash_size) {
     globals[["CURRENT_FUNC"]] <- globals[["FUNC_STASH"]][[stash_size]]
