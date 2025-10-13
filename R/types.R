@@ -27,7 +27,7 @@ IntegerType <- new_class(
       validator = function(value) {
         assert_int(value)
         if (!(value %in% c(8L, 16L, 32L, 64L))) {
-          cli::cli_abort("Unsupported signed integer bit width: {value}")
+          cli_abort("Unsupported signed integer bit width: {value}")
         }
       }
     )
@@ -55,7 +55,7 @@ UnsignedType <- new_class(
       validator = function(value) {
         assert_int(value)
         if (!(value %in% c(8L, 16L, 32L, 64L))) {
-          cli::cli_abort("Unsupported unsigned integer bit width: {value}")
+          cli_abort("Unsupported unsigned integer bit width: {value}")
         }
       }
     )
@@ -83,7 +83,7 @@ FloatType <- new_class(
       validator = function(value) {
         assert_int(value)
         if (!(value %in% c(32L, 64L))) {
-          cli::cli_abort("Unsupported float bit width: {value}")
+          cli_abort("Unsupported float bit width: {value}")
         }
       }
     )
@@ -142,7 +142,7 @@ method(`==`, list(TensorDataType, TensorDataType)) <- function(e1, e2) {
   if (inherits(e1, FloatType)) {
     return(e1@value == e2@value)
   }
-  stop("Unknown TensorDataType")
+  cli_abort("Unknown TensorDataType")
 }
 
 #' @title Convert to TensorDataType
@@ -186,7 +186,7 @@ method(as_dtype, class_character) <- function(x) {
   if (grepl("^f[0-9]+$", x)) {
     return(FloatType(as.integer(sub("^f", "", x))))
   }
-  stop("Unsupported dtype: ", x)
+  cli_abort("Unsupported dtype: ", x)
 }
 
 method(as_dtype, TensorDataType) <- function(x) {

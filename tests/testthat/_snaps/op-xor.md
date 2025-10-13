@@ -1,4 +1,4 @@
-# basic tests
+# XOR works
 
     Code
       repr(f)

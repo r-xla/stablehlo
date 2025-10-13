@@ -7,10 +7,10 @@ OpReturn <- new_class(
   parent = Op,
   constructor = function(inputs, outputs = OpOutputs(), signature = NULL) {
     if (length(outputs@items)) {
-      stop("OpReturn op must not have outputs.")
+      cli_abort("OpReturn op must not have outputs.")
     }
     if (length(signature@output_types@items)) {
-      stop("Invalid signature for ReturnOp.")
+      cli_abort("Invalid signature for ReturnOp.")
     }
 
     new_object(Op(

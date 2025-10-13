@@ -9,7 +9,7 @@ assert_one_of <- function(x, ...) {
       return(TRUE)
     }
   }
-  stop("Invalid type")
+  cli_abort("Invalid type")
 }
 
 output_types_from_body <- function(body) {

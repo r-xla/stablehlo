@@ -6,6 +6,7 @@
 #' @import checkmate
 #' @import tengen
 #' @importFrom utils hashtab
+#' @importFrom cli cli_abort
 NULL
 
 .onLoad <- function(...) {

@@ -1,3 +1,3 @@
 test_that("basic tests", {
-  hlo_test_biv(hlo_and, `&`, dtype = "pred")
+  hlo_test_biv(hlo_and, `&`, dtypes = "pred")
 })

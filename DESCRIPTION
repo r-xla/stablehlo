@@ -1,5 +1,5 @@
 Package: stablehlo
-Title: Create stableHLO programs
+Title: Write stableHLO programs
 Version: 0.0.0.9000
 Authors@R: c(
     person("Daniel", "Falbel", , "daniel@posit.co", role = c("aut", "cre"),
@@ -73,6 +73,7 @@ Collate:
     'op-exponential_minus_one.R'
     'op-floor.R'
     'op-if.R'
+    'op-is_finite.R'
     'op-log.R'
     'op-log_plus_one.R'
     'op-logistic.R'
@@ -80,15 +81,25 @@ Collate:
     'op-minimum.R'
     'op-multiply.R'
     'op-negate.R'
+    'op-not.R'
     'op-or.R'
+    'op-popcnt.R'
     'op-power.R'
     'op-reduce.R'
     'op-remainder.R'
+    'op-reshape.R'
     'op-return.R'
+    'op-reverse.R'
+    'op-round_nearest_afz.R'
     'op-round_nearest_even.R'
     'op-rsqrt.R'
+    'op-select.R'
+    'op-shift_left.R'
+    'op-shift_right_arithmetic.R'
+    'op-shift_right_logical.R'
     'op-sign.R'
     'op-sine.R'
+    'op-slice.R'
     'op-sqrt.R'
     'op-subtract.R'
     'op-tan.R'

@@ -130,7 +130,7 @@ method(r_to_constant, S7::class_logical) <- function(
   ...
 ) {
   if (!is.null(dtype) && !(dtype %in% c("i1", "pred"))) {
-    stop("Invalid dtype for logical")
+    cli_abort("Invalid dtype for logical")
   }
   shape <- Shape(shape)
 
@@ -151,7 +151,7 @@ method(r_to_constant, S7::class_double) <- function(
   ...
 ) {
   if (!is.null(dtype) && !(dtype %in% c("f32", "f64"))) {
-    stop("Invalid dtype for double")
+    cli_abort("Invalid dtype for double")
   }
   dtype <- if (is.null(dtype)) {
     FloatType(32L)
@@ -179,7 +179,7 @@ method(r_to_constant, S7::class_integer) <- function(
 ) {
   valid_types <- c("i8", "i16", "i32", "i64", "ui8", "ui16", "ui32", "ui64")
   if (!is.null(dtype) && !(dtype %in% valid_types)) {
-    stop("Invalid dtype for integer")
+    cli_abort("Invalid dtype for integer")
   }
   dtype <- if (is.null(dtype)) {
     IntegerType(32L)
@@ -205,7 +205,7 @@ method(r_to_constant, S7::class_any) <- function(
   shape,
   ...
 ) {
-  stop("Unsupported type for r_to_constant: ", class(value)[1])
+  cli_abort("Unsupported type for r_to_constant: ", class(value)[1])
 }
 
 

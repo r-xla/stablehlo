@@ -132,7 +132,8 @@ method(repr, FuncBody) <- function(x) {
 #' @return A [`Func`] object.
 #' @export
 .current_func <- function() {
-  globals[["CURRENT_FUNC"]] %??% stop("No function is currently being built")
+  globals[["CURRENT_FUNC"]] %??%
+    cli_abort("No function is currently being built")
 }
 
 #' @title Create a function

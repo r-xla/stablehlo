@@ -18,10 +18,10 @@
 #' format_double(1.23, 64)
 format_double <- function(x, precision = 64) {
   if (!is.double(x)) {
-    stop("x must be double")
+    cli_abort("x must be double")
   }
   if (!(precision %in% c(32, 64))) {
-    stop("precision must be either 32 or 64")
+    cli_abort("precision must be either 32 or 64")
   }
   format_double_cpp(x, precision)
 }

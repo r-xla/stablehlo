@@ -20,12 +20,12 @@ Shape <- new_class(
   },
   validator = function(self) {
     if (!is.integer(self@dims)) {
-      stop("dims must be an integer vector")
+      cli_abort("dims must be an integer vector")
     }
 
     dims <- self@dims
     if (any(dims[!is.na(dims)] < 0L)) {
-      stop("Dimensions must be >= 0")
+      cli_abort("Dimensions must be >= 0")
     }
   }
 )

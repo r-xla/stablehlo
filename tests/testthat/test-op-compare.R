@@ -47,7 +47,7 @@ test_that("exhaustive test", {
     hlo_test_biv(
       hlo_compare,
       compare_functions[[direction]],
-      dtype = "f32",
+      dtypes = "f32",
       args = list(
         comparison_direction = direction,
         compare_type = "FLOAT"
@@ -61,7 +61,7 @@ test_that("exhaustive test", {
     hlo_test_biv(
       hlo_compare,
       compare_functions[[direction]],
-      dtype = "i32",
+      dtypes = "i32",
       args = list(
         comparison_direction = direction,
         compare_type = "SIGNED"
@@ -75,7 +75,7 @@ test_that("exhaustive test", {
     hlo_test_biv(
       hlo_compare,
       compare_functions[[direction]],
-      dtype = "ui32",
+      dtypes = "ui32",
       args = list(
         comparison_direction = direction,
         compare_type = "UNSIGNED"
@@ -90,7 +90,7 @@ test_that("exhaustive test", {
     hlo_test_biv(
       hlo_compare,
       compare_functions[[direction]],
-      dtype = "pred",
+      dtypes = "pred",
       args = list(
         comparison_direction = direction,
         compare_type = "UNSIGNED"

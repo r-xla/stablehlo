@@ -33,7 +33,7 @@ generate_op_wrapper <- function(
 
   # 3. Generate hlo implementation
   hlo_impl_line <- sprintf(
-    "hlo_%s_impl <- hlo_fn(Op%s, %s) \n", # nolint
+    "hlo_%s_impl <- hlo_fn(Op%s, %s) \n",
     op_name,
     class_name,
     type_inference_fn
@@ -45,8 +45,6 @@ generate_op_wrapper <- function(
   if (export) {
     roxygen_lines <- c(
       sprintf("#' @templateVar mnemonic %s", op_name),
-      "#' @templateVar params %s",
-      "#' @templateVar attrs %s",
       "#' @template op",
       "#' @export"
     )
@@ -81,7 +79,7 @@ generate_op_wrapper <- function(
     roxygen_lines,
     sprintf("hlo_%s <- function(%s) {", op_name, all_args),
     sprintf("  hlo_%s_impl(values = %s%s)", op_name, values_call, attrs_call),
-    '}'
+    "}"
   )
 
   # Combine all parts in correct order

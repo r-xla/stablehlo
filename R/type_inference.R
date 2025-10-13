@@ -2,7 +2,7 @@ baseline_type <- function(x) {
   if (inherits(x, TensorType)) {
     return(x)
   }
-  stop("Not implemented")
+  cli_abort("Not implemented")
   # this function is defined in the stablhlo spec and primarily for quantized tensors
 }
 
@@ -12,9 +12,9 @@ baseline_element_type <- function(x) {
   if (is(x@type, TensorType)) {
     return(x@type@dtype)
   } else if (is(x@type, TokenType)) {
-    stop("Invalid input")
+    cli_abort("Invalid input")
   } else {
-    stop("Not implemented yet")
+    cli_abort("Not implemented yet")
   }
 }
 
@@ -63,4 +63,18 @@ infer_types_boolean_biv <- function(lhs, rhs) {
   stopifnot(lhs@type == rhs@type)
   assert_one_of(lhs@type@dtype, IntegerType, UnsignedType, BooleanType)
   ValueTypes(list(lhs))
+}
+
+#' @title Infer types for boolean unary operations
+#' @description
+#' Infer the types for boolean unary operations.
+#' @param operand (`ValueType`)\cr
+#'   The operand.
+#' @return (`ValueType`)\cr
+#'   The inferred type.
+#' @export
+infer_types_boolean_uni <- function(operand) {
+  stopifnot(inherits(operand@type, TensorType))
+  assert_one_of(operand@type@dtype, IntegerType, BooleanType)
+  ValueTypes(list(operand))
 }

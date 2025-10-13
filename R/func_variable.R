@@ -35,7 +35,7 @@ merge_funcs <- function(funcs) {
     identical(f@.env, funcs[[1]]@.env)
   }))
   if (!all_same) {
-    stop("All functions must be identical")
+    cli_abort("All functions must be identical")
   }
   funcs[[1L]]
 }
