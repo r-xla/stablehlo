@@ -246,7 +246,7 @@ infer_types_constant <- function(value) {
   ValueTypes(list(value@value@type))
 }
 
-method(repr, OpConstant) <- function(x) {
+method(repr, OpConstant) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",
