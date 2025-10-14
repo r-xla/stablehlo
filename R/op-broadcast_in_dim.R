@@ -10,7 +10,6 @@ infer_types_broadcast_in_dim <- function(
 ) {
   stopifnot(inherits(operand@type, TensorType))
 
-  # Extract operand dims and target result dims
   operand_dims <- shape(operand)
   result_dims <- as.integer(shape_out)
 
@@ -22,7 +21,7 @@ infer_types_broadcast_in_dim <- function(
   }
 
   # (C3) 0 <= broadcast_dimensions < rank(result)
-  if (length(result_dims) == 0L) {
+  if (!length(result_dims)) {
     cli_abort(
       "shape_out must specify the full result shape (rank > 0 for non-scalars)"
     )
@@ -32,7 +31,7 @@ infer_types_broadcast_in_dim <- function(
   }
 
   # (C4) is_unique(broadcast_dimensions)
-  if (any(duplicated(bdims))) {
+  if (anyDuplicated(bdims)) {
     cli_abort("broadcast_dimensions must be unique")
   }
 
@@ -42,7 +41,6 @@ infer_types_broadcast_in_dim <- function(
     op_dim <- operand_dims[d]
     res_dim <- result_dims[bdims[d] + 1L] # 0-based to 1-based
 
-    # Allow unknown dims (NA) to pass checks where appropriate
     if (op_dim != 1L && op_dim != res_dim) {
       cli_abort(
         "Operand dimension and result dimension must match unless operand dim is 1"
