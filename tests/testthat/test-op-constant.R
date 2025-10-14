@@ -91,6 +91,25 @@ test_that("compile tensors", {
   check(c(TRUE, FALSE), "pred")
 })
 
+test_that("pjrt int from R double", {
+  skip_if_not_installed("pjrt")
+  func <- local_func()
+  f <- hlo_return(hlo_scalar(3.14, dtype = "i32"))
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+  buffer <- pjrt_execute(exec)
+  expect_equal(as_array(buffer), 3L)
+})
+
+test_that("pjrt float from R int", {
+  skip_if_not_installed("pjrt")
+  func <- local_func()
+  f <- hlo_return(hlo_scalar(3L, dtype = "f32"))
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+  buffer <- pjrt_execute(exec)
+  expect_equal(as_array(buffer), 3.0)
+})
 
 test_that("errors", {
   expect_error(
@@ -98,14 +117,6 @@ test_that("errors", {
     "must be non-negative"
   )
   expect_error(hlo_scalar(NA, func = hlo_func()), "must not contain NA")
-  expect_error(
-    hlo_scalar(3L, dtype = "f32", func = hlo_func()),
-    "Invalid dtype for integer"
-  )
-  expect_error(
-    hlo_scalar(1, dtype = "i32", func = hlo_func()),
-    "Invalid dtype for double"
-  )
   expect_error(hlo_scalar(1:2, func = hlo_func()), "a single value")
 })
 
