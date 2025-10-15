@@ -90,6 +90,7 @@ Collate:
     'op-reshape.R'
     'op-return.R'
     'op-reverse.R'
+    'op-rng_bit_generator.R'
     'op-round_nearest_afz.R'
     'op-round_nearest_even.R'
     'op-rsqrt.R'
