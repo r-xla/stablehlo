@@ -50,3 +50,4 @@ devtools::check()
 2. Follow the established pattern for adding new operations and types.
 3. Add tests in `tests/testthat/` with appropriate snapshots and execution tests for validation.
 4. Document functions with roxygen2 comments.
+5. Run `make format` to format the code.
