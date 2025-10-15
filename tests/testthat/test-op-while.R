@@ -34,6 +34,6 @@ test_that("simple loop", {
   exec <- pjrt_compile(program)
 
   res <- pjrt_execute(exec, pjrt_scalar(1L, "i64"), pjrt_scalar(0L, "i64"))
-  expect_identical(as_array(res[[1L]]), as_array(pjrt_scalar(10L, "i64")))
-  expect_identical(as_array(res[[2L]]), as_array(pjrt_scalar(9L, "i64")))
+  expect_identical(res[[1L]], pjrt_scalar(10L, "i64"))
+  expect_identical(res[[2L]], pjrt_scalar(9L, "i64"))
 })
