@@ -18,7 +18,7 @@ infer_types_while <- function(..., cond, body) {
   stopifnot(identical(cond_out@type@dtype, BooleanType()))
 
   # (C2) body has type (T0, ..., TN-1) -> (T0, ..., TN-1)
-  body_out_types <- lapply(body@outputs@items, function(x) x@type)
+  body_out_types <- func_output_types(body)
   stopifnot(length(body_out_types) == length(value_types))
   for (i in seq_along(value_types)) {
     stopifnot(body_out_types[[i]] == value_types[[i]])

@@ -12,6 +12,11 @@ assert_one_of <- function(x, ...) {
   cli_abort("Invalid type")
 }
 
+func_output_types <- function(func) {
+  stopifnot(inherits(func, Func))
+  lapply(func@outputs@items, function(x) x@type)
+}
+
 output_types_from_body <- function(body) {
   body@items[[length(body@items)]]@inputs@values
 }
