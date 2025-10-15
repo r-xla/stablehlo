@@ -150,17 +150,14 @@ method(r_to_constant, S7::class_double) <- function(
   shape,
   ...
 ) {
-  if (!is.null(dtype) && !(dtype %in% c("f32", "f64"))) {
+  dtype <- dtype %??% "f32"
+  if (dtype %in% c("i8", "i16", "i32", "i64", "ui8", "ui16", "ui32", "ui64")) {
+    value <- as.integer(value)
+  } else if (dtype %in% c("i1", "pred")) {
     cli_abort("Invalid dtype for double")
   }
-  dtype <- if (is.null(dtype)) {
-    FloatType(32L)
-  } else {
-    as_dtype(dtype)
-  }
-
+  dtype <- as_dtype(dtype)
   shape <- Shape(shape)
-
   tensor_type <- TensorType(dtype, shape)
 
   tensor_constant <- TensorConstant(
@@ -177,15 +174,15 @@ method(r_to_constant, S7::class_integer) <- function(
   shape,
   ...
 ) {
-  valid_types <- c("i8", "i16", "i32", "i64", "ui8", "ui16", "ui32", "ui64")
-  if (!is.null(dtype) && !(dtype %in% valid_types)) {
+  dtype <- dtype %??% "i32"
+  if (dtype %in% c("i1", "pred")) {
     cli_abort("Invalid dtype for integer")
   }
-  dtype <- if (is.null(dtype)) {
-    IntegerType(32L)
-  } else {
-    as_dtype(dtype)
+  if (dtype %in% c("f32", "f64")) {
+    value <- as.double(value)
   }
+
+  dtype <- as_dtype(dtype)
 
   shape <- Shape(shape)
 
