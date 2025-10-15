@@ -59,4 +59,5 @@ RoundNearestAfz
 ShiftLeft
 ShiftRightArithmetic
 ShiftRightLogical
+RngBitGenerator
 
