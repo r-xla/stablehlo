@@ -60,6 +60,7 @@ Collate:
     'op-and.R'
     'op-atan2.R'
     'op-broadcast_in_dim.R'
+    'op-case.R'
     'op-cbrt.R'
     'op-ceil.R'
     'op-clamp.R'

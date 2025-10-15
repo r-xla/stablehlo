@@ -61,9 +61,7 @@ infer_types_reduce <- function(..., body, dimensions) {
   }
 
   # Determine output element types from body outputs (C6, C8)
-  body_out_types <- ValueTypes(
-    lapply(body@outputs@items, function(x) x@type)
-  )
+  body_out_types <- ValueTypes(func_output_types(body))
   if (length(body_out_types@items) != num_inputs) {
     cli_abort("Body must return one tensor per input")
   }

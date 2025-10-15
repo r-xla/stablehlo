@@ -8,16 +8,8 @@ infer_types_if <- function(pred, true_branch, false_branch) {
   stopifnot(pred@type@dtype == BooleanType())
   stopifnot(length(pred@type@shape@dims) == 0)
 
-  out_types1 <- ValueTypes(
-    lapply(true_branch@outputs@items, function(x) {
-      x@type
-    })
-  )
-  out_types2 <- ValueTypes(
-    lapply(false_branch@outputs@items, function(x) {
-      x@type
-    })
-  )
+  out_types1 <- ValueTypes(func_output_types(true_branch))
+  out_types2 <- ValueTypes(func_output_types(false_branch))
   stopifnot(out_types1 == out_types2)
   out_types1
 }
