@@ -1,4 +1,4 @@
-# while operator works
+# simple loop
 
     Code
       repr(func)
