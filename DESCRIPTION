@@ -105,6 +105,7 @@ Collate:
     'op-tan.R'
     'op-tanh.R'
     'op-transpose.R'
+    'op-while.R'
     'op-xor.R'
     'reexports.R'
     'roxygen.R'

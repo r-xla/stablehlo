@@ -28,6 +28,8 @@ devtools::test()
 testthat::test_file("tests/testthat/test-constant.R")
 ```
 
+You can compare PJRTBuffers using `expect_equal()`, so you don't need to use `as_array()`.
+
 ### Documentation
 
 ```r
