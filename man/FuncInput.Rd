@@ -14,7 +14,7 @@ The id of the input.}
 The type of the input.}
 
 \item{alias}{(\code{integer(1)} | \code{NULL})\cr
-With which outbut buffer to alias this input.}
+With which output buffer to alias this input.}
 }
 \value{
 (\code{FuncInput})
