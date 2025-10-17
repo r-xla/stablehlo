@@ -2,13 +2,20 @@
 % Please edit documentation in R/op-return.R
 \name{hlo_return}
 \alias{hlo_return}
-\title{Create a return operation}
+\title{Return Values}
 \usage{
-hlo_return(...)
+hlo_return(..., func = .current_func())
 }
 \arguments{
-\item{...}{(\code{\link{FuncVariable}})\cr}
+\item{...}{(\code{\link{FuncVariable}})\cr
+Return values. There must be at least one.}
+
+\item{func}{(\code{\link{Func}})\cr
+The function. Default is to use \code{\link[=.current_func]{.current_func()}}.}
+}
+\value{
+(\code{\link{Func}})
 }
 \description{
-Create a return operation
+Specifies the return values of a \code{\link{Func}} and finalize it.
 }

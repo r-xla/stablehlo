@@ -137,6 +137,8 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
 #' @param func ([`Func`])\cr
 #'   The function id of the parameter.
 #'   Per default, uses the last function created with [`hlo_func`].
+#' @param alias (`integer(1)` or `NULL`)\cr
+#'   If integer, marks this input as alias with the given output index (0-based).
 #' @export
 #' @examples
 #' func <- hlo_func()
@@ -152,16 +154,20 @@ hlo_input <- function(
   name,
   dtype,
   shape = integer(),
-  func = .current_func()
+  func = .current_func(),
+  alias = NULL
 ) {
   assert_valid_name(name)
   value_id <- ValueId(name)
   value_type <- ValueType(dtype, shape = shape)
+  alias <- assert_int(alias, coerce = TRUE, null.ok = TRUE)
 
-  func@inputs <- FuncInputs(c(
-    func@inputs@items,
-    FuncInput(id = ValueId(name), type = ValueType(dtype, shape = shape))
-  ))
+  inp <- FuncInput(
+    id = ValueId(name),
+    type = ValueType(dtype, shape = shape),
+    alias = alias
+  )
+  func@inputs <- FuncInputs(c(func@inputs@items, inp))
 
   FuncVariable(
     value_id = value_id,
@@ -191,16 +197,12 @@ hlo_closure <- function(...) {
       "Each variable can only be captured once in hlo_closure (duplicate value_id detected)"
     )
   }
+  envir <- parent.frame()
   lapply(vars, function(variable) {
     FuncVariable(
       value_id = variable@value_id,
       value_type = variable@value_type,
-      func = Func(
-        id = FuncId(""),
-        inputs = FuncInputs(list()),
-        outputs = FuncOutputs(list()),
-        body = FuncBody(list())
-      )
+      func = local_func("", envir)
     )
   })
 }
