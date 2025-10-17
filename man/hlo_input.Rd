@@ -4,7 +4,7 @@
 \alias{hlo_input}
 \title{Create a input to a function}
 \usage{
-hlo_input(name, dtype, shape = integer(), func = .current_func())
+hlo_input(name, dtype, shape = integer(), func = .current_func(), alias = NULL)
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr
@@ -23,6 +23,9 @@ Use \code{integer()} for scalars.}
 \item{func}{(\code{\link{Func}})\cr
 The function id of the parameter.
 Per default, uses the last function created with \code{\link{hlo_func}}.}
+
+\item{alias}{(\code{integer(1)} or \code{NULL})\cr
+If integer, marks this input as alias with the given output index (0-based).}
 }
 \description{
 Create a input to a function

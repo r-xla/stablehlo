@@ -7,11 +7,15 @@
 \usage{
 hlo_func(id = "main")
 
-local_func(id = "main")
+local_func(id = "main", envir = parent.frame())
 }
 \arguments{
 \item{id}{(\code{character(1)}\cr
 The id of the function.}
+
+\item{envir}{(\code{environment})\cr
+Environment where exit handler will be registered for cleaning up the
+\code{\link{Func}} if it was not returned yet.}
 }
 \value{
 A \code{\link{Func}} object.

@@ -4,14 +4,17 @@
 \alias{FuncInput}
 \title{FuncInput}
 \usage{
-FuncInput(id = ValueId(), type = ValueType())
+FuncInput(id = ValueId(), type = ValueType(), alias = NULL)
 }
 \arguments{
 \item{id}{(\code{\link{ValueId}})\cr
 The id of the input.}
 
-\item{type}{(\code{ValueType})\cr
+\item{type}{(\code{\link{ValueType}})\cr
 The type of the input.}
+
+\item{alias}{(\code{integer(1)} | \code{NULL})\cr
+With which outbut buffer to alias this input.}
 }
 \value{
 (\code{FuncInput})
