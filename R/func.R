@@ -13,7 +13,7 @@ NULL
 #' @param type ([`ValueType`])\cr
 #'   The type of the input.
 #' @param alias (`integer(1)` | `NULL`)\cr
-#'   With which outbut buffer to alias this input.
+#'   With which output buffer to alias this input.
 #' @return (`FuncInput`)
 #' @export
 FuncInput <- new_class(
