@@ -119,6 +119,12 @@ test_that("errors", {
   expect_error(hlo_scalar(1:2, func = hlo_func()), "a single value")
 })
 
+test_that("clean error when no current function exists", {
+  # Ensure no function is active
+  globals$CURRENT_FUNC <- NULL
+  expect_error(hlo_scalar(1), "No function is currently being built")
+})
+
 test_that("specify shape in hlo_tensor", {
   local_func()
   expect_snapshot(repr(
