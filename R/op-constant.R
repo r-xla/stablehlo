@@ -54,7 +54,8 @@ OpConstant <- S7::new_class(
 hlo_scalar <- S7::new_generic(
   "hlo_scalar",
   "value",
-  function(value, ..., func = .current_func()) {
+  function(value, ..., func = NULL) {
+    func <- func %??% .current_func()
     S7::S7_dispatch()
   }
 )
@@ -62,7 +63,7 @@ hlo_scalar <- S7::new_generic(
 S7::method(hlo_scalar, S7::class_logical) <- function(
   value,
   ...,
-  func = .current_func()
+  func = NULL
 ) {
   if (length(value) != 1L) {
     cli_abort("hlo_scalar expects a single value.")
@@ -74,7 +75,7 @@ S7::method(hlo_scalar, S7::class_double) <- function(
   value,
   ...,
   dtype = NULL,
-  func = .current_func()
+  func = NULL
 ) {
   if (length(value) != 1L) {
     cli_abort("hlo_scalar expects a single value.")
@@ -86,7 +87,7 @@ S7::method(hlo_scalar, S7::class_integer) <- function(
   value,
   ...,
   dtype = NULL,
-  func = .current_func()
+  func = NULL
 ) {
   if (length(value) != 1L) {
     cli_abort("hlo_scalar expects a single value.")
@@ -100,7 +101,7 @@ S7::method(hlo_scalar, S7::class_integer) <- function(
 S7::method(hlo_scalar, S7::new_S3_class("PJRTBuffer")) <- function(
   value,
   ...,
-  func = .current_func()
+  func = NULL
 ) {
   impl_hlo_constant(
     tengen::as_array(value),
@@ -115,7 +116,8 @@ S7::method(hlo_scalar, S7::new_S3_class("PJRTBuffer")) <- function(
 hlo_tensor <- S7::new_generic(
   "hlo_tensor",
   "value",
-  function(value, ..., func = .current_func()) {
+  function(value, ..., func = NULL) {
+    func <- func %??% .current_func()
     S7::S7_dispatch()
   }
 )
@@ -124,7 +126,7 @@ S7::method(hlo_tensor, S7::new_S3_class("array")) <- function(
   value,
   ...,
   dtype = NULL,
-  func = .current_func()
+  func = NULL
 ) {
   if (
     is.integer(value) &&
@@ -142,7 +144,7 @@ S7::method(hlo_tensor, S7::class_integer) <- function(
   ...,
   dtype = NULL,
   shape = NULL,
-  func = .current_func()
+  func = NULL
 ) {
   shape <- shape %??% get_dims(value)
   impl_hlo_constant(value, dtype = dtype, func = func, shape = shape)
@@ -152,7 +154,7 @@ S7::method(hlo_tensor, S7::class_logical) <- function(
   value,
   ...,
   shape = NULL,
-  func = .current_func()
+  func = NULL
 ) {
   shape <- shape %??% get_dims(value)
   impl_hlo_constant(value, dtype = "i1", func = func, shape = shape)
@@ -163,7 +165,7 @@ S7::method(hlo_tensor, S7::class_double) <- function(
   ...,
   dtype = NULL,
   shape = NULL,
-  func = .current_func()
+  func = NULL
 ) {
   shape <- shape %??% get_dims(value)
   impl_hlo_constant(value, dtype = dtype, func = func, shape = shape)
@@ -172,7 +174,7 @@ S7::method(hlo_tensor, S7::class_double) <- function(
 S7::method(hlo_tensor, S7::new_S3_class("PJRTBuffer")) <- function(
   value,
   ...,
-  func = .current_func()
+  func = NULL
 ) {
   impl_hlo_constant(
     tengen::as_array(value),
@@ -184,7 +186,8 @@ S7::method(hlo_tensor, S7::new_S3_class("PJRTBuffer")) <- function(
 
 #' @rdname hlo_constant
 #' @export
-hlo_empty <- function(dtype, shape, func = .current_func()) {
+hlo_empty <- function(dtype, shape, func = NULL) {
+  func <- func %??% .current_func()
   data <- if (dtype == "pred") {
     logical()
   } else if (startsWith(dtype, "f")) {
