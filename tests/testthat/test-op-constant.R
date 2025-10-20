@@ -169,3 +169,8 @@ test_that("scalar constant with hlo_tensor", {
   local_func()
   expect_snapshot(repr(hlo_tensor(1L, shape = integer())@func))
 })
+
+test_that("can use dtype with constant", {
+  local_func()
+  expect_snapshot(hlo_scalar(FALSE, BooleanType()))
+})

@@ -119,6 +119,9 @@ r_to_constant <- S7::new_generic(
   "r_to_constant",
   "value",
   function(value, dtype = NULL, shape, ...) {
+    if (!is.null(dtype)) {
+      dtype <- as.character(dtype)
+    }
     S7::S7_dispatch()
   }
 )
