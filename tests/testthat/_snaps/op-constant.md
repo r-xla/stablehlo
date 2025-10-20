@@ -159,3 +159,15 @@
     Output
       [1] "func.func @main () ->  {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1> : tensor<i32>\n}: () -> (tensor<i32>)\n}\n"
 
+# can use dtype with constant
+
+    Code
+      hlo_scalar(FALSE, BooleanType())
+    Output
+      Variable %0 in:
+      func.func @main () ->  {
+      %0 = "stablehlo.constant" () {
+      value = dense<false> : tensor<i1>
+      }: () -> (tensor<i1>)
+      }
+

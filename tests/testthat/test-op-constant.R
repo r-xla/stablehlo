@@ -116,7 +116,6 @@ test_that("errors", {
     hlo_scalar(-1L, dtype = "ui16", func = hlo_func()),
     "must be non-negative"
   )
-  expect_error(hlo_scalar(NA, func = hlo_func()), "must not contain NA")
   expect_error(hlo_scalar(1:2, func = hlo_func()), "a single value")
 })
 
@@ -173,4 +172,18 @@ test_that("scalar constant with hlo_tensor", {
 test_that("can use dtype with constant", {
   local_func()
   expect_snapshot(hlo_scalar(FALSE, BooleanType()))
+})
+
+test_that("nan, inf, -inf", {
+  skip_if_not_installed("pjrt")
+  local_func()
+  x1 <- hlo_scalar(Inf, dtype = "f32")
+  x2 <- hlo_scalar(-Inf, dtype = "f32")
+  x3 <- hlo_scalar(NaN, dtype = "f32")
+  f <- hlo_return(x1, x2, x3)
+  exec <- pjrt_compile(pjrt_program(repr(f)))
+  outs <- lapply(pjrt_execute(exec), as_array)
+  expect_equal(outs[[1]], Inf)
+  expect_equal(outs[[2]], -Inf)
+  expect_equal(outs[[3]], NaN)
 })
