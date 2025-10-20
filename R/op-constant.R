@@ -67,9 +67,6 @@ S7::method(hlo_scalar, S7::class_logical) <- function(
   if (length(value) != 1L) {
     cli_abort("hlo_scalar expects a single value.")
   }
-  if (anyNA(value)) {
-    cli_abort("Data for constants must not contain NA values.")
-  }
   impl_hlo_constant(value, dtype = "pred", func = func, shape = integer())
 }
 
@@ -82,9 +79,6 @@ S7::method(hlo_scalar, S7::class_double) <- function(
   if (length(value) != 1L) {
     cli_abort("hlo_scalar expects a single value.")
   }
-  if (anyNA(value)) {
-    cli_abort("Data for constants must not contain NA values.")
-  }
   impl_hlo_constant(value, dtype = dtype, func = func, shape = integer())
 }
 
@@ -96,9 +90,6 @@ S7::method(hlo_scalar, S7::class_integer) <- function(
 ) {
   if (length(value) != 1L) {
     cli_abort("hlo_scalar expects a single value.")
-  }
-  if (anyNA(value)) {
-    cli_abort("Data for constants must not contain NA values.")
   }
   if (!is.null(dtype) && grepl("^ui", dtype) && any(value < 0L)) {
     cli_abort("Data for unsigned integer must be non-negative")
@@ -135,9 +126,6 @@ S7::method(hlo_tensor, S7::new_S3_class("array")) <- function(
   dtype = NULL,
   func = .current_func()
 ) {
-  if (anyNA(value)) {
-    cli_abort("Data for constants must not contain NA values.")
-  }
   if (
     is.integer(value) &&
       !is.null(dtype) &&

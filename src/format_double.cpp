@@ -38,12 +38,12 @@ CharacterVector format_double_cpp(NumericVector x, int precision) {
 
     // Handle special cases using R's built-in functions
     if (R_IsNaN(value)) {
-      result[i] = "nan";
+      result[i] = "0x7FC00000";
     } else if (!R_finite(value)) {
       if (value > 0) {
-        result[i] = "inf";
+        result[i] = "0x7F800000";
       } else {
-        result[i] = "-inf";
+        result[i] = "0xFF800000";
       }
     } else {
       oss << value;
