@@ -7,11 +7,11 @@
 \alias{hlo_empty}
 \title{Create a Constant}
 \usage{
-hlo_scalar(value, ..., func = .current_func())
+hlo_scalar(value, ..., func = NULL)
 
-hlo_tensor(value, ..., func = .current_func())
+hlo_tensor(value, ..., func = NULL)
 
-hlo_empty(dtype, shape, func = .current_func())
+hlo_empty(dtype, shape, func = NULL)
 }
 \arguments{
 \item{value}{(any)\cr
