@@ -226,13 +226,22 @@ method(repr, OpInputAttr) <- function(x, simplify_dense = TRUE) {
 #' @return (`OpInputAttrs`)
 #' @export
 OpInputAttrs <- new_list_of("OpInputAttrs", OpInputAttr)
-method(repr, OpInputAttrs) <- function(x, simplify_dense = TRUE) {
+method(repr, OpInputAttrs) <- function(
+  x,
+  simplify_dense = TRUE,
+  simplify_attrs = FALSE
+) {
   if (length(x@items) == 0) {
     return("")
   }
 
   a <- vapply(x@items, repr, character(1), simplify_dense = simplify_dense) |>
     paste(collapse = ",\n")
+
+  if (simplify_attrs) {
+    b <- sub("array<([^:]+): ([^>]+)>", "\\2 : \\1", a)
+    return(paste0(" {\n", b, "\n}"))
+  }
 
   paste0(" {\n", a, "\n}")
 }
@@ -261,13 +270,17 @@ OpInputs <- new_class(
 )
 
 
-method(repr, OpInputs) <- function(x, simplify_dense = TRUE) {
+method(repr, OpInputs) <- function(
+  x,
+  simplify_dense = TRUE,
+  simplify_attrs = FALSE
+) {
   paste0(
     "(",
     repr(x@values),
     ")",
     repr(x@funcs),
-    repr(x@attrs, simplify_dense = simplify_dense)
+    repr(x@attrs, simplify_dense = simplify_dense, simplify_attrs)
   )
 }
 

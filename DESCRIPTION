@@ -66,6 +66,7 @@ Collate:
     'op-cholesky.R'
     'op-clamp.R'
     'op-compare.R'
+    'op-concatenate.R'
     'op-constant.R'
     'op-convert.R'
     'op-cosine.R'
