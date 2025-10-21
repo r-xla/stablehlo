@@ -10,23 +10,33 @@ NULL
 #' This represents an input of a [`Func`].
 #' @param id ([`ValueId`])\cr
 #'   The id of the input.
-#' @param type (`ValueType`)\cr
+#' @param type ([`ValueType`])\cr
 #'   The type of the input.
+#' @param alias (`integer(1)` | `NULL`)\cr
+#'   With which output buffer to alias this input.
 #' @return (`FuncInput`)
 #' @export
 FuncInput <- new_class(
   "FuncInput",
   properties = list(
     id = ValueId,
-    type = ValueType
+    type = ValueType,
+    # order is important so NULL is the default and not integer(0)
+    alias = NULL | S7::class_integer
   )
 )
 
 method(repr, FuncInput) <- function(x) {
+  attr_str <- ""
+  if (!is.null(x@alias)) {
+    idx <- as.integer(x@alias)
+    attr_str <- paste0(" {tf.aliasing_output = ", idx, " : i32}")
+  }
   paste0(
     repr(x@id),
     ": ",
-    repr(x@type)
+    repr(x@type),
+    attr_str
   )
 }
 
@@ -163,8 +173,11 @@ hlo_func <- function(id = "main") {
 
 
 #' @rdname hlo_func
+#' @param envir (`environment`)\cr
+#'   Environment where exit handler will be registered for cleaning up the
+#'   [`Func`] if it was not returned yet.
 #' @export
-local_func <- function(id = "main") {
+local_func <- function(id = "main", envir = parent.frame()) {
   func <- Func(FuncId(id))
   if (!is.null(globals[["CURRENT_FUNC"]])) {
     globals[["FUNC_STASH"]] <- c(
@@ -175,7 +188,7 @@ local_func <- function(id = "main") {
   globals[["CURRENT_FUNC"]] <- func
 
   withr::defer(
-    envir = parent.frame(),
+    envir = envir,
     {
       maybe_restore_previous_func(func)
     },

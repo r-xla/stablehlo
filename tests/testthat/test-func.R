@@ -104,3 +104,17 @@ test_that("hlo_func and local_func", {
   hlo_return(hlo_scalar(1))
   expect_identical(f, .current_func())
 })
+
+test_that("Input-output aliasing", {
+  func <- local_func()
+  x <- hlo_input("x", "f32", shape = c(2L, 2L), func = func, alias = 0L)
+  f <- hlo_return(x)
+  expect_snapshot(repr(f))
+  skip_if_not_installed("pjrt")
+
+  exec <- pjrt_compile(pjrt_program(repr(f)))
+  xin <- pjrt_buffer(1:4, shape = c(2, 2), dtype = "f32")
+  xout <- pjrt_execute(exec, xin)
+  expect_error(capture.output(xin), "called on deleted or donated buffer")
+  expect_snapshot(print(xout))
+})
