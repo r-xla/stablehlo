@@ -8,13 +8,18 @@ infer_types_concatenate <- function(..., dimension) {
   input_dims <- lapply(dots, \(x) shape(x))
   dim <- dimension@value@data + 1
 
+  # (C3) 0 < size(inputs)
+  if (!length(dots)) {
+    cli_abort("must have at least one input")
+  }
+
   lapply(dots, function(x) {
     stopifnot(inherits(x, ValueType))
   })
 
   # (C1) same(element_type(inputs...))
   dtypes <- lapply(dots, \(x) x@type@dtype)
-  if (!all(vapply(dtypes, \(x) x == dtypes[[1]], logical(1)))) {
+  if (length(unique(dtypes)) != 1) {
     cli_abort("Each input must have same element type")
   }
 
@@ -27,11 +32,6 @@ infer_types_concatenate <- function(..., dimension) {
   dims_ <- lapply(input_dims, \(x) x[-dim])
   if (!all(dims_ == dims_[[1]])) {
     cli_abort("Each input must have same shape (except dimension)")
-  }
-
-  # (C3) 0 < size(inputs)
-  if (!length(dots)) {
-    cli_abort("must have at least one input")
   }
 
   result_dims <- input_dims[[1]]
@@ -54,6 +54,9 @@ hlo_concatenate_impl <- hlo_fn(OpConcatenate, infer_types_concatenate)
 #' @export
 hlo_concatenate <- function(..., dimension) {
   dots <- list(...)
+  if (length(dimension) != 1) {
+    cli_abort("dimension must be a scalar")
+  }
   dim_attr <- hlo_tensor(
     as.integer(dimension),
     dtype = "i64",

@@ -12,9 +12,9 @@ test_that("basic tests", {
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
 
-  M <- withr::with_seed(1, M <- matrix(runif(9), 3, 3))
-  input <- array(t(M) %*% M, dim = c(3, 3))
-  expected <- array(chol(input), dim = c(3, 3))
+  M <- withr::with_seed(1, matrix(runif(9), 3, 3))
+  input <- t(M) %*% M
+  expected <- chol(input)
 
   output <- pjrt_execute(exec, pjrt_buffer(input))
   expect_equal(as_array(output), expected, tolerance = 1e-3)

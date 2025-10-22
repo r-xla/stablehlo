@@ -19,7 +19,7 @@ test_that("basic tests", {
   x1 <- array(1L:3L, dim = c(3, 1))
   x2 <- array(1L:6L, dim = c(3, 2))
   x3 <- array(1L:9L, dim = c(3, 3))
-  expected <- array(cbind(x1, x2, x3), dim = c(3, 6))
+  expected <- cbind(x1, x2, x3)
 
   output <- pjrt_execute(
     exec,
