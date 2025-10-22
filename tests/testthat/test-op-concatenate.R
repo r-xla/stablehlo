@@ -7,7 +7,7 @@ test_that("basic tests", {
     x1,
     x2,
     x3,
-    dimension = 1L # comply with zero-indexing
+    dimension = 2L # comply with zero-indexing
   )
   f <- hlo_return(y)
   expect_snapshot(repr(f))

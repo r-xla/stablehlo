@@ -6,7 +6,6 @@ OpConcatenate <- new_Op("OpConcatenate", "concatenate")
 infer_types_concatenate <- function(..., dimension) {
   dots <- list(...)
   input_dims <- lapply(dots, \(x) shape(x))
-  dim <- dimension@value@data + 1
 
   # (C3) 0 < size(inputs)
   if (!length(dots)) {
@@ -24,18 +23,22 @@ infer_types_concatenate <- function(..., dimension) {
   }
 
   # (C4) 0 <= dimension < rank(inputs[0])
-  if (length(shape(dots[[1]])) < dim) {
+  if (length(shape(dots[[1]])) < dimension) {
     cli_abort("dimension must exist in inputs")
   }
 
   # (C2) same(shape(inputs...)) except for dim(inputs..., dimension)
-  dims_ <- lapply(input_dims, \(x) x[-dim])
+  dims_ <- lapply(input_dims, \(x) x[-dimension])
   if (!all(dims_ == dims_[[1]])) {
     cli_abort("Each input must have same shape (except dimension)")
   }
 
   result_dims <- input_dims[[1]]
-  result_dims[dim] <- sum(vapply(input_dims, \(x) x[dim], integer(1)))
+  result_dims[dimension] <- sum(vapply(
+    input_dims,
+    \(x) x[dimension],
+    integer(1)
+  ))
 
   ValueTypes(list(
     ValueType(
@@ -70,9 +73,11 @@ method(repr, OpConcatenate) <- function(x) {
     repr(x@name),
     " ",
     repr(x@inputs, simplify_dense = TRUE),
+    sprintf(
+      "{\ndimension = %d : i64 \n}",
+      x@inputs@custom_attrs$dimension - 1
+    ),
     ": ",
     repr(x@signature)
   )
 }
-
-# sub("array<([^:]+): ([^>]+)>", "\\2 : \\1", a)
