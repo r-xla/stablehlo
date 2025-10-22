@@ -57,14 +57,9 @@ hlo_concatenate <- function(..., dimension) {
   if (length(dimension) != 1) {
     cli_abort("dimension must be a scalar")
   }
-  dim_attr <- hlo_tensor(
-    as.integer(dimension),
-    dtype = "i64",
-    func = Func()
-  )
   hlo_concatenate_impl(
     values = dots,
-    attrs = list(dimension = dim_attr)
+    custom_attrs = list(dimension = as.integer(dimension))
   )
 }
 
@@ -74,7 +69,7 @@ method(repr, OpConcatenate) <- function(x) {
     " = ",
     repr(x@name),
     " ",
-    repr(x@inputs, simplify_dense = TRUE, simplify_attrs = TRUE),
+    repr(x@inputs, simplify_dense = TRUE),
     ": ",
     repr(x@signature)
   )
