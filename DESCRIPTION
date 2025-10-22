@@ -104,6 +104,7 @@ Collate:
     'op-sign.R'
     'op-sine.R'
     'op-slice.R'
+    'op-sort.R'
     'op-sqrt.R'
     'op-subtract.R'
     'op-tan.R'
