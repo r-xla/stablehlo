@@ -74,7 +74,7 @@ method(repr, OpConcatenate) <- function(x) {
     " ",
     repr(x@inputs, simplify_dense = TRUE),
     sprintf(
-      "{\ndimension = %d : i64 \n}",
+      " {\ndimension = %d : i64 \n}",
       x@inputs@custom_attrs$dimension - 1
     ),
     ": ",
