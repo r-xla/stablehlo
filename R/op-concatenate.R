@@ -6,7 +6,11 @@ OpConcatenate <- new_Op("OpConcatenate", "concatenate")
 infer_types_concatenate <- function(..., dimension) {
   dots <- list(...)
   input_dims <- lapply(dots, \(x) shape(x))
-  dim <- dimension@value@data + 1
+
+  # (C3) 0 < size(inputs)
+  if (!length(dots)) {
+    cli_abort("must have at least one input")
+  }
 
   lapply(dots, function(x) {
     stopifnot(inherits(x, ValueType))
@@ -14,28 +18,27 @@ infer_types_concatenate <- function(..., dimension) {
 
   # (C1) same(element_type(inputs...))
   dtypes <- lapply(dots, \(x) x@type@dtype)
-  if (!all(vapply(dtypes, \(x) x == dtypes[[1]], logical(1)))) {
+  if (length(unique(dtypes)) != 1) {
     cli_abort("Each input must have same element type")
   }
 
   # (C4) 0 <= dimension < rank(inputs[0])
-  if (length(shape(dots[[1]])) < dim) {
+  if (length(shape(dots[[1]])) < dimension) {
     cli_abort("dimension must exist in inputs")
   }
 
   # (C2) same(shape(inputs...)) except for dim(inputs..., dimension)
-  dims_ <- lapply(input_dims, \(x) x[-dim])
+  dims_ <- lapply(input_dims, \(x) x[-dimension])
   if (!all(dims_ == dims_[[1]])) {
     cli_abort("Each input must have same shape (except dimension)")
   }
 
-  # (C3) 0 < size(inputs)
-  if (!length(dots)) {
-    cli_abort("must have at least one input")
-  }
-
   result_dims <- input_dims[[1]]
-  result_dims[dim] <- sum(vapply(input_dims, \(x) x[dim], integer(1)))
+  result_dims[dimension] <- sum(vapply(
+    input_dims,
+    \(x) x[dimension],
+    integer(1)
+  ))
 
   ValueTypes(list(
     ValueType(
@@ -54,14 +57,12 @@ hlo_concatenate_impl <- hlo_fn(OpConcatenate, infer_types_concatenate)
 #' @export
 hlo_concatenate <- function(..., dimension) {
   dots <- list(...)
-  dim_attr <- hlo_tensor(
-    as.integer(dimension),
-    dtype = "i64",
-    func = Func()
-  )
+  if (length(dimension) != 1) {
+    cli_abort("dimension must be a scalar")
+  }
   hlo_concatenate_impl(
     values = dots,
-    attrs = list(dimension = dim_attr)
+    custom_attrs = list(dimension = as.integer(dimension))
   )
 }
 
@@ -71,7 +72,11 @@ method(repr, OpConcatenate) <- function(x) {
     " = ",
     repr(x@name),
     " ",
-    repr(x@inputs, simplify_dense = TRUE, simplify_attrs = TRUE),
+    repr(x@inputs, simplify_dense = TRUE),
+    sprintf(
+      " {\ndimension = %d : i64 \n}",
+      x@inputs@custom_attrs$dimension - 1
+    ),
     ": ",
     repr(x@signature)
   )

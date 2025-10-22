@@ -19,7 +19,7 @@ infer_types_cholesky <- function(
   }
 
   # (C3) dim(a, -2) = dim(a, -1)
-  if (operand_dims[[rank]] != operand_dims[[rank - 1]]) {
+  if (operand_dims[rank] != operand_dims[rank - 1]) {
     cli_abort("matrices have to be symetric")
   }
 
@@ -51,14 +51,19 @@ hlo_cholesky <- function(
   )
 }
 
-method(repr, OpCholesky) <- function(x) {
+method(repr, OpCholesky) <- function(x, ...) {
   paste0(
-    repr(x@outputs),
+    repr(x@outputs, ...),
     " = ",
-    repr(x@name),
+    repr(x@name, ...),
     " ",
-    repr(x@inputs, simplify_dense = TRUE),
+    repr(x@inputs, simplify_dense = TRUE, ...),
+    paste0(
+      "{\nlower = ",
+      tolower(as.character(x@inputs@custom_attrs$lower)),
+      "\n}"
+    ),
     ": ",
-    repr(x@signature)
+    repr(x@signature, ...)
   )
 }
