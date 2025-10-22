@@ -74,3 +74,5 @@ method(repr, OpConcatenate) <- function(x) {
     repr(x@signature)
   )
 }
+
+# sub("array<([^:]+): ([^>]+)>", "\\2 : \\1", a)
