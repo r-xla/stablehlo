@@ -165,7 +165,6 @@ hlo_rnorm <- function(
   N_out
 }
 
-debugonce(hlo_rnorm)
 X <- hlo_rnorm(
   shape = c(20L, 150L),
   mu = 10,
@@ -173,7 +172,6 @@ X <- hlo_rnorm(
   initial_state = c(175L, 10L)
 ) |>
   as_array()
-
 
 mean(X)
 sd(X)
