@@ -226,7 +226,10 @@ method(repr, OpInputAttr) <- function(x, simplify_dense = TRUE) {
 #' @return (`OpInputAttrs`)
 #' @export
 OpInputAttrs <- new_list_of("OpInputAttrs", OpInputAttr)
-method(repr, OpInputAttrs) <- function(x, simplify_dense = TRUE) {
+method(repr, OpInputAttrs) <- function(
+  x,
+  simplify_dense = TRUE
+) {
   if (length(x@items) == 0) {
     return("")
   }
@@ -261,7 +264,10 @@ OpInputs <- new_class(
 )
 
 
-method(repr, OpInputs) <- function(x, simplify_dense = TRUE) {
+method(repr, OpInputs) <- function(
+  x,
+  simplify_dense = TRUE
+) {
   paste0(
     "(",
     repr(x@values),
