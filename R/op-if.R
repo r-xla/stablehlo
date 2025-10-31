@@ -18,13 +18,15 @@ hlo_if_impl <- hlo_fn(OpIf, infer_types_if)
 
 #' @templateVar mnemonic if
 #' @template op
+#' @param simplify (`logical(1)`)\cr
 #' @export
-hlo_if <- function(pred, true_branch, false_branch) {
+hlo_if <- function(pred, true_branch, false_branch, simplify = TRUE) {
   hlo_if_impl(
     values = list(pred = pred),
     funcs = list(
       true_branch = true_branch,
       false_branch = false_branch
-    )
+    ),
+    simplify = simplify
   )
 }
