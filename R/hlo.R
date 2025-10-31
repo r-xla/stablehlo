@@ -7,7 +7,13 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
   # hlo_dot_general for an example.
   # In principle this can be any type
   # You then need to implement repr for the Op class
-  function(values, funcs = NULL, attrs = NULL, custom_attrs = NULL) {
+  function(
+    values,
+    funcs = NULL,
+    attrs = NULL,
+    custom_attrs = NULL,
+    simplify = TRUE
+  ) {
     lapply(values, function(x) {
       if (!inherits(x, FuncVariable)) {
         cli_abort("All arguments must be FuncVariables")
@@ -104,7 +110,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       return(func)
     }
 
-    if (nout == 1L) {
+    if (nout == 1L && simplify) {
       return(
         FuncVariable(
           value_id = output_value_ids[[1L]],
