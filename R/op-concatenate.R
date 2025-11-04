@@ -52,8 +52,9 @@ infer_types_concatenate <- function(..., dimension) {
 
 hlo_concatenate_impl <- hlo_fn(OpConcatenate, infer_types_concatenate)
 
-#' @title mnemonic concatenate
-#' @param ... ([`FuncVariable`])\cr
+
+#' @templateVar mnemonic concatenate
+#' @template op
 #' @export
 hlo_concatenate <- function(..., dimension) {
   dots <- list(...)
