@@ -165,13 +165,10 @@ hlo_rnorm <- function(
   N_out
 }
 
-X <- hlo_rnorm(
-  shape = c(20L, 150L),
-  mu = 10,
-  sigma = 5,
-  initial_state = c(175L, 10L)
-) |>
-  as_array()
-
-mean(X)
-sd(X)
+# X <- hlo_rnorm(
+#   shape = c(100L, 1L),
+#   mu = 0,
+#   sigma = 1,
+#   initial_state = c(179L, 10L)
+# ) |>
+#   as_array()
