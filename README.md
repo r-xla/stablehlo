@@ -19,8 +19,21 @@ be executed using the R package [pjrt](https://github.com/r-xla/pjrt).
 
 ## Installation
 
+From GitHub:
+
 ``` r
 pak::pak("r-xla/stablehlo")
+```
+
+You can also install from
+[r-universe](https://r-xla.r-universe.dev/builds), by adding the code
+below to your `.Rprofile`.
+
+``` r
+options(repos = c(
+  rxla = "https://r-xla.r-universe.dev",
+  CRAN = "https://cloud.r-project.org/"
+))
 ```
 
 ## Quickstart
@@ -35,19 +48,19 @@ library(stablehlo)
 func <- hlo_func("myfn")
 func
 #> func.func @myfn () ->  {
-#>
+#> 
 #> }
 x <- hlo_input("x", "f32", shape = c(2, 2), func = func)
 x
 #> Variable %x in:
 #> func.func @myfn (%x: tensor<2x2xf32>) ->  {
-#>
+#> 
 #> }
 y <- hlo_input("y", "f32", shape = c(2, 2), func = func)
 y
 #> Variable %y in:
 #> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#>
+#> 
 #> }
 z <- hlo_add(x, y)
 z
