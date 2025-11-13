@@ -2,9 +2,9 @@ Package: stablehlo
 Title: Write stableHLO programs
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Daniel", "Falbel", , "daniel@posit.co", role = c("aut", "cre"),
+    person("Daniel", "Falbel", , "daniel@posit.co", role = "aut",
            comment = c(ORCID = "https://orcid.org/0009-0006-0143-2392")),
-    person("Sebastian", "Fischer", , "seb.fischer@tutamail.com", role = "aut",
+    person("Sebastian", "Fischer", , "seb.fischer@tutamail.com", role = c("aut", "cre"),
            comment = c(ORCID = "https://orcid.org/0000-0002-9609-3197")),
     person("Nikolai", "German", , "N.German@campus.lmu.de", role = "aut",
            comment = c(ORCID = "https://orcid.org/0009-0001-7394-8367"))
