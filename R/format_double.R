@@ -28,10 +28,7 @@ format_double <- function(x, precision = 64) {
     return(character(0))
   }
 
-  # Apply to vector
-  # We can vectorize this for performance
   res <- character(length(x))
-
   nans <- is.nan(x)
   infs <- is.infinite(x)
   finite_mask <- !nans & !infs
@@ -49,11 +46,8 @@ format_double <- function(x, precision = 64) {
     digits <- if (precision == 32) 8 else 16
     res[finite_mask] <- formatC(x[finite_mask], digits = digits, format = "e")
   }
-
-  # Restore dimensions
   if (!is.null(dim(x))) {
     dim(res) <- dim(x)
   }
-
   res
 }
