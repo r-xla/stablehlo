@@ -30,28 +30,39 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
     if (simplify_dense) {
       cli_abort("formatting PJRTBuffers in dense mode is not implemented")
     }
-    value_str <- format_raw_buffer_cpp(
-      pjrt::as_raw(data, row_major = TRUE),
-      repr(type@dtype),
-      x@type@shape@dims
-    )
-    return(paste0("dense<", value_str, "> : ", repr(type)))
+    value_reprs <- pjrt::format_buffer(data)
+
+    # We rely on format_buffer to return a vector or array with correct dimensions
+    # No manual reshaping needed here anymore.
+
+    # Re-use logic from below for formatting arrays/vectors
+  } else {
+    value_reprs <- if (inherits(type@dtype, FloatType)) {
+      format_double(
+        data,
+        precision = type@dtype@value
+      )
+    } else if (
+      inherits(type@dtype, IntegerType) || inherits(type@dtype, UnsignedType)
+    ) {
+      as.character(data)
+    } else if (inherits(type@dtype, BooleanType)) {
+      tolower(as.logical(data))
+    }
   }
 
-  value_reprs <- if (inherits(type@dtype, FloatType)) {
-    format_double(
-      data,
-      precision = type@dtype@value
-    )
-  } else if (
-    inherits(type@dtype, IntegerType) || inherits(type@dtype, UnsignedType)
-  ) {
-    as.character(data)
-  } else if (inherits(type@dtype, BooleanType)) {
-    tolower(as.logical(data))
+  # The rest of the function assumes value_reprs is a character vector/array
+  # of formatted values, which is exactly what we have now for both cases.
+
+  # Also need to handle dim(data) check for simplify_dense
+  # For PJRTBuffer, we use type shape
+  data_dims <- if (inherits(data, "PJRTBuffer")) {
+    x@type@shape@dims
+  } else {
+    dim(data)
   }
 
-  if (simplify_dense && length(dim(data)) <= 1L) {
+  if (simplify_dense && length(data_dims) <= 1L) {
     if (length(value_reprs) == 0) {
       return(paste0(
         "array<",
@@ -71,12 +82,20 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
 
   if (length(value_reprs) == 0) {
     return(paste0(
-      "dense<[]> : ",
+      "dense<> : ",
       repr(type)
     ))
   }
 
-  if (!is.array(data)) {
+  # Check if it's an array.
+  # For PJRTBuffer, value_reprs will be an array if dims > 1
+  is_arr <- if (inherits(data, "PJRTBuffer")) {
+    length(data_dims) > 0
+  } else {
+    is.array(data)
+  }
+
+  if (!is_arr) {
     return(paste0(
       "dense<",
       paste(value_reprs, collapse = ", "),
@@ -84,14 +103,19 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
       repr(type)
     ))
   }
-  dim2 <- function(data) {
-    if (is.array(data)) {
-      dim(data)
+
+  dim2 <- function(d) {
+    if (is.array(d)) {
+      dim(d)
     } else {
-      length(data)
+      length(d)
     }
   }
-  dim(value_reprs) <- dim2(data)
+
+  # Ensure value_reprs has correct dimensions if it came from non-PJRTBuffer
+  if (!inherits(data, "PJRTBuffer")) {
+    dim(value_reprs) <- dim2(data)
+  }
 
   f <- function(x) {
     if (is.vector(x) || length(dim2(x)) == 1L) {
