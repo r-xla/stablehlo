@@ -142,7 +142,6 @@ specification. At least initially, it will:
 - [`hlo_case()`](hlo_case.md) : Case Operator
 - [`hlo_cbrt()`](hlo_cbrt.md) : Cbrt Operator
 - [`hlo_ceil()`](hlo_ceil.md) : Ceil Operator
-- [`hlo_cholesky()`](hlo_cholesky.md) : Cholesky Operator
 - [`hlo_clamp()`](hlo_clamp.md) : Clamp Operator
 - [`hlo_closure()`](hlo_closure.md) : Create a Closure
 - [`hlo_compare()`](hlo_compare.md) : Compare Operator
