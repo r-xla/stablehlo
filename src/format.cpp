@@ -5,8 +5,8 @@
 
 using namespace Rcpp;
 
-// Helper for formatting double values
 std::string format_float_value(double value, int precision) {
+  // stablehlo format for NaN and infinity
   if (R_IsNaN(value)) {
     return "0x7FC00000";
   } else if (!R_finite(value)) {
@@ -20,7 +20,6 @@ std::string format_float_value(double value, int precision) {
 
 // [[Rcpp::export]]
 CharacterVector format_double_cpp(NumericVector x, int precision) {
-  // Validate precision parameter
   if (precision != 32 && precision != 64) {
     stop("precision must be either 32 or 64");
   }
@@ -40,7 +39,8 @@ CharacterVector format_double_cpp(NumericVector x, int precision) {
     result[i] = format_float_value(x[i], precision);
   }
 
-  // Preserve the dimensions of the original array
+  // on the R side, we are using the dimensions to add the brackets to the
+  // flat-formatted output
   if (!dims.empty()) {
     result.attr("dim") = wrap(dims);
   }
@@ -48,8 +48,6 @@ CharacterVector format_double_cpp(NumericVector x, int precision) {
   return result;
 }
 
-// Helper to format a single element based on dtype
-// Assuming data pointer is correctly offset
 std::string format_element(const unsigned char *ptr, std::string dtype) {
   std::ostringstream oss;
   if (dtype == "f32") {
@@ -85,9 +83,10 @@ std::string format_element(const unsigned char *ptr, std::string dtype) {
     std::memcpy(&val, ptr, 2);
     oss << val;
   } else if (dtype == "i8") {
-    //
+    // default formatting uses char, so need to convert to int
     oss << (int)(*reinterpret_cast<const int8_t *>(ptr));
   } else if (dtype == "ui8") {
+    // default formatting uses char, so need to convert to unsigned int
     oss << (unsigned int)(*ptr);
   } else if (dtype == "pred" || dtype == "i1") {
     return (*ptr) ? "true" : "false";
@@ -108,24 +107,15 @@ int get_element_size(std::string dtype) {
 }
 
 // Recursive function to print nested arrays ([[1, 2], [3, 4]])
-// The inmput is a raw vector so we can also properly format PJRTBuffers with >
-// 32 bit integers
+// The input is a raw vector (which is obtained using as_raw(PJRTBuffer))
 void print_recursive(std::ostringstream &out, const unsigned char *data,
                      std::string dtype, const IntegerVector &shape,
                      const std::vector<int64_t> &strides, int element_size,
                      int dim_index, int64_t current_offset) {
 
-  // scalar case
-  if (dim_index == shape.length()) {
-    // Scalar case (should not be reached via recursion if shape > 0)
-    // Actually, for rank-0 tensor (scalar), shape.length() is 0.
-    // In that case we just print the value.
-    out << format_element(data + current_offset * element_size, dtype);
-    return;
-  }
-
+  // We only call this with >= 1 dimensions, as scalars are handled separately
   if (dim_index == shape.length() - 1) {
-    // Last dimension - print list of elements
+    // only in the last dimension do we actually print the elements,
     out << "[";
     int n = shape[dim_index];
     int64_t stride = strides[dim_index];
@@ -137,7 +127,6 @@ void print_recursive(std::ostringstream &out, const unsigned char *data,
     }
     out << "]";
   } else {
-    // Intermediate dimension - print list of sub-arrays
     out << "[";
     int n = shape[dim_index];
     int64_t stride = strides[dim_index];
@@ -159,7 +148,6 @@ String format_raw_buffer_cpp(RawVector data, std::string dtype,
 
   int rank = shape.length();
 
-  // check that length of data is is what we expect
   int expected_length = 1;
   for (int i = 0; i < rank; ++i) {
     expected_length *= shape[i];
@@ -173,14 +161,14 @@ String format_raw_buffer_cpp(RawVector data, std::string dtype,
     out << format_element(data.begin(), dtype);
   } else {
     // special handling of 0-dimensional tensors (e.g., dense<> instead of
-    // dense<[[], []]>)
+    // dense<[[], []]>). (Otherwise stablehlo raises parsing error)
     for (int i = 0; i < rank; ++i) {
       if (shape[i] == 0) {
         return String("");
       }
     }
 
-    // Compute strides for iterating over array:
+    // We assume row_major ordering
     std::vector<int64_t> strides(rank);
     // row_major: last dimension has stride 1; all other dimensions have stride
     // of the product of the dimensions to the right.
