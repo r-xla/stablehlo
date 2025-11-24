@@ -104,7 +104,7 @@ S7::method(hlo_scalar, S7::new_S3_class("PJRTBuffer")) <- function(
   func = NULL
 ) {
   impl_hlo_constant(
-    tengen::as_array(value),
+    value,
     dtype = as.character(pjrt::elt_type(value)),
     func = func,
     shape = integer()
@@ -177,7 +177,7 @@ S7::method(hlo_tensor, S7::new_S3_class("PJRTBuffer")) <- function(
   func = NULL
 ) {
   impl_hlo_constant(
-    tengen::as_array(value),
+    value,
     dtype = as.character(pjrt::elt_type(value)),
     func = func,
     shape = shape(value)
@@ -209,7 +209,7 @@ hlo_empty <- function(dtype, shape, func = NULL) {
 }
 
 impl_hlo_constant <- function(value, dtype, func, shape) {
-  if (length(shape)) {
+  if (length(shape) && !inherits(value, "PJRTBuffer")) {
     value <- array(value, dim = shape)
   }
   const_value <- r_to_constant(value, dtype = dtype, shape = shape)

@@ -22,9 +22,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// format_raw_buffer_cpp
+String format_raw_buffer_cpp(RawVector data, std::string dtype, IntegerVector shape, bool row_major);
+RcppExport SEXP _stablehlo_format_raw_buffer_cpp(SEXP dataSEXP, SEXP dtypeSEXP, SEXP shapeSEXP, SEXP row_majorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< RawVector >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dtype(dtypeSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< bool >::type row_major(row_majorSEXP);
+    rcpp_result_gen = Rcpp::wrap(format_raw_buffer_cpp(data, dtype, shape, row_major));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_stablehlo_format_double_cpp", (DL_FUNC) &_stablehlo_format_double_cpp, 2},
+    {"_stablehlo_format_raw_buffer_cpp", (DL_FUNC) &_stablehlo_format_raw_buffer_cpp, 4},
     {NULL, NULL, 0}
 };
 

@@ -26,6 +26,16 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   data <- x@data
   type <- x@type
 
+  if (inherits(data, "PJRTBuffer")) {
+    value_str <- format_raw_buffer_cpp(
+      pjrt::as_raw(data, row_major = TRUE),
+      repr(type@dtype),
+      x@type@shape@dims,
+      TRUE
+    )
+    return(paste0("dense<", value_str, "> : ", repr(type)))
+  }
+
   value_reprs <- if (inherits(type@dtype, FloatType)) {
     format_double(
       data,
@@ -190,6 +200,25 @@ method(r_to_constant, S7::class_integer) <- function(
   shape <- Shape(shape)
 
   tensor_type <- TensorType(dtype, shape)
+
+  tensor_constant <- TensorConstant(
+    data = value,
+    type = tensor_type
+  )
+
+  return(Constant(value = tensor_constant))
+}
+
+method(r_to_constant, S7::new_S3_class("PJRTBuffer")) <- function(
+  value,
+  dtype = NULL,
+  shape,
+  ...
+) {
+  dtype <- dtype %??% as.character(pjrt::elt_type(value))
+  shape <- Shape(shape)
+
+  tensor_type <- TensorType(dtype = as_dtype(dtype), shape = shape)
 
   tensor_constant <- TensorConstant(
     data = value,
