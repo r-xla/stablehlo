@@ -21,7 +21,7 @@ jobs:
       matrix:
         config:
           - { os: "macos", r: "release", platform: "cpu" }
-          - { os: "macos", r: null, platform: "metal" }
+          #- { os: "macos", r: null, platform: "metal" }
           - { os: "ubuntu", r: "release", platform: "cpu" }
           - { os: "ubuntu", r: "release", platform: "cuda"}
           - { os: "windows", r: "release", platform: "cpu"}

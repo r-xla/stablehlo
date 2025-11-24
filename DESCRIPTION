@@ -20,7 +20,6 @@ Imports:
     checkmate,
     cli,
     methods,
-    Rcpp,
     rlang,
     S7,
     tengen,
@@ -28,8 +27,6 @@ Imports:
 Suggests:
     pjrt,
     testthat (>= 3.0.0)
-LinkingTo:
-    Rcpp
 Additional_repositories:
     https://r-xla.r-universe.dev
 Config/build/compilation-database: true
@@ -38,7 +35,6 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Collate:
-    'RcppExports.R'
     'aaa.R'
     'assert.R'
     'repr.R'

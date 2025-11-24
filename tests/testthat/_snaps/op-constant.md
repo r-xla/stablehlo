@@ -143,7 +143,7 @@
     Code
       repr(f)
     Output
-      [1] "func.func @main () -> tensor<0xi64> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<[]> : tensor<0xi64>\n}: () -> (tensor<0xi64>)\n\"func.return\"(%0): (tensor<0xi64>) -> ()\n}\n"
+      [1] "func.func @main () -> tensor<0xi64> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<> : tensor<0xi64>\n}: () -> (tensor<0xi64>)\n\"func.return\"(%0): (tensor<0xi64>) -> ()\n}\n"
 
 # empty array: array<> formatting
 

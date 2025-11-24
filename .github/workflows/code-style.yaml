@@ -15,9 +15,3 @@ jobs:
         uses: rstudio/shiny-workflows/format-r-code@v1
         with:
           check: true
-      - name: C++ code
-        uses: jidicula/clang-format-action@v4.16.0
-        with:
-          clang-format-version: '20'
-          check-path: ./src
-          exclude-regex: RcppExports

@@ -23,5 +23,31 @@ format_double <- function(x, precision = 64) {
   if (!(precision %in% c(32, 64))) {
     cli_abort("precision must be either 32 or 64")
   }
-  format_double_cpp(x, precision)
+
+  if (length(x) == 0) {
+    return(character(0))
+  }
+
+  res <- character(length(x))
+  nans <- is.nan(x)
+  infs <- is.infinite(x)
+  finite_mask <- !nans & !infs
+
+  res[nans] <- "0x7FC00000"
+
+  if (any(infs)) {
+    pos_inf <- infs & (x > 0)
+    neg_inf <- infs & (x < 0)
+    res[pos_inf] <- "0x7F800000"
+    res[neg_inf] <- "0xFF800000"
+  }
+
+  if (any(finite_mask)) {
+    digits <- if (precision == 32) 8 else 16
+    res[finite_mask] <- formatC(x[finite_mask], digits = digits, format = "e")
+  }
+  if (!is.null(dim(x))) {
+    dim(res) <- dim(x)
+  }
+  res
 }
