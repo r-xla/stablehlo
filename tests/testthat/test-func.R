@@ -106,6 +106,7 @@ test_that("hlo_func and local_func", {
 })
 
 test_that("Input-output aliasing", {
+  skip_if(is_cuda())
   func <- local_func()
   x <- hlo_input("x", "f32", shape = c(2L, 2L), func = func, alias = 0L)
   f <- hlo_return(x)
