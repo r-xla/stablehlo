@@ -1,0 +1,20 @@
+# ExponentialMinusOne Operator
+
+See <https://openxla.org/stablehlo/spec#exponential_minus_one> for
+details.
+
+## Usage
+
+``` r
+hlo_exponential_minus_one(operand)
+```
+
+## Arguments
+
+- operand:
+
+  ([`FuncVariable`](FuncVariable.md))  
+
+## Value
+
+[`FuncVariable`](FuncVariable.md)  

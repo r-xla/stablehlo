@@ -1,0 +1,20 @@
+# ShiftRightArithmetic Operator
+
+See <https://openxla.org/stablehlo/spec#shift_right_arithmetic> for
+details.
+
+## Usage
+
+``` r
+hlo_shift_right_arithmetic(lhs, rhs)
+```
+
+## Arguments
+
+- lhs, rhs:
+
+  ([`FuncVariable`](FuncVariable.md))  
+
+## Value
+
+[`FuncVariable`](FuncVariable.md)  
