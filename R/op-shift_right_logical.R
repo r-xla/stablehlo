@@ -10,7 +10,7 @@ OpShiftRightLogical <- new_Op(
 infer_types_shift_right_logical <- function(lhs, rhs) { # nolint
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(lhs@type == rhs@type)
-  stopifnot(inherits(lhs@type@dtype, IntegerType))
+  assert_one_of(lhs@type@dtype, IntegerType, UnsignedType, BooleanType)
   stopifnot(lhs@type@dtype == rhs@type@dtype)
   ValueTypes(list(lhs))
 }

@@ -6,7 +6,7 @@ OpShiftLeft <- new_Op("OpShiftLeft", "shift_left")
 infer_types_shift_left <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(lhs@type == rhs@type)
-  stopifnot(inherits(lhs@type@dtype, IntegerType))
+  assert_one_of(lhs@type@dtype, IntegerType, UnsignedType, BooleanType)
   stopifnot(lhs@type@dtype == rhs@type@dtype)
   ValueTypes(list(lhs))
 }

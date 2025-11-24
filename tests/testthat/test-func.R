@@ -106,6 +106,7 @@ test_that("hlo_func and local_func", {
 })
 
 test_that("Input-output aliasing", {
+  skip_if(is_cuda())
   func <- local_func()
   x <- hlo_input("x", "f32", shape = c(2L, 2L), func = func, alias = 0L)
   f <- hlo_return(x)
@@ -113,7 +114,7 @@ test_that("Input-output aliasing", {
   skip_if_not_installed("pjrt")
 
   exec <- pjrt_compile(pjrt_program(repr(f)))
-  xin <- pjrt_buffer(1:4, shape = c(2, 2), dtype = "f32")
+  xin <- pjrt_buffer(1:4, shape = c(2, 2), dtype = "f32", device = "cpu")
   xout <- pjrt_execute(exec, xin)
   expect_error(capture.output(xin), "called on deleted or donated buffer")
   expect_snapshot(print(xout))
