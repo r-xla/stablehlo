@@ -60,4 +60,5 @@ ShiftLeft
 ShiftRightArithmetic
 ShiftRightLogical
 RngBitGenerator
+BitcastConvert
 
