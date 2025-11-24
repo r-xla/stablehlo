@@ -26,18 +26,13 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   data <- x@data
   type <- x@type
 
-  if (inherits(data, "PJRTBuffer")) {
+  value_reprs <- if (inherits(data, "PJRTBuffer")) {
     if (simplify_dense) {
       cli_abort("formatting PJRTBuffers in dense mode is not implemented")
     }
-    value_reprs <- pjrt::format_buffer(data)
-
-    # We rely on format_buffer to return a vector or array with correct dimensions
-    # No manual reshaping needed here anymore.
-
-    # Re-use logic from below for formatting arrays/vectors
+    pjrt::format_buffer(data)
   } else {
-    value_reprs <- if (inherits(type@dtype, FloatType)) {
+    if (inherits(type@dtype, FloatType)) {
       format_double(
         data,
         precision = type@dtype@value
@@ -51,16 +46,7 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
     }
   }
 
-  # The rest of the function assumes value_reprs is a character vector/array
-  # of formatted values, which is exactly what we have now for both cases.
-
-  # Also need to handle dim(data) check for simplify_dense
-  # For PJRTBuffer, we use type shape
-  data_dims <- if (inherits(data, "PJRTBuffer")) {
-    x@type@shape@dims
-  } else {
-    dim(data)
-  }
+  data_dims <- x@type@shape@dims
 
   if (simplify_dense && length(data_dims) <= 1L) {
     if (length(value_reprs) == 0) {
@@ -87,13 +73,7 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
     ))
   }
 
-  # Check if it's an array.
-  # For PJRTBuffer, value_reprs will be an array if dims > 1
-  is_arr <- if (inherits(data, "PJRTBuffer")) {
-    length(data_dims) > 0
-  } else {
-    is.array(data)
-  }
+  is_arr <- length(data_dims) > 0
 
   if (!is_arr) {
     return(paste0(
@@ -112,7 +92,6 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
     }
   }
 
-  # Ensure value_reprs has correct dimensions if it came from non-PJRTBuffer
   if (!inherits(data, "PJRTBuffer")) {
     dim(value_reprs) <- dim2(data)
   }
