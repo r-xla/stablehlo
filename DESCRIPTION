@@ -59,7 +59,6 @@ Collate:
     'op-case.R'
     'op-cbrt.R'
     'op-ceil.R'
-    'op-cholesky.R'
     'op-clamp.R'
     'op-compare.R'
     'op-concatenate.R'
