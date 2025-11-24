@@ -45,14 +45,11 @@
 - [`hlo_after_all()`](hlo_after_all.md) : AfterAll Operator
 - [`hlo_and()`](hlo_and.md) : And Operator
 - [`hlo_atan2()`](hlo_atan2.md) : Atan2 Operator
-- [`hlo_bitcast_convert()`](hlo_bitcast_convert.md) : BitcastConvert
-  Operator
 - [`hlo_broadcast_in_dim()`](hlo_broadcast_in_dim.md) : BroadcastInDim
   Operator
 - [`hlo_case()`](hlo_case.md) : Case Operator
 - [`hlo_cbrt()`](hlo_cbrt.md) : Cbrt Operator
 - [`hlo_ceil()`](hlo_ceil.md) : Ceil Operator
-- [`hlo_cholesky()`](hlo_cholesky.md) : Cholesky Operator
 - [`hlo_clamp()`](hlo_clamp.md) : Clamp Operator
 - [`hlo_closure()`](hlo_closure.md) : Create a Closure
 - [`hlo_compare()`](hlo_compare.md) : Compare Operator
