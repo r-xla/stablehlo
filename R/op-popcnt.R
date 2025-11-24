@@ -5,7 +5,7 @@ OpPopcnt <- new_Op("Popcnt", "popcnt")
 
 infer_types_popcnt <- function(operand) {
   stopifnot(inherits(operand@type, TensorType))
-  assert_one_of(operand@type@dtype, IntegerType)
+  assert_one_of(operand@type@dtype, IntegerType, UnsignedType)
   ValueTypes(list(operand))
 }
 
