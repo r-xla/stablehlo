@@ -27,11 +27,13 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   type <- x@type
 
   if (inherits(data, "PJRTBuffer")) {
+    if (simplify_dense) {
+      cli_abort("formatting PJRTBuffers in dense mode is not implemented")
+    }
     value_str <- format_raw_buffer_cpp(
       pjrt::as_raw(data, row_major = TRUE),
       repr(type@dtype),
-      x@type@shape@dims,
-      TRUE
+      x@type@shape@dims
     )
     return(paste0("dense<", value_str, "> : ", repr(type)))
   }

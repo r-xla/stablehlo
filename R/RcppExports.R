@@ -5,7 +5,7 @@ format_double_cpp <- function(x, precision) {
     .Call(`_stablehlo_format_double_cpp`, x, precision)
 }
 
-format_raw_buffer_cpp <- function(data, dtype, shape, row_major) {
-    .Call(`_stablehlo_format_raw_buffer_cpp`, data, dtype, shape, row_major)
+format_raw_buffer_cpp <- function(data, dtype, shape) {
+    .Call(`_stablehlo_format_raw_buffer_cpp`, data, dtype, shape)
 }
 

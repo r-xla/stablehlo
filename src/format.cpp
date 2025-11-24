@@ -53,30 +53,39 @@ CharacterVector format_double_cpp(NumericVector x, int precision) {
 std::string format_element(const unsigned char *ptr, std::string dtype) {
   std::ostringstream oss;
   if (dtype == "f32") {
-    float val = *reinterpret_cast<const float *>(ptr);
+    float val;
+    std::memcpy(&val, ptr, 4);
     return format_float_value((double)val, 32);
   } else if (dtype == "f64") {
-    double val = *reinterpret_cast<const double *>(ptr);
+    double val;
+    std::memcpy(&val, ptr, 8);
     return format_float_value(val, 64);
   } else if (dtype == "i64") {
-    int64_t val = *reinterpret_cast<const int64_t *>(ptr);
+    int64_t val;
+    std::memcpy(&val, ptr, 8);
     oss << val;
   } else if (dtype == "ui64") {
-    uint64_t val = *reinterpret_cast<const uint64_t *>(ptr);
+    uint64_t val;
+    std::memcpy(&val, ptr, 8);
     oss << val;
   } else if (dtype == "i32") {
-    int32_t val = *reinterpret_cast<const int32_t *>(ptr);
+    int32_t val;
+    std::memcpy(&val, ptr, 4);
     oss << val;
   } else if (dtype == "ui32") {
-    uint32_t val = *reinterpret_cast<const uint32_t *>(ptr);
+    uint32_t val;
+    std::memcpy(&val, ptr, 4);
     oss << val;
   } else if (dtype == "i16") {
-    int16_t val = *reinterpret_cast<const int16_t *>(ptr);
+    int16_t val;
+    std::memcpy(&val, ptr, 2);
     oss << val;
   } else if (dtype == "ui16") {
-    uint16_t val = *reinterpret_cast<const uint16_t *>(ptr);
+    uint16_t val;
+    std::memcpy(&val, ptr, 2);
     oss << val;
   } else if (dtype == "i8") {
+    //
     oss << (int)(*reinterpret_cast<const int8_t *>(ptr));
   } else if (dtype == "ui8") {
     oss << (unsigned int)(*ptr);
@@ -98,12 +107,15 @@ int get_element_size(std::string dtype) {
   return 1;
 }
 
-// Recursive function to print nested arrays
+// Recursive function to print nested arrays ([[1, 2], [3, 4]])
+// The inmput is a raw vector so we can also properly format PJRTBuffers with >
+// 32 bit integers
 void print_recursive(std::ostringstream &out, const unsigned char *data,
                      std::string dtype, const IntegerVector &shape,
                      const std::vector<int64_t> &strides, int element_size,
                      int dim_index, int64_t current_offset) {
 
+  // scalar case
   if (dim_index == shape.length()) {
     // Scalar case (should not be reached via recursion if shape > 0)
     // Actually, for rank-0 tensor (scalar), shape.length() is 0.
@@ -141,30 +153,40 @@ void print_recursive(std::ostringstream &out, const unsigned char *data,
 
 // [[Rcpp::export]]
 String format_raw_buffer_cpp(RawVector data, std::string dtype,
-                             IntegerVector shape, bool row_major) {
+                             IntegerVector shape) {
   std::ostringstream out;
   int element_size = get_element_size(dtype);
 
   int rank = shape.length();
 
+  // check that length of data is is what we expect
+  int expected_length = 1;
+  for (int i = 0; i < rank; ++i) {
+    expected_length *= shape[i];
+  }
+  expected_length *= element_size;
+  if (data.length() != expected_length) {
+    stop("Data size mismatch");
+  }
+
   if (rank == 0) {
-    // Scalar
-    if (data.length() != element_size)
-      stop("Data size mismatch for scalar");
     out << format_element(data.begin(), dtype);
   } else {
-    // Compute strides
+    // special handling of 0-dimensional tensors (e.g., dense<> instead of
+    // dense<[[], []]>)
+    for (int i = 0; i < rank; ++i) {
+      if (shape[i] == 0) {
+        return String("");
+      }
+    }
+
+    // Compute strides for iterating over array:
     std::vector<int64_t> strides(rank);
-    if (row_major) {
-      strides[rank - 1] = 1;
-      for (int i = rank - 2; i >= 0; --i) {
-        strides[i] = strides[i + 1] * shape[i + 1];
-      }
-    } else {
-      strides[0] = 1;
-      for (int i = 1; i < rank; ++i) {
-        strides[i] = strides[i - 1] * shape[i - 1];
-      }
+    // row_major: last dimension has stride 1; all other dimensions have stride
+    // of the product of the dimensions to the right.
+    strides[rank - 1] = 1;
+    for (int i = rank - 2; i >= 0; --i) {
+      strides[i] = strides[i + 1] * shape[i + 1];
     }
 
     print_recursive(out, data.begin(), dtype, shape, strides, element_size, 0,

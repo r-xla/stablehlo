@@ -103,6 +103,9 @@ S7::method(hlo_scalar, S7::new_S3_class("PJRTBuffer")) <- function(
   ...,
   func = NULL
 ) {
+  if (!identical(shape(value), integer())) {
+    cli_abort("hlo_scalar expects a scalar")
+  }
   impl_hlo_constant(
     value,
     dtype = as.character(pjrt::elt_type(value)),
