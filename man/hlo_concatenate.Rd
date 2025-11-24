@@ -8,6 +8,8 @@ hlo_concatenate(..., dimension)
 }
 \arguments{
 \item{...}{(\code{\link{FuncVariable}})\cr}
+
+\item{dimension}{dimension to concatenate on}
 }
 \description{
 mnemonic concatenate

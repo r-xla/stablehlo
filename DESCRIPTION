@@ -36,7 +36,7 @@ Config/build/compilation-database: true
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2.9000
+RoxygenNote: 7.3.3
 Collate:
     'RcppExports.R'
     'aaa.R'
@@ -59,6 +59,7 @@ Collate:
     'op-after_all.R'
     'op-and.R'
     'op-atan2.R'
+    'op-bitcast_convert.R'
     'op-broadcast_in_dim.R'
     'op-case.R'
     'op-cbrt.R'

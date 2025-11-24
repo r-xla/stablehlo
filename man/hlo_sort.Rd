@@ -8,6 +8,12 @@ hlo_sort(..., dimension, is_stable, comparator)
 }
 \arguments{
 \item{...}{(\code{\link{FuncVariable}})\cr}
+
+\item{dimension}{dimension to sort on}
+
+\item{is_stable}{boolean constant}
+
+\item{comparator}{function}
 }
 \description{
 mnemonic sort
