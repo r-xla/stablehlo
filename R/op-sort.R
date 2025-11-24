@@ -41,11 +41,8 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
 
 hlo_sort_impl <- hlo_fn(OpSort, infer_types_sort)
 
-#' @title mnemonic sort
-#' @param ... ([`FuncVariable`])\cr
-#' @param dimension dimension to sort on
-#' @param is_stable boolean constant
-#' @param comparator function
+#' @templateVar mnemonic sort
+#' @template op
 #' @export
 hlo_sort <- function(..., dimension, is_stable, comparator) {
   dots <- list(...)

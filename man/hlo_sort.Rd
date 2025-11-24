@@ -2,19 +2,16 @@
 % Please edit documentation in R/op-sort.R
 \name{hlo_sort}
 \alias{hlo_sort}
-\title{mnemonic sort}
+\title{Sort Operator}
 \usage{
 hlo_sort(..., dimension, is_stable, comparator)
 }
 \arguments{
-\item{...}{(\code{\link{FuncVariable}})\cr}
-
-\item{dimension}{dimension to sort on}
-
-\item{is_stable}{boolean constant}
-
-\item{comparator}{function}
+\item{..., dimension, is_stable, comparator}{(\code{\link{FuncVariable}})\cr}
+}
+\value{
+\code{\link{FuncVariable}}\cr
 }
 \description{
-mnemonic sort
+See \url{https://openxla.org/stablehlo/spec#sort} for details.
 }

@@ -2,15 +2,16 @@
 % Please edit documentation in R/op-concatenate.R
 \name{hlo_concatenate}
 \alias{hlo_concatenate}
-\title{mnemonic concatenate}
+\title{Concatenate Operator}
 \usage{
 hlo_concatenate(..., dimension)
 }
 \arguments{
-\item{...}{(\code{\link{FuncVariable}})\cr}
-
-\item{dimension}{dimension to concatenate on}
+\item{..., dimension}{(\code{\link{FuncVariable}})\cr}
+}
+\value{
+\code{\link{FuncVariable}}\cr
 }
 \description{
-mnemonic concatenate
+See \url{https://openxla.org/stablehlo/spec#concatenate} for details.
 }
