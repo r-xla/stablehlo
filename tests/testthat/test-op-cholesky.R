@@ -1,9 +1,9 @@
 test_that("basic tests", {
   func <- local_func()
-  x <- hlo_input("x", "f32", shape = c(3L, 3L))
+  x <- hlo_input("x", "f64", shape = c(3L, 3L))
   y <- hlo_cholesky(
     x,
-    lower = FALSE
+    lower = TRUE
   )
   f <- hlo_return(y)
   expect_snapshot(repr(f))
@@ -14,9 +14,8 @@ test_that("basic tests", {
 
   M <- withr::with_seed(1, matrix(runif(9), 3, 3))
   input <- t(M) %*% M
-  expected <- chol(input)
+  expected <- t(chol(input))
 
-  output <- pjrt_execute(exec, pjrt_buffer(input, dtype = "f32"))
-  output_arr <- as_array(output)
-  expect_equal(output_arr, expected, tolerance = 1e-3)
+  output <- pjrt_execute(exec, pjrt_buffer(input, dtype = "f64"))
+  expect_equal(as_array(output), expected, tolerance = 1e-3)
 })
