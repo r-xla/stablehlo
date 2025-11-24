@@ -27,9 +27,6 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   type <- x@type
 
   value_reprs <- if (inherits(data, "PJRTBuffer")) {
-    if (simplify_dense) {
-      cli_abort("formatting PJRTBuffers in dense mode is not implemented")
-    }
     pjrt::format_buffer(data)
   } else {
     if (inherits(type@dtype, FloatType)) {
@@ -48,7 +45,10 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
 
   data_dims <- x@type@shape@dims
 
-  if (simplify_dense && length(data_dims) <= 1L) {
+  if (simplify_dense) {
+    if (length(data_dims) > 1) {
+      cli_abort("Can only simplify dense mode for 1D arrays")
+    }
     if (length(value_reprs) == 0) {
       return(paste0(
         "array<",
@@ -66,16 +66,17 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
     }
   }
 
+  # otherwise stableHLO parser error (use dense<> instead of e.g. dense<[[], []])
   if (length(value_reprs) == 0) {
+    # empty array
     return(paste0(
       "dense<> : ",
       repr(type)
     ))
   }
 
-  is_arr <- length(data_dims) > 0
-
-  if (!is_arr) {
+  if (length(data_dims) == 0) {
+    # scalar
     return(paste0(
       "dense<",
       paste(value_reprs, collapse = ", "),
@@ -83,6 +84,7 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
       repr(type)
     ))
   }
+  # >= 1D arrays
 
   dim2 <- function(d) {
     if (is.array(d)) {
