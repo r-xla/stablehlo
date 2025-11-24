@@ -39,10 +39,11 @@ infer_types_rng_bit_generator <- function(
   }
 
   out_dtype <- as_dtype(dtype)
+  # fmt: skip
   if (
-    !(inherits(out_dtype, IntegerType) ||
-      inherits(out_dtype, UnsignedType) ||
-      inherits(out_dtype, FloatType))
+    !(inherits(out_dtype, IntegerType) || # nolint
+      inherits(out_dtype, UnsignedType) || # nolint
+      inherits(out_dtype, FloatType)) # nolint
   ) {
     cli_abort("output dtype must be integer or floating-point (not boolean)")
   }
