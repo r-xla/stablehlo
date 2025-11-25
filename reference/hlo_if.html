@@ -41,7 +41,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>If Operator</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/if-simplify/R/op-if.R" class="external-link"><code>R/op-if.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/feat_bitcast_convert/R/op-if.R" class="external-link"><code>R/op-if.R</code></a></small>
       <div class="d-none name"><code>hlo_if.Rd</code></div>
     </div>
 
@@ -53,19 +53,15 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">infer_types_if</span><span class="op">(</span><span class="va">pred</span>, <span class="va">true_branch</span>, <span class="va">false_branch</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">hlo_if</span><span class="op">(</span><span class="va">pred</span>, <span class="va">true_branch</span>, <span class="va">false_branch</span>, simplify <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">hlo_if</span><span class="op">(</span><span class="va">pred</span>, <span class="va">true_branch</span>, <span class="va">false_branch</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-pred-true-branch-false-branch-simplify">pred, true_branch, false_branch, simplify<a class="anchor" aria-label="anchor" href="#arg-pred-true-branch-false-branch-simplify"></a></dt>
+<dl><dt id="arg-pred-true-branch-false-branch">pred, true_branch, false_branch<a class="anchor" aria-label="anchor" href="#arg-pred-true-branch-false-branch"></a></dt>
 <dd><p>(<code><a href="FuncVariable.html">FuncVariable</a></code>)<br></p></dd>
-
-
-<dt id="arg-simplify">simplify<a class="anchor" aria-label="anchor" href="#arg-simplify"></a></dt>
-<dd><p>(<code>logical(1)</code>)<br></p></dd>
 
 </dl></div>
     <div class="section level2">
