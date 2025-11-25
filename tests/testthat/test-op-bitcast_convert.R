@@ -51,10 +51,10 @@ test_that("basic tests", {
   skip_if_not_installed("pjrt")
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
-  input <- array(as.integer(2561))
+  input <- 2561L
   output <- pjrt_execute(
     exec,
-    pjrt_buffer(input, dtype = "i16")
+    pjrt_scalar(input, dtype = "i16")
   )
   expect_equal(shape(output), c(2))
   expect_equal(as_array(output), array(c(1, 10)))
