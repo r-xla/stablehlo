@@ -12,7 +12,7 @@ infer_types_bitcast_convert <- function(
   if (
     dtype %in% c("i1", "pred") | (inherits(operand@type@dtype, BooleanType))
   ) {
-    cli_abort("Bitcast conversion from and to booleans are not supported.")
+    cli_abort("Bitcast conversions from and to booleans are not supported.")
   }
 
   stopifnot(
