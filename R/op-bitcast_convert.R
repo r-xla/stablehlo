@@ -45,19 +45,17 @@ infer_types_bitcast_convert <- function(
 
   result_dims <- operand_dims
   if (cst_fct > 1) {
-    if (operand_dims[[length(operand_dims)]] %% cst_fct != 0) {
-      cli_abort(
-        sprintf(
-          "when upcasting, operands last dimension must be divisible by the upcasting factor (%d)",
-          cst_fct
-        )
+    if (operand_dims[[length(operand_dims)]] != cst_fct) {
+      sprintf(
+        "when upcasting, operands last dimension must be identical to the cast-factor (%d), but is %d",
+        cst_fct,
+        operand_dims[[length(operand_dims)]]
       )
+    } else {
+      result_dims <- result_dims[seq_len(length(result_dims) - 1)]
     }
-    result_dims[[length(result_dims)]] <- as.integer(
-      result_dims[[length(result_dims)]] / cst_fct
-    )
   } else {
-    result_dims <- c(result_dims, as.integer(round(1 / cst_fct)))
+    result_dims <- c(result_dims, as.integer(1 / cst_fct))
   }
 
   ValueTypes(list(
