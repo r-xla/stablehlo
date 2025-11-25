@@ -19,13 +19,10 @@ test_that("basic tests", {
   )
   f <- hlo_return(y)
   expect_snapshot(repr(f))
-
   skip_if_not_installed("pjrt")
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
-
   input <- array(c(1, 10), dim = c(2))
-
   output <- pjrt_execute(
     exec,
     pjrt_buffer(input, dtype = "i8")
@@ -33,7 +30,6 @@ test_that("basic tests", {
   expect_equal(as_array(output), 2561)
 
   # upcasting 0-dimensional tensor -> error
-  debugonce(infer_types_bitcast_convert)
   local_func()
   x <- hlo_input("x", "i16")
   expect_error(
@@ -92,18 +88,14 @@ test_that("basic tests", {
   )
   f <- hlo_return(y)
   expect_snapshot(repr(f))
-
   skip_if_not_installed("pjrt")
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
-
   input <- array(as.integer(seq_len(24)), dim = c(2, 3, 4))
-
   output <- pjrt_execute(
     exec,
     pjrt_buffer(input, dtype = "i8")
   )
-
   expect_equal(dim(as_array(output)), c(2, 3))
   expect_true(all(as_array(output) >= 0))
 
@@ -116,12 +108,10 @@ test_that("basic tests", {
   )
   f <- hlo_return(y)
   expect_snapshot(repr(f))
-
   skip_if_not_installed("pjrt")
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
   input <- withr::with_seed(1, array(sample.int(1000, 6), dim = c(2, 3)))
-
   output <- pjrt_execute(
     exec,
     pjrt_buffer(input, dtype = "ui32")
@@ -138,12 +128,10 @@ test_that("basic tests", {
   )
   f <- hlo_return(y)
   expect_snapshot(repr(f))
-
   skip_if_not_installed("pjrt")
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
   input <- array(rnorm(6), dim = c(2, 3))
-
   output <- pjrt_execute(
     exec,
     pjrt_buffer(input, dtype = "f64")
