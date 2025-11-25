@@ -5,11 +5,11 @@ OpBitcastConvert <- new_Op("OpBitcastConvert", "bitcast_convert")
 
 infer_types_bitcast_convert <- function(
   operand,
-  cast_to_dtype
+  dtype
 ) {
   stopifnot(inherits(operand@type, TensorType))
   stopifnot(
-    cast_to_dtype %in%
+    dtype %in%
       c(
         "pred",
         "i1",
@@ -35,10 +35,10 @@ infer_types_bitcast_convert <- function(
   }
   operand_dims <- shape(operand)
 
-  if (cast_to_dtype == "pred") {
+  if (dtype == "pred") {
     output_bits <- 1L
   } else {
-    output_bits <- as.integer(sub(".*?([0-9]+)$", "\\1", cast_to_dtype))
+    output_bits <- as.integer(sub(".*?([0-9]+)$", "\\1", dtype))
   }
 
   cst_fct <- output_bits / operand_bits
@@ -60,7 +60,7 @@ infer_types_bitcast_convert <- function(
 
   ValueTypes(list(
     ValueType(
-      type = cast_to_dtype,
+      type = dtype,
       shape = result_dims
     )
   ))
@@ -76,11 +76,11 @@ hlo_bitcast_convert_impl <- hlo_fn(
 #' @export
 hlo_bitcast_convert <- function(
   operand,
-  cast_to_dtype
+  dtype
 ) {
   hlo_bitcast_convert_impl(
     values = list(operand = operand),
-    custom_attrs = list(cast_to_dtype = cast_to_dtype)
+    custom_attrs = list(dtype = dtype)
   )
 }
 
