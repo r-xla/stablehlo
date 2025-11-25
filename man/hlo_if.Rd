@@ -4,10 +4,12 @@
 \alias{hlo_if}
 \title{If Operator}
 \usage{
-hlo_if(pred, true_branch, false_branch)
+hlo_if(pred, true_branch, false_branch, simplify = TRUE)
 }
 \arguments{
-\item{pred, true_branch, false_branch}{(\code{\link{FuncVariable}})\cr}
+\item{pred, true_branch, false_branch, simplify}{(\code{\link{FuncVariable}})\cr}
+
+\item{simplify}{(\code{logical(1)})\cr}
 }
 \value{
 \code{\link{FuncVariable}}\cr
