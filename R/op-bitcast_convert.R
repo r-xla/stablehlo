@@ -8,11 +8,16 @@ infer_types_bitcast_convert <- function(
   dtype
 ) {
   stopifnot(inherits(operand@type, TensorType))
+
+  if (
+    dtype %in% c("i1", "pred") | (inherits(operand@type@dtype, BooleanType))
+  ) {
+    cli_abort("Bitcast conversion from and to booleans are not supported.")
+  }
+
   stopifnot(
     dtype %in%
       c(
-        "pred",
-        "i1",
         "i8",
         "i16",
         "i32",
@@ -28,19 +33,10 @@ infer_types_bitcast_convert <- function(
       )
   )
 
-  if (inherits(operand@type@dtype, BooleanType)) {
-    operand_bits <- 1
-  } else {
-    operand_bits <- operand@type@dtype@value
-  }
+  operand_bits <- operand@type@dtype@value
   operand_dims <- shape(operand)
 
-  if (dtype == "pred") {
-    output_bits <- 1L
-  } else {
-    output_bits <- as.integer(sub(".*?([0-9]+)$", "\\1", dtype))
-  }
-
+  output_bits <- as.integer(sub(".*?([0-9]+)$", "\\1", dtype))
   cst_fct <- output_bits / operand_bits
 
   if (cst_fct == 1) {
