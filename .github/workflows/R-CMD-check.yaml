@@ -21,7 +21,7 @@ jobs:
       matrix:
         config:
           - { os: "macos", r: "release", platform: "cpu" }
-          - { os: "macos", r: null, platform: "metal" }
+          #- { os: "macos", r: null, platform: "metal" }
           - { os: "ubuntu", r: "release", platform: "cpu" }
           - { os: "ubuntu", r: "release", platform: "cuda"}
           - { os: "windows", r: "release", platform: "cpu"}
@@ -60,7 +60,7 @@ jobs:
         if: ${{ matrix.setup }}
         run: ${{ matrix.setup }}
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -70,6 +70,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+          extra-repositories: https://r-xla.r-universe.dev
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

@@ -26,20 +26,29 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   data <- x@data
   type <- x@type
 
-  value_reprs <- if (inherits(type@dtype, FloatType)) {
-    format_double(
-      data,
-      precision = type@dtype@value
-    )
-  } else if (
-    inherits(type@dtype, IntegerType) || inherits(type@dtype, UnsignedType)
-  ) {
-    as.character(data)
-  } else if (inherits(type@dtype, BooleanType)) {
-    tolower(as.logical(data))
+  value_reprs <- if (inherits(data, "PJRTBuffer")) {
+    pjrt::format_buffer(data)
+  } else {
+    if (inherits(type@dtype, FloatType)) {
+      format_double(
+        data,
+        precision = type@dtype@value
+      )
+    } else if (
+      inherits(type@dtype, IntegerType) || inherits(type@dtype, UnsignedType)
+    ) {
+      as.character(data)
+    } else if (inherits(type@dtype, BooleanType)) {
+      tolower(as.logical(data))
+    }
   }
 
-  if (simplify_dense && length(dim(data)) <= 1L) {
+  data_dims <- x@type@shape@dims
+
+  if (simplify_dense) {
+    if (length(data_dims) > 1) {
+      cli_abort("Can only simplify dense mode for 1D arrays")
+    }
     if (length(value_reprs) == 0) {
       return(paste0(
         "array<",
@@ -57,14 +66,17 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
     }
   }
 
+  # otherwise stableHLO parser error (use dense<> instead of e.g. dense<[[], []])
   if (length(value_reprs) == 0) {
+    # empty array
     return(paste0(
-      "dense<[]> : ",
+      "dense<> : ",
       repr(type)
     ))
   }
 
-  if (!is.array(data)) {
+  if (length(data_dims) == 0) {
+    # scalar
     return(paste0(
       "dense<",
       paste(value_reprs, collapse = ", "),
@@ -72,14 +84,19 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
       repr(type)
     ))
   }
-  dim2 <- function(data) {
-    if (is.array(data)) {
-      dim(data)
+  # >= 1D arrays
+
+  dim2 <- function(d) {
+    if (is.array(d)) {
+      dim(d)
     } else {
-      length(data)
+      length(d)
     }
   }
-  dim(value_reprs) <- dim2(data)
+
+  if (!inherits(data, "PJRTBuffer")) {
+    dim(value_reprs) <- dim2(data)
+  }
 
   f <- function(x) {
     if (is.vector(x) || length(dim2(x)) == 1L) {
@@ -190,6 +207,25 @@ method(r_to_constant, S7::class_integer) <- function(
   shape <- Shape(shape)
 
   tensor_type <- TensorType(dtype, shape)
+
+  tensor_constant <- TensorConstant(
+    data = value,
+    type = tensor_type
+  )
+
+  return(Constant(value = tensor_constant))
+}
+
+method(r_to_constant, S7::new_S3_class("PJRTBuffer")) <- function(
+  value,
+  dtype = NULL,
+  shape,
+  ...
+) {
+  dtype <- dtype %??% as.character(pjrt::elt_type(value))
+  shape <- Shape(shape)
+
+  tensor_type <- TensorType(dtype = as_dtype(dtype), shape = shape)
 
   tensor_constant <- TensorConstant(
     data = value,

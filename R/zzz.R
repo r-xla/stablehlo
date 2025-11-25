@@ -1,5 +1,3 @@
-#' @useDynLib stablehlo, .registration = TRUE
-#' @importFrom Rcpp sourceCpp
 #' @include repr.R
 #' @importFrom methods is
 #' @importFrom utils strcapture
