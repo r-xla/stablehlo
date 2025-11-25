@@ -3,6 +3,8 @@ NULL
 
 OpBroadcastInDim <- new_Op("OpBroadcastInDim", "broadcast_in_dim")
 
+#' @rdname hlo_broadcast_in_dim
+#' @export
 infer_types_broadcast_in_dim <- function(
   operand,
   broadcast_dimensions,

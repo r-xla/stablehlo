@@ -5,6 +5,7 @@
 \alias{hlo_scalar}
 \alias{hlo_tensor}
 \alias{hlo_empty}
+\alias{infer_types_constant}
 \title{Create a Constant}
 \usage{
 hlo_scalar(value, ..., func = NULL)
@@ -12,6 +13,8 @@ hlo_scalar(value, ..., func = NULL)
 hlo_tensor(value, ..., func = NULL)
 
 hlo_empty(dtype, shape, func = NULL)
+
+infer_types_constant(value)
 }
 \arguments{
 \item{value}{(any)\cr

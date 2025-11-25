@@ -3,6 +3,8 @@ NULL
 
 OpClamp <- new_Op("OpClamp", "clamp")
 
+#' @rdname hlo_clamp
+#' @export
 # binary ops
 infer_types_clamp <- function(Min, operand, Max) {
   stopifnot(inherits(Min@type, TensorType))

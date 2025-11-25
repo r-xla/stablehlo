@@ -3,6 +3,8 @@ NULL
 
 OpConvert <- new_Op("OpConvert", "convert")
 
+#' @rdname hlo_convert
+#' @export
 infer_types_convert <- function(operand, dtype) {
   stopifnot(inherits(operand@type, TensorType))
   output_dtype <- as_dtype(dtype)

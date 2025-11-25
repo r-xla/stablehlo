@@ -3,6 +3,9 @@ NULL
 
 OpReduce <- new_Op("OpReduce", "reduce")
 
+#' @param ... (Inputs, Init values)
+#' @rdname hlo_reduce
+#' @export
 infer_types_reduce <- function(..., body, dimensions) {
   value_types <- list(...)
 

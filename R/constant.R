@@ -132,6 +132,18 @@ method(repr, Constant) <- function(x, simplify_dense = TRUE) {
   repr(x@value, simplify_dense = simplify_dense)
 }
 
+#' @title Convert R value to Constant
+#' @description
+#' Convert R value to Constant.
+#' @param value (any)\cr
+#'   The value to convert.
+#' @param dtype (`character(1)`)\cr
+#'   The dtype of the constant.
+#' @param shape (`integer()`)\cr
+#'   The shape of the constant.
+#' @param ... (any)
+#'   Additional arguments.
+#' @export
 r_to_constant <- S7::new_generic(
   "r_to_constant",
   "value",

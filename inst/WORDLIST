@@ -61,4 +61,6 @@ ShiftRightArithmetic
 ShiftRightLogical
 RngBitGenerator
 BitcastConvert
-
+dtype
+Init
+DotDimensionNumbers

@@ -3,6 +3,8 @@ NULL
 
 OpReverse <- new_Op("OpReverse", "reverse")
 
+#' @rdname hlo_reverse
+#' @export
 infer_types_reverse <- function(
   operand,
   dimensions
