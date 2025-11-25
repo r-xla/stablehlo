@@ -60,4 +60,7 @@ ShiftLeft
 ShiftRightArithmetic
 ShiftRightLogical
 RngBitGenerator
+dtype
+Init
+DotDimensionNumbers
 
