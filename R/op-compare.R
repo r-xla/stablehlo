@@ -3,6 +3,8 @@ NULL
 
 OpCompare <- new_Op("OpCompare", "compare")
 
+#' @rdname hlo_compare
+#' @export
 infer_types_compare <- function(
   lhs,
   rhs,

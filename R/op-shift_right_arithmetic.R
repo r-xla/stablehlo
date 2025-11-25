@@ -6,6 +6,8 @@ OpShiftRightArithmetic <- new_Op(
   "shift_right_arithmetic"
 )
 
+#' @rdname hlo_shift_right_arithmetic
+#' @export
 # fmt: skip
 infer_types_shift_right_arithmetic <- function(lhs, rhs) { # nolint
   stopifnot(inherits(lhs@type, TensorType))

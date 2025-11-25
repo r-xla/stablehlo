@@ -3,6 +3,8 @@ NULL
 
 OpShiftLeft <- new_Op("OpShiftLeft", "shift_left")
 
+#' @rdname hlo_shift_left
+#' @export
 infer_types_shift_left <- function(lhs, rhs) {
   stopifnot(inherits(lhs@type, TensorType))
   stopifnot(lhs@type == rhs@type)

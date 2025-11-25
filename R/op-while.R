@@ -3,6 +3,8 @@ NULL
 
 OpWhile <- new_Op("OpWhile", "while")
 
+#' @rdname hlo_while
+#' @export
 infer_types_while <- function(..., cond, body) {
   value_types <- list(...)
 

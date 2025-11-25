@@ -3,6 +3,8 @@ NULL
 
 OpRngBitGenerator <- new_Op("OpRngBitGenerator", "rng_bit_generator")
 
+#' @rdname hlo_rng_bit_generator
+#' @export
 infer_types_rng_bit_generator <- function(
   initial_state,
   rng_algorithm,

@@ -3,6 +3,8 @@ NULL
 
 OpIf <- new_Op("OpIf", "if")
 
+#' @rdname hlo_if
+#' @export
 infer_types_if <- function(pred, true_branch, false_branch) {
   stopifnot(inherits(pred@type, TensorType))
   stopifnot(pred@type@dtype == BooleanType())
