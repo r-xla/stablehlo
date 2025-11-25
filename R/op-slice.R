@@ -3,6 +3,8 @@ NULL
 
 OpSlice <- new_Op("OpSlice", "slice")
 
+#' @rdname hlo_slice
+#' @export
 infer_types_slice <- function(
   operand,
   start_indices,

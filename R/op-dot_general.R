@@ -1,5 +1,9 @@
 OpDotGeneral <- new_Op("OpDotGeneral", "dot_general")
 
+#' @param dot_dimension_numbers (`DotDimensionNumbers`)\cr
+#'   The dot dimension number.
+#' @rdname hlo_dot_general
+#' @export
 infer_types_dot_general <- function(
   lhs,
   rhs,
@@ -44,6 +48,14 @@ infer_types_dot_general <- function(
   ))
 }
 
+#' @title DotDimensionNumbers
+#' @description
+#' Represents the dot dimension numbers.
+#' @param contracting_dims (`integer()`)\cr
+#'   The contracting dimensions.
+#' @param batching_dims (`integer()` | `NULL`)\cr
+#'   The batching dimensions.
+#' @export
 DotDimensionNumbers <- new_class(
   "DotDimensionNumbers",
   properties = list(
