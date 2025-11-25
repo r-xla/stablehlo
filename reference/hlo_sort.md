@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#sort> for details.
 ## Usage
 
 ``` r
+infer_types_sort(..., dimension, is_stable, comparator)
+
 hlo_sort(..., dimension, is_stable, comparator)
 ```
 

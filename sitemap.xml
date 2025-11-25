@@ -9,6 +9,7 @@
 <url><loc>/news/index.html</loc></url>
 <url><loc>/reference/BooleanType.html</loc></url>
 <url><loc>/reference/Constant.html</loc></url>
+<url><loc>/reference/DotDimensionNumbers.html</loc></url>
 <url><loc>/reference/FloatType.html</loc></url>
 <url><loc>/reference/Func.html</loc></url>
 <url><loc>/reference/FuncBody.html</loc></url>
@@ -110,6 +111,7 @@
 <url><loc>/reference/infer_types_generic_biv.html</loc></url>
 <url><loc>/reference/infer_types_generic_uni.html</loc></url>
 <url><loc>/reference/is_dtype.html</loc></url>
+<url><loc>/reference/r_to_constant.html</loc></url>
 <url><loc>/reference/r_to_stablehlo_string.html</loc></url>
 <url><loc>/reference/reexports.html</loc></url>
 <url><loc>/reference/repr.html</loc></url>

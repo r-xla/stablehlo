@@ -96,6 +96,8 @@ specification. At least initially, it will:
 
 - [`BooleanType()`](BooleanType.md) : BooleanType
 - [`Constant()`](Constant.md) : Constant
+- [`DotDimensionNumbers()`](DotDimensionNumbers.md) :
+  DotDimensionNumbers
 - [`FloatType()`](FloatType.md) : FloatType
 - [`Func()`](Func.md) : Func
 - [`FuncBody()`](FuncBody.md) : FuncBody
@@ -134,34 +136,44 @@ specification. At least initially, it will:
   Scientific Notation
 - [`hlo_abs()`](hlo_abs.md) : Abs Operator
 - [`hlo_add()`](hlo_add.md) : Add Operator
-- [`hlo_after_all()`](hlo_after_all.md) : AfterAll Operator
+- [`infer_types_after_all()`](hlo_after_all.md)
+  [`hlo_after_all()`](hlo_after_all.md) : AfterAll Operator
 - [`hlo_and()`](hlo_and.md) : And Operator
 - [`hlo_atan2()`](hlo_atan2.md) : Atan2 Operator
-- [`hlo_broadcast_in_dim()`](hlo_broadcast_in_dim.md) : BroadcastInDim
+- [`infer_types_broadcast_in_dim()`](hlo_broadcast_in_dim.md)
+  [`hlo_broadcast_in_dim()`](hlo_broadcast_in_dim.md) : BroadcastInDim
   Operator
-- [`hlo_case()`](hlo_case.md) : Case Operator
+- [`infer_types_case()`](hlo_case.md) [`hlo_case()`](hlo_case.md) : Case
+  Operator
 - [`hlo_cbrt()`](hlo_cbrt.md) : Cbrt Operator
 - [`hlo_ceil()`](hlo_ceil.md) : Ceil Operator
 - [`hlo_cholesky()`](hlo_cholesky.md) : Cholesky Operator
-- [`hlo_clamp()`](hlo_clamp.md) : Clamp Operator
+- [`infer_types_clamp()`](hlo_clamp.md) [`hlo_clamp()`](hlo_clamp.md) :
+  Clamp Operator
 - [`hlo_closure()`](hlo_closure.md) : Create a Closure
-- [`hlo_compare()`](hlo_compare.md) : Compare Operator
-- [`hlo_concatenate()`](hlo_concatenate.md) : Concatenate Operator
+- [`infer_types_compare()`](hlo_compare.md)
+  [`hlo_compare()`](hlo_compare.md) : Compare Operator
+- [`infer_types_concatenate()`](hlo_concatenate.md)
+  [`hlo_concatenate()`](hlo_concatenate.md) : Concatenate Operator
 - [`hlo_scalar()`](hlo_constant.md) [`hlo_tensor()`](hlo_constant.md)
-  [`hlo_empty()`](hlo_constant.md) : Create a Constant
-- [`hlo_convert()`](hlo_convert.md) : Convert Operator
+  [`hlo_empty()`](hlo_constant.md)
+  [`infer_types_constant()`](hlo_constant.md) : Create a Constant
+- [`infer_types_convert()`](hlo_convert.md)
+  [`hlo_convert()`](hlo_convert.md) : Convert Operator
 - [`hlo_cosine()`](hlo_cosine.md) : Cosine Operator
 - [`hlo_divide()`](hlo_divide.md) : Divide Operator
-- [`hlo_dot_general()`](hlo_dot_general.md) : DotGeneral Operator
+- [`infer_types_dot_general()`](hlo_dot_general.md)
+  [`hlo_dot_general()`](hlo_dot_general.md) : DotGeneral Operator
 - [`hlo_exponential()`](hlo_exponential.md) : Exponential Operator
 - [`hlo_exponential_minus_one()`](hlo_exponential_minus_one.md) :
   ExponentialMinusOne Operator
 - [`hlo_floor()`](hlo_floor.md) : Floor Operator
 - [`hlo_func()`](hlo_func.md) [`local_func()`](hlo_func.md) : Create a
   function
-- [`hlo_if()`](hlo_if.md) : If Operator
+- [`infer_types_if()`](hlo_if.md) [`hlo_if()`](hlo_if.md) : If Operator
 - [`hlo_input()`](hlo_input.md) : Create a input to a function
-- [`hlo_is_finite()`](hlo_is_finite.md) : IsFinite Operator
+- [`infer_types_is_finite()`](hlo_is_finite.md)
+  [`hlo_is_finite()`](hlo_is_finite.md) : IsFinite Operator
 - [`hlo_log()`](hlo_log.md) : Log Operator
 - [`hlo_log_plus_one()`](hlo_log_plus_one.md) : LogPlusOne Operator
 - [`hlo_logistic()`](hlo_logistic.md) : Logistic Operator
@@ -171,36 +183,50 @@ specification. At least initially, it will:
 - [`hlo_negate()`](hlo_negate.md) : Negate Operator
 - [`hlo_not()`](hlo_not.md) : Not Operator
 - [`hlo_or()`](hlo_or.md) : Or Operator
-- [`hlo_popcnt()`](hlo_popcnt.md) : Popcnt Operator
+- [`infer_types_popcnt()`](hlo_popcnt.md)
+  [`hlo_popcnt()`](hlo_popcnt.md) : Popcnt Operator
 - [`hlo_power()`](hlo_power.md) : Power Operator
-- [`hlo_reduce()`](hlo_reduce.md) : Reduce Operator
+- [`infer_types_reduce()`](hlo_reduce.md)
+  [`hlo_reduce()`](hlo_reduce.md) : Reduce Operator
 - [`hlo_remainder()`](hlo_remainder.md) : Remainder Operator
-- [`hlo_reshape()`](hlo_reshape.md) : Reshape Operator
-- [`hlo_return()`](hlo_return.md) : Return Values
-- [`hlo_reverse()`](hlo_reverse.md) : Reverse Operator
-- [`hlo_rng_bit_generator()`](hlo_rng_bit_generator.md) :
+- [`infer_types_reshape()`](hlo_reshape.md)
+  [`hlo_reshape()`](hlo_reshape.md) : Reshape Operator
+- [`hlo_return()`](hlo_return.md)
+  [`infer_types_return()`](hlo_return.md) : Return Values
+- [`infer_types_reverse()`](hlo_reverse.md)
+  [`hlo_reverse()`](hlo_reverse.md) : Reverse Operator
+- [`infer_types_rng_bit_generator()`](hlo_rng_bit_generator.md)
+  [`hlo_rng_bit_generator()`](hlo_rng_bit_generator.md) :
   RngBitGenerator Operator
 - [`hlo_round_nearest_afz()`](hlo_round_nearest_afz.md) :
   RoundNearestAfz Operator
 - [`hlo_round_nearest_even()`](hlo_round_nearest_even.md) :
   RoundNearestEven Operator
 - [`hlo_rsqrt()`](hlo_rsqrt.md) : Rsqrt Operator
-- [`hlo_select()`](hlo_select.md) : Select Operator
-- [`hlo_shift_left()`](hlo_shift_left.md) : ShiftLeft Operator
-- [`hlo_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md) :
+- [`infer_types_select()`](hlo_select.md)
+  [`hlo_select()`](hlo_select.md) : Select Operator
+- [`infer_types_shift_left()`](hlo_shift_left.md)
+  [`hlo_shift_left()`](hlo_shift_left.md) : ShiftLeft Operator
+- [`infer_types_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md)
+  [`hlo_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md) :
   ShiftRightArithmetic Operator
-- [`hlo_shift_right_logical()`](hlo_shift_right_logical.md) :
+- [`infer_types_shift_right_logical()`](hlo_shift_right_logical.md)
+  [`hlo_shift_right_logical()`](hlo_shift_right_logical.md) :
   ShiftRightLogical Operator
 - [`hlo_sign()`](hlo_sign.md) : Sign Operator
 - [`hlo_sine()`](hlo_sine.md) : Sine Operator
-- [`hlo_slice()`](hlo_slice.md) : Slice Operator
-- [`hlo_sort()`](hlo_sort.md) : Sort Operator
+- [`infer_types_slice()`](hlo_slice.md) [`hlo_slice()`](hlo_slice.md) :
+  Slice Operator
+- [`infer_types_sort()`](hlo_sort.md) [`hlo_sort()`](hlo_sort.md) : Sort
+  Operator
 - [`hlo_sqrt()`](hlo_sqrt.md) : Sqrt Operator
 - [`hlo_subtract()`](hlo_subtract.md) : Subtract Operator
 - [`hlo_tan()`](hlo_tan.md) : Tan Operator
 - [`hlo_tanh()`](hlo_tanh.md) : Tanh Operator
-- [`hlo_transpose()`](hlo_transpose.md) : Transpose Operator
-- [`hlo_while()`](hlo_while.md) : While Operator
+- [`infer_types_transpose()`](hlo_transpose.md)
+  [`hlo_transpose()`](hlo_transpose.md) : Transpose Operator
+- [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
+  While Operator
 - [`hlo_xor()`](hlo_xor.md) : Xor Operator
 - [`infer_types_boolean_biv()`](infer_types_boolean_biv.md) : Infer
   types for boolean binary operations
@@ -211,6 +237,7 @@ specification. At least initially, it will:
 - [`infer_types_generic_uni()`](infer_types_generic_uni.md) : Infer
   types for unary operations
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
+- [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
 - [`r_to_stablehlo_string()`](r_to_stablehlo_string.md) : Represent an R
   value in stableHLO
 - [`repr()`](repr.md) : Generate string representation for object

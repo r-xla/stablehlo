@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#concatenate> for details.
 ## Usage
 
 ``` r
+infer_types_concatenate(..., dimension)
+
 hlo_concatenate(..., dimension)
 ```
 

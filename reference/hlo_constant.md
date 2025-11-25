@@ -13,6 +13,8 @@ hlo_scalar(value, ..., func = NULL)
 hlo_tensor(value, ..., func = NULL)
 
 hlo_empty(dtype, shape, func = NULL)
+
+infer_types_constant(value)
 ```
 
 ## Arguments

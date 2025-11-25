@@ -6,6 +6,8 @@ details.
 ## Usage
 
 ``` r
+infer_types_shift_right_arithmetic(lhs, rhs)
+
 hlo_shift_right_arithmetic(lhs, rhs)
 ```
 

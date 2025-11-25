@@ -6,6 +6,8 @@ Specifies the return values of a [`Func`](Func.md) and finalize it.
 
 ``` r
 hlo_return(..., func = .current_func())
+
+infer_types_return(...)
 ```
 
 ## Arguments

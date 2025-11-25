@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#while> for details.
 ## Usage
 
 ``` r
+infer_types_while(..., cond, body)
+
 hlo_while(..., cond, body)
 ```
 
