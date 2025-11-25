@@ -54,6 +54,8 @@ hlo_return <- function(..., func = .current_func()) {
   return(func)
 }
 
+#' @rdname hlo_return
+#' @export
 infer_types_return <- function(...) {
   dots <- list(...)
   lapply(dots, function(x) {

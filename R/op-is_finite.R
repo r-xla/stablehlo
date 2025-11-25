@@ -3,6 +3,8 @@ NULL
 
 OpIsFinite <- new_Op("IsFinite", "is_finite")
 
+#' @rdname hlo_is_finite
+#' @export
 infer_types_is_finite <- function(operand) {
   stopifnot(inherits(operand@type, TensorType))
   ValueTypes(list(

@@ -3,6 +3,8 @@ NULL
 
 OpSort <- new_Op("OpSort", "sort")
 
+#' @rdname hlo_sort
+#' @export
 infer_types_sort <- function(..., dimension, is_stable, comparator) {
   dots <- list(...)
   input_dims <- lapply(dots, \(x) shape(x))

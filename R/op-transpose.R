@@ -3,6 +3,8 @@ NULL
 
 OpTranspose <- new_Op("OpTranspose", "transpose")
 
+#' @rdname hlo_transpose
+#' @export
 infer_types_transpose <- function(
   operand,
   permutation

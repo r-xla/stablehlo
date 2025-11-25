@@ -3,6 +3,8 @@ NULL
 
 OpConcatenate <- new_Op("OpConcatenate", "concatenate")
 
+#' @rdname hlo_concatenate
+#' @export
 infer_types_concatenate <- function(..., dimension) {
   dots <- list(...)
   input_dims <- lapply(dots, \(x) shape(x))

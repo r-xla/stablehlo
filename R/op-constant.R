@@ -236,6 +236,8 @@ impl_hlo_constant <- function(value, dtype, func, shape) {
   )
 }
 
+#' @rdname hlo_constant
+#' @export
 infer_types_constant <- function(value) {
   ValueTypes(list(value@value@type))
 }

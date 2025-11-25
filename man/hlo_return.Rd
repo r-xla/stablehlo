@@ -2,9 +2,12 @@
 % Please edit documentation in R/op-return.R
 \name{hlo_return}
 \alias{hlo_return}
+\alias{infer_types_return}
 \title{Return Values}
 \usage{
 hlo_return(..., func = .current_func())
+
+infer_types_return(...)
 }
 \arguments{
 \item{...}{(\code{\link{FuncVariable}})\cr

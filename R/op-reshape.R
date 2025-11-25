@@ -3,6 +3,8 @@ NULL
 
 OpReshape <- new_Op("OpReshape", "reshape")
 
+#' @rdname hlo_reshape
+#' @export
 infer_types_reshape <- function(
   operand,
   shape_out

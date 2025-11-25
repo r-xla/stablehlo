@@ -3,6 +3,8 @@ NULL
 
 OpSelect <- new_Op("OpSelect", "select")
 
+#' @rdname hlo_select
+#' @export
 infer_types_select <- function(
   pred,
   on_true,

@@ -3,6 +3,8 @@ NULL
 
 OpCase <- new_Op("OpCase", "case")
 
+#' @rdname hlo_case
+#' @export
 infer_types_case <- function(index, ...) {
   branches <- list(...)
 

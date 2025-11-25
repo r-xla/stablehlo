@@ -3,6 +3,8 @@ NULL
 
 OpAfterAll <- new_Op("OpAfterAll", "after_all")
 
+#' @rdname hlo_after_all
+#' @export
 infer_types_after_all <- function(...) {
   ValueTypes(list(ValueType(TokenType())))
 }
