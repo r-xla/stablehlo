@@ -28,7 +28,11 @@ infer_types_bitcast_convert <- function(
       )
   )
 
-  operand_bits <- operand@type@dtype@value
+  if (inherits(operand@type@dtype, BooleanType)) {
+    operand_bits <- 1
+  } else {
+    operand_bits <- operand@type@dtype@value
+  }
   operand_dims <- shape(operand)
 
   if (cast_to_dtype == "pred") {
