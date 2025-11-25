@@ -2,10 +2,10 @@
 
 ## Authors
 
-- **Daniel Falbel**. Author, maintainer.
+- **Daniel Falbel**. Author.
   [](https://orcid.org/https://orcid.org/0009-0006-0143-2392)
 
-- **Sebastian Fischer**. Author.
+- **Sebastian Fischer**. Author, maintainer.
   [](https://orcid.org/https://orcid.org/0000-0002-9609-3197)
 
 - **Nikolai German**. Author.
@@ -14,7 +14,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/r-xla/stablehlo/blob/feat_bitcast_convert/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/r-xla/stablehlo/blob/if-simplify/DESCRIPTION)
 
 Falbel D, Fischer S, German N (2025). *stablehlo: Write stableHLO
 programs*. R package version 0.0.0.9000,

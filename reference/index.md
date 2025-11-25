@@ -48,8 +48,6 @@
   [`hlo_after_all()`](hlo_after_all.md) : AfterAll Operator
 - [`hlo_and()`](hlo_and.md) : And Operator
 - [`hlo_atan2()`](hlo_atan2.md) : Atan2 Operator
-- [`hlo_bitcast_convert()`](hlo_bitcast_convert.md) : BitcastConvert
-  Operator
 - [`infer_types_broadcast_in_dim()`](hlo_broadcast_in_dim.md)
   [`hlo_broadcast_in_dim()`](hlo_broadcast_in_dim.md) : BroadcastInDim
   Operator
