@@ -79,7 +79,7 @@ hlo_empty(dtype = "f32", shape = c(0, 3), func = Func())
 #> Variable %0 in:
 #> func.func @ () ->  {
 #> %0 = "stablehlo.constant" () {
-#> value = dense<[]> : tensor<0x3xf32>
+#> value = dense<> : tensor<0x3xf32>
 #> }: () -> (tensor<0x3xf32>)
 #> }
 ```

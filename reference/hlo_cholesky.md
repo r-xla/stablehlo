@@ -17,3 +17,8 @@ hlo_cholesky(operand, lower)
 ## Value
 
 [`FuncVariable`](FuncVariable.md)  
+
+## Details
+
+The values of the other half of the matrix are not guaranteed and
+backend dependent.
