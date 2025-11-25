@@ -43,7 +43,6 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
 
 hlo_sort_impl <- hlo_fn(OpSort, infer_types_sort)
 
-
 #' @templateVar mnemonic sort
 #' @template op
 #' @export
