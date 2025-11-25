@@ -1,6 +1,4 @@
 test_that("basic tests", {
-  # debugonce(infer_types_bitcast_convert)
-
   # Upcasting 1: i1 -> ui8
   # throws error since last dimension should be 8, but is 16
   local_func()
@@ -12,21 +10,25 @@ test_that("basic tests", {
     )
   )
 
-  # this breaks R
-  # should convert i1 -> ui8
-  # # Upcasting 2
-  # local_func()
-  # x <- hlo_input("x", "i1", shape = c(2L, 3L, 8L))
-  # y <- hlo_bitcast_convert(
-  #   x,
-  #   dtype = "ui8"
-  # )
-  # f <- hlo_return(y)
-  # expect_snapshot(repr(f))
-  #
-  # skip_if_not_installed("pjrt")
-  # program <- pjrt_program(repr(f))
-  # exec <- pjrt_compile(program)
+  # from booleans -> error
+  local_func()
+  x <- hlo_input("x", "i1", shape = c(2L, 3L, 16L))
+  expect_error(
+    y <- hlo_bitcast_convert(
+      x,
+      dtype = "i16"
+    )
+  )
+
+  # to booleans -> error
+  local_func()
+  x <- hlo_input("x", "i16", shape = c(2L, 3L))
+  expect_error(
+    y <- hlo_bitcast_convert(
+      x,
+      dtype = "pred"
+    )
+  )
 
   # Upcasting 2: i8 -> ui32
   local_func()
