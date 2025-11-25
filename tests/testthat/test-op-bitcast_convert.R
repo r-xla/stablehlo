@@ -1,14 +1,67 @@
 test_that("basic tests", {
   # Upcasting 1: i1 -> ui8
-  # throws error since last dimension should be 8, but is 16
+  # throws error since last dimension should be 4, but is 8
   local_func()
-  x <- hlo_input("x", "i1", shape = c(2L, 3L, 16L))
+  x <- hlo_input("x", "i8", shape = c(2L, 3L, 8))
   expect_error(
     y <- hlo_bitcast_convert(
       x,
-      dtype = "ui8"
+      dtype = "ui32"
     )
   )
+
+  # upcasting 1-d tensor
+  local_func()
+  x <- hlo_input("x", "i8", shape = c(2L))
+  y <- hlo_bitcast_convert(
+    x,
+    dtype = "i16"
+  )
+  f <- hlo_return(y)
+  expect_snapshot(repr(f))
+
+  skip_if_not_installed("pjrt")
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+
+  input <- array(c(1, 10), dim = c(2))
+
+  output <- pjrt_execute(
+    exec,
+    pjrt_buffer(input, dtype = "i8")
+  )
+  expect_equal(as_array(output), 2561)
+
+  # upcasting 0-dimensional tensor -> error
+  debugonce(infer_types_bitcast_convert)
+  local_func()
+  x <- hlo_input("x", "i16")
+  expect_error(
+    y <- hlo_bitcast_convert(
+      x,
+      dtype = "i32"
+    )
+  )
+
+  # downcasting 0-dimensional tensor
+  local_func()
+  x <- hlo_input("x", "i16")
+  y <- hlo_bitcast_convert(
+    x,
+    dtype = "i8"
+  )
+  f <- hlo_return(y)
+  expect_snapshot(repr(f))
+  skip_if_not_installed("pjrt")
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+  input <- array(as.integer(2561))
+  output <- pjrt_execute(
+    exec,
+    pjrt_buffer(input, dtype = "i16")
+  )
+  expect_equal(shape(output), c(2))
+  expect_equal(as_array(output), array(c(1, 10)))
 
   # from booleans -> error
   local_func()
