@@ -4,10 +4,10 @@
 \alias{hlo_bitcast_convert}
 \title{BitcastConvert Operator}
 \usage{
-hlo_bitcast_convert(operand, cast_to_dtype)
+hlo_bitcast_convert(operand, dtype)
 }
 \arguments{
-\item{operand, cast_to_dtype}{(\code{\link{FuncVariable}})\cr}
+\item{operand, dtype}{(\code{\link{FuncVariable}})\cr}
 }
 \value{
 \code{\link{FuncVariable}}\cr
