@@ -10,9 +10,10 @@ infer_types_if(pred, true_branch, false_branch)
 hlo_if(pred, true_branch, false_branch, simplify = TRUE)
 }
 \arguments{
-\item{pred, true_branch, false_branch, simplify}{(\code{\link{FuncVariable}})\cr}
+\item{pred, true_branch, false_branch}{(\code{\link{FuncVariable}})\cr}
 
-\item{simplify}{(\code{logical(1)})\cr}
+\item{simplify}{(\code{logical(1)})\cr
+Whether to simplify results by unpacking lists of length 1 into their single element.}
 }
 \value{
 \code{\link{FuncVariable}}\cr

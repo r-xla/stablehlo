@@ -33,11 +33,14 @@ infer_types_while <- function(..., cond, body) {
 hlo_while_impl <- hlo_fn(OpWhile, infer_types_while)
 
 #' @templateVar mnemonic while
+#' @templateVar not_func_variables simplify
 #' @template op
+#' @template param_simplify
 #' @export
-hlo_while <- function(..., cond, body) {
+hlo_while <- function(..., cond, body, simplify = TRUE) {
   hlo_while_impl(
     values = list(...),
-    funcs = list(cond = cond, body = body)
+    funcs = list(cond = cond, body = body),
+    simplify = simplify
   )
 }
