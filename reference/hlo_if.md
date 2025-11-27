@@ -7,7 +7,7 @@ See <https://openxla.org/stablehlo/spec#if> for details.
 ``` r
 infer_types_if(pred, true_branch, false_branch)
 
-hlo_if(pred, true_branch, false_branch)
+hlo_if(pred, true_branch, false_branch, simplify = TRUE)
 ```
 
 ## Arguments
@@ -15,6 +15,12 @@ hlo_if(pred, true_branch, false_branch)
 - pred, true_branch, false_branch:
 
   ([`FuncVariable`](FuncVariable.md))  
+
+- simplify:
+
+  (`logical(1)`)  
+  Whether to simplify results by unpacking lists of length 1 into their
+  single element.
 
 ## Value
 
