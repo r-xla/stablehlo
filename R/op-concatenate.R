@@ -68,7 +68,7 @@ hlo_concatenate <- function(..., dimension) {
   )
 }
 
-method(repr, OpConcatenate) <- function(x) {
+method(repr, OpConcatenate) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",

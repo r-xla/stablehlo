@@ -86,7 +86,7 @@ hlo_broadcast_in_dim <- function(
   )
 }
 
-method(repr, OpBroadcastInDim) <- function(x) {
+method(repr, OpBroadcastInDim) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",

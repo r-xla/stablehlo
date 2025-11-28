@@ -127,7 +127,7 @@ is_dtype <- function(x) {
 }
 
 method(`==`, list(TensorDataType, TensorDataType)) <- function(e1, e2) {
-  if (!identical(S7::S7_class(e1), S7::S7_class(e2))) {
+  if (!identical(class(e1), class(e2))) {
     return(FALSE)
   }
   if (inherits(e1, BooleanType)) {
@@ -194,7 +194,7 @@ method(as_dtype, TensorDataType) <- function(x) {
 }
 
 method(`!=`, list(TensorDataType, TensorDataType)) <- function(e1, e2) {
-  !(e1 == e2)
+  !(e1 == e2) # nolint
 }
 
 #' @title TensorType
@@ -211,6 +211,14 @@ TensorType <- new_class(
     shape = Shape
   )
 )
+
+method(`==`, list(TensorType, TensorType)) <- function(e1, e2) {
+  e1@dtype == e2@dtype && e1@shape == e2@shape
+}
+
+method(`!=`, list(TensorType, TensorType)) <- function(e1, e2) {
+  !(e1 == e2) # nolint
+}
 
 method(repr, TensorType) <- function(x) {
   paste0(
@@ -293,17 +301,6 @@ value_type_union <- S7::new_union(
   TokenType,
   TensorType
 )
-
-method(`==`, list(value_type_union, value_type_union)) <- function(e1, e2) {
-  if (!identical(S7::S7_class(e1), S7::S7_class(e2))) {
-    return(FALSE)
-  }
-  if (inherits(e1, TokenType)) {
-    return(TRUE)
-  }
-  # TensorType
-  e1@dtype == e2@dtype && e1@shape == e2@shape
-}
 
 make_value_type <- function(str, shape = NULL) {
   assert_string(str)

@@ -87,7 +87,7 @@ hlo_rng_bit_generator <- function(
   )
 }
 
-method(repr, OpRngBitGenerator) <- function(x) {
+method(repr, OpRngBitGenerator) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = \"stablehlo.rng_bit_generator\" ",

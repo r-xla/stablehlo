@@ -60,7 +60,7 @@ hlo_select <- function(
   )
 }
 
-method(repr, OpSelect) <- function(x) {
+method(repr, OpSelect) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",

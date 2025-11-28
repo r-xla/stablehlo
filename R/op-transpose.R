@@ -77,7 +77,7 @@ hlo_transpose <- function(
   )
 }
 
-method(repr, OpTranspose) <- function(x) {
+method(repr, OpTranspose) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",
