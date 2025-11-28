@@ -46,7 +46,7 @@ hlo_reshape <- function(
   )
 }
 
-method(repr, OpReshape) <- function(x) {
+method(repr, OpReshape) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",

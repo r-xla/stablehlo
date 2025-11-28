@@ -103,7 +103,7 @@ hlo_slice <- function(
   )
 }
 
-method(repr, OpSlice) <- function(x) {
+method(repr, OpSlice) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",

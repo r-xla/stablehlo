@@ -47,7 +47,12 @@ hlo_compare <- function(
   )
 }
 
-method(repr, OpCompare) <- function(x, toplevel = TRUE, simplify_dense = TRUE) {
+method(repr, OpCompare) <- function(
+  x,
+  toplevel = TRUE,
+  simplify_dense = TRUE,
+  ...
+) {
   paste0(
     repr(x@outputs),
     " = stablehlo.compare ",

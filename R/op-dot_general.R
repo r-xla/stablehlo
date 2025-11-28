@@ -106,7 +106,7 @@ method(repr, DotDimensionNumbers) <- function(x) {
   )
 }
 
-method(repr, OpDotGeneral) <- function(x) {
+method(repr, OpDotGeneral) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",

@@ -85,7 +85,7 @@ hlo_bitcast_convert <- function(
   )
 }
 
-method(repr, OpBitcastConvert) <- function(x) {
+method(repr, OpBitcastConvert) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",

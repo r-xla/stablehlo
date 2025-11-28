@@ -59,7 +59,7 @@ hlo_reverse <- function(
   )
 }
 
-method(repr, OpReverse) <- function(x) {
+method(repr, OpReverse) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",

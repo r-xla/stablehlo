@@ -58,7 +58,7 @@ hlo_sort <- function(..., dimension, is_stable, comparator) {
   )
 }
 
-method(repr, OpSort) <- function(x) {
+method(repr, OpSort) <- function(x, ...) {
   paste0(
     repr(x@outputs),
     " = ",

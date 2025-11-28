@@ -64,7 +64,7 @@ infer_types_return <- function(...) {
   ValueTypes()
 }
 
-method(repr, OpReturn) <- function(x, toplevel = TRUE) {
+method(repr, OpReturn) <- function(x, toplevel = TRUE, ...) {
   paste0(
     repr(x@outputs),
     if (toplevel) "\"func.return\"" else "\"stablehlo.return\"",
