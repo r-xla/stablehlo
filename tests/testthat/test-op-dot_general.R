@@ -102,3 +102,16 @@ test_that("no contracting dims", {
   out <- pjrt_execute(exec, x1, x2)
   expect_equal(as_array(out), outer(1:10, 2:11))
 })
+
+test_that("get nice error messages when shapes don't match", {
+  local_func()
+  lhs <- hlo_input("lhs", "f32", shape = c(10, 1))
+  rhs <- hlo_input("rhs", "f32", shape = c())
+  expect_snapshot_error({
+    hlo_dot_general(
+      lhs,
+      rhs,
+      contracting_dims = list(0L, 0L)
+    )
+  })
+})

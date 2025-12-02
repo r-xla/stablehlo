@@ -23,10 +23,16 @@ infer_types_dot_general <- function(
   dim_batch1 <- dim_lhs[batching_dims[[1L]] + 1L]
   dim_batch2 <- dim_rhs[batching_dims[[2L]] + 1L]
   if (!identical(dim_merge1, dim_merge2)) {
-    cli_abort("Contracting dimensions must be the same")
+    cli_abort(c(
+      x = "Contracting dimensions must be the same",
+      i = format_shapes_msg("Got:", lhs=dim_lhs, rhs=dim_rhs)
+    ))
   }
   if (!identical(dim_batch1, dim_batch2)) {
-    cli_abort("Batching dimensions must be the same")
+    cli_abort(c(
+      x = "Batching dimensions must be the same",
+      i = format_shapes_msg("Got:", lhs=dim_lhs, rhs=dim_rhs)
+    ))
   }
 
   ii1 <- c(contracting_dims[[1L]], batching_dims[[1L]])

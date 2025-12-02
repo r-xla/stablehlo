@@ -12,3 +12,8 @@
     Output
       [1] "func.func @main (%lhs: tensor<1x5x4xf32>, %rhs: tensor<4x3x1xf32>) -> tensor<1x5x3xf32> {\n%0 = stablehlo.dot_general %lhs, %rhs, batching_dims = [0] x [2], contracting_dims = [2] x [0]: (tensor<1x5x4xf32>, tensor<4x3x1xf32>) -> (tensor<1x5x3xf32>)\n\"func.return\"(%0): (tensor<1x5x3xf32>) -> ()\n}\n"
 
+# get nice error messages when shapes don't match
+
+    x Contracting dimensions must be the same
+    i Got: lhs=[10x1], rhs=[]
+
