@@ -95,7 +95,9 @@ format_shapes_msg <- function(prefix, ...) {
   }
 
   msgs <- paste0(
-    "{.field ", names(shapes), "}=[", 
+    "{.field ",
+    names(shapes),
+    "}=[",
     sapply(shapes, paste0, collapse = "x"),
     "]"
   )
