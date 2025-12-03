@@ -345,16 +345,3 @@ method(repr, ValueTypes) <- function(x) {
     collapse = ", "
   )
 }
-
-check_types_equal <- function(lhs, rhs, ..., msg = NULL) {
-  rlang::check_dots_empty()
-
-  if (lhs == rhs) {
-    return()
-  }
-
-  cli_abort(c(
-    x = msg %||% "Expected types to be equal.",
-    i = "Got lhs={.val {repr(lhs)}}, rhs={.val {repr(rhs)}}."
-  ))
-}

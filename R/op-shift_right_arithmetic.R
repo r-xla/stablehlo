@@ -10,10 +10,9 @@ OpShiftRightArithmetic <- new_Op(
 #' @export
 # fmt: skip
 infer_types_shift_right_arithmetic <- function(lhs, rhs) { # nolint
-  stopifnot(inherits(lhs@type, TensorType))
-  check_types_equal(lhs@type, rhs@type)
-  assert_one_of(lhs@type@dtype, IntegerType, UnsignedType, BooleanType)
-  stopifnot(lhs@type@dtype == rhs@type@dtype)
+  assert_vt_is_tensor(lhs)
+  assert_vt_equal(lhs, rhs)
+  assert_vt_has_dtype(lhs, IntegerType, UnsignedType, BooleanType)
   ValueTypes(list(lhs))
 }
 

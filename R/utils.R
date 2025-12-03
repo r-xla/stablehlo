@@ -3,15 +3,6 @@
 NULL
 
 
-assert_one_of <- function(x, ...) {
-  for (type in list(...)) {
-    if (inherits(x, type)) {
-      return(TRUE)
-    }
-  }
-  cli_abort("Invalid type")
-}
-
 func_output_types <- function(func) {
   stopifnot(inherits(func, Func))
   lapply(func@outputs@items, function(x) x@type)
