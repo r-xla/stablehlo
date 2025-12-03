@@ -194,9 +194,8 @@ test_that("nan, inf, -inf", {
   expect_equal(outs[[3]], NaN)
 })
 
-test_that("issue 107: splat constant representation and execution", {
+test_that("Efficient representation of constants with single value", {
   local_func()
-  # Test representation
   res <- hlo_tensor(1.0, shape = c(2, 2), dtype = "f32")
   f <- hlo_return(res)
   expect_snapshot(repr(f))
