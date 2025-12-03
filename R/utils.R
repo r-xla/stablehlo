@@ -85,3 +85,22 @@ maybe_restore_previous_func <- function(func = NULL) {
     globals[["CURRENT_FUNC"]] <- NULL
   }
 }
+
+format_shapes_msg <- function(prefix, ...) {
+  rlang::check_dots_used()
+  shapes <- list(...)
+
+  if (!all(names(shapes) != "")) {
+    cli::cli_abort("All shapes should be named")
+  }
+
+  msgs <- paste0(
+    "{.field ",
+    names(shapes),
+    "}=[",
+    sapply(shapes, paste0, collapse = "x"),
+    "]"
+  )
+
+  paste(prefix, paste(msgs, collapse = ", "))
+}
