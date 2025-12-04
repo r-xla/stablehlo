@@ -10,10 +10,8 @@ infer_types_select <- function(
   on_true,
   on_false
 ) {
-  stopifnot(inherits(pred@type, TensorType))
-  assert_one_of(pred@type@dtype, BooleanType)
-  stopifnot(inherits(on_true@type, TensorType))
-  stopifnot(inherits(on_false@type, TensorType))
+  assert_vts_are_tensors(pred = pred, on_true = on_true, on_false = on_false)
+  assert_vt_has_dtype(pred, BooleanType)
 
   result_dims <- shape(on_true)
 
