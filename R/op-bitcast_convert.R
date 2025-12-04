@@ -3,6 +3,8 @@ NULL
 
 OpBitcastConvert <- new_Op("OpBitcastConvert", "bitcast_convert")
 
+#' @rdname hlo_bitcast_convert
+#' @export
 infer_types_bitcast_convert <- function(
   operand,
   dtype
