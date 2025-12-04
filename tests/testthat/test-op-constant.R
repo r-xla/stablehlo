@@ -193,3 +193,15 @@ test_that("nan, inf, -inf", {
   expect_equal(outs[[2]], -Inf)
   expect_equal(outs[[3]], NaN)
 })
+
+test_that("Efficient representation of constants with single value", {
+  local_func()
+  res <- hlo_tensor(1.0, shape = c(2, 2), dtype = "f32")
+  f <- hlo_return(res)
+  expect_snapshot(repr(f))
+  skip_if_not_installed("pjrt")
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+  result_buffer <- pjrt_execute(exec)
+  expect_equal(result_buffer, pjrt_buffer(1.0, shape = c(2, 2), dtype = "f32"))
+})

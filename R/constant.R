@@ -84,7 +84,15 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
       repr(type)
     ))
   }
-  # >= 1D arrays
+
+  if (length(value_reprs) == 1) {
+    return(paste0(
+      "dense<",
+      value_reprs,
+      "> : ",
+      repr(type)
+    ))
+  }
 
   dim2 <- function(d) {
     if (is.array(d)) {

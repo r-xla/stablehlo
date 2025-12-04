@@ -122,14 +122,14 @@
     Code
       repr(hlo_tensor(1, func = hlo_func())@func)
     Output
-      [1] "func.func @main () ->  {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<[1.00000000e+00]> : tensor<1xf32>\n}: () -> (tensor<1xf32>)\n}\n"
+      [1] "func.func @main () ->  {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1.00000000e+00> : tensor<1xf32>\n}: () -> (tensor<1xf32>)\n}\n"
 
 # PJRTBuffer
 
     Code
       repr(hlo_tensor(pjrt_buffer(1L, dtype = "i32"), func = hlo_func())@func)
     Output
-      [1] "func.func @main () ->  {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<[1]> : tensor<1xi32>\n}: () -> (tensor<1xi32>)\n}\n"
+      [1] "func.func @main () ->  {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1> : tensor<1xi32>\n}: () -> (tensor<1xi32>)\n}\n"
 
 ---
 
@@ -170,4 +170,11 @@
       value = dense<false> : tensor<i1>
       }: () -> (tensor<i1>)
       }
+
+# Efficient representation of constants with single value
+
+    Code
+      repr(f)
+    Output
+      [1] "func.func @main () -> tensor<2x2xf32> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1.00000000e+00> : tensor<2x2xf32>\n}: () -> (tensor<2x2xf32>)\n\"func.return\"(%0): (tensor<2x2xf32>) -> ()\n}\n"
 
