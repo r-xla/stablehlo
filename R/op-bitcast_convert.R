@@ -9,7 +9,7 @@ infer_types_bitcast_convert <- function(
   operand,
   dtype
 ) {
-  stopifnot(inherits(operand@type, TensorType))
+  assert_vt_has_ttype(operand, TensorType)
 
   if (
     # https://github.com/openxla/stablehlo/issues/1672

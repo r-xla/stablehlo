@@ -9,7 +9,7 @@ infer_types_transpose <- function(
   operand,
   permutation
 ) {
-  stopifnot(inherits(operand@type, TensorType))
+  assert_vt_is_tensor(operand)
 
   operand_dims <- shape(operand)
   rank <- length(operand_dims)

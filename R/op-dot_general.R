@@ -9,9 +9,8 @@ infer_types_dot_general <- function(
   rhs,
   dot_dimension_numbers
 ) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(inherits(rhs@type, TensorType))
-  stopifnot(lhs@type@dtype == rhs@type@dtype)
+  assert_vts_are_tensors(lhs, rhs)
+  assert_vts_have_same_dtype(lhs, rhs)
   dim_lhs <- shape(lhs)
   dim_rhs <- shape(rhs)
   contracting_dims <- dot_dimension_numbers@contracting_dims

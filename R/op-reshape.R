@@ -9,13 +9,16 @@ infer_types_reshape <- function(
   operand,
   shape_out
 ) {
-  stopifnot(inherits(operand@type, TensorType))
+  assert_vt_is_tensor(operand)
 
   result_dims <- as.integer(shape_out)
 
   # (C2) size(operand) = size(result)
   if (prod(shape(operand)) != prod(result_dims)) {
-    cli_abort("Size of output must equal to size of operand")
+    cli_abort(
+      "Size of output must equal to size of operand",
+      x = "Got {.val {prod(shape(operand))}} and {.val {prod(result_dims)}}."
+    )
   }
 
   ValueTypes(list(

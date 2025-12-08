@@ -6,6 +6,7 @@ OpConcatenate <- new_Op("OpConcatenate", "concatenate")
 #' @rdname hlo_concatenate
 #' @export
 infer_types_concatenate <- function(..., dimension) {
+  assert_vts_are_tensors(...)
   dots <- list(...)
   input_dims <- lapply(dots, \(x) shape(x))
 

@@ -74,9 +74,9 @@ assert_inherits_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
   }
 
   type_names <- vapply(
+    # nolint
     types,
     function(t) {
-      # nolint
       if (inherits(t, "S7_class")) {
         return(t@name)
       }
@@ -95,10 +95,18 @@ assert_inherits_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
 }
 
 assert_vt_is_tensor <- function(x, arg = rlang::caller_arg(x)) {
-  if (!inherits(x@type, TensorType)) {
+  force(arg)
+  if (!inherits(x, ValueType)) {
     cli_abort(c(
-      "{.arg {arg}} must be a tensor.",
-      x = "Got {.val {repr(x@type)}}."
+      "{.arg {arg}} must be a ValueType.",
+      x = "Got {.class {class(x)[1]}}."
+    ))
+  }
+  x <- x@type
+  if (!inherits(x, TensorType)) {
+    cli_abort(c(
+      "{.arg {arg}} must contain a TensorType.",
+      x = "Got {.class {S7::S7_class(x)@name}}."
     ))
   }
 }
@@ -127,4 +135,73 @@ assert_vt_has_dtype <- function(x, ..., arg = rlang::caller_arg(x)) {
   }
 
   assert_inherits_one_of(x@type@dtype, ..., arg = paste0("dtype(", arg, ")"))
+}
+
+assert_vt_has_ttype <- function(
+  x,
+  ...,
+  shape = NULL,
+  arg = rlang::caller_arg(x)
+) {
+  if (!inherits(x, ValueType)) {
+    cli_abort(c(
+      "{.arg {arg}} must be a ValueType.",
+      x = "Got {.class {class(x)[1]}}."
+    ))
+  }
+  force(arg)
+  x <- x@type
+  if (!inherits(x, TensorType)) {
+    cli_abort(c(
+      "{.arg {arg}} must be a tensor to have a type.",
+      x = "Got {.val {repr(x)}}."
+    ))
+  }
+
+  dtypes <- list(...)
+
+  # Filter out TensorType (it's already checked above)
+  dtypes <- Filter(function(dt) !identical(dt, TensorType), dtypes)
+
+  # If there are actual dtypes to check, verify the dtype matches at least one
+  if (length(dtypes) > 0) {
+    type_names <- vapply(dtypes, \(dt) dt@name, character(1)) # nolint
+
+    dtype_matched <- FALSE
+    for (dtype in dtypes) {
+      if (inherits(x@dtype, dtype)) {
+        dtype_matched <- TRUE
+        break
+      }
+    }
+
+    if (!dtype_matched) {
+      cli_abort(c(
+        "{.arg {arg}} must be one of {.or {type_names}}.",
+        x = "Got {.class {S7::S7_class(x@dtype)@name}}."
+      ))
+    }
+  }
+
+  repr_shape <- function(s) {
+    # nolint
+    paste0("(", s, collapse = ",", ")")
+  }
+
+  if (!is.null(shape) && !identical(stablehlo::shape(x), shape)) {
+    cli_abort(c(
+      "{.arg {arg}} must have shape {repr_shape(shape)}.",
+      x = "Got {repr_shape(stablehlo::shape(x))}."
+    ))
+  }
+}
+
+
+assert_vts_have_same_dtype <- function(x, y, arg = rlang::caller_arg(x)) {
+  if (x@type@dtype != y@type@dtype) {
+    cli_abort(c(
+      "{.arg {arg}} must have the same dtype.",
+      x = "Got {.class {S7::S7_class(x@type@dtype)@name}} and {.class {S7::S7_class(y@type@dtype)@name}}."
+    ))
+  }
 }

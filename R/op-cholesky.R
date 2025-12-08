@@ -7,7 +7,7 @@ infer_types_cholesky <- function(
   operand,
   lower
 ) {
-  stopifnot(inherits(operand@type, TensorType))
+  assert_vt_is_tensor(operand)
 
   # Extract operand dims and rank
   operand_dims <- shape(operand)

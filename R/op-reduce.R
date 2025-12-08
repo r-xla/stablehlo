@@ -7,6 +7,7 @@ OpReduce <- new_Op("OpReduce", "reduce")
 #' @rdname hlo_reduce
 #' @export
 infer_types_reduce <- function(..., body, dimensions) {
+  assert_vts_are_tensors(...)
   value_types <- list(...)
 
   if (length(value_types) %% 2L != 0L) {
@@ -21,12 +22,10 @@ infer_types_reduce <- function(..., body, dimensions) {
   input_value_types <- value_types[seq_len(num_inputs)]
   init_value_types <- value_types[seq_len(num_inputs) + num_inputs]
 
-  lapply(input_value_types, function(vt) {
-    stopifnot(inherits(vt@type, TensorType))
-  })
   lapply(init_value_types, function(vt) {
-    stopifnot(inherits(vt@type, TensorType))
-    stopifnot(length(vt@type@shape@dims) == 0L)
+    if (length(vt@type@shape@dims) != 0L) {
+      cli_abort("init_values must be 0-D tensors")
+    }
   })
 
   # All inputs must have the same shape
@@ -51,7 +50,7 @@ infer_types_reduce <- function(..., body, dimensions) {
     if (any(dims0 < 0L | dims0 >= rank)) {
       cli_abort("dimensions must be within [0, rank(operand))")
     }
-    if (any(duplicated(dims0))) {
+    if (anyDuplicated(dims0)) {
       cli_abort("dimensions must be unique")
     }
   }
@@ -73,7 +72,9 @@ infer_types_reduce <- function(..., body, dimensions) {
   out_vts <- lapply(seq_len(num_inputs), function(i) {
     out_elem_vt <- body_out_types@items[[i]]
     # Expect 0-D tensor element type; take dtype from it
-    stopifnot(inherits(out_elem_vt@type, TensorType))
+    if (length(out_elem_vt@type@shape@dims) != 0L) {
+      cli_abort("body outputs must be 0-D tensors")
+    }
     ValueType(
       TensorType(
         dtype = out_elem_vt@type@dtype,

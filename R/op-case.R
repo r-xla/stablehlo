@@ -9,9 +9,7 @@ infer_types_case <- function(index, ...) {
   branches <- list(...)
 
   # (I1) index is 0-dim si32
-  stopifnot(inherits(index@type, TensorType))
-  stopifnot(length(index@type@shape@dims) == 0L)
-  stopifnot(identical(index@type@dtype, IntegerType(32L)))
+  assert_vt_has_ttype(index, TensorType, shape = integer())
 
   # (C1) 0 < size(branches)
   stopifnot(length(branches) > 0L)
