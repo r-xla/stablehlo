@@ -4,6 +4,8 @@
 <url><loc>/LICENSE-text.html</loc></url>
 <url><loc>/LICENSE.html</loc></url>
 <url><loc>/SPEC.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/stablehlo.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/news/index.html</loc></url>
@@ -18,7 +20,7 @@
 <url><loc>/reference/FuncInputs.html</loc></url>
 <url><loc>/reference/FuncOutput.html</loc></url>
 <url><loc>/reference/FuncOutputs.html</loc></url>
-<url><loc>/reference/FuncVariable.html</loc></url>
+<url><loc>/reference/FuncValue.html</loc></url>
 <url><loc>/reference/IntegerType.html</loc></url>
 <url><loc>/reference/Op.html</loc></url>
 <url><loc>/reference/OpInputAttr.html</loc></url>

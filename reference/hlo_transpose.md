@@ -14,8 +14,8 @@ hlo_transpose(operand, permutation)
 
 - operand, permutation:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  

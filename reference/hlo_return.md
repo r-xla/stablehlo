@@ -14,7 +14,7 @@ infer_types_return(...)
 
 - ...:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
   Return values. There must be at least one.
 
 - func:

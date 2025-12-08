@@ -12,8 +12,8 @@ hlo_sine(operand)
 
 - operand:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  

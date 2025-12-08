@@ -14,8 +14,8 @@ hlo_reshape(operand, shape_out)
 
 - operand, shape_out:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  

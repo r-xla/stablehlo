@@ -14,8 +14,8 @@ hlo_sort(..., dimension, is_stable, comparator)
 
 - ..., dimension, is_stable, comparator:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  

@@ -14,7 +14,7 @@ hlo_if(pred, true_branch, false_branch, simplify = TRUE)
 
 - pred, true_branch, false_branch:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 - simplify:
 
@@ -24,4 +24,4 @@ hlo_if(pred, true_branch, false_branch, simplify = TRUE)
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  
