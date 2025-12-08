@@ -106,7 +106,7 @@ specification. At least initially, it will:
 - [`FuncInputs()`](FuncInputs.md) : FuncInputs
 - [`FuncOutput()`](FuncOutput.md) : FuncOutput
 - [`FuncOutputs()`](FuncOutputs.md) : FuncOutputs
-- [`FuncVariable()`](FuncVariable.md) : FuncVariable
+- [`FuncValue()`](FuncValue.md) : FuncValue
 - [`IntegerType()`](IntegerType.md) : IntegerType (signed)
 - [`Op()`](Op.md) : Op
 - [`OpInputAttr()`](OpInputAttr.md) : OpInputAttr
@@ -246,3 +246,8 @@ specification. At least initially, it will:
 - [`repr()`](repr.md) : Generate string representation for object
 - [`repr_env2name()`](repr_env2name.md) : Convert environment to name
 
+# Articles
+
+### All vignettes
+
+- [Get Started](stablehlo.md):

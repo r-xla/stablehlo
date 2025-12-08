@@ -14,8 +14,8 @@ hlo_broadcast_in_dim(operand, broadcast_dimensions, shape_out)
 
 - operand, broadcast_dimensions, shape_out:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  

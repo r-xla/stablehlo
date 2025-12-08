@@ -14,8 +14,8 @@ hlo_select(pred, on_true, on_false)
 
 - pred, on_true, on_false:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  

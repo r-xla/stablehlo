@@ -14,7 +14,7 @@ hlo_dot_general(lhs, rhs, contracting_dims, batching_dims = NULL)
 
 - lhs, rhs, contracting_dims, batching_dims:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 - dot_dimension_numbers:
 
@@ -23,4 +23,4 @@ hlo_dot_general(lhs, rhs, contracting_dims, batching_dims = NULL)
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  

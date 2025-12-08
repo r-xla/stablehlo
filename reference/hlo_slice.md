@@ -14,8 +14,8 @@ hlo_slice(operand, start_indices, limit_indices, strides)
 
 - operand, start_indices, limit_indices, strides:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  

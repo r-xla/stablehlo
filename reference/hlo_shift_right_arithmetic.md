@@ -15,8 +15,8 @@ hlo_shift_right_arithmetic(lhs, rhs)
 
 - lhs, rhs:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  

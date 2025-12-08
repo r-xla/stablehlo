@@ -14,7 +14,7 @@ hlo_while(..., cond, body, simplify = TRUE)
 
 - ..., cond, body:
 
-  ([`FuncVariable`](FuncVariable.md))  
+  ([`FuncValue`](FuncValue.md))  
 
 - simplify:
 
@@ -24,4 +24,4 @@ hlo_while(..., cond, body, simplify = TRUE)
 
 ## Value
 
-[`FuncVariable`](FuncVariable.md)  
+[`FuncValue`](FuncValue.md)  
