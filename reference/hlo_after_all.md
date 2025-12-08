@@ -14,8 +14,8 @@ hlo_after_all(...)
 
 - ...:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncVariable`](FuncVariable.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncVariable`](FuncVariable.md)  

@@ -14,7 +14,7 @@
 - [`FuncInputs()`](FuncInputs.md) : FuncInputs
 - [`FuncOutput()`](FuncOutput.md) : FuncOutput
 - [`FuncOutputs()`](FuncOutputs.md) : FuncOutputs
-- [`FuncValue()`](FuncValue.md) : FuncValue
+- [`FuncVariable()`](FuncVariable.md) : FuncVariable
 - [`IntegerType()`](IntegerType.md) : IntegerType (signed)
 - [`Op()`](Op.md) : Op
 - [`OpInputAttr()`](OpInputAttr.md) : OpInputAttr

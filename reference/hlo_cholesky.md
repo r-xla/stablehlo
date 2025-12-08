@@ -12,11 +12,11 @@ hlo_cholesky(operand, lower)
 
 - operand, lower:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncVariable`](FuncVariable.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncVariable`](FuncVariable.md)  
 
 ## Details
 

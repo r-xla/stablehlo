@@ -18,8 +18,8 @@ hlo_reduce(inputs, init_values, dimensions, body)
 
 - inputs, init_values, dimensions, body:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncVariable`](FuncVariable.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncVariable`](FuncVariable.md)  

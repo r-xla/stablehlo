@@ -15,8 +15,8 @@ hlo_shift_right_logical(lhs, rhs)
 
 - lhs, rhs:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncVariable`](FuncVariable.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncVariable`](FuncVariable.md)  

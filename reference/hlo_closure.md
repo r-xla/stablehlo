@@ -13,13 +13,13 @@ hlo_closure(...)
 
 - ...:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncVariable`](FuncVariable.md))  
   The variables to capture.
 
 ## Value
 
 ([`list()`](https://rdrr.io/r/base/list.html) of
-[`FuncValue`](FuncValue.md))
+[`FuncVariable`](FuncVariable.md))
 
 ## Examples
 

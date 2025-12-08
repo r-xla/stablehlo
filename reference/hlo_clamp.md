@@ -14,8 +14,8 @@ hlo_clamp(Min, operand, Max)
 
 - Min, operand, Max:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncVariable`](FuncVariable.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncVariable`](FuncVariable.md)  

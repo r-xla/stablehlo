@@ -1,11 +1,11 @@
-# FuncValue
+# FuncVariable
 
 This represents a variable within a function.
 
 ## Usage
 
 ``` r
-FuncValue(value_id = ValueId(), value_type = ValueType(), func = Func())
+FuncVariable(value_id = ValueId(), value_type = ValueType(), func = Func())
 ```
 
 ## Arguments

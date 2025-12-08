@@ -14,8 +14,8 @@ hlo_bitcast_convert(operand, dtype)
 
 - operand, dtype:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncVariable`](FuncVariable.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncVariable`](FuncVariable.md)  

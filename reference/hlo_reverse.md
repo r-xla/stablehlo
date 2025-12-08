@@ -14,8 +14,8 @@ hlo_reverse(operand, dimensions)
 
 - operand, dimensions:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncVariable`](FuncVariable.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncVariable`](FuncVariable.md)  

@@ -14,8 +14,8 @@ hlo_compare(lhs, rhs, comparison_direction, compare_type)
 
 - lhs, rhs, comparison_direction, compare_type:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncVariable`](FuncVariable.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncVariable`](FuncVariable.md)  

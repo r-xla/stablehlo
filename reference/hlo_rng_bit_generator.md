@@ -19,8 +19,8 @@ hlo_rng_bit_generator(
 
 - initial_state, rng_algorithm, dtype, shape_out:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncVariable`](FuncVariable.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncVariable`](FuncVariable.md)  
