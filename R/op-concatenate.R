@@ -15,10 +15,6 @@ infer_types_concatenate <- function(..., dimension) {
     cli_abort("must have at least one input")
   }
 
-  lapply(dots, function(x) {
-    stopifnot(inherits(x, ValueType))
-  })
-
   # (C1) same(element_type(inputs...))
   dtypes <- lapply(dots, \(x) x@type@dtype)
   if (length(unique(dtypes)) != 1) {

@@ -4,7 +4,9 @@ NULL
 
 
 func_output_types <- function(func) {
-  stopifnot(inherits(func, Func))
+  if (!inherits(func, Func)) {
+    cli_abort("func must be a Func object, but got {.class {class(func)[1]}}.")
+  }
   lapply(func@outputs@items, function(x) x@type)
 }
 

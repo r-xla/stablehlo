@@ -18,8 +18,8 @@ infer_types_bitcast_convert <- function(
     cli_abort("Bitcast conversions from and to booleans are not supported.")
   }
 
-  stopifnot(
-    dtype %in%
+  if (
+    !(dtype %in%
       c(
         "i8",
         "i16",
@@ -33,8 +33,10 @@ infer_types_bitcast_convert <- function(
         "f16",
         "f32",
         "f64"
-      )
-  )
+      ))
+  ) {
+    cli_abort("Unsupported dtype: {dtype}")
+  }
 
   operand_bits <- operand@type@dtype@value
   operand_dims <- shape(operand)

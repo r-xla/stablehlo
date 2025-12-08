@@ -8,7 +8,9 @@ baseline_type <- function(x) {
 
 # shortcut for element_type(baseline_type(x))
 baseline_element_type <- function(x) {
-  stopifnot(inherits(x, ValueType))
+  if (!inherits(x, ValueType)) {
+    cli_abort("x must be a ValueType, but got {.class {class(x)[1]}}.")
+  }
   if (is(x@type, TensorType)) {
     return(x@type@dtype)
   } else if (is(x@type, TokenType)) {
