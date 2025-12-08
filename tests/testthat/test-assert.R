@@ -77,7 +77,7 @@ test_that("assert_vt_equal", {
   )
 })
 
-test_that("assert_vt_has_same_dtype", {
+test_that("assert_vts_have_same_dtype", {
   x <- vt("i32", integer())
   y <- vt("f32", integer())
   z <- vt("i32", 1L)
