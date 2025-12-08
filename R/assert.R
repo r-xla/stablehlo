@@ -1,41 +1,3 @@
-assert_tensor_constant <- function(
-  x,
-  ndims = NULL,
-  dtype = NULL,
-  null_ok = FALSE,
-  arg = rlang::caller_arg(x)
-) {
-  if (is.null(x) && null_ok) {
-    return()
-  }
-  if (!inherits(x, Constant)) {
-    cli_abort(c(
-      "{.arg {arg}} must be an: {.cls anvil::Constant}.",
-      x = "Got {.cls {class(x)[1]}}."
-    ))
-  }
-  if (!inherits(x@value, TensorConstant)) {
-    cli_abort(c(
-      "{.arg {arg}} must wrap a {.cls anvil::TensorConstant}.",
-      x = "Got {.cls {class(x@value)[1]}}."
-    ))
-  }
-  if (!is.null(ndims) && length(shape(x@value)) != ndims) {
-    cli_abort(c(
-      "{.arg {arg}} must have {.val {ndims}} dimensions.",
-      x = "Got {.val {length(shape(x@value))}} dimensions."
-    ))
-  }
-
-  if (!is.null(dtype) && repr(x@value@type@dtype) != dtype) {
-    cli_abort(c(
-      "{.arg {arg}} must have element type {.val {dtype}}.",
-      x = "Got {.val {x@value@type@dtype}}."
-    ))
-  }
-}
-
-
 assert_valid_name <- function(name, arg = rlang::caller_arg(name)) {
   assert_string(
     name,
@@ -43,7 +5,6 @@ assert_valid_name <- function(name, arg = rlang::caller_arg(name)) {
     .var.name = arg
   )
 }
-
 
 assert_vt_equal <- function(
   x,
@@ -55,6 +16,10 @@ assert_vt_equal <- function(
   arg_y = rlang::caller_arg(y)
 ) {
   rlang::check_dots_empty()
+
+  if (is_tensor) {
+    assert_vts_are_tensors(x, y)
+  }
 
   if (x == y) {
     return()
@@ -133,13 +98,13 @@ assert_vt_has_ttype <- function(
   shape = NULL,
   arg = rlang::caller_arg(x)
 ) {
+  force(arg)
   if (!inherits(x, ValueType)) {
     cli_abort(c(
       "{.arg {arg}} must be a ValueType.",
       x = "Got {.class {class(x)[1]}}."
     ))
   }
-  force(arg)
   x <- x@type
   if (!inherits(x, TensorType)) {
     cli_abort(c(

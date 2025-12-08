@@ -91,49 +91,6 @@ test_that("assert_vts_have_same_dtype", {
   )
 })
 
-test_that("assert_tensor_constant", {
-  expect_error(
-    assert_tensor_constant(1L),
-    "must be an.*Constant"
-  )
-
-  expect_error(
-    assert_tensor_constant(NULL, null_ok = TRUE),
-    NA
-  )
-  expect_error(
-    assert_tensor_constant(NULL, null_ok = FALSE),
-    "must be an.*Constant"
-  )
-
-  tensor_const <- Constant(TensorConstant(
-    data = 1:6,
-    type = TensorType(IntegerType(32L), Shape(c(2L, 3L)))
-  ))
-  expect_error(
-    assert_tensor_constant(tensor_const),
-    NA
-  )
-
-  expect_error(
-    assert_tensor_constant(tensor_const, ndims = 1L),
-    "must have.*1.*dimensions"
-  )
-  expect_error(
-    assert_tensor_constant(tensor_const, ndims = 2L),
-    NA
-  )
-
-  expect_error(
-    assert_tensor_constant(tensor_const, dtype = "f32"),
-    "must have element type"
-  )
-  expect_error(
-    assert_tensor_constant(tensor_const, dtype = "i32"),
-    NA
-  )
-})
-
 test_that("assert_valid_name", {
   expect_error(assert_valid_name("foo"), NA)
   expect_error(assert_valid_name("Foo123"), NA)
