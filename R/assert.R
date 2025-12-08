@@ -65,7 +65,7 @@ assert_vt_equal <- function(
   ))
 }
 
-assert_inherits_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
+assert_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
   types <- list(...)
   for (type in types) {
     if (inherits(x, type)) {
@@ -134,7 +134,7 @@ assert_vt_has_dtype <- function(x, ..., arg = rlang::caller_arg(x)) {
     ))
   }
 
-  assert_inherits_one_of(x@type@dtype, ..., arg = paste0("dtype(", arg, ")"))
+  assert_one_of(x@type@dtype, ..., arg = paste0("dtype(", arg, ")"))
 }
 
 assert_vt_has_ttype <- function(

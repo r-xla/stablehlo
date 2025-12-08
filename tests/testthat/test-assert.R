@@ -90,3 +90,114 @@ test_that("assert_vt_has_same_dtype", {
     NA
   )
 })
+
+test_that("assert_tensor_constant", {
+  expect_error(
+    assert_tensor_constant(1L),
+    "must be an.*Constant"
+  )
+
+  expect_error(
+    assert_tensor_constant(NULL, null_ok = TRUE),
+    NA
+  )
+  expect_error(
+    assert_tensor_constant(NULL, null_ok = FALSE),
+    "must be an.*Constant"
+  )
+
+  tensor_const <- Constant(TensorConstant(
+    data = 1:6,
+    type = TensorType(IntegerType(32L), Shape(c(2L, 3L)))
+  ))
+  expect_error(
+    assert_tensor_constant(tensor_const),
+    NA
+  )
+
+  expect_error(
+    assert_tensor_constant(tensor_const, ndims = 1L),
+    "must have.*1.*dimensions"
+  )
+  expect_error(
+    assert_tensor_constant(tensor_const, ndims = 2L),
+    NA
+  )
+
+  expect_error(
+    assert_tensor_constant(tensor_const, dtype = "f32"),
+    "must have element type"
+  )
+  expect_error(
+    assert_tensor_constant(tensor_const, dtype = "i32"),
+    NA
+  )
+})
+
+test_that("assert_valid_name", {
+  expect_error(assert_valid_name("foo"), NA)
+  expect_error(assert_valid_name("Foo123"), NA)
+  expect_error(assert_valid_name("a_b_c"), NA)
+
+  expect_error(assert_valid_name("123"), NA)
+  expect_error(assert_valid_name("0"), NA)
+
+  expect_error(assert_valid_name("_foo"), "pattern")
+  expect_error(assert_valid_name("1abc"), "pattern")
+  expect_error(assert_valid_name("foo-bar"), "pattern")
+  expect_error(assert_valid_name(""), "pattern")
+})
+
+test_that("assert_one_of", {
+  x <- vt("i32", integer())
+
+  expect_error(
+    assert_one_of(x, ValueType),
+    NA
+  )
+
+  expect_error(
+    assert_one_of(x, TensorType, TokenType),
+    "must be a"
+  )
+
+  expect_error(
+    assert_one_of(x, TensorType, ValueType),
+    NA
+  )
+})
+
+test_that("assert_vt_has_dtype", {
+  x <- vt("i32", integer())
+  y <- vt("f32", integer())
+  token <- ValueType(TokenType())
+
+  # Non-tensor type
+  expect_error(
+    assert_vt_has_dtype(token, IntegerType),
+    "must be a tensor to have a dtype"
+  )
+
+  # Matching dtype
+  expect_error(
+    assert_vt_has_dtype(x, IntegerType),
+    NA
+  )
+
+  # Non-matching dtype
+  expect_error(
+    assert_vt_has_dtype(x, FloatType),
+    "must be a"
+  )
+
+  # Multiple allowed dtypes
+
+  expect_error(
+    assert_vt_has_dtype(x, IntegerType, FloatType),
+    NA
+  )
+  expect_error(
+    assert_vt_has_dtype(y, IntegerType, FloatType),
+    NA
+  )
+})
