@@ -3,7 +3,7 @@ test_that("c works", {
   x <- hlo_input("x", "f32", shape = c(2, 2))
   y <- hlo_input("y", "f32", shape = c(2, 2))
   z <- c(x, y)
-  expect_list(z, types = "stablehlo::FuncVariable", len = 2L)
+  expect_list(z, types = "stablehlo::FuncValue", len = 2L)
   expect_null(names(z))
   expect_snapshot(z[[1]]@func)
   expect_snapshot(z[[2]]@func)
@@ -19,4 +19,9 @@ test_that("repr", {
   func <- local_func()
   x <- hlo_input("x", "f32", shape = c(2, 2))
   expect_snapshot(x)
+
+  y <- hlo_add(x, x)
+  expect_snapshot(y)
+  z <- hlo_add(y, y)
+  expect_snapshot(z)
 })

@@ -10,10 +10,10 @@ infer_types_bitcast_convert(operand, dtype)
 hlo_bitcast_convert(operand, dtype)
 }
 \arguments{
-\item{operand, dtype}{(\code{\link{FuncVariable}})\cr}
+\item{operand, dtype}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#bitcast_convert} for details.

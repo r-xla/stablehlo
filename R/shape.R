@@ -54,7 +54,7 @@ method(repr, Shape) <- function(x) {
 }
 
 #' @export
-#' @method dtype stablehlo::FuncVariable
-`dtype.stablehlo::FuncVariable` <- function(x, ...) {
+#' @method dtype stablehlo::FuncValue
+`dtype.stablehlo::FuncValue` <- function(x, ...) {
   dtype(x@value_type)
 }

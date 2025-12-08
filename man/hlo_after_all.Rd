@@ -10,10 +10,10 @@ infer_types_after_all(...)
 hlo_after_all(...)
 }
 \arguments{
-\item{...}{(\code{\link{FuncVariable}})\cr}
+\item{...}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#after_all} for details.

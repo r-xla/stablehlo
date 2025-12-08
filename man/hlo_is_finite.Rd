@@ -10,10 +10,10 @@ infer_types_is_finite(operand)
 hlo_is_finite(operand)
 }
 \arguments{
-\item{operand}{(\code{\link{FuncVariable}})\cr}
+\item{operand}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#is_finite} for details.

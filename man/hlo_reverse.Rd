@@ -10,10 +10,10 @@ infer_types_reverse(operand, dimensions)
 hlo_reverse(operand, dimensions)
 }
 \arguments{
-\item{operand, dimensions}{(\code{\link{FuncVariable}})\cr}
+\item{operand, dimensions}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#reverse} for details.

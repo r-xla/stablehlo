@@ -10,10 +10,10 @@ infer_types_concatenate(..., dimension)
 hlo_concatenate(..., dimension)
 }
 \arguments{
-\item{..., dimension}{(\code{\link{FuncVariable}})\cr}
+\item{..., dimension}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#concatenate} for details.

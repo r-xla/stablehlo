@@ -7,10 +7,10 @@
 hlo_power(lhs, rhs)
 }
 \arguments{
-\item{lhs, rhs}{(\code{\link{FuncVariable}})\cr}
+\item{lhs, rhs}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#power} for details.

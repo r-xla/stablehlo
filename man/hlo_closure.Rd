@@ -7,11 +7,11 @@
 hlo_closure(...)
 }
 \arguments{
-\item{...}{(\code{\link{FuncVariable}})\cr
+\item{...}{(\code{\link{FuncValue}})\cr
 The variables to capture.}
 }
 \value{
-(\code{list()} of \code{\link{FuncVariable}})
+(\code{list()} of \code{\link{FuncValue}})
 }
 \description{
 Creates a new function without any arguments that captures the provided variables.

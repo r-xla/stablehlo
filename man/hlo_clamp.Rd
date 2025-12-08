@@ -10,10 +10,10 @@ infer_types_clamp(Min, operand, Max)
 hlo_clamp(Min, operand, Max)
 }
 \arguments{
-\item{Min, operand, Max}{(\code{\link{FuncVariable}})\cr}
+\item{Min, operand, Max}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#clamp} for details.

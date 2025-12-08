@@ -10,10 +10,10 @@ infer_types_sort(..., dimension, is_stable, comparator)
 hlo_sort(..., dimension, is_stable, comparator)
 }
 \arguments{
-\item{..., dimension, is_stable, comparator}{(\code{\link{FuncVariable}})\cr}
+\item{..., dimension, is_stable, comparator}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#sort} for details.

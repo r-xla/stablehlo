@@ -7,10 +7,10 @@
 hlo_round_nearest_even(operand)
 }
 \arguments{
-\item{operand}{(\code{\link{FuncVariable}})\cr}
+\item{operand}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#round_nearest_even} for details.

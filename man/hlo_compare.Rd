@@ -10,10 +10,10 @@ infer_types_compare(lhs, rhs, comparison_direction, compare_type)
 hlo_compare(lhs, rhs, comparison_direction, compare_type)
 }
 \arguments{
-\item{lhs, rhs, comparison_direction, compare_type}{(\code{\link{FuncVariable}})\cr}
+\item{lhs, rhs, comparison_direction, compare_type}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#compare} for details.

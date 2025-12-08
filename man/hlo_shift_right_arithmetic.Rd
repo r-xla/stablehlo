@@ -10,10 +10,10 @@ infer_types_shift_right_arithmetic(lhs, rhs)
 hlo_shift_right_arithmetic(lhs, rhs)
 }
 \arguments{
-\item{lhs, rhs}{(\code{\link{FuncVariable}})\cr}
+\item{lhs, rhs}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#shift_right_arithmetic} for details.

@@ -25,10 +25,13 @@ Imports:
     tengen,
     withr
 Suggests:
+    rmarkdown,
+    knitr,
     pjrt,
     testthat (>= 3.0.0)
 Additional_repositories:
     https://r-xla.r-universe.dev
+VignetteBuilder: knitr
 Config/build/compilation-database: true
 Config/testthat/edition: 3
 Encoding: UTF-8
@@ -113,3 +116,4 @@ Collate:
     'roxygen.R'
     'utils.R'
     'zzz.R'
+Config/Needs/website: rmarkdown
