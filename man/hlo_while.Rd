@@ -10,13 +10,13 @@ infer_types_while(..., cond, body)
 hlo_while(..., cond, body, simplify = TRUE)
 }
 \arguments{
-\item{..., cond, body}{(\code{\link{FuncVariable}})\cr}
+\item{..., cond, body}{(\code{\link{FuncValue}})\cr}
 
 \item{simplify}{(\code{logical(1)})\cr
 Whether to simplify results by unpacking lists of length 1 into their single element.}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#while} for details.

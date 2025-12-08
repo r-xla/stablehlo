@@ -3,7 +3,7 @@
 #' @include func.R
 NULL
 
-#' @title FuncVariable
+#' @title FuncValue
 #' @description
 #' This represents a variable within a function.
 #' @param value_id The name of the variable.
@@ -12,8 +12,8 @@ NULL
 #' @export
 #' @include value_id.R
 #' @export
-FuncVariable <- new_class(
-  "FuncVariable",
+FuncValue <- new_class(
+  "FuncValue",
   properties = list(
     value_id = ValueId,
     value_type = ValueType,
@@ -21,7 +21,8 @@ FuncVariable <- new_class(
   )
 )
 
-method(print, FuncVariable) <- function(x, ...) {
+method(print, FuncValue) <- function(x, ...) {
+  local_vars()
   str <- repr(x@func)
   cat(sprintf("Variable %s in:\n", cli::col_blue(repr(x@value_id))))
   cat(sub(repr(x@value_id), cli::col_blue(repr(x@value_id)), str, fixed = TRUE))
@@ -41,7 +42,7 @@ merge_funcs <- function(funcs) {
 }
 
 #' @export
-#' @method shape stablehlo::FuncVariable
-`shape.stablehlo::FuncVariable` <- function(x, ...) {
+#' @method shape stablehlo::FuncValue
+`shape.stablehlo::FuncValue` <- function(x, ...) {
   shape(x@value_type)
 }

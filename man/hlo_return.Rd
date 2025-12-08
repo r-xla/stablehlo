@@ -10,7 +10,7 @@ hlo_return(..., func = .current_func())
 infer_types_return(...)
 }
 \arguments{
-\item{...}{(\code{\link{FuncVariable}})\cr
+\item{...}{(\code{\link{FuncValue}})\cr
 Return values. There must be at least one.}
 
 \item{func}{(\code{\link{Func}})\cr

@@ -12,10 +12,10 @@ hlo_reduce(inputs, init_values, dimensions, body)
 \arguments{
 \item{...}{(Inputs, Init values)}
 
-\item{inputs, init_values, dimensions, body}{(\code{\link{FuncVariable}})\cr}
+\item{inputs, init_values, dimensions, body}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#reduce} for details.

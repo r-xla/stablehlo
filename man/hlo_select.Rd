@@ -10,10 +10,10 @@ infer_types_select(pred, on_true, on_false)
 hlo_select(pred, on_true, on_false)
 }
 \arguments{
-\item{pred, on_true, on_false}{(\code{\link{FuncVariable}})\cr}
+\item{pred, on_true, on_false}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#select} for details.

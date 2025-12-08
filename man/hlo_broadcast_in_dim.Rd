@@ -10,10 +10,10 @@ infer_types_broadcast_in_dim(operand, broadcast_dimensions, shape_out)
 hlo_broadcast_in_dim(operand, broadcast_dimensions, shape_out)
 }
 \arguments{
-\item{operand, broadcast_dimensions, shape_out}{(\code{\link{FuncVariable}})\cr}
+\item{operand, broadcast_dimensions, shape_out}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#broadcast_in_dim} for details.

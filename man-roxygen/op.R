@@ -4,5 +4,5 @@
 #' @title <%= gsub("^Op", "", op@name) %> Operator
 #' @description
 #' See \url{https://openxla.org/stablehlo/spec#<%= mnemonic %>} for details.
-#' @param <%= paste(setdiff(formalArgs(f), not_func_variables), collapse = ",") %> ([`FuncVariable`])\cr
-#' @return [`FuncVariable`]\cr
+#' @param <%= paste(setdiff(formalArgs(f), not_func_variables), collapse = ",") %> ([`FuncValue`])\cr
+#' @return [`FuncValue`]\cr

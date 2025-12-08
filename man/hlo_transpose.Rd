@@ -10,10 +10,10 @@ infer_types_transpose(operand, permutation)
 hlo_transpose(operand, permutation)
 }
 \arguments{
-\item{operand, permutation}{(\code{\link{FuncVariable}})\cr}
+\item{operand, permutation}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#transpose} for details.

@@ -14,7 +14,7 @@ FuncInput
 FuncInputs
 FuncOutput
 FuncOutputs
-FuncVariable
+FuncValue
 IntegerType
 Lifecycle
 LogPlusOne

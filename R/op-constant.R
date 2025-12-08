@@ -231,7 +231,7 @@ impl_hlo_constant <- function(value, dtype, func, shape) {
   )
   func@body <- FuncBody(c(func@body@items, list(op)))
 
-  FuncVariable(
+  FuncValue(
     value_id = value_id,
     value_type = ValueType(const_value@value@type),
     func = func

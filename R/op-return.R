@@ -27,7 +27,7 @@ hlo_return_impl <- hlo_fn(OpReturn, infer_types_return, TRUE)
 #' @title Return Values
 #' @description
 #' Specifies the return values of a [`Func`] and finalize it.
-#' @param ... ([`FuncVariable`])\cr
+#' @param ... ([`FuncValue`])\cr
 #'   Return values. There must be at least one.
 #' @template param_func
 #' @return ([`Func`])

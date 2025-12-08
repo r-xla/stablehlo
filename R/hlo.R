@@ -15,8 +15,8 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     simplify = TRUE
   ) {
     lapply(values, function(x) {
-      if (!inherits(x, FuncVariable)) {
-        cli_abort("All arguments must be FuncVariables")
+      if (!inherits(x, FuncValue)) {
+        cli_abort("All arguments must be FuncValues")
       }
     })
     lapply(funcs, function(x) {
@@ -26,8 +26,8 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     })
 
     attrs <- lapply(attrs, function(x) {
-      err <- "All attributes must be FuncVariables with a single constant Op."
-      if (!inherits(x, FuncVariable)) {
+      err <- "All attributes must be FuncValues with a single constant Op."
+      if (!inherits(x, FuncValue)) {
         cli_abort(err)
       }
       items <- x@func@body@items
@@ -112,7 +112,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
 
     if (nout == 1L && simplify) {
       return(
-        FuncVariable(
+        FuncValue(
           value_id = output_value_ids[[1L]],
           value_type = output_types@items[[1L]],
           func = func
@@ -120,7 +120,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       )
     }
     lapply(seq_len(nout), function(i) {
-      FuncVariable(
+      FuncValue(
         value_id = output_value_ids[[i]],
         value_type = output_types@items[[i]],
         func = func
@@ -175,7 +175,7 @@ hlo_input <- function(
   )
   func@inputs <- FuncInputs(c(func@inputs@items, inp))
 
-  FuncVariable(
+  FuncValue(
     value_id = value_id,
     value_type = value_type,
     func = func
@@ -185,9 +185,9 @@ hlo_input <- function(
 #' @title Create a Closure
 #' @description
 #' Creates a new function without any arguments that captures the provided variables.
-#' @param ... ([`FuncVariable`])\cr
+#' @param ... ([`FuncValue`])\cr
 #'   The variables to capture.
-#' @return (`list()` of [`FuncVariable`])
+#' @return (`list()` of [`FuncValue`])
 #' @export
 #' @examples
 #' func <- local_func()
@@ -205,7 +205,7 @@ hlo_closure <- function(...) {
   }
   envir <- parent.frame()
   lapply(vars, function(variable) {
-    FuncVariable(
+    FuncValue(
       value_id = variable@value_id,
       value_type = variable@value_type,
       func = local_func("", envir)

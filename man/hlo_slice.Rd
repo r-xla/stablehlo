@@ -10,10 +10,10 @@ infer_types_slice(operand, start_indices, limit_indices, strides)
 hlo_slice(operand, start_indices, limit_indices, strides)
 }
 \arguments{
-\item{operand, start_indices, limit_indices, strides}{(\code{\link{FuncVariable}})\cr}
+\item{operand, start_indices, limit_indices, strides}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#slice} for details.

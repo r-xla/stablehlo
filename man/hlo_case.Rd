@@ -10,10 +10,10 @@ infer_types_case(index, ...)
 hlo_case(index, ...)
 }
 \arguments{
-\item{index, ...}{(\code{\link{FuncVariable}})\cr}
+\item{index, ...}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#case} for details.

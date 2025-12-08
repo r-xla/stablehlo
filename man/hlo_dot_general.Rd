@@ -10,13 +10,13 @@ infer_types_dot_general(lhs, rhs, dot_dimension_numbers)
 hlo_dot_general(lhs, rhs, contracting_dims, batching_dims = NULL)
 }
 \arguments{
-\item{lhs, rhs, contracting_dims, batching_dims}{(\code{\link{FuncVariable}})\cr}
+\item{lhs, rhs, contracting_dims, batching_dims}{(\code{\link{FuncValue}})\cr}
 
 \item{dot_dimension_numbers}{(\code{DotDimensionNumbers})\cr
 The dot dimension number.}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#dot_general} for details.

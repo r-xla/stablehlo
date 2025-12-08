@@ -7,10 +7,10 @@
 hlo_cholesky(operand, lower)
 }
 \arguments{
-\item{operand, lower}{(\code{\link{FuncVariable}})\cr}
+\item{operand, lower}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#cholesky} for details.

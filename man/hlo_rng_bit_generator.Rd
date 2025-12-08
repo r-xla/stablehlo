@@ -15,10 +15,10 @@ hlo_rng_bit_generator(
 )
 }
 \arguments{
-\item{initial_state, rng_algorithm, dtype, shape_out}{(\code{\link{FuncVariable}})\cr}
+\item{initial_state, rng_algorithm, dtype, shape_out}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#rng_bit_generator} for details.

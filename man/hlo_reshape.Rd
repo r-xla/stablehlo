@@ -10,10 +10,10 @@ infer_types_reshape(operand, shape_out)
 hlo_reshape(operand, shape_out)
 }
 \arguments{
-\item{operand, shape_out}{(\code{\link{FuncVariable}})\cr}
+\item{operand, shape_out}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#reshape} for details.
