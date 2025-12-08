@@ -30,7 +30,7 @@ assert_tensor_constant <- function(
   if (!is.null(dtype) && repr(x@value@type@dtype) != dtype) {
     cli_abort(c(
       "{.arg {arg}} must have element type {.val {dtype}}.",
-      x = "Got {.val {repr(x@value@type@dtype)}}."
+      x = "Got {.val {x@value@type@dtype}}."
     ))
   }
 }
@@ -50,6 +50,7 @@ assert_vt_equal <- function(
   y,
   ...,
   msg = NULL,
+  is_tensor = TRUE,
   arg_x = rlang::caller_arg(x),
   arg_y = rlang::caller_arg(y)
 ) {
@@ -124,17 +125,6 @@ assert_vts_are_tensors <- function(...) {
   for (i in seq_along(args)) {
     assert_vt_is_tensor(args[[i]], arg = arg_names[i])
   }
-}
-
-assert_vt_has_dtype <- function(x, ..., arg = rlang::caller_arg(x)) {
-  if (!inherits(x@type, TensorType)) {
-    cli_abort(c(
-      "{.arg {arg}} must be a tensor to have a dtype.",
-      x = "Got {.val {repr(x@type)}}."
-    ))
-  }
-
-  assert_one_of(x@type@dtype, ..., arg = paste0("dtype(", arg, ")"))
 }
 
 assert_vt_has_ttype <- function(

@@ -21,7 +21,7 @@ infer_types_while <- function(..., cond, body) {
   if (length(cond_out@type@shape@dims) != 0L) {
     cli_abort("cond output must be a 0-D tensor")
   }
-  assert_vt_has_dtype(cond_out, BooleanType)
+  assert_vt_has_ttype(cond_out, BooleanType)
 
   # (C2) body has type (T0, ..., TN-1) -> (T0, ..., TN-1)
   body_out_types <- func_output_types(body)

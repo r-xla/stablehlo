@@ -58,9 +58,9 @@ infer_types_generic_biv <- function(lhs, rhs) {
 #'   The inferred type.
 #' @export
 infer_types_boolean_biv <- function(lhs, rhs) {
-  assert_vts_are_tensors(lhs = lhs, rhs = rhs)
+  assert_vt_has_ttype(lhs, BooleanType, IntegerType, UnsignedType)
+  assert_vt_has_ttype(rhs, BooleanType, IntegerType, UnsignedType)
   assert_vt_equal(lhs, rhs)
-  assert_vt_has_dtype(lhs, BooleanType, IntegerType, UnsignedType)
   ValueTypes(list(lhs))
 }
 
@@ -73,7 +73,6 @@ infer_types_boolean_biv <- function(lhs, rhs) {
 #'   The inferred type.
 #' @export
 infer_types_boolean_uni <- function(operand) {
-  assert_vt_is_tensor(operand)
-  assert_vt_has_dtype(operand, BooleanType, IntegerType, UnsignedType)
+  assert_vt_has_ttype(operand, BooleanType, IntegerType, UnsignedType)
   ValueTypes(list(operand))
 }

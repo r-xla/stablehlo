@@ -166,38 +166,3 @@ test_that("assert_one_of", {
     NA
   )
 })
-
-test_that("assert_vt_has_dtype", {
-  x <- vt("i32", integer())
-  y <- vt("f32", integer())
-  token <- ValueType(TokenType())
-
-  # Non-tensor type
-  expect_error(
-    assert_vt_has_dtype(token, IntegerType),
-    "must be a tensor to have a dtype"
-  )
-
-  # Matching dtype
-  expect_error(
-    assert_vt_has_dtype(x, IntegerType),
-    NA
-  )
-
-  # Non-matching dtype
-  expect_error(
-    assert_vt_has_dtype(x, FloatType),
-    "must be a"
-  )
-
-  # Multiple allowed dtypes
-
-  expect_error(
-    assert_vt_has_dtype(x, IntegerType, FloatType),
-    NA
-  )
-  expect_error(
-    assert_vt_has_dtype(y, IntegerType, FloatType),
-    NA
-  )
-})
