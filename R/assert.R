@@ -115,10 +115,6 @@ assert_vt_has_ttype <- function(
 
   dtypes <- list(...)
 
-  # Filter out TensorType (it's already checked above)
-  dtypes <- Filter(function(dt) !identical(dt, TensorType), dtypes)
-
-  # If there are actual dtypes to check, verify the dtype matches at least one
   if (length(dtypes) > 0) {
     type_names <- vapply(dtypes, \(dt) dt@name, character(1)) # nolint
 

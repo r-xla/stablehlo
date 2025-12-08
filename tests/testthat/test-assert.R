@@ -1,5 +1,5 @@
 test_that("assert_vt_has_ttype", {
-  y <- vt("i32", integer())
+  y <- make_vt("i32", integer())
 
   expect_error(
     assert_vt_has_ttype(x = 1),
@@ -32,7 +32,7 @@ test_that("assert_vt_is_tensor", {
     "must contain a TensorType"
   )
 
-  z <- vt("i32", integer())
+  z <- make_vt("i32", integer())
   expect_error(
     assert_vt_is_tensor(x = z),
     NA
@@ -40,7 +40,7 @@ test_that("assert_vt_is_tensor", {
 })
 
 test_that("assert_vts_are_tensors", {
-  x <- vt("i32", integer())
+  x <- make_vt("i32", integer())
   token <- ValueType(TokenType())
   expect_error(
     assert_vts_are_tensors(x, 1L),
@@ -57,10 +57,10 @@ test_that("assert_vts_are_tensors", {
 })
 
 test_that("assert_vt_equal", {
-  x <- vt("i32", integer())
-  y <- vt("i32", integer())
-  z1 <- vt("i32", 1L)
-  z2 <- vt("f32", integer())
+  x <- make_vt("i32", integer())
+  y <- make_vt("i32", integer())
+  z1 <- make_vt("i32", 1L)
+  z2 <- make_vt("f32", integer())
 
   expect_error(
     assert_vt_equal(x, z1),
@@ -78,9 +78,9 @@ test_that("assert_vt_equal", {
 })
 
 test_that("assert_vts_have_same_dtype", {
-  x <- vt("i32", integer())
-  y <- vt("f32", integer())
-  z <- vt("i32", 1L)
+  x <- make_vt("i32", integer())
+  y <- make_vt("f32", integer())
+  z <- make_vt("i32", 1L)
   expect_error(
     assert_vts_have_same_dtype(x, y),
     "must have the same dtype"
@@ -106,7 +106,7 @@ test_that("assert_valid_name", {
 })
 
 test_that("assert_one_of", {
-  x <- vt("i32", integer())
+  x <- make_vt("i32", integer())
 
   expect_error(
     assert_one_of(x, ValueType),

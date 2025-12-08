@@ -8,7 +8,7 @@ OpIsFinite <- new_Op("IsFinite", "is_finite")
 infer_types_is_finite <- function(operand) {
   assert_vt_is_tensor(operand)
   ValueTypes(list(
-    make_value_type("pred", shape(operand))
+    make_vt("pred", shape(operand))
   ))
 }
 

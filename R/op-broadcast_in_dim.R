@@ -10,7 +10,7 @@ infer_types_broadcast_in_dim <- function(
   broadcast_dimensions,
   shape_out
 ) {
-  assert_vt_has_ttype(operand, TensorType)
+  assert_vt_is_tensor(operand)
 
   operand_dims <- shape(operand)
   result_dims <- as.integer(shape_out)

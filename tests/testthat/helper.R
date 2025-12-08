@@ -166,7 +166,3 @@ generate_test_data <- function(dimension, dtype = "f64", non_negative = FALSE) {
     }
   }
 }
-
-vt <- function(dtype, shape) {
-  ValueType(TensorType(as_dtype(dtype), Shape(shape)))
-}

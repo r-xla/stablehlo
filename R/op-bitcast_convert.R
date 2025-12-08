@@ -9,7 +9,7 @@ infer_types_bitcast_convert <- function(
   operand,
   dtype
 ) {
-  assert_vt_has_ttype(operand, TensorType)
+  assert_vt_is_tensor(operand)
 
   if (
     # https://github.com/openxla/stablehlo/issues/1672

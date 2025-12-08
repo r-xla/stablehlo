@@ -255,7 +255,7 @@ ValueType <- new_class(
   ),
   constructor = function(type, shape = NULL) {
     if (is.character(type)) {
-      return(make_value_type(type, shape = shape))
+      return(make_vt(type, shape = shape))
     }
     new_object(S7::S7_object(), type = type)
   }
@@ -302,30 +302,13 @@ value_type_union <- S7::new_union(
   TensorType
 )
 
-make_value_type <- function(str, shape = NULL) {
-  assert_string(str)
-  type <- if (str == "token") {
-    TokenType()
-  } else {
-    if (is.null(shape)) {
-      shape <- integer(0)
-    }
-    dtype <- if (str %in% c("pred", "i1")) {
-      BooleanType()
-    } else if (grepl("^i[0-9]+$", str)) {
-      IntegerType(as.integer(sub("^i", "", str)))
-    } else if (grepl("^ui[0-9]+$", str)) {
-      UnsignedType(as.integer(sub("^ui", "", str)))
-    } else if (grepl("^f[0-9]+$", str)) {
-      FloatType(as.integer(sub("^f", "", str)))
-    } else {
-      .NotYetImplemented()
-    }
-    TensorType(dtype, Shape(shape))
+make_vt <- function(type, shape) {
+  if (type == "token") {
+    return(ValueType(TokenType()))
   }
-
-  ValueType(type)
+  ValueType(TensorType(as_dtype(type), Shape(shape)))
 }
+
 
 method(repr, ValueType) <- function(x) {
   repr(x@type)
