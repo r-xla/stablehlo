@@ -28,7 +28,7 @@ infer_types_reverse <- function(
   if (any(revdims < 0L | revdims >= length(operand_dims))) {
     cli_abort(
       "dimensions must be within [0, rank(result))",
-      x = "Got {.val {revdims}} and {.val {length(operand_dims)}}."
+      x = "Got {.val {renvdims}}"
     )
   }
 

@@ -43,13 +43,7 @@ assert_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
   type_names <- vapply( # nolint
     types,
     function(t) {
-      if (inherits(t, "S7_class")) {
-        return(t@name)
-      }
-      if (is.character(t)) {
-        return(t)
-      }
-      "<unknown>"
+      return(t@name)
     },
     character(1)
   )
@@ -108,7 +102,7 @@ assert_vt_has_ttype <- function(
   x <- x@type
   if (!inherits(x, TensorType)) {
     cli_abort(c(
-      "{.arg {arg}} must be a tensor to have a type.",
+      "{.arg {arg}} must be a TensorType.",
       x = "Got {.val {repr(x)}}."
     ))
   }
