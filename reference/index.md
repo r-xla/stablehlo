@@ -152,4 +152,3 @@
 - [`r_to_stablehlo_string()`](r_to_stablehlo_string.md) : Represent an R
   value in stableHLO
 - [`repr()`](repr.md) : Generate string representation for object
-- [`repr_env2name()`](repr_env2name.md) : Convert environment to name
