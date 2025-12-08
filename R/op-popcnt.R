@@ -6,8 +6,7 @@ OpPopcnt <- new_Op("Popcnt", "popcnt")
 #' @rdname hlo_popcnt
 #' @export
 infer_types_popcnt <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
-  assert_one_of(operand@type@dtype, IntegerType, UnsignedType)
+  assert_vt_has_ttype(operand, IntegerType, UnsignedType)
   ValueTypes(list(operand))
 }
 

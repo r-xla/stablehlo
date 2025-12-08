@@ -6,13 +6,10 @@ OpSort <- new_Op("OpSort", "sort")
 #' @rdname hlo_sort
 #' @export
 infer_types_sort <- function(..., dimension, is_stable, comparator) {
+  assert_vts_are_tensors(...)
   dots <- list(...)
   input_dims <- lapply(dots, \(x) shape(x))
   # dimension <- dimension@value@data + 1
-
-  lapply(dots, function(x) {
-    stopifnot(inherits(x, ValueType))
-  })
 
   # (C1) 0 < size(inputs).
   if (!length(dots)) {

@@ -11,7 +11,7 @@ infer_types_rng_bit_generator <- function(
   dtype,
   shape_out
 ) {
-  stopifnot(inherits(initial_state@type, TensorType))
+  assert_vt_is_tensor(initial_state)
 
   # initial_state must be 1-D ui64
   init_shape <- shape(initial_state)

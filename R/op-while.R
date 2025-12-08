@@ -13,17 +13,22 @@ infer_types_while <- function(..., cond, body) {
   }
 
   # (C1) cond has type (T0, ..., TN-1) -> tensor<i1>
-  stopifnot(length(cond@outputs@items) == 1L)
+  if (length(cond@outputs@items) != 1L) {
+    cli_abort("cond must have exactly one output")
+  }
   cond_out <- cond@outputs@items[[1L]]@type
-  stopifnot(inherits(cond_out@type, TensorType))
-  stopifnot(length(cond_out@type@shape@dims) == 0L)
-  stopifnot(identical(cond_out@type@dtype, BooleanType()))
+  assert_vt_has_ttype(cond_out, BooleanType)
+  if (length(cond_out@type@shape@dims) != 0L) {
+    cli_abort("cond output must be a 0-D tensor")
+  }
 
   # (C2) body has type (T0, ..., TN-1) -> (T0, ..., TN-1)
   body_out_types <- func_output_types(body)
-  stopifnot(length(body_out_types) == length(value_types))
+  if (length(body_out_types) != length(value_types)) {
+    cli_abort("body must have the same number of outputs as inputs")
+  }
   for (i in seq_along(value_types)) {
-    stopifnot(body_out_types[[i]] == value_types[[i]])
+    assert_vt_equal(body_out_types[[i]], value_types[[i]])
   }
 
   # (C3) result types equal operand types

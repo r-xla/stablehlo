@@ -1,11 +1,6 @@
 .PHONY: format format-cpp format-r
 
-format: format-cpp format-r
-
-format-cpp:
-	@echo "Formatting C/C++ sources with clang-format"
-	@find src -maxdepth 1 \( -name '*.cpp' -o -name '*.h' \) ! -name 'RcppExports.cpp' -print0 \
-	  | xargs -0 sh -c 'set -- "$$@"; [ "$$#" -gt 0 ] && clang-format -i "$$@"' _
+format: format-r
 
 format-r:
 	@echo "Formatting R sources with air"

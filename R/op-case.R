@@ -7,27 +7,33 @@ OpCase <- new_Op("OpCase", "case")
 #' @export
 infer_types_case <- function(index, ...) {
   branches <- list(...)
+  assert_vt_has_ttype(index, IntegerType, shape = integer())
+  if (index@type@dtype@value != 32L) {
+    cli_abort("index must be a 32-bit integer")
+  }
 
-  # (I1) index is 0-dim si32
-  stopifnot(inherits(index@type, TensorType))
-  stopifnot(length(index@type@shape@dims) == 0L)
-  stopifnot(identical(index@type@dtype, IntegerType(32L)))
-
-  # (C1) 0 < size(branches)
-  stopifnot(length(branches) > 0L)
+  if (length(branches) == 0L) {
+    cli_abort("branches must be a non-empty list")
+  }
 
   # (C2) input_types(branches...) = [] and
   # (C3) same(output_types(branches...))
   get_branch_out_types <- function(branch) {
-    stopifnot(inherits(branch, Func))
-    stopifnot(length(branch@inputs@items) == 0L)
+    if (!inherits(branch, Func)) {
+      cli_abort("branches must be a list of Func objects")
+    }
+    if (length(branch@inputs@items) != 0L) {
+      cli_abort("branch functions must not have inputs")
+    }
     func_output_types(branch)
   }
 
   out_types_list <- lapply(branches, get_branch_out_types)
 
   for (i in seq_along(out_types_list[-1L])) {
-    stopifnot(identical(out_types_list[[i]], out_types_list[[1L]]))
+    if (!identical(out_types_list[[i]], out_types_list[[1L]])) {
+      cli_abort("all branch functions must have the same output types")
+    }
   }
 
   ValueTypes(out_types_list[[1L]])

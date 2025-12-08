@@ -11,9 +11,8 @@ infer_types_compare <- function(
   comparison_direction,
   compare_type
 ) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(inherits(rhs@type, TensorType))
-  stopifnot(identical(lhs@type, rhs@type))
+  assert_vts_are_tensors(lhs, rhs)
+  assert_vt_equal(lhs, rhs)
   ValueTypes(list(
     ValueType(
       TensorType(

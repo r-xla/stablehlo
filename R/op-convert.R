@@ -6,7 +6,7 @@ OpConvert <- new_Op("OpConvert", "convert")
 #' @rdname hlo_convert
 #' @export
 infer_types_convert <- function(operand, dtype) {
-  stopifnot(inherits(operand@type, TensorType))
+  assert_vt_is_tensor(operand)
   output_dtype <- as_dtype(dtype)
   ValueTypes(list(
     ValueType(

@@ -7,11 +7,9 @@ OpClamp <- new_Op("OpClamp", "clamp")
 #' @export
 # binary ops
 infer_types_clamp <- function(Min, operand, Max) {
-  stopifnot(inherits(Min@type, TensorType))
-  stopifnot(inherits(Max@type, TensorType))
-  stopifnot(inherits(operand@type, TensorType))
-  stopifnot(operand@type == Max@type)
-  stopifnot(Min@type == Max@type)
+  assert_vts_are_tensors(Min = Min, operand = operand, Max = Max)
+  assert_vt_equal(operand, Max)
+  assert_vt_equal(Min, Max)
   ValueTypes(list(operand))
 }
 

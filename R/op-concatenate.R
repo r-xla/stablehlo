@@ -6,6 +6,7 @@ OpConcatenate <- new_Op("OpConcatenate", "concatenate")
 #' @rdname hlo_concatenate
 #' @export
 infer_types_concatenate <- function(..., dimension) {
+  assert_vts_are_tensors(...)
   dots <- list(...)
   input_dims <- lapply(dots, \(x) shape(x))
 
@@ -13,10 +14,6 @@ infer_types_concatenate <- function(..., dimension) {
   if (!length(dots)) {
     cli_abort("must have at least one input")
   }
-
-  lapply(dots, function(x) {
-    stopifnot(inherits(x, ValueType))
-  })
 
   # (C1) same(element_type(inputs...))
   dtypes <- lapply(dots, \(x) x@type@dtype)

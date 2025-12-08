@@ -1,28 +1,152 @@
-assert_tensor_constant <- function(
+assert_valid_name <- function(name, arg = rlang::caller_arg(name)) {
+  assert_string(
+    name,
+    pattern = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[0-9]+$)",
+    .var.name = arg
+  )
+}
+
+assert_vt_equal <- function(
   x,
-  ndims = NULL,
-  dtype = NULL,
-  null_ok = FALSE
+  y,
+  ...,
+  msg = NULL,
+  is_tensor = TRUE,
+  arg_x = rlang::caller_arg(x),
+  arg_y = rlang::caller_arg(y)
 ) {
-  if (is.null(x) && null_ok) {
-    return()
-  }
-  if (!inherits(x, Constant)) {
-    cli_abort("x must be a Constant")
-  }
-  if (!inherits(x@value, TensorConstant)) {
-    cli_abort("tnsr must be a TensorConstant")
-  }
-  if (!is.null(ndims) && length(shape(x@value)) != ndims) {
-    cli_abort("tnsr must have {ndims} dimensions")
+  rlang::check_dots_empty()
+
+  if (is_tensor) {
+    assert_vts_are_tensors(x, y)
   }
 
-  if (!is.null(dtype) && repr(x@value@type@dtype) != dtype) {
-    cli_abort("tensor must have element type {dtype}")
+  if (x == y) {
+    return()
+  }
+
+  cli_abort(c(
+    x = msg %||% "Expected {.arg {arg_x}} and {.arg {arg_y}} to be equal.",
+    i = "Got {.val {repr(x)}} and {.val {repr(y)}}."
+  ))
+}
+
+assert_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
+  types <- list(...)
+  for (type in types) {
+    if (inherits(x, type)) {
+      return(invisible(NULL))
+    }
+  }
+
+  # fmt: skip
+  type_names <- vapply( # nolint
+    types,
+    function(t) {
+      return(t@name)
+    },
+    character(1)
+  )
+
+  cli_abort(c(
+    "{.arg {arg}} must be a {.or {.cls {type_names}}}.",
+    x = "Got {.cls {class(x)[1]}}."
+  ))
+}
+
+assert_vt_is_tensor <- function(x, arg = rlang::caller_arg(x)) {
+  force(arg)
+  if (!inherits(x, ValueType)) {
+    cli_abort(c(
+      "{.arg {arg}} must be a ValueType.",
+      x = "Got {.class {class(x)[1]}}."
+    ))
+  }
+  x <- x@type
+  if (!inherits(x, TensorType)) {
+    cli_abort(c(
+      "{.arg {arg}} must contain a TensorType.",
+      x = "Got {.class {S7::S7_class(x)@name}}."
+    ))
+  }
+}
+
+assert_vts_are_tensors <- function(...) {
+  args <- list(...)
+  arg_names <- names(args)
+  if (is.null(arg_names)) {
+    arg_names <- vapply(
+      substitute(list(...))[-1],
+      deparse,
+      character(1)
+    )
+  }
+  for (i in seq_along(args)) {
+    assert_vt_is_tensor(args[[i]], arg = arg_names[i])
+  }
+}
+
+assert_vt_has_ttype <- function(
+  x,
+  ...,
+  shape = NULL,
+  arg = rlang::caller_arg(x)
+) {
+  force(arg)
+  if (!inherits(x, ValueType)) {
+    cli_abort(c(
+      "{.arg {arg}} must be a ValueType.",
+      x = "Got {.class {class(x)[1]}}."
+    ))
+  }
+  x <- x@type
+  if (!inherits(x, TensorType)) {
+    cli_abort(c(
+      "{.arg {arg}} must be a TensorType.",
+      x = "Got {.val {repr(x)}}."
+    ))
+  }
+
+  dtypes <- list(...)
+
+  if (length(dtypes) > 0) {
+    type_names <- vapply(dtypes, \(dt) dt@name, character(1)) # nolint
+
+    dtype_matched <- FALSE
+    for (dtype in dtypes) {
+      if (inherits(x@dtype, dtype)) {
+        dtype_matched <- TRUE
+        break
+      }
+    }
+
+    if (!dtype_matched) {
+      cli_abort(c(
+        "{.arg {arg}} must be one of {.or {type_names}}.",
+        x = "Got {.class {S7::S7_class(x@dtype)@name}}."
+      ))
+    }
+  }
+
+  # fmt: skip
+  repr_shape <- function(s) { # nolint
+    paste0("(", s, collapse = ",", ")")
+  }
+
+  if (!is.null(shape) && !identical(stablehlo::shape(x), shape)) {
+    cli_abort(c(
+      "{.arg {arg}} must have shape {repr_shape(shape)}.",
+      x = "Got {repr_shape(stablehlo::shape(x))}."
+    ))
   }
 }
 
 
-assert_valid_name <- function(name) {
-  assert_string(name, pattern = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[0-9]+$)")
+assert_vts_have_same_dtype <- function(x, y, arg = rlang::caller_arg(x)) {
+  if (x@type@dtype != y@type@dtype) {
+    cli_abort(c(
+      "{.arg {arg}} must have the same dtype.",
+      x = "Got {.class {S7::S7_class(x@type@dtype)@name}} and {.class {S7::S7_class(y@type@dtype)@name}}."
+    ))
+  }
 }

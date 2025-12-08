@@ -9,7 +9,7 @@ infer_types_reverse <- function(
   operand,
   dimensions
 ) {
-  stopifnot(inherits(operand@type, TensorType))
+  assert_vt_is_tensor(operand)
 
   operand_dims <- shape(operand)
   revdims <- dimensions@value@data
@@ -26,7 +26,10 @@ infer_types_reverse <- function(
     )
   }
   if (any(revdims < 0L | revdims >= length(operand_dims))) {
-    cli_abort("dimensions must be within [0, rank(result))")
+    cli_abort(
+      "dimensions must be within [0, rank(result))",
+      x = "Got {.val {renvdims}}"
+    )
   }
 
   ValueTypes(list(

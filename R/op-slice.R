@@ -11,7 +11,7 @@ infer_types_slice <- function(
   limit_indices,
   strides
 ) {
-  stopifnot(inherits(operand@type, TensorType))
+  assert_vt_is_tensor(operand)
 
   # Extract indices and operand rank
   operand_rank <- length(shape(operand))

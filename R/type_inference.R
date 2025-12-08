@@ -8,7 +8,9 @@ baseline_type <- function(x) {
 
 # shortcut for element_type(baseline_type(x))
 baseline_element_type <- function(x) {
-  stopifnot(inherits(x, ValueType))
+  if (!inherits(x, ValueType)) {
+    cli_abort("x must be a ValueType, but got {.class {class(x)[1]}}.")
+  }
   if (is(x@type, TensorType)) {
     return(x@type@dtype)
   } else if (is(x@type, TokenType)) {
@@ -27,7 +29,7 @@ baseline_element_type <- function(x) {
 #'   The inferred type.
 #' @export
 infer_types_generic_uni <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
+  assert_vt_is_tensor(operand)
   ValueTypes(list(operand))
 }
 
@@ -42,9 +44,8 @@ infer_types_generic_uni <- function(operand) {
 #'   The inferred type.
 #' @export
 infer_types_generic_biv <- function(lhs, rhs) {
-  stopifnot(inherits(lhs@type, TensorType))
-  stopifnot(inherits(rhs@type, TensorType))
-  check_types_equal(lhs@type, rhs@type)
+  assert_vts_are_tensors(lhs = lhs, rhs = rhs)
+  assert_vt_equal(lhs, rhs)
   ValueTypes(list(lhs))
 }
 
@@ -59,9 +60,9 @@ infer_types_generic_biv <- function(lhs, rhs) {
 #'   The inferred type.
 #' @export
 infer_types_boolean_biv <- function(lhs, rhs) {
-  stopifnot(inherits(lhs@type, TensorType))
-  check_types_equal(lhs@type, rhs@type)
-  assert_one_of(lhs@type@dtype, BooleanType, IntegerType, UnsignedType)
+  assert_vt_has_ttype(lhs, BooleanType, IntegerType, UnsignedType)
+  assert_vt_has_ttype(rhs, BooleanType, IntegerType, UnsignedType)
+  assert_vt_equal(lhs, rhs)
   ValueTypes(list(lhs))
 }
 
@@ -74,7 +75,6 @@ infer_types_boolean_biv <- function(lhs, rhs) {
 #'   The inferred type.
 #' @export
 infer_types_boolean_uni <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
-  assert_one_of(operand@type@dtype, BooleanType, IntegerType, UnsignedType)
+  assert_vt_has_ttype(operand, BooleanType, IntegerType, UnsignedType)
   ValueTypes(list(operand))
 }

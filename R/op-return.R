@@ -57,10 +57,7 @@ hlo_return <- function(..., func = .current_func()) {
 #' @rdname hlo_return
 #' @export
 infer_types_return <- function(...) {
-  dots <- list(...)
-  lapply(dots, function(x) {
-    stopifnot(inherits(x, ValueType))
-  })
+  assert_vts_are_tensors(...)
   ValueTypes()
 }
 

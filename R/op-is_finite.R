@@ -6,9 +6,9 @@ OpIsFinite <- new_Op("IsFinite", "is_finite")
 #' @rdname hlo_is_finite
 #' @export
 infer_types_is_finite <- function(operand) {
-  stopifnot(inherits(operand@type, TensorType))
+  assert_vt_is_tensor(operand)
   ValueTypes(list(
-    make_value_type("pred", shape(operand))
+    make_vt("pred", shape(operand))
   ))
 }
 
