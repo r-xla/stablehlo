@@ -73,8 +73,8 @@ assert_inherits_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
     }
   }
 
-  type_names <- vapply(
-    # nolint
+  # fmt: skip
+  type_names <- vapply( # nolint
     types,
     function(t) {
       if (inherits(t, "S7_class")) {
@@ -183,8 +183,8 @@ assert_vt_has_ttype <- function(
     }
   }
 
-  repr_shape <- function(s) {
-    # nolint
+  # fmt: skip
+  repr_shape <- function(s) { # nolint
     paste0("(", s, collapse = ",", ")")
   }
 
