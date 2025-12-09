@@ -94,8 +94,6 @@
 - [`hlo_negate()`](hlo_negate.md) : Negate Operator
 - [`hlo_not()`](hlo_not.md) : Not Operator
 - [`hlo_or()`](hlo_or.md) : Or Operator
-- [`infer_types_pad()`](hlo_pad.md) [`hlo_pad()`](hlo_pad.md) : Pad
-  Operator
 - [`infer_types_popcnt()`](hlo_popcnt.md)
   [`hlo_popcnt()`](hlo_popcnt.md) : Popcnt Operator
 - [`hlo_power()`](hlo_power.md) : Power Operator
