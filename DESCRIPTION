@@ -1,6 +1,6 @@
 Package: stablehlo
 Title: Write stableHLO programs
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: c(
     person("Daniel", "Falbel", , "daniel@posit.co", role = "aut",
            comment = c(ORCID = "https://orcid.org/0009-0006-0143-2392")),
