@@ -3,7 +3,7 @@ NULL
 
 OpNot <- new_Op("OpNot", "not")
 
-hlo_not_impl <- hlo_fn(OpNot, infer_types_boolean_uni)
+hlo_not_impl <- hlo_fn(OpNot, infer_types_integerish_uni)
 
 #' @templateVar mnemonic not
 #' @template op

@@ -49,9 +49,9 @@ infer_types_generic_biv <- function(lhs, rhs) {
   ValueTypes(list(lhs))
 }
 
-#' @title Infer types for boolean binary operations
+#' @title Infer types for boolean integerish operations
 #' @description
-#' Infer the types for boolean binary operations.
+#' Infer the types for integerish (bool or int) binary operations.
 #' @param lhs (`ValueType`)\cr
 #'   The left-hand side operand.
 #' @param rhs (`ValueType`)\cr
@@ -66,15 +66,15 @@ infer_types_integerish_biv <- function(lhs, rhs) {
   ValueTypes(list(lhs))
 }
 
-#' @title Infer types for boolean unary operations
+#' @title Infer types for integerish unary operations
 #' @description
-#' Infer the types for boolean unary operations.
+#' Infer the types for integerish (bool or int) unary operations.
 #' @param operand (`ValueType`)\cr
 #'   The operand.
 #' @return (`ValueType`)\cr
 #'   The inferred type.
 #' @export
-infer_types_boolean_uni <- function(operand) {
+infer_types_integerish_uni <- function(operand) {
   assert_vt_has_ttype(operand, BooleanType, IntegerType, UnsignedType)
   ValueTypes(list(operand))
 }
