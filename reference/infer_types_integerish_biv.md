@@ -1,6 +1,6 @@
-# Infer types for boolean binary operations
+# Infer types for boolean integerish operations
 
-Infer the types for boolean binary operations.
+Infer the types for integerish (bool or int) binary operations.
 
 ## Usage
 

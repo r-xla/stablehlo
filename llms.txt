@@ -233,14 +233,14 @@ specification. At least initially, it will:
 - [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
   While Operator
 - [`hlo_xor()`](hlo_xor.md) : Xor Operator
-- [`infer_types_boolean_uni()`](infer_types_boolean_uni.md) : Infer
-  types for boolean unary operations
 - [`infer_types_generic_biv()`](infer_types_generic_biv.md) : Infer
   types for binary operations
 - [`infer_types_generic_uni()`](infer_types_generic_uni.md) : Infer
   types for unary operations
 - [`infer_types_integerish_biv()`](infer_types_integerish_biv.md) :
-  Infer types for boolean binary operations
+  Infer types for boolean integerish operations
+- [`infer_types_integerish_uni()`](infer_types_integerish_uni.md) :
+  Infer types for integerish unary operations
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
 - [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
 - [`r_to_stablehlo_string()`](r_to_stablehlo_string.md) : Represent an R
