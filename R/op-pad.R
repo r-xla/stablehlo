@@ -12,8 +12,7 @@ infer_types_pad <- function(
   edge_padding_high,
   interior_padding
 ) {
-  assert_vt_is_tensor(operand)
-  assert_vt_is_tensor(padding_value)
+  assert_vts_are_tensors(operand, padding_value)
 
   # (C1) element_type(operand) = element_type(padding_value) = element_type(result)
   assert_vts_have_same_dtype(operand, padding_value)
@@ -24,6 +23,16 @@ infer_types_pad <- function(
   low <- edge_padding_low@value@data
   high <- edge_padding_high@value@data
   interior <- interior_padding@value@data
+
+  lowhigh <- rbind(low, high)
+  lowhigh[lowhigh > 0] <- 0
+  if (any(colSums(abs(lowhigh)) > operand_rank)) {
+    cli_abort("negative padding values can't exceed dimension")
+  }
+
+  if (any(interior < 0)) {
+    cli_abort("interior_padding must be non-negative")
+  }
 
   # (C2) size(edge_padding_low) = size(edge_padding_high) = size(interior_padding) = rank(operand)
   if (length(low) != operand_rank) {

@@ -22,10 +22,10 @@ hlo_pad(
 )
 }
 \arguments{
-\item{operand, padding_value, edge_padding_low, edge_padding_high, interior_padding}{(\code{\link{FuncVariable}})\cr}
+\item{operand, padding_value, edge_padding_low, edge_padding_high, interior_padding}{(\code{\link{FuncValue}})\cr}
 }
 \value{
-\code{\link{FuncVariable}}\cr
+\code{\link{FuncValue}}\cr
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#pad} for details.
