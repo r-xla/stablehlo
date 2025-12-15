@@ -5,7 +5,7 @@ Infer the types for boolean binary operations.
 ## Usage
 
 ``` r
-infer_types_boolean_biv(lhs, rhs)
+infer_types_integerish_biv(lhs, rhs)
 ```
 
 ## Arguments
