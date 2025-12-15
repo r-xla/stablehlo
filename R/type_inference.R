@@ -59,7 +59,7 @@ infer_types_generic_biv <- function(lhs, rhs) {
 #' @return (`ValueType`)\cr
 #'   The inferred type.
 #' @export
-infer_types_boolean_biv <- function(lhs, rhs) {
+infer_types_integerish_biv <- function(lhs, rhs) {
   assert_vt_has_ttype(lhs, BooleanType, IntegerType, UnsignedType)
   assert_vt_has_ttype(rhs, BooleanType, IntegerType, UnsignedType)
   assert_vt_equal(lhs, rhs)

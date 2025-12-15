@@ -53,5 +53,5 @@ logic_ops <- c(
 )
 
 for (op in logic_ops) {
-  write_bivariate_op(op, type_inference_fn = "infer_types_boolean_biv")
+  write_bivariate_op(op, type_inference_fn = "infer_types_integerish_biv")
 }

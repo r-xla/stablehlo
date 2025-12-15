@@ -3,7 +3,7 @@ NULL
 
 OpOr <- new_Op("OpOr", "or")
 
-hlo_or_impl <- hlo_fn(OpOr, infer_types_boolean_biv)
+hlo_or_impl <- hlo_fn(OpOr, infer_types_integerish_biv)
 
 #' @templateVar mnemonic or
 #' @template op
