@@ -2,7 +2,7 @@
 % Please edit documentation in R/type_inference.R
 \name{infer_types_integerish_biv}
 \alias{infer_types_integerish_biv}
-\title{Infer types for boolean binary operations}
+\title{Infer types for boolean integerish operations}
 \usage{
 infer_types_integerish_biv(lhs, rhs)
 }
@@ -18,5 +18,5 @@ The right-hand side operand.}
 The inferred type.
 }
 \description{
-Infer the types for boolean binary operations.
+Infer the types for integerish (bool or int) binary operations.
 }
