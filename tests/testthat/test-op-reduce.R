@@ -64,7 +64,6 @@ test_that("reduce along multiple dimensions", {
 
 test_that("reduce with two different tensors and init values", {
   skip_if_not_installed("pjrt")
-  skip_if_metal()
 
   func <- local_func()
 
