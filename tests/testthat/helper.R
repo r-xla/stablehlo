@@ -8,8 +8,8 @@ hlo_test_uni <- function(
   non_negative = FALSE,
   dimension = NULL,
   test_data = NULL,
-  dtype = "f64",
-  tol = 1e-5,
+  dtype = "f32",
+  tol = 1e-4,
   snapshot = TRUE
 ) {
   make_fn <- function(dtype, dim = NULL) {
@@ -63,10 +63,10 @@ hlo_test_biv <- function(
   test_func,
   non_negative = list(FALSE, FALSE),
   dimension = NULL,
-  dtypes = "f64",
+  dtypes = "f32",
   lhs = NULL,
   rhs = NULL,
-  tol = 1e-5,
+  tol = 1e-4,
   snapshot = TRUE,
   args = list()
 ) {
