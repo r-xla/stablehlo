@@ -29,6 +29,9 @@ Suggests:
     knitr,
     pjrt,
     testthat (>= 3.0.0)
+Remotes:
+    r-xla/pjrt,
+    r-xla/tengen
 Additional_repositories:
     https://r-xla.r-universe.dev
 VignetteBuilder: knitr
