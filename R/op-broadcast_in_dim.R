@@ -22,12 +22,6 @@ infer_types_broadcast_in_dim <- function(
     cli_abort("Length of broadcast_dimensions must equal rank of operand")
   }
 
-  # (C3) 0 <= broadcast_dimensions < rank(result)
-  if (!length(result_dims)) {
-    cli_abort(
-      "shape_out must specify the full result shape (rank > 0 for non-scalars)"
-    )
-  }
   if (any(bdims < 0L | bdims >= length(result_dims))) {
     cli_abort("broadcast_dimensions must be within [0, rank(result))")
   }
