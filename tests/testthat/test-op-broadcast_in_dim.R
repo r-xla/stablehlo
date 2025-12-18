@@ -58,3 +58,18 @@ test_that("broadcasting a scalar", {
     pjrt_buffer(1, shape = c(2, 3))
   )
 })
+
+test_that("works for scalars", {
+  skip_if_not_installed("pjrt")
+  local_func()
+  x <- hlo_input("x", "f32", integer())
+  f <- hlo_return(
+    hlo_broadcast_in_dim(x, integer(), c(2, 3))
+  )
+  exec <- pjrt_compile(pjrt_program(repr(f)))
+  x <- pjrt_buffer(1) # scalar input
+  expect_equal(
+    pjrt_execute(exec, x),
+    pjrt_buffer(1, shape = c(2, 3))
+  )
+})
