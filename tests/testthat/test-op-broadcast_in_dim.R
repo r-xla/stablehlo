@@ -67,7 +67,7 @@ test_that("works for scalars", {
     hlo_broadcast_in_dim(x, integer(), c(2, 3))
   )
   exec <- pjrt_compile(pjrt_program(repr(f)))
-  x <- pjrt_buffer(1) # scalar input
+  x <- pjrt_scalar(1)
   expect_equal(
     pjrt_execute(exec, x),
     pjrt_buffer(1, shape = c(2, 3))
