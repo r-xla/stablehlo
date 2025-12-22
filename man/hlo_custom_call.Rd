@@ -8,7 +8,7 @@ hlo_custom_call(
   ...,
   call_target_name,
   api_version = 4L,
-  has_side_effect = TRUE,
+  has_side_effect,
   backend_config = NULL,
   output_types = NULL
 )
@@ -26,8 +26,8 @@ The API version. Default is 4 (FFI API).}
 \item{has_side_effect}{(\code{logical(1)})\cr
 Whether the custom call has side effects. Default is TRUE.}
 
-\item{backend_config}{(\code{list} | \code{NULL})\cr
-Optional backend configuration as a named list.}
+\item{backend_config}{(\code{\link{CustomOpBackendConfig}} | \code{NULL})\cr
+Optional backend configuration.}
 
 \item{output_types}{(\code{list} of \code{\link{ValueType}} | \code{NULL})\cr
 The output types of the custom call. Default is NULL (no outputs).}
@@ -39,13 +39,4 @@ The output value(s), or NULL for side-effect only calls.
 \description{
 Create a custom call operation that invokes an external function via the
 FFI (Foreign Function Interface) API.
-}
-\examples{
-\dontrun{
-func <- local_func()
-x <- hlo_input("x", "f32", shape = c(4))
-# Call print_tensor (registered in pjrt)
-hlo_custom_call(x, call_target_name = "print_tensor")
-hlo_return(x)
-}
 }

@@ -9,7 +9,6 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
   assert_vts_are_tensors(...)
   dots <- list(...)
   input_dims <- lapply(dots, \(x) shape(x))
-  # dimension <- dimension@value@data + 1
 
   # (C1) 0 < size(inputs).
   if (!length(dots)) {
@@ -23,11 +22,14 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
     cli_abort("each input must have the same shape")
   }
 
-  # (C4) -R <= dimension < R, where R = rank(inputs[0]).
-  if (dimension > length(input_dims[[1]])) {
+  # Convert 0-based dimension to 1-based for R indexing
+  dim_r <- dimension + 1L
+
+  # (C4) 0 <= dimension < R, where R = rank(inputs[0]).
+  if (dim_r > length(input_dims[[1]])) {
     cli_abort("dimension must be present in inputs")
   }
-  if (dimension < 1) {
+  if (dim_r < 1) {
     cli_abort("dimension must be present in inputs")
   }
 
@@ -48,26 +50,13 @@ hlo_sort <- function(..., dimension, is_stable, comparator) {
   hlo_sort_impl(
     values = dots,
     funcs = list(comparator = comparator),
-    custom_attrs = list(
-      dimension = as.integer(dimension),
-      is_stable = as.logical(is_stable)
+    attrs = list(
+      ScalarAttr(
+        name = "dimension",
+        value = as.integer(dimension),
+        dtype = IntegerType(64L)
+      ),
+      BoolAttr(name = "is_stable", value = as.logical(is_stable))
     )
-  )
-}
-
-method(repr, OpSort) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    sprintf(
-      " {\ndimension = %d :i64,\nis_stable = %s\n} ",
-      x@inputs@custom_attrs$dimension - 1,
-      tolower(as.character(x@inputs@custom_attrs$is_stable))
-    ),
-    ": ",
-    repr(x@signature)
   )
 }

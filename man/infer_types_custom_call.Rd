@@ -4,10 +4,32 @@
 \alias{infer_types_custom_call}
 \title{Infer types for custom call}
 \usage{
-infer_types_custom_call(...)
+infer_types_custom_call(
+  ...,
+  call_target_name,
+  api_version = 4L,
+  has_side_effect,
+  backend_config = NULL,
+  output_types = NULL
+)
 }
 \arguments{
-\item{...}{Input value types and custom call config.}
+\item{...}{Input values.}
+
+\item{call_target_name}{(\code{character(1)})\cr
+The name of the custom function to call.}
+
+\item{api_version}{(\code{integer(1)})\cr
+The API version. Default is 4 (FFI API).}
+
+\item{has_side_effect}{(\code{logical(1)})\cr
+Whether the custom call has side effects.}
+
+\item{backend_config}{(\code{list} | \code{NULL})\cr
+Optional backend configuration as a named list.}
+
+\item{output_types}{(\code{list} of \code{\link{ValueType}} | \code{NULL})\cr
+The output types of the custom call. Default is NULL (no outputs).}
 }
 \value{
 (\code{ValueTypes})\cr
@@ -15,4 +37,6 @@ The output types (empty for side-effect only calls).
 }
 \description{
 Infer the output types for a custom call operation.
+The attributes "called_computations" and "output_operand_aliases" are not
+implemented yet.
 }

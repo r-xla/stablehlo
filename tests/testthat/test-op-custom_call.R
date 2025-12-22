@@ -6,7 +6,10 @@ test_that("print_tensor with header works on CPU", {
   hlo_custom_call(
     x,
     call_target_name = "print_tensor",
-    backend_config = list(print_header = "MyTensor")
+    has_side_effect = TRUE,
+    backend_config = CustomOpBackendConfig(list(
+      StringAttr(name = "print_header", value = "MyTensor")
+    ))
   )
   f <- hlo_return(x)
   expect_snapshot(repr(f))

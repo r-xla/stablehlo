@@ -21,21 +21,24 @@ infer_types_concatenate <- function(..., dimension) {
     cli_abort("Each input must have same element type")
   }
 
+  # Convert 0-based dimension to 1-based for R indexing
+  dim_r <- dimension + 1L
+
   # (C4) 0 <= dimension < rank(inputs[0])
-  if (length(shape(dots[[1]])) < dimension) {
+  if (length(shape(dots[[1]])) < dim_r) {
     cli_abort("dimension must exist in inputs")
   }
 
   # (C2) same(shape(inputs...)) except for dim(inputs..., dimension)
-  dims_ <- lapply(input_dims, \(x) x[-dimension])
+  dims_ <- lapply(input_dims, \(x) x[-dim_r])
   if (!all(dims_ == dims_[[1]])) {
     cli_abort("Each input must have same shape (except dimension)")
   }
 
   result_dims <- input_dims[[1]]
-  result_dims[dimension] <- sum(vapply(
+  result_dims[dim_r] <- sum(vapply(
     input_dims,
-    \(x) x[dimension],
+    \(x) x[dim_r],
     integer(1)
   ))
 
@@ -61,22 +64,12 @@ hlo_concatenate <- function(..., dimension) {
   }
   hlo_concatenate_impl(
     values = dots,
-    custom_attrs = list(dimension = as.integer(dimension))
-  )
-}
-
-method(repr, OpConcatenate) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    sprintf(
-      " {\ndimension = %d : i64 \n}",
-      x@inputs@custom_attrs$dimension - 1
-    ),
-    ": ",
-    repr(x@signature)
+    attrs = list(
+      ScalarAttr(
+        name = "dimension",
+        value = as.integer(dimension),
+        dtype = IntegerType(64L)
+      )
+    )
   )
 }

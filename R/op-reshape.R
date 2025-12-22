@@ -48,15 +48,3 @@ hlo_reshape <- function(
     custom_attrs = list(shape_out = as.integer(shape_out))
   )
 }
-
-method(repr, OpReshape) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    ": ",
-    repr(x@signature)
-  )
-}

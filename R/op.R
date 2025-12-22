@@ -158,6 +158,145 @@ method(repr, OpName) <- function(x) {
   paste0("\"stablehlo.", repr(x@mnemonic), "\"")
 }
 
+# Attribute Types ----------------------------------------------------------
+
+#' @title OpInputAttr
+#' @description
+#' Base class for operation input attributes.
+#' @param name (`character(1)`)\cr
+#'   The name of the attribute.
+#' @return (`OpInputAttr`)
+#' @export
+OpInputAttr <- new_class(
+  "OpInputAttr",
+  properties = list(
+    name = S7::class_character
+  )
+)
+
+#' @title ScalarAttr
+#' @description
+#' An attribute holding a scalar value with an associated dtype.
+#' @param name (`character(1)`)\cr
+#'   The name of the attribute.
+#' @param value (`numeric(1)` or `logical(1)`)\cr
+#'   The scalar value.
+#' @param dtype ([`TensorDataType`])\cr
+#'   The dtype of the scalar (e.g., `IntegerType(32)`, `FloatType(32)`, `BooleanType()`).
+#' @return `ScalarAttr`
+#' @export
+ScalarAttr <- new_class(
+  "ScalarAttr",
+  parent = OpInputAttr,
+  properties = list(
+    value = S7::class_any,
+    dtype = TensorDataType
+  )
+)
+
+method(repr, ScalarAttr) <- function(x, simplify_dense = TRUE) {
+  type_repr <- repr(x@dtype)
+  value_repr <- if (S7::S7_inherits(x@dtype, BooleanType)) {
+    sprintf("%s : %s", tolower(as.character(x@value)), type_repr)
+  } else if (
+    S7::S7_inherits(x@dtype, IntegerType) ||
+      S7::S7_inherits(x@dtype, UnsignedType)
+  ) {
+    sprintf("%d : %s", as.integer(x@value), type_repr)
+  } else {
+    sprintf("%s : %s", format_double(as.double(x@value)), type_repr)
+  }
+  paste0(x@name, " = ", value_repr)
+}
+
+#' @title BoolAttr
+#' @description
+#' An attribute holding a boolean value.
+#' @param name (`character(1)`)\cr
+#'   The name of the attribute.
+#' @param value (`logical(1)`)\cr
+#'   The boolean value.
+#' @return `BoolAttr`
+#' @export
+BoolAttr <- new_class(
+  "BoolAttr",
+  parent = OpInputAttr,
+  properties = list(
+    value = S7::class_logical
+  )
+)
+
+method(repr, BoolAttr) <- function(x, simplify_dense = TRUE) {
+  paste0(x@name, " = ", tolower(as.character(x@value)))
+}
+
+#' @title StringAttr
+#' @description
+#' An attribute holding a string value.
+#' @param name (`character(1)`)\cr
+#'   The name of the attribute.
+#' @param value (`character(1)`)\cr
+#'   The string value.
+#' @return `StringAttr`
+#' @export
+StringAttr <- new_class(
+  "StringAttr",
+  parent = OpInputAttr,
+  properties = list(
+    value = S7::class_character
+  )
+)
+
+method(repr, StringAttr) <- function(x, simplify_dense = TRUE) {
+  sprintf("%s = \"%s\"", x@name, x@value)
+}
+
+#' @title ConstantAttr
+#' @description
+#' An attribute holding a constant value.
+#' @param name (`character(1)`)\cr
+#'   The name of the attribute.
+#' @param value (`Constant`)\cr
+#'   The value of the attribute.
+#' @return (`ConstantAttr`)
+#' @export
+ConstantAttr <- new_class(
+  "ConstantAttr",
+  parent = OpInputAttr,
+  properties = list(
+    value = Constant
+  )
+)
+
+method(repr, ConstantAttr) <- function(x, simplify_dense = TRUE) {
+  paste0(
+    x@name,
+    " = ",
+    repr(x@value, simplify_dense = simplify_dense)
+  )
+}
+
+#' @title Create a ConstantAttr from R values
+#' @description
+#' Helper function to create a ConstantAttr from R values.
+#' @param name (`character(1)`)\cr
+#'   The name of the attribute.
+#' @param value (any)\cr
+#'   The R value to convert to a constant.
+#' @param dtype (`character(1)` | `NULL`)\cr
+#'   The dtype of the constant. If NULL, inferred from value.
+#' @param shape (`integer()` | `NULL`)\cr
+#'   The shape of the constant. If NULL, inferred from value.
+#' @return (`ConstantAttr`)
+#' @export
+constant_attr <- function(name, value, dtype = NULL, shape = NULL) {
+  if (is.null(shape)) {
+    shape <- if (length(value) == 1L) integer() else length(value)
+  }
+  constant <- r_to_constant(value, dtype = dtype, shape = shape)
+  ConstantAttr(name = name, value = constant)
+}
+
 #' @title OpInputValue
 #' @description
 #' This represents a value that can be used as input to an operation.
@@ -191,31 +330,6 @@ OpInputValues <- new_list_of("OpInputValues", OpInputValue)
 
 method(repr, OpInputValues) <- function(x) {
   paste0(sapply(x@items, repr), collapse = ", ")
-}
-
-
-#' @title OpInputAttr
-#' @description
-#' This represents an attribute that can be used as input to an operation.
-#' @param name (`character(1)`)\cr
-#'   The name of the attribute.
-#' @param value (`Constant`)\cr
-#'   The value of the attribute.
-#' @return (`OpInputAttr`)
-#' @export
-OpInputAttr <- new_class(
-  "OpInputAttr",
-  properties = list(
-    name = class_character,
-    value = Constant
-  )
-)
-method(repr, OpInputAttr) <- function(x, simplify_dense = TRUE) {
-  paste0(
-    x@name,
-    " = ",
-    repr(x@value, simplify_dense = simplify_dense)
-  )
 }
 
 #' @title OpInputAttrs

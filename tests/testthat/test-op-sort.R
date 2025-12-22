@@ -20,7 +20,7 @@ test_that("basic tests", {
     y <- hlo_sort(
       x1,
       x2,
-      dimension = 1L,
+      dimension = 0L,
       is_stable = TRUE,
       comparator = comp.func
     )

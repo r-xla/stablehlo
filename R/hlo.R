@@ -25,20 +25,18 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       }
     })
 
-    attrs <- lapply(attrs, function(x) {
-      err <- "All attributes must be FuncValues with a single constant Op."
-      if (!inherits(x, FuncValue)) {
-        cli_abort(err)
+    # Process attrs - expect a list of OpInputAttr subclasses
+    processed_attrs <- if (is.null(attrs)) {
+      list()
+    } else {
+      Filter(Negate(is.null), attrs)
+    }
+    lapply(processed_attrs, function(x) {
+      if (!S7::S7_inherits(x, OpInputAttr)) {
+        cli_abort(
+          "All attributes must be OpInputAttr subclasses (e.g., ConstantAttr, StringAttr, BoolAttr, ScalarAttr)"
+        )
       }
-      items <- x@func@body@items
-      if (length(items) != 1L) {
-        cli_abort(err)
-      }
-
-      if (!inherits(items[[1L]], OpConstant)) {
-        cli_abort(err)
-      }
-      items[[1]]@inputs@attrs@items[[1]]@value
     })
 
     op_input_funcs <- OpInputFuncs(
@@ -50,16 +48,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       })
     )
 
-    op_input_attrs <- OpInputAttrs(
-      lapply(seq_along(attrs), function(i) {
-        attr <- attrs[[i]]
-        name <- names(attrs)[i]
-        OpInputAttr(
-          name = name,
-          value = attr
-        )
-      })
-    )
+    op_input_attrs <- OpInputAttrs(processed_attrs)
 
     func <- merge_funcs(lapply(values, function(x) x@func))
 
@@ -75,8 +64,15 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     if (length(funcs) > 0L) {
       infer_args <- c(infer_args, funcs)
     }
-    if (length(attrs) > 0L) {
-      infer_args <- c(infer_args, attrs)
+    # For type inference, extract values from OpInputAttr subclasses as named args
+    if (length(processed_attrs) > 0L) {
+      attr_values <- lapply(processed_attrs, function(x) x@value)
+      names(attr_values) <- vapply(
+        processed_attrs,
+        function(x) x@name,
+        character(1)
+      )
+      infer_args <- c(infer_args, attr_values)
     }
     if (length(custom_attrs) > 0L) {
       infer_args <- c(infer_args, custom_attrs)

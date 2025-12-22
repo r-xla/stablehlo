@@ -63,28 +63,10 @@ hlo_transpose <- function(
   operand,
   permutation
 ) {
-  perm_attr <- hlo_tensor(
-    as.integer(permutation),
-    # permutation might be integer()
-    shape = length(permutation),
-    dtype = "i64",
-    func = Func()
-  )
-
   hlo_transpose_impl(
     values = list(operand = operand),
-    attrs = list(permutation = perm_attr)
-  )
-}
-
-method(repr, OpTranspose) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    ": ",
-    repr(x@signature)
+    attrs = list(
+      constant_attr("permutation", as.integer(permutation), dtype = "i64")
+    )
   )
 }

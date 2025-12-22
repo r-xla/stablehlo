@@ -49,23 +49,8 @@ hlo_cholesky <- function(
 ) {
   hlo_cholesky_impl(
     values = list(operand = operand),
-    custom_attrs = list(lower = as.logical(lower))
-  )
-}
-
-method(repr, OpCholesky) <- function(x, ...) {
-  paste0(
-    repr(x@outputs, ...),
-    " = ",
-    repr(x@name, ...),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE, ...),
-    paste0(
-      "{\nlower = ",
-      tolower(as.character(x@inputs@custom_attrs$lower)),
-      "\n}"
-    ),
-    ": ",
-    repr(x@signature, ...)
+    attrs = list(
+      BoolAttr(name = "lower", value = as.logical(lower))
+    )
   )
 }
