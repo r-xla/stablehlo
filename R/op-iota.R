@@ -59,9 +59,9 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
   )
 }
 
-#' @templateVar mnemonic iota
-#' @templateVar not_func_variables iota_dimension,dtype,shape,func
-#' @template op
+#' @title Iota Operator
+#' @description
+#' See \url{https://openxla.org/stablehlo/spec#iota} for details.
 #' @param iota_dimension (`integer(1)`)\cr
 #'   The dimension along which to generate increasing values.
 #'   Must be in range `[0, rank(output))`.
@@ -74,6 +74,7 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
 #'   The function to add the operation to.
 #'   Per default, uses the last function created with [`hlo_func`] or [`local_func`].
 #' @export
+#' @return [`FuncValue`]
 hlo_iota <- function(iota_dimension, dtype, shape, func = NULL) {
   func <- func %??% .current_func()
   impl_hlo_iota(iota_dimension, dtype, shape, func)

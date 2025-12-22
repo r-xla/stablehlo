@@ -10,7 +10,9 @@ hlo_iota(iota_dimension, dtype, shape, func = NULL)
 infer_types_iota(iota_dimension, dtype, shape)
 }
 \arguments{
-\item{iota_dimension, dtype, shape, func}{(\code{\link{FuncValue}})\cr}
+\item{iota_dimension}{(\code{integer(1)})\cr
+The dimension along which to generate increasing values.
+Must be in range \verb{[0, rank(output))}.}
 
 \item{dtype}{(\code{character(1)})\cr
 The element type of the output tensor.
@@ -22,13 +24,9 @@ The shape of the output tensor.}
 \item{func}{(\code{\link{Func}})\cr
 The function to add the operation to.
 Per default, uses the last function created with \code{\link{hlo_func}} or \code{\link{local_func}}.}
-
-\item{iota_dimension}{(\code{integer(1)})\cr
-The dimension along which to generate increasing values.
-Must be in range \verb{[0, rank(output))}.}
 }
 \value{
-\code{\link{FuncValue}}\cr
+\code{\link{FuncValue}}
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#iota} for details.
