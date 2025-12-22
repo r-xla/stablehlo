@@ -88,17 +88,20 @@ hlo_pad <- function(
       constant_attr(
         "edge_padding_low",
         as.integer(edge_padding_low),
-        dtype = "i64"
+        dtype = "i64",
+        shape = c()
       ),
       constant_attr(
         "edge_padding_high",
         as.integer(edge_padding_high),
-        dtype = "i64"
+        dtype = "i64",
+        shape = c()
       ),
       constant_attr(
         "interior_padding",
         as.integer(interior_padding),
-        dtype = "i64"
+        dtype = "i64",
+        shape = c()
       )
     )
   )

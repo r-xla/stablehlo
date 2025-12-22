@@ -146,20 +146,20 @@ S7::method(hlo_tensor, S7::class_integer) <- function(
   value,
   ...,
   dtype = NULL,
-  shape = NULL,
+  shape = get_dims(value),
   func = NULL
 ) {
-  shape <- shape %??% get_dims(value)
+  shape <- shape %||% integer()
   impl_hlo_constant(value, dtype = dtype, func = func, shape = shape)
 }
 
 S7::method(hlo_tensor, S7::class_logical) <- function(
   value,
   ...,
-  shape = NULL,
+  shape = get_dims(value),
   func = NULL
 ) {
-  shape <- shape %??% get_dims(value)
+  shape <- shape %||% integer()
   impl_hlo_constant(value, dtype = "i1", func = func, shape = shape)
 }
 
@@ -167,10 +167,10 @@ S7::method(hlo_tensor, S7::class_double) <- function(
   value,
   ...,
   dtype = NULL,
-  shape = NULL,
+  shape = get_dims(value),
   func = NULL
 ) {
-  shape <- shape %??% get_dims(value)
+  shape <- shape %||% integer()
   impl_hlo_constant(value, dtype = dtype, func = func, shape = shape)
 }
 
