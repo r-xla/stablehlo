@@ -202,3 +202,15 @@ test_that("Efficient representation of constants with single value", {
   result_buffer <- pjrt_execute(exec)
   expect_equal(result_buffer, pjrt_buffer(1.0, shape = c(2, 2), dtype = "f32"))
 })
+
+test_that("c() shape is interpreted as scalar", {
+  local_func()
+  x <- hlo_tensor(1L, shape = NULL)
+  f <- hlo_return(x)
+  expect_snapshot(repr(f))
+  skip_if_not_installed("pjrt")
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+  buffer <- pjrt_execute(exec)
+  expect_equal(buffer, pjrt_scalar(1L))
+})

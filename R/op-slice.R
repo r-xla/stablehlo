@@ -81,36 +81,22 @@ hlo_slice <- function(
   limit_indices,
   strides
 ) {
-  start_attr <- hlo_tensor(
-    as.integer(start_indices),
-    dtype = "i64",
-    func = Func()
-  )
-  limit_attr <- hlo_tensor(
-    as.integer(limit_indices),
-    dtype = "i64",
-    func = Func()
-  )
-  stride_attr <- hlo_tensor(as.integer(strides), dtype = "i64", func = Func())
-
   hlo_slice_impl(
     values = list(operand = operand),
     attrs = list(
-      start_indices = start_attr,
-      limit_indices = limit_attr,
-      strides = stride_attr
+      constant_attr(
+        "start_indices",
+        as.integer(start_indices),
+        dtype = "i64",
+        shape = c()
+      ),
+      constant_attr(
+        "limit_indices",
+        as.integer(limit_indices),
+        dtype = "i64",
+        shape = c()
+      ),
+      constant_attr("strides", as.integer(strides), dtype = "i64", shape = c())
     )
-  )
-}
-
-method(repr, OpSlice) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    ": ",
-    repr(x@signature)
   )
 }

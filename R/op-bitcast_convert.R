@@ -88,15 +88,3 @@ hlo_bitcast_convert <- function(
     custom_attrs = list(dtype = dtype)
   )
 }
-
-method(repr, OpBitcastConvert) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    ": ",
-    repr(x@signature)
-  )
-}

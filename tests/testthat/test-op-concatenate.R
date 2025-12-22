@@ -7,7 +7,7 @@ test_that("basic tests", {
     x1,
     x2,
     x3,
-    dimension = 2L
+    dimension = 1L
   )
   f <- hlo_return(y)
   expect_snapshot(repr(f))

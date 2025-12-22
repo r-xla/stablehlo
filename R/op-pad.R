@@ -82,40 +82,27 @@ hlo_pad <- function(
   edge_padding_high,
   interior_padding
 ) {
-  low_attr <- hlo_tensor(
-    as.integer(edge_padding_low),
-    dtype = "i64",
-    func = Func()
-  )
-  high_attr <- hlo_tensor(
-    as.integer(edge_padding_high),
-    dtype = "i64",
-    func = Func()
-  )
-  interior_attr <- hlo_tensor(
-    as.integer(interior_padding),
-    dtype = "i64",
-    func = Func()
-  )
-
   hlo_pad_impl(
     values = list(operand = operand, padding_value = padding_value),
     attrs = list(
-      edge_padding_low = low_attr,
-      edge_padding_high = high_attr,
-      interior_padding = interior_attr
+      constant_attr(
+        "edge_padding_low",
+        as.integer(edge_padding_low),
+        dtype = "i64",
+        shape = c()
+      ),
+      constant_attr(
+        "edge_padding_high",
+        as.integer(edge_padding_high),
+        dtype = "i64",
+        shape = c()
+      ),
+      constant_attr(
+        "interior_padding",
+        as.integer(interior_padding),
+        dtype = "i64",
+        shape = c()
+      )
     )
-  )
-}
-
-method(repr, OpPad) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    ": ",
-    repr(x@signature)
   )
 }
