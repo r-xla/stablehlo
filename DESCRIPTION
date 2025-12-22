@@ -73,6 +73,7 @@ Collate:
     'op-constant.R'
     'op-convert.R'
     'op-cosine.R'
+    'op-custom_call.R'
     'op-divide.R'
     'op-dot_general.R'
     'op-exponential.R'

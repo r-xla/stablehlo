@@ -4,18 +4,15 @@
 \alias{OpInputAttr}
 \title{OpInputAttr}
 \usage{
-OpInputAttr(name = character(0), value = Constant())
+OpInputAttr(name = character(0))
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr
 The name of the attribute.}
-
-\item{value}{(\code{Constant})\cr
-The value of the attribute.}
 }
 \value{
 (\code{OpInputAttr})
 }
 \description{
-This represents an attribute that can be used as input to an operation.
+Base class for operation input attributes.
 }

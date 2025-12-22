@@ -54,22 +54,10 @@ hlo_reverse <- function(
   operand,
   dimensions
 ) {
-  dim_attr <- hlo_tensor(as.integer(dimensions), dtype = "i64")
-
   hlo_reverse_impl(
     values = list(operand = operand),
-    attrs = list(dimensions = dim_attr)
-  )
-}
-
-method(repr, OpReverse) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    ": ",
-    repr(x@signature)
+    attrs = list(
+      constant_attr("dimensions", as.integer(dimensions), dtype = "i64")
+    )
   )
 }

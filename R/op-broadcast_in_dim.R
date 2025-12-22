@@ -66,28 +66,16 @@ hlo_broadcast_in_dim <- function(
   broadcast_dimensions,
   shape_out
 ) {
-  # TODO(hack): do this cleanrer
-  bd_attr <- hlo_tensor(
-    as.integer(broadcast_dimensions),
-    dtype = "i64",
-    func = Func()
-  )
-
   hlo_broadcast_in_dim_impl(
     values = list(operand = operand),
-    attrs = list(broadcast_dimensions = bd_attr),
+    attrs = list(
+      constant_attr(
+        "broadcast_dimensions",
+        as.integer(broadcast_dimensions),
+        dtype = "i64",
+        shape = c()
+      )
+    ),
     custom_attrs = list(shape_out = as.integer(shape_out))
-  )
-}
-
-method(repr, OpBroadcastInDim) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    ": ",
-    repr(x@signature)
   )
 }

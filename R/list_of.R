@@ -18,7 +18,7 @@ method(length, list_of) <- function(x) {
   length(x@items)
 }
 
-new_list_of <- function(class_name, item_type) {
+new_list_of <- function(class_name, item_type, validator = NULL) {
   new_class(
     class_name,
     parent = list_of,
@@ -60,6 +60,10 @@ new_list_of <- function(class_name, item_type) {
                 )
               }
             }
+          }
+          # Run custom validator if provided
+          if (!is.null(validator)) {
+            return(validator(value))
           }
         }
       )

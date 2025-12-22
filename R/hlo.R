@@ -25,20 +25,14 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       }
     })
 
-    attrs <- lapply(attrs, function(x) {
-      err <- "All attributes must be FuncValues with a single constant Op."
-      if (!inherits(x, FuncValue)) {
-        cli_abort(err)
+    # Process attrs - expect a list of OpInputAttr subclasses
+    attrs <- attrs %??% list()
+    lapply(attrs, function(x) {
+      if (!S7::S7_inherits(x, OpInputAttr)) {
+        cli_abort(
+          "All attributes must be OpInputAttr subclasses (e.g., ConstantAttr, StringAttr, BoolAttr, ScalarAttr)"
+        )
       }
-      items <- x@func@body@items
-      if (length(items) != 1L) {
-        cli_abort(err)
-      }
-
-      if (!inherits(items[[1L]], OpConstant)) {
-        cli_abort(err)
-      }
-      items[[1]]@inputs@attrs@items[[1]]@value
     })
 
     op_input_funcs <- OpInputFuncs(
@@ -50,16 +44,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       })
     )
 
-    op_input_attrs <- OpInputAttrs(
-      lapply(seq_along(attrs), function(i) {
-        attr <- attrs[[i]]
-        name <- names(attrs)[i]
-        OpInputAttr(
-          name = name,
-          value = attr
-        )
-      })
-    )
+    op_input_attrs <- OpInputAttrs(attrs)
 
     func <- merge_funcs(lapply(values, function(x) x@func))
 
@@ -75,8 +60,15 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     if (length(funcs) > 0L) {
       infer_args <- c(infer_args, funcs)
     }
+    # For type inference, extract values from OpInputAttr subclasses as named args
     if (length(attrs) > 0L) {
-      infer_args <- c(infer_args, attrs)
+      attr_values <- lapply(attrs, function(x) x@value)
+      names(attr_values) <- vapply(
+        attrs,
+        function(x) x@name,
+        character(1)
+      )
+      infer_args <- c(infer_args, attr_values)
     }
     if (length(custom_attrs) > 0L) {
       infer_args <- c(infer_args, custom_attrs)
@@ -198,7 +190,7 @@ hlo_input <- function(
 hlo_closure <- function(...) {
   vars <- list(...)
   ids <- vapply(vars, function(v) v@value_id@id, character(1))
-  if (any(duplicated(ids))) {
+  if (anyDuplicated(ids)) {
     cli_abort(
       "Each variable can only be captured once in hlo_closure (duplicate value_id detected)"
     )

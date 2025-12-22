@@ -92,26 +92,11 @@ hlo_reduce_impl <- hlo_fn(OpReduce, infer_types_reduce)
 #' @template op
 #' @export
 hlo_reduce <- function(inputs, init_values, dimensions, body) {
-  dim_attr <- hlo_tensor(
-    as.integer(dimensions),
-    dtype = "i64",
-    func = Func()
-  )
   hlo_reduce_impl(
     values = c(inputs, init_values),
     funcs = list(body = body),
-    attrs = list(dimensions = dim_attr)
-  )
-}
-
-method(repr, OpReduce) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    ": ",
-    repr(x@signature)
+    attrs = list(
+      constant_attr("dimensions", as.integer(dimensions), dtype = "i64")
+    )
   )
 }

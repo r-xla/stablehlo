@@ -44,15 +44,3 @@ hlo_select <- function(
     values = list(pred = pred, on_true = on_true, on_false = on_false)
   )
 }
-
-method(repr, OpSelect) <- function(x, ...) {
-  paste0(
-    repr(x@outputs),
-    " = ",
-    repr(x@name),
-    " ",
-    repr(x@inputs, simplify_dense = TRUE),
-    ": ",
-    repr(x@signature)
-  )
-}
