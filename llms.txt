@@ -172,6 +172,9 @@ specification. At least initially, it will:
 - [`infer_types_convert()`](hlo_convert.md)
   [`hlo_convert()`](hlo_convert.md) : Convert Operator
 - [`hlo_cosine()`](hlo_cosine.md) : Cosine Operator
+- [`infer_types_count_leading_zeros()`](hlo_count_leading_zeros.md)
+  [`hlo_count_leading_zeros()`](hlo_count_leading_zeros.md) :
+  CountLeadingZeros Operator
 - [`hlo_custom_call()`](hlo_custom_call.md) : Custom Call Operation
 - [`hlo_divide()`](hlo_divide.md) : Divide Operator
 - [`infer_types_dot_general()`](hlo_dot_general.md)
@@ -239,9 +242,6 @@ specification. At least initially, it will:
 - [`hlo_tanh()`](hlo_tanh.md) : Tanh Operator
 - [`infer_types_transpose()`](hlo_transpose.md)
   [`hlo_transpose()`](hlo_transpose.md) : Transpose Operator
-- [`infer_types_triangular_solve()`](hlo_triangular_solve.md)
-  [`hlo_triangular_solve()`](hlo_triangular_solve.md) : TriangularSolve
-  Operator
 - [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
   While Operator
 - [`hlo_xor()`](hlo_xor.md) : Xor Operator

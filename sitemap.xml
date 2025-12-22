@@ -70,6 +70,7 @@
 <url><loc>/reference/hlo_constant.html</loc></url>
 <url><loc>/reference/hlo_convert.html</loc></url>
 <url><loc>/reference/hlo_cosine.html</loc></url>
+<url><loc>/reference/hlo_count_leading_zeros.html</loc></url>
 <url><loc>/reference/hlo_custom_call.html</loc></url>
 <url><loc>/reference/hlo_divide.html</loc></url>
 <url><loc>/reference/hlo_dot_general.html</loc></url>
@@ -114,7 +115,6 @@
 <url><loc>/reference/hlo_tan.html</loc></url>
 <url><loc>/reference/hlo_tanh.html</loc></url>
 <url><loc>/reference/hlo_transpose.html</loc></url>
-<url><loc>/reference/hlo_triangular_solve.html</loc></url>
 <url><loc>/reference/hlo_while.html</loc></url>
 <url><loc>/reference/hlo_xor.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
