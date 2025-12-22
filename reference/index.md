@@ -80,9 +80,6 @@
 - [`infer_types_convert()`](hlo_convert.md)
   [`hlo_convert()`](hlo_convert.md) : Convert Operator
 - [`hlo_cosine()`](hlo_cosine.md) : Cosine Operator
-- [`infer_types_count_leading_zeros()`](hlo_count_leading_zeros.md)
-  [`hlo_count_leading_zeros()`](hlo_count_leading_zeros.md) :
-  CountLeadingZeros Operator
 - [`hlo_custom_call()`](hlo_custom_call.md) : Custom Call Operation
 - [`hlo_divide()`](hlo_divide.md) : Divide Operator
 - [`infer_types_dot_general()`](hlo_dot_general.md)
@@ -95,6 +92,8 @@
   function
 - [`infer_types_if()`](hlo_if.md) [`hlo_if()`](hlo_if.md) : If Operator
 - [`hlo_input()`](hlo_input.md) : Create a input to a function
+- [`hlo_iota()`](hlo_iota.md) [`infer_types_iota()`](hlo_iota.md) : Iota
+  Operator
 - [`infer_types_is_finite()`](hlo_is_finite.md)
   [`hlo_is_finite()`](hlo_is_finite.md) : IsFinite Operator
 - [`hlo_log()`](hlo_log.md) : Log Operator
