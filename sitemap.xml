@@ -79,7 +79,6 @@
 <url><loc>/reference/hlo_func.html</loc></url>
 <url><loc>/reference/hlo_if.html</loc></url>
 <url><loc>/reference/hlo_input.html</loc></url>
-<url><loc>/reference/hlo_iota.html</loc></url>
 <url><loc>/reference/hlo_is_finite.html</loc></url>
 <url><loc>/reference/hlo_log.html</loc></url>
 <url><loc>/reference/hlo_log_plus_one.html</loc></url>
@@ -115,6 +114,7 @@
 <url><loc>/reference/hlo_tan.html</loc></url>
 <url><loc>/reference/hlo_tanh.html</loc></url>
 <url><loc>/reference/hlo_transpose.html</loc></url>
+<url><loc>/reference/hlo_triangular_solve.html</loc></url>
 <url><loc>/reference/hlo_while.html</loc></url>
 <url><loc>/reference/hlo_xor.html</loc></url>
 <url><loc>/reference/index.html</loc></url>

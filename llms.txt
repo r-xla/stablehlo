@@ -184,8 +184,6 @@ specification. At least initially, it will:
   function
 - [`infer_types_if()`](hlo_if.md) [`hlo_if()`](hlo_if.md) : If Operator
 - [`hlo_input()`](hlo_input.md) : Create a input to a function
-- [`hlo_iota()`](hlo_iota.md) [`infer_types_iota()`](hlo_iota.md) : Iota
-  Operator
 - [`infer_types_is_finite()`](hlo_is_finite.md)
   [`hlo_is_finite()`](hlo_is_finite.md) : IsFinite Operator
 - [`hlo_log()`](hlo_log.md) : Log Operator
@@ -241,6 +239,9 @@ specification. At least initially, it will:
 - [`hlo_tanh()`](hlo_tanh.md) : Tanh Operator
 - [`infer_types_transpose()`](hlo_transpose.md)
   [`hlo_transpose()`](hlo_transpose.md) : Transpose Operator
+- [`infer_types_triangular_solve()`](hlo_triangular_solve.md)
+  [`hlo_triangular_solve()`](hlo_triangular_solve.md) : TriangularSolve
+  Operator
 - [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
   While Operator
 - [`hlo_xor()`](hlo_xor.md) : Xor Operator
