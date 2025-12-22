@@ -122,8 +122,8 @@ w
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
 #> %1 = "stablehlo.concatenate" (%0, %x) {
-#> dimension = 1 : i64
-#> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
+#> dimension = 0 : i64 
+#> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<4x2xf32>)
 #> }
 ```
 
@@ -194,8 +194,8 @@ init
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
 #> %1 = "stablehlo.concatenate" (%0, %x) {
-#> dimension = 1 : i64
-#> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
+#> dimension = 0 : i64 
+#> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<4x2xf32>)
 #> %2 = "stablehlo.constant" () {
 #> value = dense<0.00000000e+00> : tensor<f32>
 #> }: () -> (tensor<f32>)
@@ -212,8 +212,8 @@ out_main
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
 #> %1 = "stablehlo.concatenate" (%0, %x) {
-#> dimension = 1 : i64
-#> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
+#> dimension = 0 : i64 
+#> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<4x2xf32>)
 #> %2 = "stablehlo.constant" () {
 #> value = dense<0.00000000e+00> : tensor<f32>
 #> }: () -> (tensor<f32>)
@@ -235,8 +235,8 @@ hlo_return(out_main)
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<f32> {
 #> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
 #> %1 = "stablehlo.concatenate" (%0, %x) {
-#> dimension = 1 : i64
-#> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
+#> dimension = 0 : i64 
+#> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<4x2xf32>)
 #> %2 = "stablehlo.constant" () {
 #> value = dense<0.00000000e+00> : tensor<f32>
 #> }: () -> (tensor<f32>)

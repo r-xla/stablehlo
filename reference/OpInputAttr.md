@@ -1,11 +1,11 @@
 # OpInputAttr
 
-Base class for operation input attributes.
+This represents an attribute that can be used as input to an operation.
 
 ## Usage
 
 ``` r
-OpInputAttr(name = character(0))
+OpInputAttr(name = character(0), value = Constant())
 ```
 
 ## Arguments
@@ -14,6 +14,11 @@ OpInputAttr(name = character(0))
 
   (`character(1)`)  
   The name of the attribute.
+
+- value:
+
+  (`Constant`)  
+  The value of the attribute.
 
 ## Value
 
