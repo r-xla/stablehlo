@@ -60,6 +60,7 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
 }
 
 #' @templateVar mnemonic iota
+#' @templateVar not_func_variables iota_dimension,dtype,shape,func
 #' @template op
 #' @param iota_dimension (`integer(1)`)\cr
 #'   The dimension along which to generate increasing values.
