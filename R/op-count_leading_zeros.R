@@ -5,8 +5,8 @@ OpCountLeadingZeros <- new_Op("OpCountLeadingZeros", "count_leading_zeros")
 
 #' @rdname hlo_count_leading_zeros
 #' @export
-infer_types_count_leading_zeros <- function(operand) {
-  # nolint
+# fmt: skip
+infer_types_count_leading_zeros <- function(operand) { # nolint
   assert_vt_is_tensor(operand)
   ValueTypes(list(operand))
 }
