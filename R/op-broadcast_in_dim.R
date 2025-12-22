@@ -72,7 +72,8 @@ hlo_broadcast_in_dim <- function(
       constant_attr(
         "broadcast_dimensions",
         as.integer(broadcast_dimensions),
-        dtype = "i64"
+        dtype = "i64",
+        shape = c()
       )
     ),
     custom_attrs = list(shape_out = as.integer(shape_out))

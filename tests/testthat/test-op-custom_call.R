@@ -1,6 +1,4 @@
 test_that("print_tensor with header works on CPU", {
-  skip_if_not_installed("pjrt")
-
   local_func()
   x <- hlo_input("x", "f32", shape = c(2, 2))
   hlo_custom_call(
@@ -14,6 +12,10 @@ test_that("print_tensor with header works on CPU", {
   )
   f <- hlo_return(x)
   expect_snapshot(repr(f))
+
+  skip_if_not_installed("pjrt")
+  # printing currently only works on CPU
+  skip_if(!is_cpu())
 
   program <- pjrt::pjrt_program(repr(f))
   exec <- pjrt::pjrt_compile(program)
