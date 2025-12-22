@@ -95,6 +95,8 @@
   function
 - [`infer_types_if()`](hlo_if.md) [`hlo_if()`](hlo_if.md) : If Operator
 - [`hlo_input()`](hlo_input.md) : Create a input to a function
+- [`hlo_iota()`](hlo_iota.md) [`infer_types_iota()`](hlo_iota.md) : Iota
+  Operator
 - [`infer_types_is_finite()`](hlo_is_finite.md)
   [`hlo_is_finite()`](hlo_is_finite.md) : IsFinite Operator
 - [`hlo_log()`](hlo_log.md) : Log Operator
