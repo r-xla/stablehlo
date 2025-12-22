@@ -26,12 +26,8 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     })
 
     # Process attrs - expect a list of OpInputAttr subclasses
-    processed_attrs <- if (is.null(attrs)) {
-      list()
-    } else {
-      Filter(Negate(is.null), attrs)
-    }
-    lapply(processed_attrs, function(x) {
+    attrs <- attrs %??% list()
+    lapply(attrs, function(x) {
       if (!S7::S7_inherits(x, OpInputAttr)) {
         cli_abort(
           "All attributes must be OpInputAttr subclasses (e.g., ConstantAttr, StringAttr, BoolAttr, ScalarAttr)"
@@ -48,7 +44,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       })
     )
 
-    op_input_attrs <- OpInputAttrs(processed_attrs)
+    op_input_attrs <- OpInputAttrs(attrs)
 
     func <- merge_funcs(lapply(values, function(x) x@func))
 
@@ -65,10 +61,10 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       infer_args <- c(infer_args, funcs)
     }
     # For type inference, extract values from OpInputAttr subclasses as named args
-    if (length(processed_attrs) > 0L) {
-      attr_values <- lapply(processed_attrs, function(x) x@value)
+    if (length(attrs) > 0L) {
+      attr_values <- lapply(attrs, function(x) x@value)
       names(attr_values) <- vapply(
-        processed_attrs,
+        attrs,
         function(x) x@name,
         character(1)
       )
