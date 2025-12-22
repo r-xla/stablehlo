@@ -68,7 +68,7 @@
       <h1>Get Started</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/fix-hlo-tensor/vignettes/articles/stablehlo.Rmd" class="external-link"><code>vignettes/articles/stablehlo.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/feat-custom-op/vignettes/articles/stablehlo.Rmd" class="external-link"><code>vignettes/articles/stablehlo.Rmd</code></a></small>
       <div class="d-none name"><code>stablehlo.Rmd</code></div>
     </div>
 
@@ -175,8 +175,8 @@ stableHLO).</p>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
 <span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">%1</span> = "stablehlo.concatenate" (%0, %x) {</span></span>
-<span><span class="co">#&gt; dimension = 0 : i64 </span></span>
-<span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;4x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; dimension = 1 : i64</span></span>
+<span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>We see above that the inputs to operations can not only be tensors,
 but also other, “static” inputs. Inputs are static when they can’t be
@@ -233,8 +233,8 @@ tensor we are reducing. We can do this via
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
 <span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
 <span><span class="co">#&gt; %1 = "stablehlo.concatenate" (%0, %x) {</span></span>
-<span><span class="co">#&gt; dimension = 0 : i64 </span></span>
-<span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;4x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; dimension = 1 : i64</span></span>
+<span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">%2</span> = "stablehlo.constant" () {</span></span>
 <span><span class="co">#&gt; value = dense&lt;0.00000000e+00&gt; : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }: () -&gt; (tensor&lt;f32&gt;)</span></span>
@@ -248,8 +248,8 @@ the dimensions to reduce along.</p>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
 <span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
 <span><span class="co">#&gt; %1 = "stablehlo.concatenate" (%0, %x) {</span></span>
-<span><span class="co">#&gt; dimension = 0 : i64 </span></span>
-<span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;4x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; dimension = 1 : i64</span></span>
+<span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
 <span><span class="co">#&gt; %2 = "stablehlo.constant" () {</span></span>
 <span><span class="co">#&gt; value = dense&lt;0.00000000e+00&gt; : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }: () -&gt; (tensor&lt;f32&gt;)</span></span>
@@ -268,8 +268,8 @@ the dimensions to reduce along.</p>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt; tensor&lt;f32&gt; {</span></span>
 <span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
 <span><span class="co">#&gt; %1 = "stablehlo.concatenate" (%0, %x) {</span></span>
-<span><span class="co">#&gt; dimension = 0 : i64 </span></span>
-<span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;4x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; dimension = 1 : i64</span></span>
+<span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
 <span><span class="co">#&gt; %2 = "stablehlo.constant" () {</span></span>
 <span><span class="co">#&gt; value = dense&lt;0.00000000e+00&gt; : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }: () -&gt; (tensor&lt;f32&gt;)</span></span>

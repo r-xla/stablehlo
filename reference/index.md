@@ -2,8 +2,12 @@
 
 ## All functions
 
+- [`BoolAttr()`](BoolAttr.md) : BoolAttr
 - [`BooleanType()`](BooleanType.md) : BooleanType
 - [`Constant()`](Constant.md) : Constant
+- [`ConstantAttr()`](ConstantAttr.md) : ConstantAttr
+- [`CustomOpBackendConfig()`](CustomOpBackendConfig.md) :
+  CustomOpBackendConfig
 - [`DotDimensionNumbers()`](DotDimensionNumbers.md) :
   DotDimensionNumbers
 - [`FloatType()`](FloatType.md) : FloatType
@@ -29,7 +33,9 @@
 - [`OpOutput()`](OpOutput.md) : OpOutput
 - [`OpOutputs()`](OpOutputs.md) : OpOutputs
 - [`OpSignature()`](OpSignature.md) : OpSignature
+- [`ScalarAttr()`](ScalarAttr.md) : ScalarAttr
 - [`Shape()`](Shape.md) : Shape
+- [`StringAttr()`](StringAttr.md) : StringAttr
 - [`TensorConstant()`](TensorConstant.md) : TensorConstant
 - [`TensorDataType`](TensorDataType.md) : TensorDataType
 - [`TensorType()`](TensorType.md) : TensorType
@@ -38,6 +44,8 @@
 - [`ValueType()`](ValueType.md) : ValueType
 - [`ValueTypes()`](ValueTypes.md) : ValueTypes
 - [`as_dtype()`](as_dtype.md) : Convert to TensorDataType
+- [`constant_attr()`](constant_attr.md) : Create a ConstantAttr from R
+  values
 - [`.current_func()`](dot-current_func.md) : Get the last function
   created
 - [`format_double()`](format_double.md) : Format Double Array with
@@ -72,6 +80,7 @@
 - [`infer_types_convert()`](hlo_convert.md)
   [`hlo_convert()`](hlo_convert.md) : Convert Operator
 - [`hlo_cosine()`](hlo_cosine.md) : Cosine Operator
+- [`hlo_custom_call()`](hlo_custom_call.md) : Custom Call Operation
 - [`hlo_divide()`](hlo_divide.md) : Divide Operator
 - [`infer_types_dot_general()`](hlo_dot_general.md)
   [`hlo_dot_general()`](hlo_dot_general.md) : DotGeneral Operator
@@ -141,6 +150,8 @@
 - [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
   While Operator
 - [`hlo_xor()`](hlo_xor.md) : Xor Operator
+- [`infer_types_custom_call()`](infer_types_custom_call.md) : Infer
+  types for custom call
 - [`infer_types_generic_biv()`](infer_types_generic_biv.md) : Infer
   types for binary operations
 - [`infer_types_generic_uni()`](infer_types_generic_uni.md) : Infer
