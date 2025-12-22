@@ -94,9 +94,12 @@ specification. At least initially, it will:
 
 ## All functions
 
+- [`BoolAttr()`](BoolAttr.md) : BoolAttr
 - [`BooleanType()`](BooleanType.md) : BooleanType
 - [`Constant()`](Constant.md) : Constant
-- [`CustomCallConfig()`](CustomCallConfig.md) : CustomCallConfig
+- [`ConstantAttr()`](ConstantAttr.md) : ConstantAttr
+- [`CustomOpBackendConfig()`](CustomOpBackendConfig.md) :
+  CustomOpBackendConfig
 - [`DotDimensionNumbers()`](DotDimensionNumbers.md) :
   DotDimensionNumbers
 - [`FloatType()`](FloatType.md) : FloatType
@@ -122,7 +125,9 @@ specification. At least initially, it will:
 - [`OpOutput()`](OpOutput.md) : OpOutput
 - [`OpOutputs()`](OpOutputs.md) : OpOutputs
 - [`OpSignature()`](OpSignature.md) : OpSignature
+- [`ScalarAttr()`](ScalarAttr.md) : ScalarAttr
 - [`Shape()`](Shape.md) : Shape
+- [`StringAttr()`](StringAttr.md) : StringAttr
 - [`TensorConstant()`](TensorConstant.md) : TensorConstant
 - [`TensorDataType`](TensorDataType.md) : TensorDataType
 - [`TensorType()`](TensorType.md) : TensorType
@@ -131,6 +136,8 @@ specification. At least initially, it will:
 - [`ValueType()`](ValueType.md) : ValueType
 - [`ValueTypes()`](ValueTypes.md) : ValueTypes
 - [`as_dtype()`](as_dtype.md) : Convert to TensorDataType
+- [`constant_attr()`](constant_attr.md) : Create a ConstantAttr from R
+  values
 - [`.current_func()`](dot-current_func.md) : Get the last function
   created
 - [`format_double()`](format_double.md) : Format Double Array with

@@ -10,7 +10,7 @@ hlo_custom_call(
   ...,
   call_target_name,
   api_version = 4L,
-  has_side_effect = TRUE,
+  has_side_effect,
   backend_config = NULL,
   output_types = NULL
 )
@@ -40,8 +40,8 @@ hlo_custom_call(
 
 - backend_config:
 
-  (`list` \| `NULL`)  
-  Optional backend configuration as a named list.
+  ([`CustomOpBackendConfig`](CustomOpBackendConfig.md) \| `NULL`)  
+  Optional backend configuration.
 
 - output_types:
 
@@ -53,15 +53,3 @@ hlo_custom_call(
 ([`FuncValue`](FuncValue.md) \|
 [`list()`](https://rdrr.io/r/base/list.html) \| `NULL`)  
 The output value(s), or NULL for side-effect only calls.
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-func <- local_func()
-x <- hlo_input("x", "f32", shape = c(4))
-# Call print_tensor (registered in pjrt)
-hlo_custom_call(x, call_target_name = "print_tensor")
-hlo_return(x)
-} # }
-```

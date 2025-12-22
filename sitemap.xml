@@ -9,9 +9,11 @@
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
 <url><loc>/news/index.html</loc></url>
+<url><loc>/reference/BoolAttr.html</loc></url>
 <url><loc>/reference/BooleanType.html</loc></url>
 <url><loc>/reference/Constant.html</loc></url>
-<url><loc>/reference/CustomCallConfig.html</loc></url>
+<url><loc>/reference/ConstantAttr.html</loc></url>
+<url><loc>/reference/CustomOpBackendConfig.html</loc></url>
 <url><loc>/reference/DotDimensionNumbers.html</loc></url>
 <url><loc>/reference/FloatType.html</loc></url>
 <url><loc>/reference/Func.html</loc></url>
@@ -36,7 +38,9 @@
 <url><loc>/reference/OpOutput.html</loc></url>
 <url><loc>/reference/OpOutputs.html</loc></url>
 <url><loc>/reference/OpSignature.html</loc></url>
+<url><loc>/reference/ScalarAttr.html</loc></url>
 <url><loc>/reference/Shape.html</loc></url>
+<url><loc>/reference/StringAttr.html</loc></url>
 <url><loc>/reference/TensorConstant.html</loc></url>
 <url><loc>/reference/TensorDataType.html</loc></url>
 <url><loc>/reference/TensorType.html</loc></url>
@@ -45,6 +49,7 @@
 <url><loc>/reference/ValueType.html</loc></url>
 <url><loc>/reference/ValueTypes.html</loc></url>
 <url><loc>/reference/as_dtype.html</loc></url>
+<url><loc>/reference/constant_attr.html</loc></url>
 <url><loc>/reference/dot-current_func.html</loc></url>
 <url><loc>/reference/format_double.html</loc></url>
 <url><loc>/reference/hlo_abs.html</loc></url>
