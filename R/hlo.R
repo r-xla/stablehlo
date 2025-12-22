@@ -190,7 +190,7 @@ hlo_input <- function(
 hlo_closure <- function(...) {
   vars <- list(...)
   ids <- vapply(vars, function(v) v@value_id@id, character(1))
-  if (any(duplicated(ids))) {
+  if (anyDuplicated(ids)) {
     cli_abort(
       "Each variable can only be captured once in hlo_closure (duplicate value_id detected)"
     )

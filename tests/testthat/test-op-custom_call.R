@@ -6,6 +6,7 @@ test_that("print_tensor with header works on CPU", {
   hlo_custom_call(
     x,
     call_target_name = "print_tensor",
+    api_version = 4L,
     has_side_effect = TRUE,
     backend_config = CustomOpBackendConfig(list(
       StringAttr(name = "print_header", value = "MyTensor")

@@ -15,6 +15,6 @@ A list of \code{BoolAttr}, \code{StringAttr}, or \code{ScalarAttr} objects.}
 }
 \description{
 A backend configuration as a list of typed attributes for custom operations.
-Each element must be a \code{BoolAttr}, \code{StringAttr}, or \code{ScalarAttr}.
+Each element must be a \code{BoolAttr}, \code{StringAttr}, or \code{ScalarAttr} for now.
 All attribute names must be unique.
 }

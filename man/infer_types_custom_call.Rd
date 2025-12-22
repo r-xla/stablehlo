@@ -7,10 +7,10 @@
 infer_types_custom_call(
   ...,
   call_target_name,
-  api_version = 4L,
+  api_version,
   has_side_effect,
-  backend_config = NULL,
-  output_types = NULL
+  backend_config,
+  output_types
 )
 }
 \arguments{
@@ -20,7 +20,7 @@ infer_types_custom_call(
 The name of the custom function to call.}
 
 \item{api_version}{(\code{integer(1)})\cr
-The API version. Default is 4 (FFI API).}
+The API version.}
 
 \item{has_side_effect}{(\code{logical(1)})\cr
 Whether the custom call has side effects.}
@@ -37,6 +37,4 @@ The output types (empty for side-effect only calls).
 }
 \description{
 Infer the output types for a custom call operation.
-The attributes "called_computations" and "output_operand_aliases" are not
-implemented yet.
 }

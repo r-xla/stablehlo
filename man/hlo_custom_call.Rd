@@ -21,10 +21,10 @@ Input values to pass to the custom call.}
 The name of the registered custom function to call.}
 
 \item{api_version}{(\code{integer(1)})\cr
-The API version. Default is 4 (FFI API).}
+The API version. Default is 4.}
 
 \item{has_side_effect}{(\code{logical(1)})\cr
-Whether the custom call has side effects. Default is TRUE.}
+Whether the custom call has side effects.}
 
 \item{backend_config}{(\code{\link{CustomOpBackendConfig}} | \code{NULL})\cr
 Optional backend configuration.}
@@ -39,4 +39,7 @@ The output value(s), or NULL for side-effect only calls.
 \description{
 Create a custom call operation that invokes an external function via the
 FFI (Foreign Function Interface) API.
+
+Note that the attributes \code{called_computations} and \code{output_operand_aliases} are not
+implemented yet.
 }

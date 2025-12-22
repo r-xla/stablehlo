@@ -6,7 +6,7 @@ OpCustomCall <- new_Op("OpCustomCall", "custom_call")
 #' @title CustomOpBackendConfig
 #' @description
 #' A backend configuration as a list of typed attributes for custom operations.
-#' Each element must be a `BoolAttr`, `StringAttr`, or `ScalarAttr`.
+#' Each element must be a `BoolAttr`, `StringAttr`, or `ScalarAttr` for now.
 #' All attribute names must be unique.
 #' @param items (`list`)\cr
 #'   A list of `BoolAttr`, `StringAttr`, or `ScalarAttr` objects.
@@ -47,13 +47,11 @@ method(repr, CustomOpBackendConfig) <- function(x, simplify_dense = TRUE) {
 #' @title Infer types for custom call
 #' @description
 #' Infer the output types for a custom call operation.
-#' The attributes "called_computations" and "output_operand_aliases" are not
-#' implemented yet.
 #' @param ... Input values.
 #' @param call_target_name (`character(1)`)\cr
 #'   The name of the custom function to call.
 #' @param api_version (`integer(1)`)\cr
-#'   The API version. Default is 4 (FFI API).
+#'   The API version.
 #' @param has_side_effect (`logical(1)`)\cr
 #'   Whether the custom call has side effects.
 #' @param backend_config (`list` | `NULL`)\cr
@@ -66,10 +64,10 @@ method(repr, CustomOpBackendConfig) <- function(x, simplify_dense = TRUE) {
 infer_types_custom_call <- function(
   ...,
   call_target_name,
-  api_version = 4L,
+  api_version,
   has_side_effect,
-  backend_config = NULL,
-  output_types = NULL
+  backend_config,
+  output_types
 ) {
   if (is.null(output_types)) {
     return(ValueTypes(list()))
@@ -89,14 +87,17 @@ custom_call_impl <- hlo_fn(OpCustomCall, infer_types_custom_call)
 #' Create a custom call operation that invokes an external function via the
 #' FFI (Foreign Function Interface) API.
 #'
+#' Note that the attributes `called_computations` and `output_operand_aliases` are not
+#' implemented yet.
+#'
 #' @param ... ([`FuncValue`])\cr
 #'   Input values to pass to the custom call.
 #' @param call_target_name (`character(1)`)\cr
 #'   The name of the registered custom function to call.
 #' @param api_version (`integer(1)`)\cr
-#'   The API version. Default is 4 (FFI API).
+#'   The API version. Default is 4.
 #' @param has_side_effect (`logical(1)`)\cr
-#'   Whether the custom call has side effects. Default is TRUE.
+#'   Whether the custom call has side effects.
 #' @param backend_config ([`CustomOpBackendConfig`] | `NULL`)\cr
 #'   Optional backend configuration.
 #' @param output_types (`list` of [`ValueType`] | `NULL`)\cr
@@ -125,9 +126,9 @@ hlo_custom_call <- function(
       BoolAttr(name = "has_side_effect", value = has_side_effect)
     ),
     custom_attrs = if (!is.null(backend_config)) {
-      list(backend_config = backend_config)
+      list(backend_config = backend_config, output_types = output_types)
     } else {
-      list()
+      list(output_types = output_types)
     }
   )
 }
@@ -137,7 +138,6 @@ method(repr, OpCustomCall) <- function(
   toplevel = TRUE,
   simplify_dense = TRUE
 ) {
-  # Get call_target_name from attributes
   attrs <- x@inputs@attrs@items
   target_name <- NULL
   for (attr in attrs) {
@@ -147,23 +147,20 @@ method(repr, OpCustomCall) <- function(
     }
   }
 
-  # Build attrs representation (combining attrs and custom_attrs)
   attr_reprs <- vapply(
     attrs,
     repr,
     character(1),
     simplify_dense = simplify_dense
   )
-  custom_attr_reprs <- if (length(x@inputs@custom_attrs) > 0) {
-    vapply(x@inputs@custom_attrs, repr, character(1))
-  } else {
-    character(0)
+  bec <- x@inputs@custom_attrs$backend_config
+  if (!is.null(bec)) {
+    attr_reprs <- c(attr_reprs, repr(bec))
   }
-  all_attr_reprs <- c(attr_reprs, custom_attr_reprs)
-  attrs_str <- paste0("{\n  ", paste(all_attr_reprs, collapse = ",\n  "), "\n}")
+  attrs_str <- paste0("{\n  ", paste(attr_reprs, collapse = ",\n  "), "\n}")
 
   # Build output part
-  outputs_repr <- if (length(x@outputs@items) == 0) {
+  outputs_repr <- if (!length(x@outputs@items)) {
     ""
   } else {
     paste0(repr(x@outputs), " = ")
