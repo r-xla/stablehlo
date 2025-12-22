@@ -21,4 +21,3 @@ hlo_count_leading_zeros_impl <- hlo_fn(
 hlo_count_leading_zeros <- function(operand) {
   hlo_count_leading_zeros_impl(values = list(operand = operand))
 }
-
