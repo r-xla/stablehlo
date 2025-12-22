@@ -204,7 +204,12 @@ method(repr, ScalarAttr) <- function(x, simplify_dense = TRUE) {
   ) {
     sprintf("%d : %s", as.integer(x@value), type_repr)
   } else {
-    sprintf("%s : %s", format_double(as.double(x@value)), type_repr)
+    precision <- x@dtype@value
+    sprintf(
+      "%s : %s",
+      format_double(as.double(x@value), precision = precision),
+      type_repr
+    )
   }
   paste0(x@name, " = ", value_repr)
 }

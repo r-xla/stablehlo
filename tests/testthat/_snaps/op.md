@@ -37,7 +37,7 @@
     Code
       repr(ScalarAttr(name = "scale", value = 1.5, dtype = FloatType(32L)))
     Output
-      [1] "scale = 1.5000000000000000e+00 : f32"
+      [1] "scale = 1.50000000e+00 : f32"
     Code
       repr(ScalarAttr(name = "rate", value = 0.001, dtype = FloatType(64L)))
     Output
