@@ -178,3 +178,10 @@
     Output
       [1] "func.func @main () -> tensor<2x2xf32> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1.00000000e+00> : tensor<2x2xf32>\n}: () -> (tensor<2x2xf32>)\n\"func.return\"(%0): (tensor<2x2xf32>) -> ()\n}\n"
 
+# c() shape is interpreted as scalar
+
+    Code
+      repr(f)
+    Output
+      [1] "func.func @main () -> tensor<i32> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1> : tensor<i32>\n}: () -> (tensor<i32>)\n\"func.return\"(%0): (tensor<i32>) -> ()\n}\n"
+

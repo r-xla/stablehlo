@@ -96,7 +96,12 @@ hlo_reduce <- function(inputs, init_values, dimensions, body) {
     values = c(inputs, init_values),
     funcs = list(body = body),
     attrs = list(
-      constant_attr("dimensions", as.integer(dimensions), dtype = "i64")
+      constant_attr(
+        "dimensions",
+        as.integer(dimensions),
+        dtype = "i64",
+        shape = c()
+      )
     )
   )
 }

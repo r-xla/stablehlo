@@ -57,7 +57,12 @@ hlo_reverse <- function(
   hlo_reverse_impl(
     values = list(operand = operand),
     attrs = list(
-      constant_attr("dimensions", as.integer(dimensions), dtype = "i64")
+      constant_attr(
+        "dimensions",
+        as.integer(dimensions),
+        dtype = "i64",
+        shape = c()
+      )
     )
   )
 }

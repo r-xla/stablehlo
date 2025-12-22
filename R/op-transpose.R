@@ -66,7 +66,12 @@ hlo_transpose <- function(
   hlo_transpose_impl(
     values = list(operand = operand),
     attrs = list(
-      constant_attr("permutation", as.integer(permutation), dtype = "i64")
+      constant_attr(
+        "permutation",
+        as.integer(permutation),
+        dtype = "i64",
+        shape = c()
+      )
     )
   )
 }
