@@ -14,7 +14,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/r-xla/stablehlo/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/r-xla/stablehlo/blob/feat-clz/DESCRIPTION)
 
 Falbel D, Fischer S, German N (2025). *stablehlo: Write stableHLO
 programs*. R package version 0.0.0.9002,
