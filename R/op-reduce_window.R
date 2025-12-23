@@ -19,7 +19,7 @@ infer_types_reduce_window <- function(
   value_types <- list(...)
 
   if (length(value_types) %% 2L != 0L) {
-    cli_abort("Number of arguments must be divisible by 2")
+    cli_abort("Number of arguments must be divisible by 2 (pairs of inputs and init values)")
   }
   if (length(value_types) == 0L) {
     cli_abort("No arguments provided")
