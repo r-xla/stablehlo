@@ -4,7 +4,7 @@
 \alias{constant_attr}
 \title{Create a ConstantAttr from R values}
 \usage{
-constant_attr(name, value, dtype = NULL, shape = NULL)
+constant_attr(name, value, dtype = NULL, shape = NULL, simplify_dense = TRUE)
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr
@@ -18,6 +18,9 @@ The dtype of the constant. If NULL, inferred from value.}
 
 \item{shape}{(\code{integer()} | \code{NULL})\cr
 The shape of the constant. If NULL, inferred from value.}
+
+\item{simplify_dense}{(\code{logical(1)})\cr
+Whether to simplify dense representation. Set to \code{FALSE} for multi-dimensional arrays.}
 }
 \value{
 (\code{ConstantAttr})

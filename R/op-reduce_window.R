@@ -10,16 +10,19 @@ infer_types_reduce_window <- function(
   ...,
   body,
   window_dimensions,
-  window_strides = NULL,
-  base_dilations = NULL,
-  window_dilations = NULL,
-  padding = NULL
+  window_strides,
+  base_dilations,
+  window_dilations,
+  padding
 ) {
   assert_vts_are_tensors(...)
   value_types <- list(...)
 
+  # (C1)
   if (length(value_types) %% 2L != 0L) {
-    cli_abort("Number of arguments must be divisible by 2 (pairs of inputs and init values)")
+    cli_abort(
+      "Number of arguments must be divisible by 2 (pairs of inputs and init values)"
+    )
   }
   if (length(value_types) == 0L) {
     cli_abort("No arguments provided")
@@ -38,7 +41,7 @@ infer_types_reduce_window <- function(
     }
   })
 
-  # All inputs must have the same shape
+  # (C2)
   input_shapes <- lapply(input_value_types, function(vt) shape(vt))
   ref_shape <- input_shapes[[1L]]
   if (
@@ -47,96 +50,88 @@ infer_types_reduce_window <- function(
     cli_abort("All inputs to reduce_window must have the same shape")
   }
 
-  # element types must match between inputs and init_values (per position)
+  # (C3) Each input must have the same dtype as its corresponding init_value
   for (i in seq_len(num_inputs)) {
-    if (input_value_types[[i]]@type@dtype != init_value_types[[i]]@type@dtype) {
-      cli_abort("Element types of inputs and init_values must match")
+    input_dtype <- input_value_types[[i]]@type@dtype
+    init_dtype <- init_value_types[[i]]@type@dtype
+    if (input_dtype != init_dtype) {
+      cli_abort(
+        "inputs[{i}] and init_values[{i}] must have the same dtype, got: {repr(input_dtype)} and {repr(init_dtype)}."
+      )
     }
   }
 
   rank <- length(ref_shape)
   window_dims <- as.integer(window_dimensions@value@data)
 
+  # (C4)
   if (length(window_dims) != rank) {
     cli_abort("window_dimensions must have length equal to input rank")
   }
 
-  # Default values for optional parameters
-  strides <- if (!is.null(window_strides)) {
-    as.integer(window_strides@value@data)
-  } else {
-    rep(1L, rank)
+  # (C5)
+  if (any(window_dims < 1L)) {
+    cli_abort("window_dimensions must be positive")
   }
 
-  base_dil <- if (!is.null(base_dilations)) {
-    as.integer(base_dilations@value@data)
-  } else {
-    rep(1L, rank)
-  }
+  strides <- as.integer(window_strides@value@data)
+  base_dil <- as.integer(base_dilations@value@data)
+  window_dil <- as.integer(window_dilations@value@data)
+  pad <- padding@value@data
 
-  window_dil <- if (!is.null(window_dilations)) {
-    as.integer(window_dilations@value@data)
-  } else {
-    rep(1L, rank)
-  }
-
-  # Padding: should be Rx2 matrix, defaults to all zeros
-  pad <- if (!is.null(padding)) {
-    matrix(as.integer(padding@value@data), nrow = rank, ncol = 2L, byrow = TRUE)
-  } else {
-    matrix(0L, nrow = rank, ncol = 2L)
-  }
-
-  # Validation
-  if (length(strides) != rank) {
-    cli_abort("window_strides must have length equal to input rank")
-  }
-
-  if (length(base_dil) != rank) {
-    cli_abort("base_dilations must have length equal to input rank")
-  }
-  if (length(window_dil) != rank) {
-    cli_abort("window_dilations must have length equal to input rank")
+  # (C12)
+  if (!is.matrix(pad) || !is.integer(pad)) {
+    cli_abort("padding must be a 2D integer matrix")
   }
   if (nrow(pad) != rank || ncol(pad) != 2L) {
     cli_abort("padding must have shape [rank, 2]")
   }
 
-  if (any(window_dims < 1L)) {
-    cli_abort("window_dimensions must be positive")
+  # (C6)
+  if (length(strides) != rank) {
+    cli_abort("window_strides must have length equal to input rank")
   }
+
+  # (C7)
   if (any(strides < 1L)) {
     cli_abort("window_strides must be positive")
   }
-  if (any(base_dil < 1L)) {
+
+  # (C8)
+  if (length(base_dil) != rank) {
+    cli_abort("base_dilations must have length equal to input rank")
+  }
+  # (C10)
+  if (length(window_dil) != rank) {
+    cli_abort("window_dilations must have length equal to input rank")
+  }
+
+  # (C9)
+  if (any(base_dil <= 0)) {
     cli_abort("base_dilations must be positive")
   }
-  if (any(window_dil < 1L)) {
+  # (C11)
+  if (any(window_dil < 0)) {
     cli_abort("window_dilations must be positive")
   }
 
-  # Compute output shape:
-  # dilated_input_shape[d] = (input_shape[d] - 1) * base_dilations[d] + 1
-  # padded_input_shape[d] = dilated_input_shape[d] + padding[d,1] + padding[d,2]
-  # dilated_window_shape[d] = (window_dims[d] - 1) * window_dilations[d] + 1
-  # output_shape[d] = floor((padded_input_shape[d] - dilated_window_shape[d]) / strides[d]) + 1
-
-  dilated_input <- (ref_shape - 1L) * base_dil + 1L
-  padded_input <- dilated_input + pad[, 1L] + pad[, 2L]
+  dilated_input <- ifelse(ref_shape == 0L, 0L, (ref_shape - 1L) * base_dil + 1L)
+  padded_input <- pad[, 1L] + dilated_input + pad[, 2L]
   dilated_window <- (window_dims - 1L) * window_dil + 1L
-  result_shape <- floor((padded_input - dilated_window) / strides) + 1L
-  result_shape <- as.integer(result_shape)
+  is_empty_window <- padded_input == 0L | dilated_window > padded_input
+  result_shape <- ifelse(
+    is_empty_window,
+    0L,
+    as.integer(floor((padded_input - dilated_window) / strides) + 1L)
+  )
 
-  # Determine output element types from body outputs
-  body_out_types <- ValueTypes(func_output_types(body))
-  if (length(body_out_types@items) != num_inputs) {
+  body_out_types <- func_output_types(body)
+  if (length(body_out_types) != num_inputs) {
     cli_abort("Body must return one tensor per input")
   }
 
-  # Build output ValueTypes with computed output shapes
   out_vts <- lapply(seq_len(num_inputs), function(i) {
-    out_elem_vt <- body_out_types@items[[i]]
-    # Expect 0-D tensor element type; take dtype from it
+    out_elem_vt <- body_out_types[[i]]
     if (length(out_elem_vt@type@shape@dims) != 0L) {
       cli_abort("body outputs must be 0-D tensors")
     }
@@ -161,15 +156,15 @@ hlo_reduce_window_impl <- hlo_fn(OpReduceWindow, infer_types_reduce_window)
 #'   The initial value(s) for the reduction. Must be 0-D tensors.
 #' @param window_dimensions (`integer()`)\cr
 #'   The size of the window in each dimension.
-#' @param window_strides (`integer()` or `NULL`)\cr
-#'   The stride of the window in each dimension. Defaults to 1 for each dimension.
-#' @param base_dilations (`integer()` or `NULL`)\cr
-#'   The dilation factor for the input tensor. Defaults to 1 for each dimension.
-#' @param window_dilations (`integer()` or `NULL`)\cr
-#'   The dilation factor for the window. Defaults to 1 for each dimension.
-#' @param padding (`matrix` or `NULL`)\cr
+#' @param window_strides (`integer()`)\cr
+#'   The stride of the window in each dimension.
+#' @param base_dilations (`integer()`)\cr
+#'   The dilation factor for the input tensor.
+#' @param window_dilations (`integer()`)\cr
+#'   The dilation factor for the window.
+#' @param padding (`matrix`)\cr
 #'   A matrix with shape `[rank, 2]` specifying the padding before and after
-#'   each dimension. Defaults to no padding.
+#'   each dimension.
 #' @param body (`Func`)\cr
 #'   The reduction function to apply to each window.
 #' @export
@@ -177,11 +172,11 @@ hlo_reduce_window <- function(
   inputs,
   init_values,
   window_dimensions,
-  body,
-  window_strides = NULL,
-  base_dilations = NULL,
-  window_dilations = NULL,
-  padding = NULL
+  window_strides,
+  base_dilations,
+  window_dilations,
+  padding,
+  body
 ) {
   # Normalize inputs and init_values to lists
   if (!is.list(inputs)) {
@@ -191,78 +186,39 @@ hlo_reduce_window <- function(
     init_values <- list(init_values)
   }
 
-  rank <- length(shape(inputs[[1L]]@value_type))
-  window_dimensions <- as.integer(window_dimensions)
-
   attrs <- list(
     constant_attr(
       "window_dimensions",
-      window_dimensions,
+      as.integer(window_dimensions),
       dtype = "i64",
       shape = c()
+    ),
+    constant_attr(
+      "window_strides",
+      as.integer(window_strides),
+      dtype = "i64",
+      shape = c()
+    ),
+    constant_attr(
+      "base_dilations",
+      as.integer(base_dilations),
+      dtype = "i64",
+      shape = c()
+    ),
+    constant_attr(
+      "window_dilations",
+      as.integer(window_dilations),
+      dtype = "i64",
+      shape = c()
+    ),
+    constant_attr(
+      "padding",
+      `storage.mode<-`(padding, "integer"),
+      dtype = "i64",
+      shape = dim(padding),
+      simplify_dense = FALSE
     )
   )
-
-  if (!is.null(window_strides)) {
-    attrs <- c(attrs, list(
-      constant_attr(
-        "window_strides",
-        as.integer(window_strides),
-        dtype = "i64",
-        shape = c()
-      )
-    ))
-  }
-
-  if (!is.null(base_dilations)) {
-    attrs <- c(attrs, list(
-      constant_attr(
-        "base_dilations",
-        as.integer(base_dilations),
-        dtype = "i64",
-        shape = c()
-      )
-    ))
-  }
-
-  if (!is.null(window_dilations)) {
-    attrs <- c(attrs, list(
-      constant_attr(
-        "window_dilations",
-        as.integer(window_dilations),
-        dtype = "i64",
-        shape = c()
-      )
-    ))
-  }
-
-  if (!is.null(padding)) {
-    # Convert padding matrix to 2D constant
-    # padding should be [rank x 2] matrix
-    if (is.matrix(padding)) {
-      pad_data <- as.integer(t(padding))
-      pad_shape <- c(nrow(padding), 2L)
-    } else {
-      # Assume it's a flat vector in row-major order
-      pad_data <- as.integer(padding)
-      pad_shape <- c(rank, 2L)
-    }
-    attrs <- c(attrs, list(
-      ConstantAttr(
-        name = "padding",
-        value = Constant(
-          value = TensorConstant(
-            data = pad_data,
-            type = TensorType(
-              dtype = IntegerType(64L),
-              shape = Shape(pad_shape)
-            )
-          )
-        ),
-        simplify_dense = FALSE
-      )
-    ))
-  }
 
   hlo_reduce_window_impl(
     values = c(inputs, init_values),
@@ -270,4 +226,3 @@ hlo_reduce_window <- function(
     attrs = attrs
   )
 }
-

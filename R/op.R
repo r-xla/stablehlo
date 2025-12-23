@@ -284,7 +284,7 @@ ConstantAttr <- new_class(
 )
 
 method(repr, ConstantAttr) <- function(x, simplify_dense = TRUE) {
-  # Use the object's setting if it specifies FALSE (for 2D arrays like padding)
+  # TODO: This should be handled nicer
   use_simplify <- x@simplify_dense && simplify_dense
   paste0(
     x@name,
@@ -304,14 +304,22 @@ method(repr, ConstantAttr) <- function(x, simplify_dense = TRUE) {
 #'   The dtype of the constant. If NULL, inferred from value.
 #' @param shape (`integer()` | `NULL`)\cr
 #'   The shape of the constant. If NULL, inferred from value.
+#' @param simplify_dense (`logical(1)`)\cr
+#'   Whether to simplify dense representation. Set to `FALSE` for multi-dimensional arrays.
 #' @return (`ConstantAttr`)
 #' @export
-constant_attr <- function(name, value, dtype = NULL, shape = NULL) {
+constant_attr <- function(
+  name,
+  value,
+  dtype = NULL,
+  shape = NULL,
+  simplify_dense = TRUE
+) {
   if (is.null(shape)) {
     shape <- if (length(value) == 1L) integer() else length(value)
   }
   constant <- r_to_constant(value, dtype = dtype, shape = shape)
-  ConstantAttr(name = name, value = constant)
+  ConstantAttr(name = name, value = constant, simplify_dense = simplify_dense)
 }
 
 #' @title OpInputValue
