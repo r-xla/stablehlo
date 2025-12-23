@@ -5,7 +5,7 @@ An attribute holding a constant value.
 ## Usage
 
 ``` r
-ConstantAttr(name = character(0), value = Constant())
+ConstantAttr(name, value, simplify_dense = TRUE)
 ```
 
 ## Arguments
@@ -19,6 +19,12 @@ ConstantAttr(name = character(0), value = Constant())
 
   (`Constant`)  
   The value of the attribute.
+
+- simplify_dense:
+
+  (`logical(1)`)  
+  Whether to simplify dense representation. Set to `FALSE` for
+  multi-dimensional arrays.
 
 ## Value
 

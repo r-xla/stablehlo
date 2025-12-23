@@ -115,6 +115,8 @@
 - [`hlo_power()`](hlo_power.md) : Power Operator
 - [`infer_types_reduce()`](hlo_reduce.md)
   [`hlo_reduce()`](hlo_reduce.md) : Reduce Operator
+- [`infer_types_reduce_window()`](hlo_reduce_window.md)
+  [`hlo_reduce_window()`](hlo_reduce_window.md) : ReduceWindow Operator
 - [`hlo_remainder()`](hlo_remainder.md) : Remainder Operator
 - [`infer_types_reshape()`](hlo_reshape.md)
   [`hlo_reshape()`](hlo_reshape.md) : Reshape Operator
