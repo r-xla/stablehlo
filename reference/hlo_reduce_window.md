@@ -64,21 +64,14 @@ hlo_reduce_window(
   A matrix with shape `[rank, 2]` specifying the padding before and
   after each dimension.
 
-- inputs, init_values, window_dimensions, window_strides,
-  base_dilations, window_dilations, padding, body:
+- inputs:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`list()`](https://rdrr.io/r/base/list.html) of
+  [`FuncValue`](FuncValue.md))  
+  The input tensor(s) to apply the reduction to.
 
 - init_values:
 
-  (`FuncValue` or `list` of `FuncValue`)  
+  ([`list()`](https://rdrr.io/r/base/list.html) of
+  [`FuncValue`](FuncValue.md))  
   The initial value(s) for the reduction. Must be 0-D tensors.
-
-- inputs:
-
-  (`FuncValue` or `list` of `FuncValue`)  
-  The input tensor(s) to apply the reduction to.
-
-## Value
-
-[`FuncValue`](FuncValue.md)  
