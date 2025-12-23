@@ -4,7 +4,7 @@
 \alias{ConstantAttr}
 \title{ConstantAttr}
 \usage{
-ConstantAttr(name = character(0), value = Constant())
+ConstantAttr(name, value, simplify_dense = TRUE)
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr
@@ -12,6 +12,9 @@ The name of the attribute.}
 
 \item{value}{(\code{Constant})\cr
 The value of the attribute.}
+
+\item{simplify_dense}{(\code{logical(1)})\cr
+Whether to simplify dense representation. Set to \code{FALSE} for multi-dimensional arrays.}
 }
 \value{
 (\code{ConstantAttr})

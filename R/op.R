@@ -263,21 +263,33 @@ method(repr, StringAttr) <- function(x, simplify_dense = TRUE) {
 #'   The name of the attribute.
 #' @param value (`Constant`)\cr
 #'   The value of the attribute.
+#' @param simplify_dense (`logical(1)`)\cr
+#'   Whether to simplify dense representation. Set to `FALSE` for multi-dimensional arrays.
 #' @return (`ConstantAttr`)
 #' @export
 ConstantAttr <- new_class(
   "ConstantAttr",
   parent = OpInputAttr,
   properties = list(
-    value = Constant
-  )
+    value = Constant,
+    simplify_dense = S7::class_logical
+  ),
+  constructor = function(name, value, simplify_dense = TRUE) {
+    new_object(
+      OpInputAttr(name = name),
+      value = value,
+      simplify_dense = simplify_dense
+    )
+  }
 )
 
 method(repr, ConstantAttr) <- function(x, simplify_dense = TRUE) {
+  # TODO: This should be handled nicer
+  use_simplify <- x@simplify_dense && simplify_dense
   paste0(
     x@name,
     " = ",
-    repr(x@value, simplify_dense = simplify_dense)
+    repr(x@value, simplify_dense = use_simplify)
   )
 }
 
@@ -292,14 +304,22 @@ method(repr, ConstantAttr) <- function(x, simplify_dense = TRUE) {
 #'   The dtype of the constant. If NULL, inferred from value.
 #' @param shape (`integer()` | `NULL`)\cr
 #'   The shape of the constant. If NULL, inferred from value.
+#' @param simplify_dense (`logical(1)`)\cr
+#'   Whether to simplify dense representation. Set to `FALSE` for multi-dimensional arrays.
 #' @return (`ConstantAttr`)
 #' @export
-constant_attr <- function(name, value, dtype = NULL, shape = NULL) {
+constant_attr <- function(
+  name,
+  value,
+  dtype = NULL,
+  shape = NULL,
+  simplify_dense = TRUE
+) {
   if (is.null(shape)) {
     shape <- if (length(value) == 1L) integer() else length(value)
   }
   constant <- r_to_constant(value, dtype = dtype, shape = shape)
-  ConstantAttr(name = name, value = constant)
+  ConstantAttr(name = name, value = constant, simplify_dense = simplify_dense)
 }
 
 #' @title OpInputValue
