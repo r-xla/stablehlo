@@ -148,11 +148,12 @@ infer_types_reduce_window <- function(
 
 hlo_reduce_window_impl <- hlo_fn(OpReduceWindow, infer_types_reduce_window)
 
-#' @templateVar mnemonic reduce_window
-#' @template op
-#' @param inputs (`FuncValue` or `list` of `FuncValue`)\cr
+#' @title ReduceWindow Operator
+#' @description
+#' See \url{https://openxla.org/stablehlo/spec#reduce_window} for details.
+#' @param inputs (`list()` of [`FuncValue`])\cr
 #'   The input tensor(s) to apply the reduction to.
-#' @param init_values (`FuncValue` or `list` of `FuncValue`)\cr
+#' @param init_values (`list()` of [`FuncValue`])\cr
 #'   The initial value(s) for the reduction. Must be 0-D tensors.
 #' @param window_dimensions (`integer()`)\cr
 #'   The size of the window in each dimension.

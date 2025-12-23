@@ -48,16 +48,11 @@ The dilation factor for the window.}
 A matrix with shape \verb{[rank, 2]} specifying the padding before and after
 each dimension.}
 
-\item{inputs, init_values, window_dimensions, window_strides, base_dilations, window_dilations, padding, body}{(\code{\link{FuncValue}})\cr}
-
-\item{init_values}{(\code{FuncValue} or \code{list} of \code{FuncValue})\cr
-The initial value(s) for the reduction. Must be 0-D tensors.}
-
-\item{inputs}{(\code{FuncValue} or \code{list} of \code{FuncValue})\cr
+\item{inputs}{(\code{list()} of \code{\link{FuncValue}})\cr
 The input tensor(s) to apply the reduction to.}
-}
-\value{
-\code{\link{FuncValue}}\cr
+
+\item{init_values}{(\code{list()} of \code{\link{FuncValue}})\cr
+The initial value(s) for the reduction. Must be 0-D tensors.}
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#reduce_window} for details.
