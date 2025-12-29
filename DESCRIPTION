@@ -96,6 +96,7 @@ Collate:
     'op-popcnt.R'
     'op-power.R'
     'op-reduce.R'
+    'op-reduce_window.R'
     'op-remainder.R'
     'op-reshape.R'
     'op-return.R'
