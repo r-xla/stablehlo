@@ -118,7 +118,6 @@ method(repr, OpTriangularSolve) <- function(
   simplify_dense = TRUE,
   ...
 ) {
-  # Build attributes string - all attrs including transpose_a go inside braces
   attrs_str <- vapply(
     x@inputs@attrs@items,
     repr,
