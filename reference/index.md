@@ -154,9 +154,6 @@
 - [`hlo_tanh()`](hlo_tanh.md) : Tanh Operator
 - [`infer_types_transpose()`](hlo_transpose.md)
   [`hlo_transpose()`](hlo_transpose.md) : Transpose Operator
-- [`infer_types_triangular_solve()`](hlo_triangular_solve.md)
-  [`hlo_triangular_solve()`](hlo_triangular_solve.md) : TriangularSolve
-  Operator
 - [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
   While Operator
 - [`hlo_xor()`](hlo_xor.md) : Xor Operator
