@@ -51,3 +51,8 @@ devtools::check()
 3. Add tests in `tests/testthat/` with appropriate snapshots and execution tests for validation.
 4. Document functions with roxygen2 comments.
 5. Run `make format` to format the code.
+
+## Adding New Operations
+
+When implementing a new operation, closely follow the specification described in SPEC.md.
+Also, annotate each check in the inference function with the corresponding requirement from the specification (C1, C2, C3, etc.).

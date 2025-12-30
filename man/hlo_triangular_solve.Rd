@@ -17,7 +17,7 @@ infer_types_triangular_solve(
 hlo_triangular_solve(a, b, left_side, lower, unit_diagonal, transpose_a)
 }
 \arguments{
-\item{a, b, left_side, lower, unit_diagonal, transpose_a}{(\code{\link{FuncValue}})\cr}
+\item{a, b}{(\code{\link{FuncValue}})\cr}
 
 \item{left_side}{(\code{logical(1)})\cr
 If \code{TRUE}, solve \code{op(a) * x = b}. If \code{FALSE}, solve \code{x * op(a) = b}.}

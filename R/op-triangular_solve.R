@@ -13,6 +13,7 @@ infer_types_triangular_solve <- function(
   unit_diagonal,
   transpose_a
 ) {
+  # (C1)
   assert_vts_are_tensors(a, b)
   assert_vts_have_same_dtype(a, b)
 
@@ -21,7 +22,7 @@ infer_types_triangular_solve <- function(
   rank_a <- length(a_dims)
   rank_b <- length(b_dims)
 
-  # (C2) 2 <= rank(a) = rank(b) = R
+  # (C2)
   if (rank_a < 2) {
     cli_abort("'a' must have rank >= 2")
   }
@@ -29,12 +30,11 @@ infer_types_triangular_solve <- function(
     cli_abort("'a' and 'b' must have the same rank")
   }
 
-  # (C3) dim(a, -2) = dim(a, -1) (a must be square)
+  # (C3)
   if (a_dims[rank_a] != a_dims[rank_a - 1]) {
     cli_abort("'a' must be a square matrix (last two dimensions must be equal)")
   }
 
-  # (C3) shape(a)[:-3] = shape(b)[:-3] (batch dimensions must match)
   if (rank_a > 2) {
     a_batch <- a_dims[seq_len(rank_a - 2)]
     b_batch <- b_dims[seq_len(rank_b - 2)]
@@ -43,7 +43,7 @@ infer_types_triangular_solve <- function(
     }
   }
 
-  # (C3) dim(a, -1) = dim(b, left_side ? -2 : -1)
+  # (C3)
   a_size <- a_dims[rank_a]
   b_relevant_dim <- if (left_side) b_dims[rank_b - 1] else b_dims[rank_b]
   if (a_size != b_relevant_dim) {
@@ -55,7 +55,6 @@ infer_types_triangular_solve <- function(
     ))
   }
 
-  # Validate transpose_a
   valid_transpose <- c("NO_TRANSPOSE", "TRANSPOSE", "ADJOINT")
   if (!transpose_a %in% valid_transpose) {
     cli_abort(sprintf(
@@ -64,7 +63,7 @@ infer_types_triangular_solve <- function(
     ))
   }
 
-  # (C4) result has the same type as b
+  # (C4)
   ValueTypes(list(
     ValueType(
       TensorType(
@@ -81,6 +80,7 @@ hlo_triangular_solve_impl <- hlo_fn(
 )
 
 #' @templateVar mnemonic triangular_solve
+#' @templateVar not_func_variables left_side,lower,unit_diagonal,transpose_a
 #' @template op
 #' @param left_side (`logical(1)`)\cr
 #'   If `TRUE`, solve `op(a) * x = b`. If `FALSE`, solve `x * op(a) = b`.
