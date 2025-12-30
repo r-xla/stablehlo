@@ -1,7 +1,7 @@
 # TODO: Move into helper package (code is currently in stablehlo and this package)
-list_of <- new_class("list_of")
+class_list_S7 <- new_class("list_of")
 
-method(`==`, list(list_of, list_of)) <- function(e1, e2) {
+method(`==`, list(class_list_S7, class_list_S7)) <- function(e1, e2) {
   length(e1@items) == length(e2@items) &&
     all(
       sapply(seq_along(e1@items), function(i) {
@@ -10,18 +10,23 @@ method(`==`, list(list_of, list_of)) <- function(e1, e2) {
     )
 }
 
-method(`!=`, list(list_of, list_of)) <- function(e1, e2) {
-  !(e1 == e2)
+method(`!=`, list(class_list_S7, class_list_S7)) <- function(e1, e2) {
+  length(e1@items) != length(e2@items) ||
+    any(
+      sapply(seq_along(e1@items), function(i) {
+        e1@items[[i]] != e2@items[[i]]
+      })
+    )
 }
 
-method(length, list_of) <- function(x) {
+method(length, class_list_S7) <- function(x) {
   length(x@items)
 }
 
 new_list_of <- function(class_name, item_type, validator = NULL) {
   new_class(
     class_name,
-    parent = list_of,
+    parent = class_list_S7,
     properties = list(
       items = new_property(
         S7::class_list,

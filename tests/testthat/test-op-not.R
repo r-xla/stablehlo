@@ -15,3 +15,9 @@ test_that("basic tests", {
     dtype = c("pred", "i32")
   )
 })
+
+test_that("error", {
+  local_func()
+  x <- hlo_input("x", "f32", shape = c(2L, 2L))
+  expect_snapshot(hlo_not(x), error = TRUE)
+})

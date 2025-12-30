@@ -1,54 +1,70 @@
-test_that("assert_vt_has_ttype", {
+test_that("assert_vt_is_tensor", {
   y <- make_vt("i32", integer())
 
-  expect_error(
-    assert_vt_has_ttype(x = 1),
-    "must be a ValueType"
+  expect_snapshot(
+    assert_vt_is_tensor(x = 1),
+    error = TRUE
   )
-  expect_error(
-    assert_vt_has_ttype(x = y, BooleanType, shape = integer()),
-    "must be one of"
+  expect_snapshot(
+    assert_vt_is_tensor(x = y, expected_dtypes = list(BooleanType), expected_shape = integer()),
+    error = TRUE
   )
-  expect_error(
-    assert_vt_has_ttype(x = y, IntegerType, shape = 1L),
-    "Got ()"
+  expect_snapshot(
+    assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType), expected_shape = 1L),
+    error = TRUE
   )
-  expect_error(
-    assert_vt_has_ttype(x = y, IntegerType, shape = integer()),
-    NA
+  expect_snapshot(
+    assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType), expected_shape = integer()),
+    error = FALSE
+  )
+
+  # Test with instantiated dtypes
+  expect_snapshot(
+    assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType(32))),
+    error = FALSE
+  )
+  expect_snapshot(
+    assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType(64))),
+    error = TRUE
+  )
+
+  # Test mixing classes and instances
+  expect_snapshot(
+    assert_vt_is_tensor(x = y, expected_dtypes = list(BooleanType, IntegerType(32))),
+    error = FALSE
   )
 })
 
 test_that("assert_vt_is_tensor", {
   y <- 1L
-  expect_error(
+  expect_snapshot(
     assert_vt_is_tensor(x = y),
-    "must be a ValueType"
+    error = TRUE
   )
 
   token <- ValueType(TokenType())
-  expect_error(
+  expect_snapshot(
     assert_vt_is_tensor(x = token),
-    "must contain a TensorType"
+    error = TRUE
   )
 
   z <- make_vt("i32", integer())
-  expect_error(
+  expect_snapshot(
     assert_vt_is_tensor(x = z),
-    NA
+    error = FALSE
   )
 })
 
 test_that("assert_vts_are_tensors", {
   x <- make_vt("i32", integer())
   token <- ValueType(TokenType())
-  expect_error(
+  expect_snapshot(
     assert_vts_are_tensors(x, 1L),
-    "must be a ValueType"
+    error = TRUE
   )
-  expect_error(
+  expect_snapshot(
     assert_vts_are_tensors(x = token),
-    "must contain a TensorType"
+    error = TRUE
   )
   expect_error(
     assert_vts_are_tensors(x),
@@ -91,18 +107,18 @@ test_that("assert_vts_have_same_dtype", {
   )
 })
 
-test_that("assert_valid_name", {
-  expect_error(assert_valid_name("foo"), NA)
-  expect_error(assert_valid_name("Foo123"), NA)
-  expect_error(assert_valid_name("a_b_c"), NA)
+test_that("assert_valid_id", {
+  expect_error(assert_valid_id("foo"), NA)
+  expect_error(assert_valid_id("Foo123"), NA)
+  expect_error(assert_valid_id("a_b_c"), NA)
 
-  expect_error(assert_valid_name("123"), NA)
-  expect_error(assert_valid_name("0"), NA)
+  expect_error(assert_valid_id("123"), NA)
+  expect_error(assert_valid_id("0"), NA)
 
-  expect_error(assert_valid_name("_foo"), "pattern")
-  expect_error(assert_valid_name("1abc"), "pattern")
-  expect_error(assert_valid_name("foo-bar"), "pattern")
-  expect_error(assert_valid_name(""), "pattern")
+  expect_error(assert_valid_id("_foo"), "pattern")
+  expect_error(assert_valid_id("1abc"), "pattern")
+  expect_error(assert_valid_id("foo-bar"), "pattern")
+  expect_error(assert_valid_id(""), "pattern")
 })
 
 test_that("assert_one_of", {

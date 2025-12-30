@@ -74,7 +74,15 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       infer_args <- c(infer_args, custom_attrs)
     }
 
-    output_types <- rlang::exec(type_inference, !!!infer_args)
+    output_types <- tryCatch(
+      rlang::exec(type_inference, !!!infer_args),
+      error = function(e) {
+        if (!is.null(e$condition)) {
+          throw_error(e$condition, call = sys.call(-5))
+        }
+        rlang::abort(e$message, call = sys.call(-5))
+      }
+    )
     nout <- length(output_types@items)
 
     output_value_ids <- replicate(nout, ValueId(), simplify = FALSE)
@@ -155,7 +163,7 @@ hlo_input <- function(
   func = .current_func(),
   alias = NULL
 ) {
-  assert_valid_name(name)
+  assert_valid_id(name)
   value_id <- ValueId(name)
   value_type <- ValueType(dtype, shape = shape)
   alias <- assert_int(alias, coerce = TRUE, null.ok = TRUE)

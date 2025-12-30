@@ -7,7 +7,7 @@ OpCase <- new_Op("OpCase", "case")
 #' @export
 infer_types_case <- function(index, ...) {
   branches <- list(...)
-  assert_vt_has_ttype(index, IntegerType, shape = integer())
+  assert_vt_is_tensor(index, expected_dtypes = list(IntegerType), expected_shape = integer())
   if (index@type@dtype@value != 32L) {
     cli_abort("index must be a 32-bit integer")
   }

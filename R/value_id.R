@@ -14,7 +14,7 @@ ValueId <- new_class(
   ),
   constructor = function(id = NULL) {
     if (!is.null(id)) {
-      assert_valid_name(id)
+      assert_valid_id(id)
     } else {
       id <- new.env(size = 0L)
     }
