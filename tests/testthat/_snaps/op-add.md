@@ -11,6 +11,6 @@
       hlo_add(x, y)
     Condition
       Error in `hlo_add()`:
-      ! Expected all arguments to have the same tensor type.
-      i Got lhs=tensor<2x2xf32>, rhs=tensor<f32>.
+      ! All arguments must have the same tensor type.
+      i Got: lhs = tensor<2x2xf32>, rhs = tensor<f32>.
 

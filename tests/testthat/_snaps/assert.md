@@ -22,8 +22,8 @@
       assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType), expected_shape = 1L)
     Condition
       Error in `assert_vt_is_tensor()`:
-      ! Expected `y` to have shape (1).
-      i Got ().
+      ! `y` must have shape (1).
+      i Got shape ().
 
 ---
 
@@ -34,6 +34,15 @@
 
     Code
       assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType(32)))
+
+---
+
+    Code
+      assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType(64)))
+    Condition
+      Error in `assert_vt_is_tensor()`:
+      ! Expected `y` to have dtype IntegerType(64).
+      i Got <IntegerType(32)>.
 
 ---
 

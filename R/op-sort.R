@@ -26,11 +26,13 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
   dim_r <- dimension + 1L
 
   # (C4) 0 <= dimension < R, where R = rank(inputs[0]).
-  if (dim_r > length(input_dims[[1]])) {
-    cli_abort("dimension must be present in inputs")
-  }
-  if (dim_r < 1) {
-    cli_abort("dimension must be present in inputs")
+  num_dims <- length(input_dims[[1]])
+  if (dimension < 0L || dimension >= num_dims) {
+    dimension_out_of_range_error(
+      arg = "dimension",
+      dimension = dimension,
+      ndims = num_dims
+    )
   }
 
   # (C2) type(inputs...) = type(results...).

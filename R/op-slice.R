@@ -38,15 +38,31 @@ infer_types_slice <- function(
 
   # (C3) 0 <= start_indices <= limit_indices <= shape(operand)
   if (any(start_idx < 0)) {
-    cli_abort("start_indices must be non_negative")
+    invalid_indices <- start_idx[start_idx < 0]
+    slice_index_error(
+      arg = "start_indices",
+      indices = invalid_indices,
+      index_type = "start"
+    )
   }
 
   if (any(start_idx > limit_idx)) {
-    cli_abort("start_indices must not be greater than limit_indices")
+    invalid_positions <- which(start_idx > limit_idx)
+    slice_index_error(
+      arg = "start_indices",
+      indices = start_idx[invalid_positions],
+      index_type = "start"
+    )
   }
 
-  if (any(limit_idx > shape(operand))) {
-    cli_abort("limit_indices must not be greater than operand's shape")
+  operand_shape <- shape(operand)
+  if (any(limit_idx > operand_shape)) {
+    invalid_positions <- which(limit_idx > operand_shape)
+    slice_index_error(
+      arg = "limit_indices",
+      indices = limit_idx[invalid_positions],
+      index_type = "limit"
+    )
   }
 
   # (C4) 0 < strides.

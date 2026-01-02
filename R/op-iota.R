@@ -7,10 +7,12 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
   shape <- as.integer(shape)
 
   # (C1) 0 <= iota_dimension < rank(output)
-  rank <- length(shape)
-  if (iota_dimension < 0L || iota_dimension >= rank) {
-    cli_abort(
-      "iota_dimension must be in range [0, {rank}), got {iota_dimension}"
+  num_dims <- length(shape)
+  if (iota_dimension < 0L || iota_dimension >= num_dims) {
+    dimension_out_of_range_error(
+      arg = "iota_dimension",
+      dimension = iota_dimension,
+      ndims = num_dims
     )
   }
 
@@ -86,10 +88,12 @@ infer_types_iota <- function(iota_dimension, dtype, shape) {
   iota_dimension <- assert_int(iota_dimension, coerce = TRUE)
   shape <- as.integer(shape)
 
-  rank <- length(shape)
-  if (iota_dimension < 0L || iota_dimension >= rank) {
-    cli_abort(
-      "iota_dimension must be in range [0, {rank}), got {iota_dimension}"
+  num_dims <- length(shape)
+  if (iota_dimension < 0L || iota_dimension >= num_dims) {
+    dimension_out_of_range_error(
+      arg = "iota_dimension",
+      dimension = iota_dimension,
+      ndims = num_dims
     )
   }
 

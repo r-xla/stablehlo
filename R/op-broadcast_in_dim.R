@@ -23,12 +23,19 @@ infer_types_broadcast_in_dim <- function(
   }
 
   if (any(bdims < 0L | bdims >= length(result_dims))) {
-    cli_abort("broadcast_dimensions must be within [0, rank(result))")
+    dimension_out_of_range_error(
+      arg = "broadcast_dimensions",
+      dimension = bdims,
+      ndims = length(result_dims)
+    )
   }
 
   # (C4) is_unique(broadcast_dimensions)
   if (anyDuplicated(bdims)) {
-    cli_abort("broadcast_dimensions must be unique")
+    dimension_uniqueness_error(
+      arg = "broadcast_dimensions",
+      dimensions = bdims
+    )
   }
 
   # (C5) For all d in axes(operand):

@@ -12,11 +12,11 @@ infer_types_transpose <- function(
   assert_vt_is_tensor(operand)
 
   operand_dims <- shape(operand)
-  rank <- length(operand_dims)
+  num_dims <- length(operand_dims)
 
   perm_values <- permutation@value@data
 
-  if (rank == 0) {
+  if (num_dims == 0) {
     if (length(perm_values) != 0) {
       cli_abort("Length of permutation must be 0 for scalar operands")
     }
@@ -31,13 +31,27 @@ infer_types_transpose <- function(
   }
 
   # (C2) permutation is a permutation of range(rank(operand))
-  if (length(perm_values) != rank) {
+  if (length(perm_values) != num_dims) {
     cli_abort("Length of permutation must equal rank of operand")
   }
 
-  expected_perm <- seq(0, rank - 1)
+  # Check if any permutation values are out of range
+  if (any(perm_values < 0L | perm_values >= num_dims)) {
+    invalid_dims <- perm_values[perm_values < 0L | perm_values >= num_dims]
+    dimension_out_of_range_error(
+      arg = "permutation",
+      dimension = invalid_dims,
+      ndims = num_dims
+    )
+  }
+
+  expected_perm <- seq(0, num_dims - 1)
   if (!setequal(perm_values, expected_perm)) {
-    cli_abort("permutation must be a permutation of range(rank(operand))")
+    permutation_error(
+      arg = "permutation",
+      permutation = perm_values,
+      ndims = num_dims
+    )
   }
 
   # (C3) shape(result) = dim(operand, permutation...)

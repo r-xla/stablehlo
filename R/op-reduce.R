@@ -46,12 +46,19 @@ infer_types_reduce <- function(..., body, dimensions) {
 
   dims0 <- as.integer(dimensions@value@data)
   if (length(dims0) > 0L) {
-    rank <- length(ref_shape)
-    if (any(dims0 < 0L | dims0 >= rank)) {
-      cli_abort("dimensions must be within [0, rank(operand))")
+    num_dims <- length(ref_shape)
+    if (any(dims0 < 0L | dims0 >= num_dims)) {
+      dimension_out_of_range_error(
+        arg = "dimensions",
+        dimension = dims0,
+        ndims = num_dims
+      )
     }
     if (anyDuplicated(dims0)) {
-      cli_abort("dimensions must be unique")
+      dimension_uniqueness_error(
+        arg = "dimensions",
+        dimensions = dims0
+      )
     }
   }
 

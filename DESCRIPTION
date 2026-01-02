@@ -23,7 +23,8 @@ Imports:
     rlang,
     S7,
     tengen,
-    withr
+    withr,
+    xlamisc
 Suggests:
     rmarkdown,
     knitr,

@@ -35,19 +35,19 @@ test_that("hlo_closure works", {
 test_that("checks on input names", {
   expect_error(
     hlo_input("_", "f32", shape = c(2L, 2L), func = hlo_func()),
-    "pattern"
+    "Identifiers must start"
   )
   expect_error(
     hlo_input("_1", "f32", shape = c(2L, 2L), func = hlo_func()),
-    "pattern"
+    "Identifiers must start"
   )
   expect_error(
     hlo_input("1a", "f32", shape = c(2L, 2L), func = hlo_func()),
-    "pattern"
+    "Identifiers must start"
   )
   expect_error(
     hlo_input("1_", "f32", shape = c(2L, 2L), func = hlo_func()),
-    "pattern"
+    "Identifiers must start"
   )
   expect_error(
     hlo_input("1", "f32", shape = c(2L, 2L), func = hlo_func()),

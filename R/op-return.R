@@ -44,7 +44,11 @@ hlo_return <- function(..., func = .current_func()) {
     integer(1)
   )
   if (any(alias_indices < 0L | alias_indices >= output_count)) {
-    cli_abort("Aliased output index out of bounds in inputs")
+    index_out_of_bounds_error(
+      arg = "alias_indices",
+      lower = 0L,
+      upper = output_count
+    )
   }
   if (anyDuplicated(alias_indices)) {
     cli_abort("Multiple inputs alias to the same output index")

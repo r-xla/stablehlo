@@ -6,7 +6,11 @@ OpIf <- new_Op("OpIf", "if")
 #' @rdname hlo_if
 #' @export
 infer_types_if <- function(pred, true_branch, false_branch) {
-  assert_vt_is_tensor(pred, expected_dtypes = list(BooleanType), expected_shape = integer())
+  assert_vt_is_tensor(
+    pred,
+    expected_dtypes = list(BooleanType),
+    expected_shape = integer()
+  )
   out_types1 <- ValueTypes(func_output_types(true_branch))
   out_types2 <- ValueTypes(func_output_types(false_branch))
   if (length(out_types1) != length(out_types2)) {

@@ -15,5 +15,4 @@
 # get nice error messages when shapes don't match
 
     x Contracting dimensions must be the same
-    i Got: lhs=[10x1], rhs=[]
 

@@ -25,8 +25,13 @@ infer_types_concatenate <- function(..., dimension) {
   dim_r <- dimension + 1L
 
   # (C4) 0 <= dimension < rank(inputs[0])
-  if (length(shape(dots[[1]])) < dim_r) {
-    cli_abort("dimension must exist in inputs")
+  num_dims <- length(shape(dots[[1]]))
+  if (dimension < 0L || dimension >= num_dims) {
+    dimension_out_of_range_error(
+      arg = "dimension",
+      dimension = dimension,
+      ndims = num_dims
+    )
   }
 
   # (C2) same(shape(inputs...)) except for dim(inputs..., dimension)

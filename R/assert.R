@@ -1,3 +1,6 @@
+#' @importFrom stats setNames
+NULL
+
 is_valid_id <- function(name) {
   test_string(name, pattern = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[0-9]+$)")
 }
@@ -12,7 +15,11 @@ dtype_repr <- function(dtype) {
   sprintf("%s(%d)", S7_class(dtype)@name, dtype@value)
 }
 
-assert_valid_id <- function(name, arg = rlang::caller_arg(name), call = sys.call(-1)) {
+assert_valid_id <- function(
+  name,
+  arg = rlang::caller_arg(name),
+  call = sys.call(-1)
+) {
   if (!is_valid_id(name)) {
     throw_error(InvalidIdentifierError(arg = arg), call = call)
   }
@@ -38,12 +45,18 @@ assert_vt_equal <- function(
     return()
   }
 
-  unequal_tensor_types_error(args =
-    setNames(list(x@type, y@type), c(arg_x, arg_y))
-  , call = call)
+  unequal_tensor_types_error(
+    args = setNames(list(x@type, y@type), c(arg_x, arg_y)),
+    call = call
+  )
 }
 
-assert_one_of <- function(x, ..., arg = rlang::caller_arg(x), call = sys.call(-1)) {
+assert_one_of <- function(
+  x,
+  ...,
+  arg = rlang::caller_arg(x),
+  call = sys.call(-1)
+) {
   types <- list(...)
   for (type in types) {
     if (inherits(x, type)) {
@@ -60,8 +73,12 @@ assert_one_of <- function(x, ..., arg = rlang::caller_arg(x), call = sys.call(-1
     character(1)
   )
 
-
-  class_error(arg = arg, observed = class(x)[1], expected = type_names, call = call)
+  class_error(
+    arg = arg,
+    observed = class(x)[1],
+    expected = type_names,
+    call = call
+  )
 }
 
 assert_vts_are_tensors <- function(...) {
@@ -91,12 +108,25 @@ assert_vt_is_tensor <- function(
   }
   force(arg)
   if (!inherits(x, ValueType)) {
-    throw_error(ClassError(arg = arg, observed = class(x)[1], expected = "stablehlo::ValueType"), call = call)
-
+    throw_error(
+      ClassError(
+        arg = arg,
+        observed = class(x)[1],
+        expected = "stablehlo::ValueType"
+      ),
+      call = call
+    )
   }
   x <- x@type
   if (!inherits(x, TensorType)) {
-    throw_error(ClassError(arg = sprintf("%s@value", arg), observed = S7::S7_class(x)@name, expected = "stablehlo::TensorType"), call = call)
+    throw_error(
+      ClassError(
+        arg = sprintf("%s@value", arg),
+        observed = S7::S7_class(x)@name,
+        expected = "stablehlo::TensorType"
+      ),
+      call = call
+    )
   }
 
   dtypes <- expected_dtypes
@@ -115,8 +145,8 @@ assert_vt_is_tensor <- function(
           break
         }
       } else {
-        # dtype is an instance, check equality or class match
-        if (identical(x@dtype, dtype) || inherits(x@dtype, S7::S7_class(dtype))) {
+        # dtype is an instance, check exact equality (not just class match)
+        if (identical(x@dtype, dtype)) {
           dtype_matched <- TRUE
           break
         }
@@ -125,13 +155,23 @@ assert_vt_is_tensor <- function(
 
     if (!dtype_matched) {
       throw_error(
-        TensorDTypeError(arg = arg, expected = type_names, observed = dtype_repr(x@dtype))
+        TensorDTypeError(
+          arg = arg,
+          expected = type_names,
+          observed = dtype_repr(x@dtype)
+        )
       )
     }
   }
 
-  if (!is.null(expected_shape) && !identical(stablehlo::shape(x), expected_shape)) {
-    tensor_shape_error(arg = arg, expected = expected_shape, observed = stablehlo::shape(x))
+  if (
+    !is.null(expected_shape) && !identical(stablehlo::shape(x), expected_shape)
+  ) {
+    tensor_shape_error(
+      arg = arg,
+      expected = expected_shape,
+      observed = stablehlo::shape(x)
+    )
   }
 }
 

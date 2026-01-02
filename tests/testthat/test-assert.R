@@ -6,15 +6,27 @@ test_that("assert_vt_is_tensor", {
     error = TRUE
   )
   expect_snapshot(
-    assert_vt_is_tensor(x = y, expected_dtypes = list(BooleanType), expected_shape = integer()),
+    assert_vt_is_tensor(
+      x = y,
+      expected_dtypes = list(BooleanType),
+      expected_shape = integer()
+    ),
     error = TRUE
   )
   expect_snapshot(
-    assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType), expected_shape = 1L),
+    assert_vt_is_tensor(
+      x = y,
+      expected_dtypes = list(IntegerType),
+      expected_shape = 1L
+    ),
     error = TRUE
   )
   expect_snapshot(
-    assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType), expected_shape = integer()),
+    assert_vt_is_tensor(
+      x = y,
+      expected_dtypes = list(IntegerType),
+      expected_shape = integer()
+    ),
     error = FALSE
   )
 
@@ -30,7 +42,10 @@ test_that("assert_vt_is_tensor", {
 
   # Test mixing classes and instances
   expect_snapshot(
-    assert_vt_is_tensor(x = y, expected_dtypes = list(BooleanType, IntegerType(32))),
+    assert_vt_is_tensor(
+      x = y,
+      expected_dtypes = list(BooleanType, IntegerType(32))
+    ),
     error = FALSE
   )
 })
@@ -80,11 +95,11 @@ test_that("assert_vt_equal", {
 
   expect_error(
     assert_vt_equal(x, z1),
-    "to be equal"
+    "same tensor type"
   )
   expect_error(
     assert_vt_equal(x, z2),
-    "to be equal"
+    "same tensor type"
   )
 
   expect_error(
@@ -115,10 +130,10 @@ test_that("assert_valid_id", {
   expect_error(assert_valid_id("123"), NA)
   expect_error(assert_valid_id("0"), NA)
 
-  expect_error(assert_valid_id("_foo"), "pattern")
-  expect_error(assert_valid_id("1abc"), "pattern")
-  expect_error(assert_valid_id("foo-bar"), "pattern")
-  expect_error(assert_valid_id(""), "pattern")
+  expect_error(assert_valid_id("_foo"), "Identifiers must start")
+  expect_error(assert_valid_id("1abc"), "Identifiers must start")
+  expect_error(assert_valid_id("foo-bar"), "Identifiers must start")
+  expect_error(assert_valid_id(""), "Identifiers must start")
 })
 
 test_that("assert_one_of", {
@@ -131,7 +146,7 @@ test_that("assert_one_of", {
 
   expect_error(
     assert_one_of(x, TensorType, TokenType),
-    "must be a"
+    "Expected"
   )
 
   expect_error(

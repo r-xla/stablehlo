@@ -6,7 +6,10 @@ OpPopcnt <- new_Op("Popcnt", "popcnt")
 #' @rdname hlo_popcnt
 #' @export
 infer_types_popcnt <- function(operand) {
-  assert_vt_is_tensor(operand, expected_dtypes = list(IntegerType, UnsignedType))
+  assert_vt_is_tensor(
+    operand,
+    expected_dtypes = list(IntegerType, UnsignedType)
+  )
   ValueTypes(list(operand))
 }
 

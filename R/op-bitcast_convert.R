@@ -48,13 +48,11 @@ infer_types_bitcast_convert <- function(
     result_dims <- operand_dims
   } else if (cst_fct > 1) {
     if (identical(operand_dims, integer(0))) {
-      cli_abort(
-        "Operand has rank 0, upcasting is not possible in this case!"
-      )
+      tensor_ndims_error(expected = c(0L, NA), observed = length(operand_dims))
     } else if (operand_dims[[length(operand_dims)]] != cst_fct) {
       cli_abort(
-        "When upcasting, operands last dimension must be identical to the cast-factor {cst_fct},
-        but is {operand_dims[[length(operand_dims)]]}."
+        "The last dimension of {.var operand} must be {cst_fct} for this bitcast conversion.",
+        i = "Got {operand_dims[[length(operand_dims)]]}."
       )
     } else {
       result_dims <- operand_dims[seq_len(length(operand_dims) - 1)]
