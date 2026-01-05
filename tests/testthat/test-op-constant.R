@@ -6,7 +6,7 @@ test_that("scalars", {
     } else {
       hlo_scalar(x)
     }
-    expect_snapshot(repr(f@func@body@items[[1]]))
+    expect_snapshot(repr(f$func$body$items[[1]]))
   }
   check(3.14, "f32")
   check(3.14, "f64")
@@ -32,7 +32,7 @@ test_that("compile scalars", {
       hlo_scalar(x, dtype = dtype)
     }
     f <- hlo_return(y)
-    f@id <- FuncId("main")
+    f$id <- FuncId("main")
     program <- pjrt_program(repr(f))
     exec <- pjrt_compile(program)
     buffer <- pjrt_execute(exec)
@@ -57,12 +57,12 @@ test_that("compile scalars", {
 })
 
 test_that("arrays", {
-  expect_snapshot(repr(hlo_tensor(array(1:2), func = hlo_func())@func))
+  expect_snapshot(repr(hlo_tensor(array(1:2), func = hlo_func())$func))
   expect_snapshot(repr(
-    hlo_tensor(array(1:6, dim = c(2, 3)), func = hlo_func())@func
+    hlo_tensor(array(1:6, dim = c(2, 3)), func = hlo_func())$func
   ))
   expect_snapshot(repr(
-    hlo_tensor(array(1:6, dim = c(2, 3, 1)), func = hlo_func())@func
+    hlo_tensor(array(1:6, dim = c(2, 3, 1)), func = hlo_func())$func
   ))
 })
 
@@ -125,20 +125,20 @@ test_that("clean error when no current function exists", {
 test_that("specify shape in hlo_tensor", {
   local_func()
   expect_snapshot(repr(
-    hlo_tensor(1:2, shape = c(2, 1), func = hlo_func())@func
+    hlo_tensor(1:2, shape = c(2, 1), func = hlo_func())$func
   ))
-  expect_snapshot(repr(hlo_tensor(1:2, func = hlo_func())@func))
-  expect_snapshot(repr(hlo_tensor(1, func = hlo_func())@func))
+  expect_snapshot(repr(hlo_tensor(1:2, func = hlo_func())$func))
+  expect_snapshot(repr(hlo_tensor(1, func = hlo_func())$func))
 })
 
 test_that("PJRTBuffer", {
   skip_if_not_installed("pjrt")
   local_func()
   expect_snapshot(repr(
-    hlo_tensor(pjrt_buffer(1L, dtype = "i32"), func = hlo_func())@func
+    hlo_tensor(pjrt_buffer(1L, dtype = "i32"), func = hlo_func())$func
   ))
   expect_snapshot(repr(
-    hlo_scalar(pjrt_scalar(1, dtype = "f32"), func = hlo_func())@func
+    hlo_scalar(pjrt_scalar(1, dtype = "f32"), func = hlo_func())$func
   ))
 })
 
@@ -146,7 +146,7 @@ test_that("empty array: dense<[]> formatting", {
   skip_if_not_installed("pjrt")
   local_func()
   empty_tensor <- hlo_empty("i64", 0L)
-  constant_op <- empty_tensor@func@body@items[[1]]
+  constant_op <- empty_tensor$func$body$items[[1]]
   f <- hlo_return(empty_tensor)
   expect_snapshot(repr(f))
   program <- pjrt_program(repr(f))
@@ -169,7 +169,7 @@ test_that("empty array: array<> formatting", {
 
 test_that("scalar constant with hlo_tensor", {
   local_func()
-  expect_snapshot(repr(hlo_tensor(1L, shape = integer())@func))
+  expect_snapshot(repr(hlo_tensor(1L, shape = integer())$func))
 })
 
 test_that("can use dtype with constant", {

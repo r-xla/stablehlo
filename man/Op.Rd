@@ -4,12 +4,7 @@
 \alias{Op}
 \title{Op}
 \usage{
-Op(
-  name = OpName(),
-  inputs = OpInputs(),
-  outputs = OpOutputs(),
-  signature = OpSignature()
-)
+Op(name, inputs, outputs, signature)
 }
 \arguments{
 \item{name}{(\code{\link{OpName}})\cr

@@ -4,7 +4,7 @@
 \alias{Constant}
 \title{Constant}
 \usage{
-Constant(value = TensorConstant())
+Constant(value)
 }
 \arguments{
 \item{value}{(\code{\link{TensorConstant}})\cr

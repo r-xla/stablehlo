@@ -21,7 +21,6 @@ Imports:
     cli,
     methods,
     rlang,
-    S7,
     tengen,
     withr
 Suggests:

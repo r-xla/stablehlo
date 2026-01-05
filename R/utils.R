@@ -4,14 +4,14 @@ NULL
 
 
 func_output_types <- function(func) {
-  if (!inherits(func, Func)) {
+  if (!inherits(func, "stablehlo_Func")) {
     cli_abort("func must be a Func object, but got {.class {class(func)[1]}}.")
   }
-  lapply(func@outputs@items, function(x) x@type)
+  lapply(func$outputs$items, function(x) x$type)
 }
 
 output_types_from_body <- function(body) {
-  body@items[[length(body@items)]]@inputs@values
+  body$items[[length(body$items)]]$inputs$values
 }
 
 #' @title Represent an R value in stableHLO
@@ -53,9 +53,8 @@ capitalize <- function(str) {
 
 get_dims <- function(data) {
   if (is.null(dim(data))) {
-    if (length(data) == 1) {
-      return(1L)
-    } else if (length(data) == 0) {
+    if (length(data) <= 1) {
+      # Single element without dim() is treated as scalar (0-D tensor)
       return(integer())
     } else {
       return(length(data))

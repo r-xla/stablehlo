@@ -1,26 +1,24 @@
 #' @include op.R hlo.R
 NULL
 
-# Technicall this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
-OpReturn <- new_class(
-  "Return",
-  parent = Op,
-  constructor = function(inputs, outputs = OpOutputs(), signature = NULL) {
-    if (length(outputs@items)) {
-      cli_abort("OpReturn op must not have outputs.")
-    }
-    if (length(signature@output_types@items)) {
-      cli_abort("Invalid signature for ReturnOp.")
-    }
-
-    new_object(Op(
-      name = OpName(OpMnemonic("return")),
-      inputs = inputs,
-      outputs = outputs,
-      signature = signature
-    ))
+# Technically this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
+OpReturn <- function(inputs, outputs = OpOutputs(), signature = NULL) {
+  if (length(outputs$items)) {
+    cli_abort("OpReturn op must not have outputs.")
   }
-)
+  if (length(signature$output_types$items)) {
+    cli_abort("Invalid signature for ReturnOp.")
+  }
+
+  base_op <- Op(
+    name = OpName(OpMnemonic("return")),
+    inputs = inputs,
+    outputs = outputs,
+    signature = signature
+  )
+  class(base_op) <- c("OpReturn", "stablehlo_Op")
+  base_op
+}
 
 hlo_return_impl <- hlo_fn(OpReturn, infer_types_return, TRUE)
 
@@ -39,8 +37,8 @@ hlo_return <- function(..., func = .current_func()) {
   }
   output_count <- length(dots)
   alias_indices <- vapply(
-    func@inputs@items[vapply(func@inputs@items, is.null, logical(1))],
-    \(x) as.integer(x@alias),
+    func$inputs$items[vapply(func$inputs$items, is.null, logical(1))],
+    \(x) as.integer(x$alias),
     integer(1)
   )
   if (any(alias_indices < 0L | alias_indices >= output_count)) {
@@ -61,12 +59,13 @@ infer_types_return <- function(...) {
   ValueTypes()
 }
 
-method(repr, OpReturn) <- function(x, toplevel = TRUE, ...) {
+#' @export
+repr.OpReturn <- function(x, toplevel = TRUE, ...) {
   paste0(
-    repr(x@outputs),
+    repr(x$outputs),
     if (toplevel) "\"func.return\"" else "\"stablehlo.return\"",
-    repr(x@inputs),
+    repr(x$inputs),
     ": ",
-    repr(x@signature)
+    repr(x$signature)
   )
 }

@@ -4,7 +4,7 @@
 \alias{TensorConstant}
 \title{TensorConstant}
 \usage{
-TensorConstant(data = NULL, type = TensorType())
+TensorConstant(data, type)
 }
 \arguments{
 \item{data}{(any)\cr

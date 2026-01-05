@@ -75,8 +75,8 @@ test_that("hlo_func", {
     hlo_func("abc")
   })()
   expect_false(is.null(globals[["CURRENT_FUNC"]]))
-  expect_true(inherits(f, Func))
-  expect_equal(f@id@id, "abc")
+  expect_true(inherits(f, "stablehlo_Func"))
+  expect_equal(f$id$id, "abc")
 })
 
 test_that("local_func", {

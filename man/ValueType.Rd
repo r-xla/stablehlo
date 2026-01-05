@@ -7,9 +7,9 @@
 ValueType(type, shape = NULL)
 }
 \arguments{
-\item{type}{The type of the value.}
+\item{type}{The type of the value (TensorType or TokenType).}
 
-\item{shape}{The shape of the value.}
+\item{shape}{The shape of the value (only used when type is character).}
 }
 \description{
 This represents the type of a value.

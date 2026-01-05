@@ -19,8 +19,8 @@ infer_types_rng_bit_generator <- function(
     cli_abort("initial_state must be a 1-D tensor")
   }
   if (
-    !inherits(initial_state@type@dtype, UnsignedType) ||
-      initial_state@type@dtype@value != 64L
+    !inherits(initial_state$type$dtype, "stablehlo_UnsignedType") ||
+      initial_state$type$dtype$value != 64L
   ) {
     cli_abort("initial_state must have dtype ui64")
   }
@@ -41,7 +41,12 @@ infer_types_rng_bit_generator <- function(
   }
 
   out_dtype <- as_dtype(dtype)
-  assert_one_of(out_dtype, IntegerType, UnsignedType, FloatType)
+  assert_one_of(
+    out_dtype,
+    "stablehlo_IntegerType",
+    "stablehlo_UnsignedType",
+    "stablehlo_FloatType"
+  )
   out_shape <- as.integer(shape_out)
 
   ValueTypes(list(
@@ -87,17 +92,18 @@ hlo_rng_bit_generator <- function(
   )
 }
 
-method(repr, OpRngBitGenerator) <- function(x, ...) {
+#' @export
+repr.OpRngBitGenerator <- function(x, ...) {
   paste0(
-    repr(x@outputs),
+    repr(x$outputs),
     " = \"stablehlo.rng_bit_generator\" ",
     "(",
-    repr(x@inputs@values),
+    repr(x$inputs$values),
     ") {\n",
     "rng_algorithm = #stablehlo<rng_algorithm ",
-    x@inputs@custom_attrs$rng_algorithm,
+    x$inputs$custom_attrs$rng_algorithm,
     ">\n}",
     ": ",
-    repr(x@signature)
+    repr(x$signature)
   )
 }

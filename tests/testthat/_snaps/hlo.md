@@ -8,21 +8,21 @@
 # hlo_closure works
 
     Code
-      repr(xcap[[1L]]@func)
+      repr(xcap[[1L]]$func)
     Output
       [1] "func.func @ () ->  {\n\n}\n"
 
 ---
 
     Code
-      repr(outs[[1L]]@func)
+      repr(outs[[1L]]$func)
     Output
       [1] "func.func @ () ->  {\n\n}\n"
 
 ---
 
     Code
-      repr(outs[[2L]]@func)
+      repr(outs[[2L]]$func)
     Output
       [1] "func.func @ () ->  {\n\n}\n"
 

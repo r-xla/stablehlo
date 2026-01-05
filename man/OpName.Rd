@@ -4,7 +4,7 @@
 \alias{OpName}
 \title{OpName}
 \usage{
-OpName(mnemonic = OpMnemonic())
+OpName(mnemonic)
 }
 \arguments{
 \item{mnemonic}{(\code{\link{OpMnemonic}})\cr

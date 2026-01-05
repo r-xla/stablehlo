@@ -16,7 +16,12 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
 
   out_dtype <- as_dtype(dtype)
   # iota supports integer, floating-point, or complex types (we don't support complex)
-  assert_one_of(out_dtype, IntegerType, UnsignedType, FloatType)
+  assert_one_of(
+    out_dtype,
+    "stablehlo_IntegerType",
+    "stablehlo_UnsignedType",
+    "stablehlo_FloatType"
+  )
 
   output_type <- ValueType(
     TensorType(
@@ -50,7 +55,7 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
       output_types = ValueTypes(list(output_type))
     )
   )
-  func@body <- FuncBody(c(func@body@items, list(op)))
+  func$body <- FuncBody(c(func$body$items, list(op)))
 
   FuncValue(
     value_id = value_id,
@@ -94,7 +99,12 @@ infer_types_iota <- function(iota_dimension, dtype, shape) {
   }
 
   out_dtype <- as_dtype(dtype)
-  assert_one_of(out_dtype, IntegerType, UnsignedType, FloatType)
+  assert_one_of(
+    out_dtype,
+    "stablehlo_IntegerType",
+    "stablehlo_UnsignedType",
+    "stablehlo_FloatType"
+  )
 
   ValueTypes(list(
     ValueType(
@@ -106,14 +116,15 @@ infer_types_iota <- function(iota_dimension, dtype, shape) {
   ))
 }
 
-method(repr, OpIota) <- function(x, ...) {
+#' @export
+repr.OpIota <- function(x, ...) {
   paste0(
-    repr(x@outputs),
+    repr(x$outputs),
     " = ",
-    repr(x@name),
+    repr(x$name),
     " ",
-    repr(x@inputs),
+    repr(x$inputs),
     ": ",
-    repr(x@signature)
+    repr(x$signature)
   )
 }

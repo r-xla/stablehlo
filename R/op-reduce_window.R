@@ -36,7 +36,7 @@ infer_types_reduce_window <- function(
   # Check init_values are 0-D tensors
 
   lapply(init_value_types, function(vt) {
-    if (length(vt@type@shape@dims) != 0L) {
+    if (length(vt$type$shape$dims) != 0L) {
       cli_abort("init_values must be 0-D tensors")
     }
   })
@@ -52,8 +52,8 @@ infer_types_reduce_window <- function(
 
   # (C3) Each input must have the same dtype as its corresponding init_value
   for (i in seq_len(num_inputs)) {
-    input_dtype <- input_value_types[[i]]@type@dtype
-    init_dtype <- init_value_types[[i]]@type@dtype
+    input_dtype <- input_value_types[[i]]$type$dtype
+    init_dtype <- init_value_types[[i]]$type$dtype
     if (input_dtype != init_dtype) {
       cli_abort(
         "inputs[{i}] and init_values[{i}] must have the same dtype, got: {repr(input_dtype)} and {repr(init_dtype)}."
@@ -62,7 +62,7 @@ infer_types_reduce_window <- function(
   }
 
   rank <- length(ref_shape)
-  window_dims <- as.integer(window_dimensions@value@data)
+  window_dims <- as.integer(window_dimensions$value$data)
 
   # (C4)
   if (length(window_dims) != rank) {
@@ -74,10 +74,10 @@ infer_types_reduce_window <- function(
     cli_abort("window_dimensions must be positive")
   }
 
-  strides <- as.integer(window_strides@value@data)
-  base_dil <- as.integer(base_dilations@value@data)
-  window_dil <- as.integer(window_dilations@value@data)
-  pad <- padding@value@data
+  strides <- as.integer(window_strides$value$data)
+  base_dil <- as.integer(base_dilations$value$data)
+  window_dil <- as.integer(window_dilations$value$data)
+  pad <- padding$value$data
 
   # (C12)
   if (!is.matrix(pad) || !is.integer(pad)) {
@@ -132,12 +132,12 @@ infer_types_reduce_window <- function(
 
   out_vts <- lapply(seq_len(num_inputs), function(i) {
     out_elem_vt <- body_out_types[[i]]
-    if (length(out_elem_vt@type@shape@dims) != 0L) {
+    if (length(out_elem_vt$type$shape$dims) != 0L) {
       cli_abort("body outputs must be 0-D tensors")
     }
     ValueType(
       TensorType(
-        dtype = out_elem_vt@type@dtype,
+        dtype = out_elem_vt$type$dtype,
         shape = Shape(result_shape)
       )
     )

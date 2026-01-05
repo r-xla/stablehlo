@@ -67,7 +67,7 @@ infer_types_triangular_solve <- function(
   ValueTypes(list(
     ValueType(
       TensorType(
-        dtype = b@type@dtype,
+        dtype = b$type$dtype,
         shape = Shape(b_dims)
       )
     )
@@ -112,33 +112,34 @@ hlo_triangular_solve <- function(
   )
 }
 
-method(repr, OpTriangularSolve) <- function(
+#' @export
+repr.OpTriangularSolve <- function(
   x,
   toplevel = TRUE,
   simplify_dense = TRUE,
   ...
 ) {
   attrs_str <- vapply(
-    x@inputs@attrs@items,
+    x$inputs$attrs$items,
     repr,
     character(1),
     simplify_dense = simplify_dense
   )
   transpose_attr <- sprintf(
     "transpose_a = #stablehlo<transpose %s>",
-    x@inputs@custom_attrs$transpose_a
+    x$inputs$custom_attrs$transpose_a
   )
   all_attrs <- paste(c(attrs_str, transpose_attr), collapse = ",\n")
 
   paste0(
-    repr(x@outputs),
+    repr(x$outputs),
     " = ",
-    repr(x@name),
+    repr(x$name),
     " (",
-    repr(x@inputs@values),
+    repr(x$inputs$values),
     ") {\n",
     all_attrs,
     "\n}: ",
-    repr(x@signature)
+    repr(x$signature)
   )
 }

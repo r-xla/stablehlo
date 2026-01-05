@@ -4,7 +4,7 @@
 \alias{ScalarAttr}
 \title{ScalarAttr}
 \usage{
-ScalarAttr(name = character(0), value = NULL, dtype = BooleanType())
+ScalarAttr(name, value, dtype)
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr

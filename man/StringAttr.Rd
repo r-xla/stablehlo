@@ -4,7 +4,7 @@
 \alias{StringAttr}
 \title{StringAttr}
 \usage{
-StringAttr(name = character(0), value = character(0))
+StringAttr(name, value)
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr

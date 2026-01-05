@@ -1,35 +1,27 @@
-# from https://josiahparry.com/posts/2023-11-10-enums-in-r/
-
 #' @include repr.R
-#' @importFrom S7 class_character method<- new_object S7_object
 NULL
 
-Enum <- new_class(
-  "Enum",
-  properties = list(
-    value = S7::class_any,
-    variants = S7::class_any
-  ),
-  validator = function(self) {
-    if (length(self@value) != 1L) {
-      "enum value's are length 1"
-    } else if (!(self@value %in% self@variants)) {
-      "enum value must be one of possible variants"
+#' Create a new enum class
+#'
+#' @param class_name Name of the enum class
+#' @param variants Character vector of valid variants
+#' @return Constructor function for the enum
+#' @keywords internal
+new_enum <- function(class_name, variants) {
+  # Return a constructor function
+  function(value) {
+    checkmate::assert_string(value)
+    if (!(value %in% variants)) {
+      cli_abort("enum value must be one of: {paste(variants, collapse = ', ')}")
     }
-  },
-  abstract = TRUE
-)
-
-method(repr, Enum) <- function(x) {
-  x@value # nolint
+    structure(
+      list(value = value, variants = variants),
+      class = c(class_name, "Enum")
+    )
+  }
 }
 
-new_enum <- function(class, variants) {
-  new_class(
-    class,
-    parent = Enum,
-    constructor = function(value) {
-      new_object(S7_object(), value = value, variants = variants)
-    }
-  )
+#' @export
+repr.Enum <- function(x, ...) {
+  x$value
 }

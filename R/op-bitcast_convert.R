@@ -13,7 +13,9 @@ infer_types_bitcast_convert <- function(
 
   if (
     # https://github.com/openxla/stablehlo/issues/1672
-    dtype %in% c("i1", "pred") || (inherits(operand@type@dtype, BooleanType))
+    dtype %in%
+      c("i1", "pred") ||
+      (inherits(operand$type$dtype, "stablehlo_BooleanType"))
   ) {
     cli_abort("Bitcast conversions from and to booleans are not supported.")
   }
@@ -38,7 +40,7 @@ infer_types_bitcast_convert <- function(
     cli_abort("Unsupported dtype: {dtype}")
   }
 
-  operand_bits <- operand@type@dtype@value
+  operand_bits <- operand$type$dtype$value
   operand_dims <- shape(operand)
 
   output_bits <- as.integer(sub(".*?([0-9]+)$", "\\1", dtype))

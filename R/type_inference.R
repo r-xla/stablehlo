@@ -1,5 +1,5 @@
 baseline_type <- function(x) {
-  if (inherits(x, TensorType)) {
+  if (inherits(x, "stablehlo_TensorType")) {
     return(x)
   }
   cli_abort("Not implemented")
@@ -8,12 +8,12 @@ baseline_type <- function(x) {
 
 # shortcut for element_type(baseline_type(x))
 baseline_element_type <- function(x) {
-  if (!inherits(x, ValueType)) {
+  if (!inherits(x, "stablehlo_ValueType")) {
     cli_abort("x must be a ValueType, but got {.class {class(x)[1]}}.")
   }
-  if (is(x@type, TensorType)) {
-    return(x@type@dtype)
-  } else if (is(x@type, TokenType)) {
+  if (inherits(x$type, "stablehlo_TensorType")) {
+    return(x$type$dtype)
+  } else if (inherits(x$type, "stablehlo_TokenType")) {
     cli_abort("Invalid input")
   } else {
     cli_abort("Not implemented yet")
@@ -60,8 +60,18 @@ infer_types_generic_biv <- function(lhs, rhs) {
 #'   The inferred type.
 #' @export
 infer_types_integerish_biv <- function(lhs, rhs) {
-  assert_vt_has_ttype(lhs, BooleanType, IntegerType, UnsignedType)
-  assert_vt_has_ttype(rhs, BooleanType, IntegerType, UnsignedType)
+  assert_vt_has_ttype(
+    lhs,
+    "stablehlo_BooleanType",
+    "stablehlo_IntegerType",
+    "stablehlo_UnsignedType"
+  )
+  assert_vt_has_ttype(
+    rhs,
+    "stablehlo_BooleanType",
+    "stablehlo_IntegerType",
+    "stablehlo_UnsignedType"
+  )
   assert_vt_equal(lhs, rhs)
   ValueTypes(list(lhs))
 }
@@ -75,6 +85,11 @@ infer_types_integerish_biv <- function(lhs, rhs) {
 #'   The inferred type.
 #' @export
 infer_types_integerish_uni <- function(operand) {
-  assert_vt_has_ttype(operand, BooleanType, IntegerType, UnsignedType)
+  assert_vt_has_ttype(
+    operand,
+    "stablehlo_BooleanType",
+    "stablehlo_IntegerType",
+    "stablehlo_UnsignedType"
+  )
   ValueTypes(list(operand))
 }

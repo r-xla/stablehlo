@@ -36,7 +36,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
   # (C2) type(inputs...) = type(results...).
   ValueTypes(lapply(
     dots,
-    \(x) ValueType(TensorType(dtype = x@type@dtype, shape = Shape(shape(x))))
+    \(x) ValueType(TensorType(dtype = x$type$dtype, shape = Shape(shape(x))))
   ))
 }
 
