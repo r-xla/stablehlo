@@ -5,7 +5,7 @@ This represents an input of a [`Func`](Func.md).
 ## Usage
 
 ``` r
-FuncInput(id = ValueId(), type = ValueType(), alias = NULL)
+FuncInput(id, type, alias = NULL)
 ```
 
 ## Arguments

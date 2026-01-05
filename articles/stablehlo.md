@@ -5,9 +5,9 @@ and show how it can be used to create StableHLO programs. If you are not
 familiar with StableHLO, we recommend reading the [StableHLO
 specification](https://openxla.org/stablehlo/spec) first.
 
-The {stablehlo} package represents StableHLO programs as nested S7
+The {stablehlo} package represents StableHLO programs as nested S3
 objects. When working with the package, you usually don’t construct
-these objects via their `S7`-constructor, but through the more
+these objects via their `S3`-constructor, but through the more
 user-friendly `hlo_<name>` functions.
 
 We start by creating a `Func` object that represents a StableHLO
@@ -81,17 +81,34 @@ x
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #> 
 #> }
-x@value_id
-#> <stablehlo::ValueId>
-#>  @ id: chr "x"
-x@value_type
-#> <stablehlo::ValueType>
-#>  @ type: <stablehlo::TensorType>
-#>  .. @ dtype: <stablehlo::FloatType>
-#>  .. .. @ value: int 32
-#>  .. @ shape: <stablehlo::Shape>
-#>  .. .. @ dims: int [1:2] 2 2
-x@func
+x$value_id
+#> $id
+#> [1] "x"
+#> 
+#> attr(,"class")
+#> [1] "ValueId"
+x$value_type
+#> $type
+#> $dtype
+#> $value
+#> [1] 32
+#> 
+#> attr(,"class")
+#> [1] "FloatType"
+#> 
+#> $shape
+#> $dims
+#> [1] 2 2
+#> 
+#> attr(,"class")
+#> [1] "Shape"
+#> 
+#> attr(,"class")
+#> [1] "TensorType"
+#> 
+#> attr(,"class")
+#> [1] "ValueType"
+x$func
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #> 
 #> }

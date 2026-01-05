@@ -5,7 +5,7 @@ An attribute holding a string value.
 ## Usage
 
 ``` r
-StringAttr(name = character(0), value = character(0))
+StringAttr(name, value)
 ```
 
 ## Arguments

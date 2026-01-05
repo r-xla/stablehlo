@@ -5,7 +5,7 @@ This represents a constant value.
 ## Usage
 
 ``` r
-TensorConstant(data = NULL, type = TensorType())
+TensorConstant(data, type)
 ```
 
 ## Arguments

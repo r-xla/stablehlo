@@ -5,7 +5,7 @@ An attribute holding a scalar value with an associated dtype.
 ## Usage
 
 ``` r
-ScalarAttr(name = character(0), value = NULL, dtype = BooleanType())
+ScalarAttr(name, value, dtype)
 ```
 
 ## Arguments

@@ -1,6 +1,8 @@
 # TensorDataType
 
-Type union of all possible data types.
+Type union of all possible data types. Not a class in S3, just
+documentation that dtype can be BooleanType, IntegerType, UnsignedType,
+or FloatType.
 
 ## Usage
 
@@ -10,4 +12,4 @@ TensorDataType
 
 ## Format
 
-An object of class `S7_union` of length 1.
+An object of class `character` of length 4.

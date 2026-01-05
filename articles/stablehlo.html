@@ -68,7 +68,7 @@
       <h1>Get Started</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/err-system/vignettes/articles/stablehlo.Rmd" class="external-link"><code>vignettes/articles/stablehlo.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/s3/vignettes/articles/stablehlo.Rmd" class="external-link"><code>vignettes/articles/stablehlo.Rmd</code></a></small>
       <div class="d-none name"><code>stablehlo.Rmd</code></div>
     </div>
 
@@ -78,9 +78,9 @@
 and show how it can be used to create StableHLO programs. If you are not
 familiar with StableHLO, we recommend reading the <a href="https://openxla.org/stablehlo/spec" class="external-link">StableHLO specification</a>
 first.</p>
-<p>The {stablehlo} package represents StableHLO programs as nested S7
+<p>The {stablehlo} package represents StableHLO programs as nested S3
 objects. When working with the package, you usually don’t construct
-these objects via their <code>S7</code>-constructor, but through the
+these objects via their <code>S3</code>-constructor, but through the
 more user-friendly <code>hlo_&lt;name&gt;</code> functions.</p>
 <p>We start by creating a <code>Func</code> object that represents a
 StableHLO function. Such a <code>Func</code> object has an ID
@@ -138,17 +138,34 @@ represents a value in a stableHLO function and contains:</p>
 <span><span class="co">#&gt; func.func @main (<span style="color: #0000BB;">%x</span>: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="va">x</span><span class="op">@</span><span class="va">value_id</span></span>
-<span><span class="co">#&gt; &lt;stablehlo::ValueId&gt;</span></span>
-<span><span class="co">#&gt;  @ id: chr "x"</span></span>
-<span><span class="va">x</span><span class="op">@</span><span class="va">value_type</span></span>
-<span><span class="co">#&gt; &lt;stablehlo::ValueType&gt;</span></span>
-<span><span class="co">#&gt;  @ type: &lt;stablehlo::TensorType&gt;</span></span>
-<span><span class="co">#&gt;  .. @ dtype: &lt;stablehlo::FloatType&gt;</span></span>
-<span><span class="co">#&gt;  .. .. @ value: int 32</span></span>
-<span><span class="co">#&gt;  .. @ shape: &lt;stablehlo::Shape&gt;</span></span>
-<span><span class="co">#&gt;  .. .. @ dims: int [1:2] 2 2</span></span>
-<span><span class="va">x</span><span class="op">@</span><span class="va">func</span></span>
+<span><span class="va">x</span><span class="op">$</span><span class="va">value_id</span></span>
+<span><span class="co">#&gt; $id</span></span>
+<span><span class="co">#&gt; [1] "x"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attr(,"class")</span></span>
+<span><span class="co">#&gt; [1] "ValueId"</span></span>
+<span><span class="va">x</span><span class="op">$</span><span class="va">value_type</span></span>
+<span><span class="co">#&gt; $type</span></span>
+<span><span class="co">#&gt; $dtype</span></span>
+<span><span class="co">#&gt; $value</span></span>
+<span><span class="co">#&gt; [1] 32</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attr(,"class")</span></span>
+<span><span class="co">#&gt; [1] "FloatType"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $shape</span></span>
+<span><span class="co">#&gt; $dims</span></span>
+<span><span class="co">#&gt; [1] 2 2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attr(,"class")</span></span>
+<span><span class="co">#&gt; [1] "Shape"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attr(,"class")</span></span>
+<span><span class="co">#&gt; [1] "TensorType"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attr(,"class")</span></span>
+<span><span class="co">#&gt; [1] "ValueType"</span></span>
+<span><span class="va">x</span><span class="op">$</span><span class="va">func</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>

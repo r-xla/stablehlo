@@ -5,7 +5,7 @@ Convert R value to StableHLO string representation
 ## Usage
 
 ``` r
-r_to_stablehlo_string(value, dtype)
+r_to_string(value, dtype)
 ```
 
 ## Arguments

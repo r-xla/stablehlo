@@ -5,7 +5,7 @@ This represents a function that can be used as input to an operation.
 ## Usage
 
 ``` r
-OpInputFunc(inputs = FuncInputs(), body = FuncBody())
+OpInputFunc(inputs, body)
 ```
 
 ## Arguments

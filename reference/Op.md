@@ -5,12 +5,7 @@ This represents a StableHLO operation.
 ## Usage
 
 ``` r
-Op(
-  name = OpName(),
-  inputs = OpInputs(),
-  outputs = OpOutputs(),
-  signature = OpSignature()
-)
+Op(name, inputs, outputs, signature)
 ```
 
 ## Arguments

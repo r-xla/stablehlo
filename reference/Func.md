@@ -1,6 +1,7 @@
 # Func
 
-This represents a function.
+This represents a function. Note: Func uses reference semantics -
+modifications to a Func object modify the original.
 
 ## Usage
 

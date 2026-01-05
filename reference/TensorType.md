@@ -5,7 +5,7 @@ Represents a tensor type with a specific data type and shape.
 ## Usage
 
 ``` r
-TensorType(dtype = BooleanType(), shape = Shape())
+TensorType(dtype, shape)
 ```
 
 ## Arguments

@@ -7,7 +7,7 @@ functions, and attributes.
 
 ``` r
 OpInputs(
-  values = OpInputValues(),
+  values,
   funcs = OpInputFuncs(),
   attrs = OpInputAttrs(),
   custom_attrs = list()

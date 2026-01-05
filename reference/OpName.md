@@ -5,7 +5,7 @@ This represents the name of an operation, containing a mnemonic.
 ## Usage
 
 ``` r
-OpName(mnemonic = OpMnemonic())
+OpName(mnemonic)
 ```
 
 ## Arguments

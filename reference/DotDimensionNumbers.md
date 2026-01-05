@@ -5,7 +5,7 @@ Represents the dot dimension numbers.
 ## Usage
 
 ``` r
-DotDimensionNumbers(contracting_dims = NULL, batching_dims = NULL)
+DotDimensionNumbers(contracting_dims, batching_dims = NULL)
 ```
 
 ## Arguments

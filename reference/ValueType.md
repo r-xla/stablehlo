@@ -12,8 +12,8 @@ ValueType(type, shape = NULL)
 
 - type:
 
-  The type of the value.
+  The type of the value (TensorType or TokenType).
 
 - shape:
 
-  The shape of the value.
+  The shape of the value (only used when type is character).

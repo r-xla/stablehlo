@@ -5,7 +5,7 @@ Base class for operation input attributes.
 ## Usage
 
 ``` r
-OpInputAttr(name = character(0))
+OpInputAttr(name)
 ```
 
 ## Arguments

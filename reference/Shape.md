@@ -5,7 +5,7 @@ Represents the shape of a tensor.
 ## Usage
 
 ``` r
-Shape(dims)
+Shape(dims = integer())
 ```
 
 ## Arguments

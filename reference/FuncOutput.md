@@ -5,7 +5,7 @@ This represents an output of a [`Func`](Func.md).
 ## Usage
 
 ``` r
-FuncOutput(type = ValueType())
+FuncOutput(type)
 ```
 
 ## Arguments

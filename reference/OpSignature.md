@@ -6,7 +6,7 @@ output types.
 ## Usage
 
 ``` r
-OpSignature(input_types = ValueTypes(), output_types = ValueTypes())
+OpSignature(input_types, output_types)
 ```
 
 ## Arguments
