@@ -17,7 +17,7 @@ infer_types_while <- function(..., cond, body) {
     cli_abort("cond must have exactly one output")
   }
   cond_out <- cond$outputs$items[[1L]]$type
-  assert_vt_has_ttype(cond_out, "stablehlo_BooleanType")
+  assert_vt_has_ttype(cond_out, "BooleanType")
   if (length(cond_out$type$shape$dims) != 0L) {
     cli_abort("cond output must be a 0-D tensor")
   }

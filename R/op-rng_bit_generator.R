@@ -19,7 +19,7 @@ infer_types_rng_bit_generator <- function(
     cli_abort("initial_state must be a 1-D tensor")
   }
   if (
-    !inherits(initial_state$type$dtype, "stablehlo_UnsignedType") ||
+    !inherits(initial_state$type$dtype, "UnsignedType") ||
       initial_state$type$dtype$value != 64L
   ) {
     cli_abort("initial_state must have dtype ui64")
@@ -43,9 +43,9 @@ infer_types_rng_bit_generator <- function(
   out_dtype <- as_dtype(dtype)
   assert_one_of(
     out_dtype,
-    "stablehlo_IntegerType",
-    "stablehlo_UnsignedType",
-    "stablehlo_FloatType"
+    "IntegerType",
+    "UnsignedType",
+    "FloatType"
   )
   out_shape <- as.integer(shape_out)
 

@@ -4,7 +4,7 @@ NULL
 
 
 func_output_types <- function(func) {
-  if (!inherits(func, "stablehlo_Func")) {
+  if (!inherits(func, "Func")) {
     cli_abort("func must be a Func object, but got {.class {class(func)[1]}}.")
   }
   lapply(func$outputs$items, function(x) x$type)
@@ -22,7 +22,7 @@ output_types_from_body <- function(body) {
 #' @param dtype (`character(1)`)\cr
 #'   The element type to use.
 #' @return `character(1)`
-r_to_stablehlo_string <- function(value, dtype) {
+r_to_string <- function(value, dtype) {
   if (is.logical(value)) {
     if (value) {
       return("true")

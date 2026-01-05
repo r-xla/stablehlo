@@ -16,8 +16,8 @@ NULL
 #' @return (`FuncInput`)
 #' @export
 FuncInput <- function(id, type, alias = NULL) {
-  checkmate::assert_class(id, "stablehlo_ValueId")
-  checkmate::assert_class(type, "stablehlo_ValueType")
+  checkmate::assert_class(id, "ValueId")
+  checkmate::assert_class(type, "ValueType")
   if (!is.null(alias)) {
     alias <- as.integer(alias)
     checkmate::assert_int(alias)
@@ -25,12 +25,12 @@ FuncInput <- function(id, type, alias = NULL) {
 
   structure(
     list(id = id, type = type, alias = alias),
-    class = "stablehlo_FuncInput"
+    class = "FuncInput"
   )
 }
 
 #' @export
-repr.stablehlo_FuncInput <- function(x, ...) {
+repr.FuncInput <- function(x, ...) {
   attr_str <- ""
   if (!is.null(x$alias)) {
     idx <- as.integer(x$alias)
@@ -51,10 +51,10 @@ repr.stablehlo_FuncInput <- function(x, ...) {
 #'   The inputs of the function.
 #' @return (`FuncInputs`)
 #' @export
-FuncInputs <- new_list_of("stablehlo_FuncInputs", "stablehlo_FuncInput")
+FuncInputs <- new_list_of("FuncInputs", "FuncInput")
 
 #' @export
-repr.stablehlo_FuncInputs <- function(x, ...) {
+repr.FuncInputs <- function(x, ...) {
   paste0(
     "(",
     paste0(vapply(x$items, repr, character(1)), collapse = ", "),
@@ -70,16 +70,16 @@ repr.stablehlo_FuncInputs <- function(x, ...) {
 #' @return (`FuncOutput`)
 #' @export
 FuncOutput <- function(type) {
-  checkmate::assert_class(type, "stablehlo_ValueType")
+  checkmate::assert_class(type, "ValueType")
 
   structure(
     list(type = type),
-    class = "stablehlo_FuncOutput"
+    class = "FuncOutput"
   )
 }
 
 #' @export
-repr.stablehlo_FuncOutput <- function(x, ...) {
+repr.FuncOutput <- function(x, ...) {
   repr(x$type)
 }
 
@@ -90,10 +90,10 @@ repr.stablehlo_FuncOutput <- function(x, ...) {
 #'   The outputs of the function.
 #' @return (`FuncOutputs`)
 #' @export
-FuncOutputs <- new_list_of("stablehlo_FuncOutputs", "stablehlo_FuncOutput")
+FuncOutputs <- new_list_of("FuncOutputs", "FuncOutput")
 
 #' @export
-repr.stablehlo_FuncOutputs <- function(x, ...) {
+repr.FuncOutputs <- function(x, ...) {
   if (length(x$items) <= 1L) {
     paste0(
       "-> ",
@@ -118,17 +118,17 @@ FuncId <- function(id = "main") {
 
   structure(
     list(id = id),
-    class = "stablehlo_FuncId"
+    class = "FuncId"
   )
 }
 
 #' @export
-repr.stablehlo_FuncId <- function(x, ...) {
+repr.FuncId <- function(x, ...) {
   paste0("@", x$id)
 }
 
 #' @export
-`==.stablehlo_FuncId` <- function(e1, e2) {
+`==.FuncId` <- function(e1, e2) {
   identical(e1$id, e2$id)
 }
 
@@ -139,10 +139,10 @@ repr.stablehlo_FuncId <- function(x, ...) {
 #'   The operations in the function body.
 #' @return (`FuncBody`)
 #' @export
-FuncBody <- new_list_of("stablehlo_FuncBody", "stablehlo_Op")
+FuncBody <- new_list_of("FuncBody", "Op")
 
 #' @export
-repr.stablehlo_FuncBody <- function(x, ...) {
+repr.FuncBody <- function(x, ...) {
   paste0(vapply(x$items, repr, character(1)), collapse = "\n")
 }
 
@@ -230,10 +230,10 @@ Func <- function(
   if (is.character(id)) {
     id <- FuncId(id)
   }
-  checkmate::assert_class(id, "stablehlo_FuncId")
-  checkmate::assert_class(inputs, "stablehlo_FuncInputs")
-  checkmate::assert_class(outputs, "stablehlo_FuncOutputs")
-  checkmate::assert_class(body, "stablehlo_FuncBody")
+  checkmate::assert_class(id, "FuncId")
+  checkmate::assert_class(inputs, "FuncInputs")
+  checkmate::assert_class(outputs, "FuncOutputs")
+  checkmate::assert_class(body, "FuncBody")
 
   # Use an environment for reference semantics
   env <- new.env(parent = emptyenv())
@@ -244,13 +244,13 @@ Func <- function(
 
   structure(
     list(.env = env),
-    class = "stablehlo_Func"
+    class = "Func"
   )
 }
 
 # Accessor functions using active binding-like behavior via $ method
 #' @export
-`$.stablehlo_Func` <- function(x, name) {
+`$.Func` <- function(x, name) {
   if (name == ".env") {
     return(x[[".env"]])
   }
@@ -258,7 +258,7 @@ Func <- function(
 }
 
 #' @export
-`$<-.stablehlo_Func` <- function(x, name, value) {
+`$<-.Func` <- function(x, name, value) {
   if (name == ".env") {
     x[[".env"]] <- value
   } else {
@@ -268,7 +268,7 @@ Func <- function(
 }
 
 #' @export
-repr.stablehlo_Func <- function(x, ...) {
+repr.Func <- function(x, ...) {
   # Func ::= 'func' '.' 'func' FuncId FuncInputs FuncOutputs '{' FuncBody '}'
   paste0(
     "func.func ",
@@ -284,7 +284,7 @@ repr.stablehlo_Func <- function(x, ...) {
 }
 
 #' @export
-print.stablehlo_Func <- function(x, ...) {
+print.Func <- function(x, ...) {
   cat(repr(x))
 }
 
@@ -298,17 +298,17 @@ print.stablehlo_Func <- function(x, ...) {
 #' @return (`OpInputFunc`)
 #' @export
 OpInputFunc <- function(inputs, body) {
-  checkmate::assert_class(inputs, "stablehlo_FuncInputs")
-  checkmate::assert_class(body, "stablehlo_FuncBody")
+  checkmate::assert_class(inputs, "FuncInputs")
+  checkmate::assert_class(body, "FuncBody")
 
   structure(
     list(inputs = inputs, body = body),
-    class = "stablehlo_OpInputFunc"
+    class = "OpInputFunc"
   )
 }
 
 #' @export
-repr.stablehlo_OpInputFunc <- function(x, ...) {
+repr.OpInputFunc <- function(x, ...) {
   # Don't print parameters if there are none:
   if (length(x$inputs$items) == 0) {
     return(
@@ -343,7 +343,7 @@ repr.stablehlo_OpInputFunc <- function(x, ...) {
 }
 
 #' @export
-`==.stablehlo_OpInputFunc` <- function(e1, e2) {
+`==.OpInputFunc` <- function(e1, e2) {
   e1$inputs == e2$inputs && e1$body == e2$body
 }
 
@@ -354,10 +354,10 @@ repr.stablehlo_OpInputFunc <- function(x, ...) {
 #'   The functions that can be used as inputs to operations.
 #' @return (`OpInputFuncs`)
 #' @export
-OpInputFuncs <- new_list_of("stablehlo_OpInputFuncs", "stablehlo_OpInputFunc")
+OpInputFuncs <- new_list_of("OpInputFuncs", "OpInputFunc")
 
 #' @export
-repr.stablehlo_OpInputFuncs <- function(x, ...) {
+repr.OpInputFuncs <- function(x, ...) {
   if (length(x$items) == 0) {
     return("")
   }

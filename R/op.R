@@ -14,7 +14,7 @@ NULL
 #' @return `OpMnemonic`
 #' @export
 OpMnemonic <- new_enum(
-  "stablehlo_OpMnemonic",
+  "OpMnemonic",
   c(
     "return",
     "abs",
@@ -126,17 +126,17 @@ OpMnemonic <- new_enum(
 )
 
 #' @export
-`==.stablehlo_OpMnemonic` <- function(e1, e2) {
+`==.OpMnemonic` <- function(e1, e2) {
   e1$value == e2$value
 }
 
 #' @export
-`!=.stablehlo_OpMnemonic` <- function(e1, e2) {
+`!=.OpMnemonic` <- function(e1, e2) {
   !(e1 == e2)
 }
 
 #' @export
-repr.stablehlo_OpMnemonic <- function(x, ...) {
+repr.OpMnemonic <- function(x, ...) {
   x$value
 }
 
@@ -148,21 +148,21 @@ repr.stablehlo_OpMnemonic <- function(x, ...) {
 #' @return (`OpName`)
 #' @export
 OpName <- function(mnemonic) {
-  checkmate::assert_class(mnemonic, "stablehlo_OpMnemonic")
+  checkmate::assert_class(mnemonic, "OpMnemonic")
 
   structure(
     list(mnemonic = mnemonic),
-    class = "stablehlo_OpName"
+    class = "OpName"
   )
 }
 
 #' @export
-`==.stablehlo_OpName` <- function(e1, e2) {
+`==.OpName` <- function(e1, e2) {
   e1$mnemonic == e2$mnemonic
 }
 
 #' @export
-repr.stablehlo_OpName <- function(x, ...) {
+repr.OpName <- function(x, ...) {
   paste0("\"stablehlo.", repr(x$mnemonic), "\"")
 }
 
@@ -180,7 +180,7 @@ OpInputAttr <- function(name) {
 
   structure(
     list(name = name),
-    class = "stablehlo_OpInputAttr"
+    class = "OpInputAttr"
   )
 }
 
@@ -201,18 +201,18 @@ ScalarAttr <- function(name, value, dtype) {
 
   structure(
     list(name = name, value = value, dtype = dtype),
-    class = c("stablehlo_ScalarAttr", "stablehlo_OpInputAttr")
+    class = c("ScalarAttr", "OpInputAttr")
   )
 }
 
 #' @export
-repr.stablehlo_ScalarAttr <- function(x, simplify_dense = TRUE, ...) {
+repr.ScalarAttr <- function(x, simplify_dense = TRUE, ...) {
   type_repr <- repr(x$dtype)
-  value_repr <- if (inherits(x$dtype, "stablehlo_BooleanType")) {
+  value_repr <- if (inherits(x$dtype, "BooleanType")) {
     sprintf("%s : %s", tolower(as.character(x$value)), type_repr)
   } else if (
-    inherits(x$dtype, "stablehlo_IntegerType") ||
-      inherits(x$dtype, "stablehlo_UnsignedType")
+    inherits(x$dtype, "IntegerType") ||
+      inherits(x$dtype, "UnsignedType")
   ) {
     sprintf("%d : %s", as.integer(x$value), type_repr)
   } else {
@@ -241,12 +241,12 @@ BoolAttr <- function(name, value) {
 
   structure(
     list(name = name, value = value),
-    class = c("stablehlo_BoolAttr", "stablehlo_OpInputAttr")
+    class = c("BoolAttr", "OpInputAttr")
   )
 }
 
 #' @export
-repr.stablehlo_BoolAttr <- function(x, simplify_dense = TRUE, ...) {
+repr.BoolAttr <- function(x, simplify_dense = TRUE, ...) {
   paste0(x$name, " = ", tolower(as.character(x$value)))
 }
 
@@ -265,12 +265,12 @@ StringAttr <- function(name, value) {
 
   structure(
     list(name = name, value = value),
-    class = c("stablehlo_StringAttr", "stablehlo_OpInputAttr")
+    class = c("StringAttr", "OpInputAttr")
   )
 }
 
 #' @export
-repr.stablehlo_StringAttr <- function(x, simplify_dense = TRUE, ...) {
+repr.StringAttr <- function(x, simplify_dense = TRUE, ...) {
   sprintf("%s = \"%s\"", x$name, x$value)
 }
 
@@ -287,17 +287,17 @@ repr.stablehlo_StringAttr <- function(x, simplify_dense = TRUE, ...) {
 #' @export
 ConstantAttr <- function(name, value, simplify_dense = TRUE) {
   checkmate::assert_string(name)
-  checkmate::assert_class(value, "stablehlo_Constant")
+  checkmate::assert_class(value, "Constant")
   checkmate::assert_flag(simplify_dense)
 
   structure(
     list(name = name, value = value, simplify_dense = simplify_dense),
-    class = c("stablehlo_ConstantAttr", "stablehlo_OpInputAttr")
+    class = c("ConstantAttr", "OpInputAttr")
   )
 }
 
 #' @export
-repr.stablehlo_ConstantAttr <- function(x, simplify_dense = TRUE, ...) {
+repr.ConstantAttr <- function(x, simplify_dense = TRUE, ...) {
   # TODO: This should be handled nicer
   use_simplify <- x$simplify_dense && simplify_dense
   paste0(
@@ -344,21 +344,21 @@ constant_attr <- function(
 #' @return (`OpInputValue`)
 #' @export
 OpInputValue <- function(id) {
-  checkmate::assert_class(id, "stablehlo_ValueId")
+  checkmate::assert_class(id, "ValueId")
 
   structure(
     list(id = id),
-    class = "stablehlo_OpInputValue"
+    class = "OpInputValue"
   )
 }
 
 #' @export
-repr.stablehlo_OpInputValue <- function(x, ...) {
+repr.OpInputValue <- function(x, ...) {
   repr(x$id)
 }
 
 #' @export
-`==.stablehlo_OpInputValue` <- function(e1, e2) {
+`==.OpInputValue` <- function(e1, e2) {
   e1$id == e2$id
 }
 
@@ -370,12 +370,12 @@ repr.stablehlo_OpInputValue <- function(x, ...) {
 #' @return (`OpInputValues`)
 #' @export
 OpInputValues <- new_list_of(
-  "stablehlo_OpInputValues",
-  "stablehlo_OpInputValue"
+  "OpInputValues",
+  "OpInputValue"
 )
 
 #' @export
-repr.stablehlo_OpInputValues <- function(x, ...) {
+repr.OpInputValues <- function(x, ...) {
   paste0(vapply(x$items, repr, character(1)), collapse = ", ")
 }
 
@@ -386,10 +386,10 @@ repr.stablehlo_OpInputValues <- function(x, ...) {
 #'   The attributes that can be used as inputs to operations.
 #' @return (`OpInputAttrs`)
 #' @export
-OpInputAttrs <- new_list_of("stablehlo_OpInputAttrs", "stablehlo_OpInputAttr")
+OpInputAttrs <- new_list_of("OpInputAttrs", "OpInputAttr")
 
 #' @export
-repr.stablehlo_OpInputAttrs <- function(x, simplify_dense = TRUE, ...) {
+repr.OpInputAttrs <- function(x, simplify_dense = TRUE, ...) {
   if (length(x$items) == 0) {
     return("")
   }
@@ -423,9 +423,9 @@ OpInputs <- function(
   attrs = OpInputAttrs(),
   custom_attrs = list()
 ) {
-  checkmate::assert_class(values, "stablehlo_OpInputValues")
-  checkmate::assert_class(funcs, "stablehlo_OpInputFuncs")
-  checkmate::assert_class(attrs, "stablehlo_OpInputAttrs")
+  checkmate::assert_class(values, "OpInputValues")
+  checkmate::assert_class(funcs, "OpInputFuncs")
+  checkmate::assert_class(attrs, "OpInputAttrs")
   checkmate::assert_list(custom_attrs)
 
   structure(
@@ -435,12 +435,12 @@ OpInputs <- function(
       attrs = attrs,
       custom_attrs = custom_attrs
     ),
-    class = "stablehlo_OpInputs"
+    class = "OpInputs"
   )
 }
 
 #' @export
-repr.stablehlo_OpInputs <- function(x, simplify_dense = TRUE, ...) {
+repr.OpInputs <- function(x, simplify_dense = TRUE, ...) {
   paste0(
     "(",
     repr(x$values),
@@ -451,7 +451,7 @@ repr.stablehlo_OpInputs <- function(x, simplify_dense = TRUE, ...) {
 }
 
 #' @export
-`==.stablehlo_OpInputs` <- function(e1, e2) {
+`==.OpInputs` <- function(e1, e2) {
   e1$values == e2$values &&
     e1$funcs == e2$funcs &&
     e1$attrs == e2$attrs
@@ -465,21 +465,21 @@ repr.stablehlo_OpInputs <- function(x, simplify_dense = TRUE, ...) {
 #' @return (`OpOutput`)
 #' @export
 OpOutput <- function(id = ValueId()) {
-  checkmate::assert_class(id, "stablehlo_ValueId")
+  checkmate::assert_class(id, "ValueId")
 
   structure(
     list(id = id),
-    class = "stablehlo_OpOutput"
+    class = "OpOutput"
   )
 }
 
 #' @export
-`==.stablehlo_OpOutput` <- function(e1, e2) {
+`==.OpOutput` <- function(e1, e2) {
   e1$id == e2$id
 }
 
 #' @export
-repr.stablehlo_OpOutput <- function(x, ...) {
+repr.OpOutput <- function(x, ...) {
   repr(x$id)
 }
 
@@ -490,10 +490,10 @@ repr.stablehlo_OpOutput <- function(x, ...) {
 #'   The outputs of an operation.
 #' @return (`OpOutputs`)
 #' @export
-OpOutputs <- new_list_of("stablehlo_OpOutputs", "stablehlo_OpOutput")
+OpOutputs <- new_list_of("OpOutputs", "OpOutput")
 
 #' @export
-repr.stablehlo_OpOutputs <- function(x, ...) {
+repr.OpOutputs <- function(x, ...) {
   if (length(x$items) == 0L) {
     return("")
   } else {
@@ -511,17 +511,17 @@ repr.stablehlo_OpOutputs <- function(x, ...) {
 #' @return (`OpSignature`)
 #' @export
 OpSignature <- function(input_types, output_types) {
-  checkmate::assert_class(input_types, "stablehlo_ValueTypes")
-  checkmate::assert_class(output_types, "stablehlo_ValueTypes")
+  checkmate::assert_class(input_types, "ValueTypes")
+  checkmate::assert_class(output_types, "ValueTypes")
 
   structure(
     list(input_types = input_types, output_types = output_types),
-    class = "stablehlo_OpSignature"
+    class = "OpSignature"
   )
 }
 
 #' @export
-repr.stablehlo_OpSignature <- function(x, ...) {
+repr.OpSignature <- function(x, ...) {
   paste0(
     "(",
     repr(x$input_types),
@@ -534,7 +534,7 @@ repr.stablehlo_OpSignature <- function(x, ...) {
 }
 
 #' @export
-`==.stablehlo_OpSignature` <- function(e1, e2) {
+`==.OpSignature` <- function(e1, e2) {
   e1$input_types == e2$input_types &&
     e1$output_types == e2$output_types
 }
@@ -553,10 +553,10 @@ repr.stablehlo_OpSignature <- function(x, ...) {
 #' @return (`Op`)
 #' @export
 Op <- function(name, inputs, outputs, signature) {
-  checkmate::assert_class(name, "stablehlo_OpName")
-  checkmate::assert_class(inputs, "stablehlo_OpInputs")
-  checkmate::assert_class(outputs, "stablehlo_OpOutputs")
-  checkmate::assert_class(signature, "stablehlo_OpSignature")
+  checkmate::assert_class(name, "OpName")
+  checkmate::assert_class(inputs, "OpInputs")
+  checkmate::assert_class(outputs, "OpOutputs")
+  checkmate::assert_class(signature, "OpSignature")
 
   structure(
     list(
@@ -565,7 +565,7 @@ Op <- function(name, inputs, outputs, signature) {
       outputs = outputs,
       signature = signature
     ),
-    class = "stablehlo_Op"
+    class = "Op"
   )
 }
 
@@ -583,13 +583,13 @@ new_Op <- function(classname, mnemonic) {
       outputs = outputs,
       signature = signature
     )
-    class(base_op) <- c(classname, "stablehlo_Op")
+    class(base_op) <- c(classname, "Op")
     base_op
   }
 }
 
 #' @export
-repr.stablehlo_Op <- function(x, toplevel = TRUE, simplify_dense = TRUE, ...) {
+repr.Op <- function(x, toplevel = TRUE, simplify_dense = TRUE, ...) {
   paste0(
     repr(x$outputs),
     " = ",
@@ -602,7 +602,7 @@ repr.stablehlo_Op <- function(x, toplevel = TRUE, simplify_dense = TRUE, ...) {
 }
 
 #' @export
-`==.stablehlo_Op` <- function(e1, e2) {
+`==.Op` <- function(e1, e2) {
   e1$name == e2$name &&
     e1$inputs == e2$inputs &&
     e1$outputs == e2$outputs &&
@@ -610,6 +610,6 @@ repr.stablehlo_Op <- function(x, toplevel = TRUE, simplify_dense = TRUE, ...) {
 }
 
 #' @export
-`!=.stablehlo_Op` <- function(e1, e2) {
+`!=.Op` <- function(e1, e2) {
   !(e1 == e2)
 }

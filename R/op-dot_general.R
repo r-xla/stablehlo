@@ -64,7 +64,7 @@ infer_types_dot_general <- function(
 DotDimensionNumbers <- function(contracting_dims, batching_dims = NULL) {
   structure(
     list(contracting_dims = contracting_dims, batching_dims = batching_dims),
-    class = "stablehlo_DotDimensionNumbers"
+    class = "DotDimensionNumbers"
   )
 }
 
@@ -94,7 +94,7 @@ hlo_dot_general <- function(
 }
 
 #' @export
-repr.stablehlo_DotDimensionNumbers <- function(x, ...) {
+repr.DotDimensionNumbers <- function(x, ...) {
   str <- sprintf(
     "contracting_dims = [%s] x [%s]",
     paste0(x$contracting_dims[[1L]], collapse = ", "),

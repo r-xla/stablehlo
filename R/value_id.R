@@ -20,22 +20,22 @@ ValueId <- function(id = NULL) {
 
   structure(
     list(id = id),
-    class = "stablehlo_ValueId"
+    class = "ValueId"
   )
 }
 
 #' @export
-`==.stablehlo_ValueId` <- function(e1, e2) {
+`==.ValueId` <- function(e1, e2) {
   identical(e1$id, e2$id)
 }
 
 #' @export
-`!=.stablehlo_ValueId` <- function(e1, e2) {
+`!=.ValueId` <- function(e1, e2) {
   !(e1 == e2)
 }
 
 #' @export
-repr.stablehlo_ValueId <- function(x, ...) {
+repr.ValueId <- function(x, ...) {
   name <- if (is.environment(x$id)) {
     repr_env2name(x$id)
   } else {

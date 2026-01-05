@@ -16,7 +16,7 @@ OpReturn <- function(inputs, outputs = OpOutputs(), signature = NULL) {
     outputs = outputs,
     signature = signature
   )
-  class(base_op) <- c("OpReturn", "stablehlo_Op")
+  class(base_op) <- c("OpReturn", "Op")
   base_op
 }
 

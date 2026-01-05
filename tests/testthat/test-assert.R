@@ -111,18 +111,18 @@ test_that("assert_one_of", {
   x <- make_vt("i32", integer())
 
   expect_error(
-    assert_one_of(x, "stablehlo_ValueType"),
+    assert_one_of(x, "ValueType"),
     NA
   )
 
   # This test is currently skipped because assert_one_of is a stub
   # expect_error(
-  #   assert_one_of(x, "stablehlo_TensorType", "stablehlo_TokenType"),
+  #   assert_one_of(x, "TensorType", "TokenType"),
   #   "must be a"
   # )
 
   expect_error(
-    assert_one_of(x, "stablehlo_TensorType", "stablehlo_ValueType"),
+    assert_one_of(x, "TensorType", "ValueType"),
     NA
   )
 })

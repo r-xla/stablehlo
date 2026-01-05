@@ -19,9 +19,9 @@ CustomOpBackendConfig <- function(items = list()) {
   for (i in seq_along(items)) {
     item <- items[[i]]
     if (
-      !inherits(item, "stablehlo_BoolAttr") &&
-        !inherits(item, "stablehlo_StringAttr") &&
-        !inherits(item, "stablehlo_ScalarAttr")
+      !inherits(item, "BoolAttr") &&
+        !inherits(item, "StringAttr") &&
+        !inherits(item, "ScalarAttr")
     ) {
       cli_abort(
         "Expected item to be a BoolAttr, StringAttr, or ScalarAttr. Got {class(item)[1]}."
@@ -39,12 +39,12 @@ CustomOpBackendConfig <- function(items = list()) {
 
   structure(
     list(items = items),
-    class = c("stablehlo_CustomOpBackendConfig", "list_of")
+    class = c("CustomOpBackendConfig", "list_of")
   )
 }
 
 #' @export
-repr.stablehlo_CustomOpBackendConfig <- function(
+repr.CustomOpBackendConfig <- function(
   x,
   simplify_dense = TRUE,
   ...
@@ -95,7 +95,7 @@ infer_types_custom_call <- function(
     return(ValueTypes(list()))
   }
 
-  if (!inherits(output_types, "stablehlo_ValueTypes")) {
+  if (!inherits(output_types, "ValueTypes")) {
     output_types <- ValueTypes(output_types)
   }
 

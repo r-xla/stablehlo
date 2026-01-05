@@ -11,18 +11,18 @@ NULL
 #' @param func The function the variable belongs to.
 #' @export
 FuncValue <- function(value_id, value_type, func) {
-  checkmate::assert_class(value_id, "stablehlo_ValueId")
-  checkmate::assert_class(value_type, "stablehlo_ValueType")
-  checkmate::assert_class(func, "stablehlo_Func")
+  checkmate::assert_class(value_id, "ValueId")
+  checkmate::assert_class(value_type, "ValueType")
+  checkmate::assert_class(func, "Func")
 
   structure(
     list(value_id = value_id, value_type = value_type, func = func),
-    class = "stablehlo_FuncValue"
+    class = "FuncValue"
   )
 }
 
 #' @export
-print.stablehlo_FuncValue <- function(x, ...) {
+print.FuncValue <- function(x, ...) {
   local_vars()
   str <- repr(x$func)
   cat(sprintf("Variable %s in:\n", cli::col_blue(repr(x$value_id))))
@@ -47,12 +47,12 @@ merge_funcs <- function(funcs) {
 }
 
 #' @export
-#' @method shape stablehlo_FuncValue
-shape.stablehlo_FuncValue <- function(x, ...) {
+#' @method shape FuncValue
+shape.FuncValue <- function(x, ...) {
   shape(x$value_type)
 }
 
 #' @export
-c.stablehlo_FuncValue <- function(...) {
+c.FuncValue <- function(...) {
   list(...)
 }

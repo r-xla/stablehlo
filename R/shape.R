@@ -16,36 +16,36 @@ Shape <- function(dims = integer()) {
 
   structure(
     list(dims = dims),
-    class = "stablehlo_Shape"
+    class = "Shape"
   )
 }
 
 #' @export
-`==.stablehlo_Shape` <- function(e1, e2) {
+`==.Shape` <- function(e1, e2) {
   identical(e1$dims, e2$dims)
 }
 
 #' @export
-repr.stablehlo_Shape <- function(x, ...) {
+repr.Shape <- function(x, ...) {
   dims <- x$dims
   dims[is.na(dims)] <- "?"
   paste0(dims, collapse = "x")
 }
 
 #' @export
-#' @method shape stablehlo_Shape
-shape.stablehlo_Shape <- function(x, ...) {
+#' @method shape Shape
+shape.Shape <- function(x, ...) {
   x$dims
 }
 
 #' @export
-#' @method dtype stablehlo_TensorConstant
-dtype.stablehlo_TensorConstant <- function(x, ...) {
+#' @method dtype TensorConstant
+dtype.TensorConstant <- function(x, ...) {
   x$type$dtype
 }
 
 #' @export
-#' @method dtype stablehlo_FuncValue
-dtype.stablehlo_FuncValue <- function(x, ...) {
+#' @method dtype FuncValue
+dtype.FuncValue <- function(x, ...) {
   dtype(x$value_type)
 }

@@ -7,7 +7,7 @@ OpCase <- new_Op("OpCase", "case")
 #' @export
 infer_types_case <- function(index, ...) {
   branches <- list(...)
-  assert_vt_has_ttype(index, "stablehlo_IntegerType", shape = integer())
+  assert_vt_has_ttype(index, "IntegerType", shape = integer())
   if (index$type$dtype$value != 32L) {
     cli_abort("index must be a 32-bit integer")
   }
@@ -19,7 +19,7 @@ infer_types_case <- function(index, ...) {
   # (C2) input_types(branches...) = [] and
   # (C3) same(output_types(branches...))
   get_branch_out_types <- function(branch) {
-    if (!inherits(branch, "stablehlo_Func")) {
+    if (!inherits(branch, "Func")) {
       cli_abort("branches must be a list of Func objects")
     }
     if (length(branch$inputs$items) != 0L) {

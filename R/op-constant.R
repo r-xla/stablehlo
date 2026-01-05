@@ -1,5 +1,5 @@
 OpConstant <- function(value, output = NULL) {
-  checkmate::assert_class(value, "stablehlo_Constant")
+  checkmate::assert_class(value, "Constant")
 
   base_op <- Op(
     name = OpName(OpMnemonic("constant")),
@@ -21,7 +21,7 @@ OpConstant <- function(value, output = NULL) {
       output_types = ValueTypes(list(ValueType(value$value$type)))
     )
   )
-  class(base_op) <- c("OpConstant", "stablehlo_Op")
+  class(base_op) <- c("OpConstant", "Op")
   base_op
 }
 
@@ -100,7 +100,7 @@ hlo_scalar.PJRTBuffer <- function(value, ..., func = NULL) {
 
 # Handle TensorDataType objects passed as dtype argument
 #' @export
-hlo_scalar.stablehlo_BooleanType <- function(value, ..., func = NULL) {
+hlo_scalar.BooleanType <- function(value, ..., func = NULL) {
   func <- func %??% .current_func()
   # value is actually a BooleanType here, swap the arguments
   hlo_scalar.logical(value = ..1, dtype = "pred", func = func)

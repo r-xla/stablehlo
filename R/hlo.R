@@ -15,12 +15,12 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     simplify = TRUE
   ) {
     lapply(values, function(x) {
-      if (!inherits(x, "stablehlo_FuncValue")) {
+      if (!inherits(x, "FuncValue")) {
         cli_abort("All arguments must be FuncValues")
       }
     })
     lapply(funcs, function(x) {
-      if (!inherits(x, "stablehlo_Func")) {
+      if (!inherits(x, "Func")) {
         cli_abort("All functions must be Func objects")
       }
     })
@@ -28,7 +28,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     # Process attrs - expect a list of OpInputAttr subclasses
     attrs <- attrs %??% list()
     lapply(attrs, function(x) {
-      if (!inherits(x, "stablehlo_OpInputAttr")) {
+      if (!inherits(x, "OpInputAttr")) {
         cli_abort(
           "All attributes must be OpInputAttr subclasses (e.g., ConstantAttr, StringAttr, BoolAttr, ScalarAttr)"
         )

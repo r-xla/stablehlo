@@ -9,6 +9,11 @@ NULL
 #' @return Constructor function for the list_of subclass
 #' @keywords internal
 new_list_of <- function(class_name, item_class, validator = NULL) {
+  # Force evaluation to avoid R CMD check NOTE about undefined global
+  force(class_name)
+  force(item_class)
+  force(validator)
+
   # Return a constructor function
   function(items = list()) {
     checkmate::assert_list(items)
@@ -26,6 +31,7 @@ new_list_of <- function(class_name, item_class, validator = NULL) {
 
     # Run custom validator if provided
     if (!is.null(validator)) {
+      validator <- get("validator") # r-cmd-check NOTE: undefined global
       err <- validator(items)
       if (!is.null(err)) {
         cli_abort(err)

@@ -12,33 +12,33 @@ NULL
 #' @return `TensorConstant`
 #' @export
 TensorConstant <- function(data, type) {
-  checkmate::assert_class(type, "stablehlo_TensorType")
+  checkmate::assert_class(type, "TensorType")
 
   structure(
     list(data = data, type = type),
-    class = "stablehlo_TensorConstant"
+    class = "TensorConstant"
   )
 }
 
 #' @export
-repr.stablehlo_TensorConstant <- function(x, simplify_dense = TRUE, ...) {
+repr.TensorConstant <- function(x, simplify_dense = TRUE, ...) {
   data <- x$data
   type <- x$type
 
   value_reprs <- if (inherits(data, "PJRTBuffer")) {
     pjrt::format_buffer(data)
   } else {
-    if (inherits(type$dtype, "stablehlo_FloatType")) {
+    if (inherits(type$dtype, "FloatType")) {
       format_double(
         data,
         precision = type$dtype$value
       )
     } else if (
-      inherits(type$dtype, "stablehlo_IntegerType") ||
-        inherits(type$dtype, "stablehlo_UnsignedType")
+      inherits(type$dtype, "IntegerType") ||
+        inherits(type$dtype, "UnsignedType")
     ) {
       as.character(data)
-    } else if (inherits(type$dtype, "stablehlo_BooleanType")) {
+    } else if (inherits(type$dtype, "BooleanType")) {
       tolower(as.logical(data))
     }
   }
@@ -125,16 +125,16 @@ repr.stablehlo_TensorConstant <- function(x, simplify_dense = TRUE, ...) {
 #' @return `Constant`
 #' @export
 Constant <- function(value) {
-  checkmate::assert_class(value, "stablehlo_TensorConstant")
+  checkmate::assert_class(value, "TensorConstant")
 
   structure(
     list(value = value),
-    class = "stablehlo_Constant"
+    class = "Constant"
   )
 }
 
 #' @export
-repr.stablehlo_Constant <- function(x, simplify_dense = TRUE, ...) {
+repr.Constant <- function(x, simplify_dense = TRUE, ...) {
   repr(x$value, simplify_dense = simplify_dense)
 }
 
@@ -239,7 +239,7 @@ r_to_constant.PJRTBuffer <- function(value, dtype = NULL, shape, ...) {
 }
 
 #' @export
-#' @method shape stablehlo_TensorConstant
-shape.stablehlo_TensorConstant <- function(x, ...) {
+#' @method shape TensorConstant
+shape.TensorConstant <- function(x, ...) {
   x$type$shape$dims
 }

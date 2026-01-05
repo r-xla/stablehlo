@@ -9,11 +9,11 @@ NULL
 #' @return `BooleanType`
 #' @export
 BooleanType <- function() {
-  structure(list(), class = "stablehlo_BooleanType")
+  structure(list(), class = "BooleanType")
 }
 
 #' @export
-repr.stablehlo_BooleanType <- function(x, ...) {
+repr.BooleanType <- function(x, ...) {
   "i1"
 }
 
@@ -32,12 +32,12 @@ IntegerType <- function(value) {
 
   structure(
     list(value = value),
-    class = "stablehlo_IntegerType"
+    class = "IntegerType"
   )
 }
 
 #' @export
-repr.stablehlo_IntegerType <- function(x, ...) {
+repr.IntegerType <- function(x, ...) {
   paste0("i", x$value)
 }
 
@@ -56,12 +56,12 @@ UnsignedType <- function(value) {
 
   structure(
     list(value = value),
-    class = "stablehlo_UnsignedType"
+    class = "UnsignedType"
   )
 }
 
 #' @export
-repr.stablehlo_UnsignedType <- function(x, ...) {
+repr.UnsignedType <- function(x, ...) {
   paste0("ui", x$value)
 }
 
@@ -80,12 +80,12 @@ FloatType <- function(value) {
 
   structure(
     list(value = value),
-    class = "stablehlo_FloatType"
+    class = "FloatType"
   )
 }
 
 #' @export
-repr.stablehlo_FloatType <- function(x, ...) {
+repr.FloatType <- function(x, ...) {
   paste0("f", x$value)
 }
 
@@ -95,10 +95,10 @@ repr.stablehlo_FloatType <- function(x, ...) {
 #' Not a class in S3, just documentation that dtype can be BooleanType, IntegerType, UnsignedType, or FloatType.
 #' @export
 TensorDataType <- c(
-  "stablehlo_BooleanType",
-  "stablehlo_IntegerType",
-  "stablehlo_UnsignedType",
-  "stablehlo_FloatType"
+  "BooleanType",
+  "IntegerType",
+  "UnsignedType",
+  "FloatType"
 )
 
 #' @title Is TensorDataType
@@ -109,10 +109,10 @@ TensorDataType <- c(
 #' @return `logical(1)`
 #' @export
 is_dtype <- function(x) {
-  inherits(x, "stablehlo_IntegerType") ||
-    inherits(x, "stablehlo_UnsignedType") ||
-    inherits(x, "stablehlo_FloatType") ||
-    inherits(x, "stablehlo_BooleanType")
+  inherits(x, "IntegerType") ||
+    inherits(x, "UnsignedType") ||
+    inherits(x, "FloatType") ||
+    inherits(x, "BooleanType")
 }
 
 # Helper to check if something is a valid TensorDataType
@@ -125,42 +125,42 @@ assert_tensor_dtype <- function(x, arg = rlang::caller_arg(x)) {
 }
 
 #' @export
-`==.stablehlo_BooleanType` <- function(e1, e2) {
-  inherits(e2, "stablehlo_BooleanType")
+`==.BooleanType` <- function(e1, e2) {
+  inherits(e2, "BooleanType")
 }
 
 #' @export
-`!=.stablehlo_BooleanType` <- function(e1, e2) {
+`!=.BooleanType` <- function(e1, e2) {
   !(e1 == e2)
 }
 
 #' @export
-`==.stablehlo_IntegerType` <- function(e1, e2) {
-  inherits(e2, "stablehlo_IntegerType") && e1$value == e2$value
+`==.IntegerType` <- function(e1, e2) {
+  inherits(e2, "IntegerType") && e1$value == e2$value
 }
 
 #' @export
-`!=.stablehlo_IntegerType` <- function(e1, e2) {
+`!=.IntegerType` <- function(e1, e2) {
   !(e1 == e2)
 }
 
 #' @export
-`==.stablehlo_UnsignedType` <- function(e1, e2) {
-  inherits(e2, "stablehlo_UnsignedType") && e1$value == e2$value
+`==.UnsignedType` <- function(e1, e2) {
+  inherits(e2, "UnsignedType") && e1$value == e2$value
 }
 
 #' @export
-`!=.stablehlo_UnsignedType` <- function(e1, e2) {
+`!=.UnsignedType` <- function(e1, e2) {
   !(e1 == e2)
 }
 
 #' @export
-`==.stablehlo_FloatType` <- function(e1, e2) {
-  inherits(e2, "stablehlo_FloatType") && e1$value == e2$value
+`==.FloatType` <- function(e1, e2) {
+  inherits(e2, "FloatType") && e1$value == e2$value
 }
 
 #' @export
-`!=.stablehlo_FloatType` <- function(e1, e2) {
+`!=.FloatType` <- function(e1, e2) {
   !(e1 == e2)
 }
 
@@ -203,22 +203,22 @@ as_dtype.character <- function(x) {
 }
 
 #' @export
-as.character.stablehlo_BooleanType <- function(x, ...) {
+as.character.BooleanType <- function(x, ...) {
   "i1"
 }
 
 #' @export
-as.character.stablehlo_IntegerType <- function(x, ...) {
+as.character.IntegerType <- function(x, ...) {
   repr(x)
 }
 
 #' @export
-as.character.stablehlo_UnsignedType <- function(x, ...) {
+as.character.UnsignedType <- function(x, ...) {
   repr(x)
 }
 
 #' @export
-as.character.stablehlo_FloatType <- function(x, ...) {
+as.character.FloatType <- function(x, ...) {
   repr(x)
 }
 
@@ -231,11 +231,11 @@ as.character.stablehlo_FloatType <- function(x, ...) {
 #' @export
 TensorType <- function(dtype, shape) {
   assert_tensor_dtype(dtype)
-  checkmate::assert_class(shape, "stablehlo_Shape")
+  checkmate::assert_class(shape, "Shape")
 
   structure(
     list(dtype = dtype, shape = shape),
-    class = "stablehlo_TensorType"
+    class = "TensorType"
   )
 }
 
@@ -246,7 +246,7 @@ dtypes_equal <- function(d1, d2) {
   if (c1 != c2) {
     return(FALSE)
   }
-  if (c1 == "stablehlo_BooleanType") {
+  if (c1 == "BooleanType") {
     return(TRUE)
   }
   # IntegerType, UnsignedType, FloatType all have $value
@@ -254,19 +254,19 @@ dtypes_equal <- function(d1, d2) {
 }
 
 #' @export
-`==.stablehlo_TensorType` <- function(e1, e2) {
-  inherits(e2, "stablehlo_TensorType") &&
+`==.TensorType` <- function(e1, e2) {
+  inherits(e2, "TensorType") &&
     dtypes_equal(e1$dtype, e2$dtype) &&
     e1$shape == e2$shape
 }
 
 #' @export
-`!=.stablehlo_TensorType` <- function(e1, e2) {
+`!=.TensorType` <- function(e1, e2) {
   !(e1 == e2)
 }
 
 #' @export
-repr.stablehlo_TensorType <- function(x, ...) {
+repr.TensorType <- function(x, ...) {
   paste0(
     "tensor<",
     repr(x$shape),
@@ -277,24 +277,24 @@ repr.stablehlo_TensorType <- function(x, ...) {
 }
 
 #' @export
-#' @method shape stablehlo_TensorType
-shape.stablehlo_TensorType <- function(x, ...) {
+#' @method shape TensorType
+shape.TensorType <- function(x, ...) {
   x$shape$dims
 }
 
 #' @export
-#' @method dtype stablehlo_TensorType
-dtype.stablehlo_TensorType <- function(x, ...) {
+#' @method dtype TensorType
+dtype.TensorType <- function(x, ...) {
   x$dtype
 }
 
 # TokenType - internal, not exported
 TokenType <- function() {
-  structure(list(), class = "stablehlo_TokenType")
+  structure(list(), class = "TokenType")
 }
 
 #' @export
-repr.stablehlo_TokenType <- function(x, ...) {
+repr.TokenType <- function(x, ...) {
   "!stablehlo.token"
 }
 
@@ -311,24 +311,24 @@ ValueType <- function(type, shape = NULL) {
 
   # Validate type is TensorType or TokenType
   if (
-    !inherits(type, "stablehlo_TensorType") &&
-      !inherits(type, "stablehlo_TokenType")
+    !inherits(type, "TensorType") &&
+      !inherits(type, "TokenType")
   ) {
     cli_abort("type must be a TensorType or TokenType")
   }
 
   structure(
     list(type = type),
-    class = "stablehlo_ValueType"
+    class = "ValueType"
   )
 }
 
 #' @export
-#' @method dtype stablehlo_ValueType
-dtype.stablehlo_ValueType <- function(x, ...) {
-  if (inherits(x$type, "stablehlo_TensorType")) {
+#' @method dtype ValueType
+dtype.ValueType <- function(x, ...) {
+  if (inherits(x$type, "TensorType")) {
     x$type$dtype
-  } else if (inherits(x$type, "stablehlo_TokenType")) {
+  } else if (inherits(x$type, "TokenType")) {
     stop("ValueType with TokenType has no dtype")
   } else {
     stop("Unsupported ValueType for dtype")
@@ -336,8 +336,8 @@ dtype.stablehlo_ValueType <- function(x, ...) {
 }
 
 #' @export
-#' @method shape stablehlo_ValueType
-shape.stablehlo_ValueType <- function(x, ...) {
+#' @method shape ValueType
+shape.ValueType <- function(x, ...) {
   shape(x$type)
 }
 
@@ -349,20 +349,20 @@ make_vt <- function(type, shape) {
 }
 
 #' @export
-`==.stablehlo_ValueType` <- function(e1, e2) {
-  if (!inherits(e2, "stablehlo_ValueType")) {
+`==.ValueType` <- function(e1, e2) {
+  if (!inherits(e2, "ValueType")) {
     return(FALSE)
   }
   e1$type == e2$type
 }
 
 #' @export
-`!=.stablehlo_ValueType` <- function(e1, e2) {
+`!=.ValueType` <- function(e1, e2) {
   !(e1 == e2)
 }
 
 #' @export
-repr.stablehlo_ValueType <- function(x, ...) {
+repr.ValueType <- function(x, ...) {
   repr(x$type)
 }
 
@@ -373,10 +373,10 @@ repr.stablehlo_ValueType <- function(x, ...) {
 #'   The types of the values.
 #' @return `ValueTypes`
 #' @export
-ValueTypes <- new_list_of("stablehlo_ValueTypes", "stablehlo_ValueType")
+ValueTypes <- new_list_of("ValueTypes", "ValueType")
 
 #' @export
-repr.stablehlo_ValueTypes <- function(x, ...) {
+repr.ValueTypes <- function(x, ...) {
   paste0(
     vapply(x$items, repr, character(1)),
     collapse = ", "

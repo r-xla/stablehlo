@@ -18,9 +18,9 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
   # iota supports integer, floating-point, or complex types (we don't support complex)
   assert_one_of(
     out_dtype,
-    "stablehlo_IntegerType",
-    "stablehlo_UnsignedType",
-    "stablehlo_FloatType"
+    "IntegerType",
+    "UnsignedType",
+    "FloatType"
   )
 
   output_type <- ValueType(
@@ -101,9 +101,9 @@ infer_types_iota <- function(iota_dimension, dtype, shape) {
   out_dtype <- as_dtype(dtype)
   assert_one_of(
     out_dtype,
-    "stablehlo_IntegerType",
-    "stablehlo_UnsignedType",
-    "stablehlo_FloatType"
+    "IntegerType",
+    "UnsignedType",
+    "FloatType"
   )
 
   ValueTypes(list(
