@@ -9,31 +9,15 @@ NULL
 #' @return Constructor function for the list_of subclass
 #' @keywords internal
 new_list_of <- function(class_name, item_class, validator = NULL) {
-  # Force evaluation to avoid R CMD check NOTE about undefined global
-  force(class_name)
-  force(item_class)
-  force(validator)
-
   # Return a constructor function
   function(items = list()) {
-    checkmate::assert_list(items)
-
-    # Type checking for items
-    for (i in seq_along(items)) {
-      if (!inherits(items[[i]], item_class)) {
-        cli_abort(sprintf(
-          "Expected item to be of type %s. Got %s.",
-          item_class,
-          class(items[[i]])[1L]
-        ))
-      }
-    }
+    checkmate::assert_list(items, item_class)
 
     # Run custom validator if provided
     if (!is.null(validator)) {
       validator <- get("validator") # r-cmd-check NOTE: undefined global
       err <- validator(items)
-      if (!is.null(err)) {
+      if (!checkmate::test_null(err)) {
         cli_abort(err)
       }
     }

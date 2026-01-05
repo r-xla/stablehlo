@@ -19,9 +19,9 @@ CustomOpBackendConfig <- function(items = list()) {
   for (i in seq_along(items)) {
     item <- items[[i]]
     if (
-      !inherits(item, "BoolAttr") &&
-        !inherits(item, "StringAttr") &&
-        !inherits(item, "ScalarAttr")
+      !test_class(item, "BoolAttr") &&
+        !test_class(item, "StringAttr") &&
+        !test_class(item, "ScalarAttr")
     ) {
       cli_abort(
         "Expected item to be a BoolAttr, StringAttr, or ScalarAttr. Got {class(item)[1]}."
@@ -95,7 +95,7 @@ infer_types_custom_call <- function(
     return(ValueTypes(list()))
   }
 
-  if (!inherits(output_types, "ValueTypes")) {
+  if (!test_class(output_types, "ValueTypes")) {
     output_types <- ValueTypes(output_types)
   }
 

@@ -19,7 +19,7 @@ infer_types_case <- function(index, ...) {
   # (C2) input_types(branches...) = [] and
   # (C3) same(output_types(branches...))
   get_branch_out_types <- function(branch) {
-    if (!inherits(branch, "Func")) {
+    if (!test_class(branch, "Func")) {
       cli_abort("branches must be a list of Func objects")
     }
     if (length(branch$inputs$items) != 0L) {

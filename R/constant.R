@@ -25,20 +25,20 @@ repr.TensorConstant <- function(x, simplify_dense = TRUE, ...) {
   data <- x$data
   type <- x$type
 
-  value_reprs <- if (inherits(data, "PJRTBuffer")) {
+  value_reprs <- if (test_class(data, "PJRTBuffer")) {
     pjrt::format_buffer(data)
   } else {
-    if (inherits(type$dtype, "FloatType")) {
+    if (test_class(type$dtype, "FloatType")) {
       format_double(
         data,
         precision = type$dtype$value
       )
     } else if (
-      inherits(type$dtype, "IntegerType") ||
-        inherits(type$dtype, "UnsignedType")
+      test_class(type$dtype, "IntegerType") ||
+        test_class(type$dtype, "UnsignedType")
     ) {
       as.character(data)
-    } else if (inherits(type$dtype, "BooleanType")) {
+    } else if (test_class(type$dtype, "BooleanType")) {
       tolower(as.logical(data))
     }
   }
@@ -102,7 +102,7 @@ repr.TensorConstant <- function(x, simplify_dense = TRUE, ...) {
     }
   }
 
-  if (!inherits(data, "PJRTBuffer")) {
+  if (!test_class(data, "PJRTBuffer")) {
     dim(value_reprs) <- dim2(data)
   }
 

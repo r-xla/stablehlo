@@ -109,10 +109,10 @@ TensorDataType <- c(
 #' @return `logical(1)`
 #' @export
 is_dtype <- function(x) {
-  inherits(x, "IntegerType") ||
-    inherits(x, "UnsignedType") ||
-    inherits(x, "FloatType") ||
-    inherits(x, "BooleanType")
+  test_class(x, "IntegerType") ||
+    test_class(x, "UnsignedType") ||
+    test_class(x, "FloatType") ||
+    test_class(x, "BooleanType")
 }
 
 # Helper to check if something is a valid TensorDataType
@@ -126,7 +126,7 @@ assert_tensor_dtype <- function(x, arg = rlang::caller_arg(x)) {
 
 #' @export
 `==.BooleanType` <- function(e1, e2) {
-  inherits(e2, "BooleanType")
+  test_class(e2, "BooleanType")
 }
 
 #' @export
@@ -136,7 +136,7 @@ assert_tensor_dtype <- function(x, arg = rlang::caller_arg(x)) {
 
 #' @export
 `==.IntegerType` <- function(e1, e2) {
-  inherits(e2, "IntegerType") && e1$value == e2$value
+  test_class(e2, "IntegerType") && e1$value == e2$value
 }
 
 #' @export
@@ -146,7 +146,7 @@ assert_tensor_dtype <- function(x, arg = rlang::caller_arg(x)) {
 
 #' @export
 `==.UnsignedType` <- function(e1, e2) {
-  inherits(e2, "UnsignedType") && e1$value == e2$value
+  test_class(e2, "UnsignedType") && e1$value == e2$value
 }
 
 #' @export
@@ -156,7 +156,7 @@ assert_tensor_dtype <- function(x, arg = rlang::caller_arg(x)) {
 
 #' @export
 `==.FloatType` <- function(e1, e2) {
-  inherits(e2, "FloatType") && e1$value == e2$value
+  test_class(e2, "FloatType") && e1$value == e2$value
 }
 
 #' @export
@@ -184,22 +184,24 @@ as_dtype.default <- function(x) {
   cli_abort("Cannot convert {.cls {class(x)[1]}} to TensorDataType")
 }
 
+dtype_map <- list(
+  "pred" = BooleanType(),
+  "i1" = BooleanType(),
+  "i8" = IntegerType(8L),
+  "i16" = IntegerType(16L),
+  "i32" = IntegerType(32L),
+  "i64" = IntegerType(64L),
+  "ui8" = UnsignedType(8L),
+  "ui16" = UnsignedType(16L),
+  "ui32" = UnsignedType(32L),
+  "ui64" = UnsignedType(64L),
+  "f32" = FloatType(32L),
+  "f64" = FloatType(64L)
+)
+
 #' @export
 as_dtype.character <- function(x) {
-  if (x %in% c("pred", "i1")) {
-    return(BooleanType())
-  }
-
-  if (grepl("^i[0-9]+$", x)) {
-    return(IntegerType(as.integer(sub("^i", "", x))))
-  }
-  if (grepl("^ui[0-9]+$", x)) {
-    return(UnsignedType(as.integer(sub("^ui", "", x))))
-  }
-  if (grepl("^f[0-9]+$", x)) {
-    return(FloatType(as.integer(sub("^f", "", x))))
-  }
-  cli_abort("Unsupported dtype: {x}")
+  dtype_map[[x]] %??% cli_abort("Unsupported dtype: {x}")
 }
 
 #' @export
@@ -255,7 +257,7 @@ dtypes_equal <- function(d1, d2) {
 
 #' @export
 `==.TensorType` <- function(e1, e2) {
-  inherits(e2, "TensorType") &&
+  test_class(e2, "TensorType") &&
     dtypes_equal(e1$dtype, e2$dtype) &&
     e1$shape == e2$shape
 }
@@ -311,8 +313,8 @@ ValueType <- function(type, shape = NULL) {
 
   # Validate type is TensorType or TokenType
   if (
-    !inherits(type, "TensorType") &&
-      !inherits(type, "TokenType")
+    !test_class(type, "TensorType") &&
+      !test_class(type, "TokenType")
   ) {
     cli_abort("type must be a TensorType or TokenType")
   }
@@ -326,9 +328,9 @@ ValueType <- function(type, shape = NULL) {
 #' @export
 #' @method dtype ValueType
 dtype.ValueType <- function(x, ...) {
-  if (inherits(x$type, "TensorType")) {
+  if (test_class(x$type, "TensorType")) {
     x$type$dtype
-  } else if (inherits(x$type, "TokenType")) {
+  } else if (test_class(x$type, "TokenType")) {
     stop("ValueType with TokenType has no dtype")
   } else {
     stop("Unsupported ValueType for dtype")
@@ -350,7 +352,7 @@ make_vt <- function(type, shape) {
 
 #' @export
 `==.ValueType` <- function(e1, e2) {
-  if (!inherits(e2, "ValueType")) {
+  if (!test_class(e2, "ValueType")) {
     return(FALSE)
   }
   e1$type == e2$type

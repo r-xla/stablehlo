@@ -38,14 +38,14 @@ assert_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
 
 assert_vt_is_tensor <- function(x, arg = rlang::caller_arg(x)) {
   force(arg)
-  if (!inherits(x, "ValueType")) {
+  if (!test_class(x, "ValueType")) {
     cli_abort(c(
       "{.arg {arg}} must be a ValueType.",
       x = "Got {.class {class(x)[1]}}."
     ))
   }
   x <- x$type
-  if (!inherits(x, "TensorType")) {
+  if (!test_class(x, "TensorType")) {
     cli_abort(c(
       "{.arg {arg}} must contain a TensorType.",
       x = "Got {.class {class(x)[1]}}."
@@ -75,14 +75,14 @@ assert_vt_has_ttype <- function(
   arg = rlang::caller_arg(x)
 ) {
   force(arg)
-  if (!inherits(x, "ValueType")) {
+  if (!test_class(x, "ValueType")) {
     cli_abort(c(
       "{.arg {arg}} must be a ValueType.",
       x = "Got {.class {class(x)[1]}}."
     ))
   }
   tensor_type <- x$type
-  if (!inherits(tensor_type, "TensorType")) {
+  if (!test_class(tensor_type, "TensorType")) {
     cli_abort(c(
       "{.arg {arg}} must be a TensorType.",
       x = "Got {.val {repr(tensor_type)}}."
@@ -109,7 +109,7 @@ assert_vt_has_ttype <- function(
         dtype_class <- class(dtype)[1]
         type_names[i] <- dtype_class
       }
-      if (inherits(tensor_type$dtype, dtype_class)) {
+      if (test_class(tensor_type$dtype, dtype_class)) {
         dtype_matched <- TRUE
         break
       }
@@ -142,11 +142,11 @@ assert_vts_have_same_dtype <- function(x, y, arg = rlang::caller_arg(x)) {
   dtype_x <- x$type$dtype
   dtype_y <- y$type$dtype
   same <- class(dtype_x)[1] == class(dtype_y)[1]
-  if (same && inherits(dtype_x, "IntegerType")) {
+  if (same && test_class(dtype_x, "IntegerType")) {
     same <- dtype_x$value == dtype_y$value
-  } else if (same && inherits(dtype_x, "UnsignedType")) {
+  } else if (same && test_class(dtype_x, "UnsignedType")) {
     same <- dtype_x$value == dtype_y$value
-  } else if (same && inherits(dtype_x, "FloatType")) {
+  } else if (same && test_class(dtype_x, "FloatType")) {
     same <- dtype_x$value == dtype_y$value
   }
   if (!same) {

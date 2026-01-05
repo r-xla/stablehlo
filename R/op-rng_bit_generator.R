@@ -19,7 +19,7 @@ infer_types_rng_bit_generator <- function(
     cli_abort("initial_state must be a 1-D tensor")
   }
   if (
-    !inherits(initial_state$type$dtype, "UnsignedType") ||
+    !test_class(initial_state$type$dtype, "UnsignedType") ||
       initial_state$type$dtype$value != 64L
   ) {
     cli_abort("initial_state must have dtype ui64")

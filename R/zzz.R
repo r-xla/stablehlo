@@ -6,7 +6,3 @@
 #' @importFrom utils hashtab
 #' @importFrom cli cli_abort
 NULL
-
-.onLoad <- function(...) {
-  # No longer need S7 registration
-}

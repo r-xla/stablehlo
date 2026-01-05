@@ -1,5 +1,5 @@
 baseline_type <- function(x) {
-  if (inherits(x, "TensorType")) {
+  if (test_class(x, "TensorType")) {
     return(x)
   }
   cli_abort("Not implemented")
@@ -8,12 +8,12 @@ baseline_type <- function(x) {
 
 # shortcut for element_type(baseline_type(x))
 baseline_element_type <- function(x) {
-  if (!inherits(x, "ValueType")) {
+  if (!test_class(x, "ValueType")) {
     cli_abort("x must be a ValueType, but got {.class {class(x)[1]}}.")
   }
-  if (inherits(x$type, "TensorType")) {
+  if (test_class(x$type, "TensorType")) {
     return(x$type$dtype)
-  } else if (inherits(x$type, "TokenType")) {
+  } else if (test_class(x$type, "TokenType")) {
     cli_abort("Invalid input")
   } else {
     cli_abort("Not implemented yet")
