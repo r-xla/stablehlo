@@ -42,6 +42,7 @@ RoxygenNote: 7.3.3
 Collate:
     'aaa.R'
     'assert.R'
+    'conditions.R'
     'repr.R'
     'list_of.R'
     'shape.R'

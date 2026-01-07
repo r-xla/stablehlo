@@ -60,18 +60,8 @@ infer_types_generic_biv <- function(lhs, rhs) {
 #'   The inferred type.
 #' @export
 infer_types_integerish_biv <- function(lhs, rhs) {
-  assert_vt_has_ttype(
-    lhs,
-    "BooleanType",
-    "IntegerType",
-    "UnsignedType"
-  )
-  assert_vt_has_ttype(
-    rhs,
-    "BooleanType",
-    "IntegerType",
-    "UnsignedType"
-  )
+  assert_vt_has_ttype(lhs, "BooleanType", "IntegerType", "UnsignedType")
+  assert_vt_has_ttype(rhs, "BooleanType", "IntegerType", "UnsignedType")
   assert_vt_equal(lhs, rhs)
   ValueTypes(list(lhs))
 }
@@ -85,11 +75,6 @@ infer_types_integerish_biv <- function(lhs, rhs) {
 #'   The inferred type.
 #' @export
 infer_types_integerish_uni <- function(operand) {
-  assert_vt_has_ttype(
-    operand,
-    "BooleanType",
-    "IntegerType",
-    "UnsignedType"
-  )
+  assert_vt_has_ttype(operand, "BooleanType", "IntegerType", "UnsignedType")
   ValueTypes(list(operand))
 }

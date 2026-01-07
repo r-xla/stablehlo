@@ -33,6 +33,12 @@ repr.Shape <- function(x, ...) {
 }
 
 #' @export
+print.Shape <- function(x, ...) {
+  cat("<Shape: ", repr(x), ">\n", sep = "")
+  invisible(x)
+}
+
+#' @export
 #' @method shape Shape
 shape.Shape <- function(x, ...) {
   x$dims

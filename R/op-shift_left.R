@@ -6,8 +6,8 @@ OpShiftLeft <- new_Op("OpShiftLeft", "shift_left")
 #' @rdname hlo_shift_left
 #' @export
 infer_types_shift_left <- function(lhs, rhs) {
-  assert_vt_has_ttype(lhs, IntegerType, UnsignedType, BooleanType)
-  assert_vt_has_ttype(rhs, IntegerType, UnsignedType, BooleanType)
+  assert_vt_has_ttype(lhs, "IntegerType", "UnsignedType", "BooleanType")
+  assert_vt_has_ttype(rhs, "IntegerType", "UnsignedType", "BooleanType")
   assert_vt_equal(lhs, rhs)
   ValueTypes(list(lhs))
 }

@@ -3,18 +3,77 @@
 #' @include list_of.R
 NULL
 
+#' TensorDataType Base Class
+#'
+#' @description
+#' `TensorDataType` is the parent S3 class for all tensor data types.
+#' All data type classes inherit from `TensorDataType`, enabling cross-type
+#' comparisons with `==` and `!=` operators.
+#'
+#' The specific data type classes are:
+#' - [BooleanType()] - Boolean (i1)
+#' - [IntegerType()] - Signed integers (i8, i16, i32, i64)
+#' - [UnsignedType()] - Unsigned integers (ui8, ui16, ui32, ui64)
+#' - [FloatType()] - Floating point (f32, f64)
+#'
+#' @details
+#' This is a virtual base class - you cannot create instances directly.
+#' Use the specific type constructors instead.
+#'
+#' @seealso [BooleanType()], [IntegerType()], [UnsignedType()], [FloatType()]
+#' @name TensorDataType
+NULL
+
+#' @export
+`==.TensorDataType` <- function(e1, e2) {
+  # If classes don't match, types are not equal
+  if (!identical(class(e1)[1], class(e2)[1])) {
+    return(FALSE)
+  }
+
+  # BooleanType has no value field
+  if (inherits(e1, "BooleanType")) {
+    return(TRUE)
+  }
+
+  # For IntegerType, UnsignedType, FloatType - compare values
+  identical(e1$value, e2$value)
+}
+
+#' @export
+`!=.TensorDataType` <- function(e1, e2) {
+  # If classes don't match, types are not equal
+  if (!identical(class(e1)[1], class(e2)[1])) {
+    return(TRUE)
+  }
+
+  # BooleanType has no value field
+  if (inherits(e1, "BooleanType")) {
+    return(FALSE)
+  }
+
+  # For IntegerType, UnsignedType, FloatType - compare values
+  !identical(e1$value, e2$value)
+}
+
 #' @title BooleanType
 #' @description
 #' Represents the boolean type.
 #' @return `BooleanType`
 #' @export
 BooleanType <- function() {
-  structure(list(), class = "BooleanType")
+  structure(list(), class = c("BooleanType", "TensorDataType"))
 }
 
 #' @export
 repr.BooleanType <- function(x, ...) {
   "i1"
+}
+
+#' @export
+print.BooleanType <- function(x, ...) {
+  cat("<BooleanType>\n")
+  invisible(x)
 }
 
 #' @title IntegerType (signed)
@@ -32,13 +91,19 @@ IntegerType <- function(value) {
 
   structure(
     list(value = value),
-    class = "IntegerType"
+    class = c("IntegerType", "TensorDataType")
   )
 }
 
 #' @export
 repr.IntegerType <- function(x, ...) {
   paste0("i", x$value)
+}
+
+#' @export
+print.IntegerType <- function(x, ...) {
+  cat(sprintf("<IntegerType: %s>\n", x$value))
+  invisible(x)
 }
 
 #' @title UnsignedType
@@ -56,13 +121,19 @@ UnsignedType <- function(value) {
 
   structure(
     list(value = value),
-    class = "UnsignedType"
+    class = c("UnsignedType", "TensorDataType")
   )
 }
 
 #' @export
 repr.UnsignedType <- function(x, ...) {
   paste0("ui", x$value)
+}
+
+#' @export
+print.UnsignedType <- function(x, ...) {
+  cat(sprintf("<UnsignedType: %s>\n", x$value))
+  invisible(x)
 }
 
 #' @title FloatType
@@ -80,7 +151,7 @@ FloatType <- function(value) {
 
   structure(
     list(value = value),
-    class = "FloatType"
+    class = c("FloatType", "TensorDataType")
   )
 }
 
@@ -89,17 +160,12 @@ repr.FloatType <- function(x, ...) {
   paste0("f", x$value)
 }
 
-#' @title TensorDataType
-#' @description
-#' Type union of all possible data types.
-#' Not a class in S3, just documentation that dtype can be BooleanType, IntegerType, UnsignedType, or FloatType.
 #' @export
-TensorDataType <- c(
-  "BooleanType",
-  "IntegerType",
-  "UnsignedType",
-  "FloatType"
-)
+print.FloatType <- function(x, ...) {
+  cat(sprintf("<FloatType: %s>\n", x$value))
+  invisible(x)
+}
+
 
 #' @title Is TensorDataType
 #' @description
@@ -109,60 +175,18 @@ TensorDataType <- c(
 #' @return `logical(1)`
 #' @export
 is_dtype <- function(x) {
-  test_class(x, "IntegerType") ||
-    test_class(x, "UnsignedType") ||
-    test_class(x, "FloatType") ||
-    test_class(x, "BooleanType")
+  inherits(x, "TensorDataType")
 }
 
 # Helper to check if something is a valid TensorDataType
 assert_tensor_dtype <- function(x, arg = rlang::caller_arg(x)) {
   if (!is_dtype(x)) {
     cli_abort(
-      "{.arg {arg}} must be a TensorDataType (BooleanType, IntegerType, UnsignedType, or FloatType)"
+      "{.arg {arg}} must be a DataType (BooleanType, IntegerType, UnsignedType, or FloatType)"
     )
   }
 }
 
-#' @export
-`==.BooleanType` <- function(e1, e2) {
-  test_class(e2, "BooleanType")
-}
-
-#' @export
-`!=.BooleanType` <- function(e1, e2) {
-  !(e1 == e2)
-}
-
-#' @export
-`==.IntegerType` <- function(e1, e2) {
-  test_class(e2, "IntegerType") && e1$value == e2$value
-}
-
-#' @export
-`!=.IntegerType` <- function(e1, e2) {
-  !(e1 == e2)
-}
-
-#' @export
-`==.UnsignedType` <- function(e1, e2) {
-  test_class(e2, "UnsignedType") && e1$value == e2$value
-}
-
-#' @export
-`!=.UnsignedType` <- function(e1, e2) {
-  !(e1 == e2)
-}
-
-#' @export
-`==.FloatType` <- function(e1, e2) {
-  test_class(e2, "FloatType") && e1$value == e2$value
-}
-
-#' @export
-`!=.FloatType` <- function(e1, e2) {
-  !(e1 == e2)
-}
 
 #' @title Convert to TensorDataType
 #' @description
@@ -241,24 +265,10 @@ TensorType <- function(dtype, shape) {
   )
 }
 
-# Helper for dtype comparison that handles cross-class comparisons
-dtypes_equal <- function(d1, d2) {
-  c1 <- class(d1)[1]
-  c2 <- class(d2)[1]
-  if (c1 != c2) {
-    return(FALSE)
-  }
-  if (c1 == "BooleanType") {
-    return(TRUE)
-  }
-  # IntegerType, UnsignedType, FloatType all have $value
-  d1$value == d2$value
-}
-
 #' @export
 `==.TensorType` <- function(e1, e2) {
   test_class(e2, "TensorType") &&
-    dtypes_equal(e1$dtype, e2$dtype) &&
+    e1$dtype == e2$dtype &&
     e1$shape == e2$shape
 }
 
@@ -276,6 +286,12 @@ repr.TensorType <- function(x, ...) {
     repr(x$dtype),
     ">"
   )
+}
+
+#' @export
+print.TensorType <- function(x, ...) {
+  cat(repr(x), "\n")
+  invisible(x)
 }
 
 #' @export
@@ -298,6 +314,12 @@ TokenType <- function() {
 #' @export
 repr.TokenType <- function(x, ...) {
   "!stablehlo.token"
+}
+
+#' @export
+print.TokenType <- function(x, ...) {
+  cat("<TokenType: ", repr(x), ">\n", sep = "")
+  invisible(x)
 }
 
 #' @title ValueType
@@ -343,6 +365,17 @@ shape.ValueType <- function(x, ...) {
   shape(x$type)
 }
 
+#' @export
+repr.ValueType <- function(x, ...) {
+  repr(x$type)
+}
+
+#' @export
+print.ValueType <- function(x, ...) {
+  cat("<ValueType: ", repr(x), ">\n", sep = "")
+  invisible(x)
+}
+
 make_vt <- function(type, shape) {
   if (type == "token") {
     return(ValueType(TokenType()))
@@ -383,6 +416,22 @@ repr.ValueTypes <- function(x, ...) {
     vapply(x$items, repr, character(1)),
     collapse = ", "
   )
+}
+
+#' @export
+print.ValueTypes <- function(x, ...) {
+  n <- length(x$items)
+  if (n == 0) {
+    cat("<ValueTypes: (empty)>\n")
+  } else if (n == 1) {
+    cat("<ValueTypes: ", repr(x), ">\n", sep = "")
+  } else {
+    cat("<ValueTypes[", n, "]:\n", sep = "")
+    for (i in seq_along(x$items)) {
+      cat("  [", i, "] ", repr(x$items[[i]]), "\n", sep = "")
+    }
+  }
+  invisible(x)
 }
 
 check_types_equal <- function(lhs, rhs, ..., msg = NULL) {

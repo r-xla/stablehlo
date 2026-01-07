@@ -6,16 +6,26 @@ test_that("assert_vt_has_ttype", {
     "must be a ValueType"
   )
   expect_error(
-    assert_vt_has_ttype(x = y, BooleanType(), shape = integer()),
+    assert_vt_has_ttype(x = y, "BooleanType", shape = integer()),
     "must be one of"
   )
   expect_error(
-    assert_vt_has_ttype(x = y, IntegerType(32L), shape = 1L),
+    assert_vt_has_ttype(x = y, "IntegerType", shape = 1L),
     "Got ()"
   )
   expect_error(
+    assert_vt_has_ttype(x = y, "IntegerType", shape = integer()),
+    NA
+  )
+
+  # Test with initialized dtype instance
+  expect_error(
     assert_vt_has_ttype(x = y, IntegerType(32L), shape = integer()),
     NA
+  )
+  expect_error(
+    assert_vt_has_ttype(x = y, IntegerType(64L), shape = integer()),
+    "must be one of"
   )
 })
 
@@ -106,8 +116,6 @@ test_that("assert_valid_name", {
 })
 
 test_that("assert_one_of", {
-  # TODO: Re-enable when assert_one_of is properly implemented for S3
-  # Currently returns NULL for all inputs
   x <- make_vt("i32", integer())
 
   expect_error(
@@ -115,11 +123,10 @@ test_that("assert_one_of", {
     NA
   )
 
-  # This test is currently skipped because assert_one_of is a stub
-  # expect_error(
-  #   assert_one_of(x, "TensorType", "TokenType"),
-  #   "must be a"
-  # )
+  expect_error(
+    assert_one_of(x, "TensorType", "TokenType"),
+    "must be a"
+  )
 
   expect_error(
     assert_one_of(x, "TensorType", "ValueType"),

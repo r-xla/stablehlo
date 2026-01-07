@@ -32,8 +32,26 @@ assert_vt_equal <- function(
 }
 
 assert_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
-  # TODO: implement proper S3 type checking
-  invisible(NULL)
+  types <- list(...)
+  for (type in types) {
+    if (inherits(x, type)) {
+      return(invisible(NULL))
+    }
+  }
+
+  # fmt: skip
+  type_names <- vapply( # nolint
+    types,
+    function(t) {
+      return(t)
+    },
+    character(1)
+  )
+
+  cli_abort(c(
+    "{.arg {arg}} must be a {.or {.cls {type_names}}}.",
+    x = "Got {.cls {class(x)[1]}}."
+  ))
 }
 
 assert_vt_is_tensor <- function(x, arg = rlang::caller_arg(x)) {
@@ -97,28 +115,29 @@ assert_vt_has_ttype <- function(
 
     for (i in seq_along(dtypes)) {
       dtype <- dtypes[[i]]
-      # Get the class name - handle both instances and class name strings
+
+      # dtype should be either a class name (string) or an initialized instance
       if (is.character(dtype)) {
-        dtype_class <- dtype
+        # dtype is a class name string - use test_class
         type_names[i] <- dtype
-      } else if (is.function(dtype)) {
-        # Skip function checks for now
-        dtype_matched <- TRUE
-        break
+        if (test_class(tensor_type$dtype, dtype)) {
+          dtype_matched <- TRUE
+          break
+        }
       } else {
-        dtype_class <- class(dtype)[1]
-        type_names[i] <- dtype_class
-      }
-      if (test_class(tensor_type$dtype, dtype_class)) {
-        dtype_matched <- TRUE
-        break
+        # dtype is an initialized instance - compare with identical
+        type_names[i] <- repr(dtype)
+        if (identical(tensor_type$dtype, dtype)) {
+          dtype_matched <- TRUE
+          break
+        }
       }
     }
 
     if (!dtype_matched) {
       cli_abort(c(
         "{.arg {arg}} must be one of {.or {type_names}}.",
-        x = "Got {.class {class(tensor_type$dtype)[1]}}."
+        x = "Got {repr(tensor_type$dtype)}."
       ))
     }
   }
@@ -138,21 +157,13 @@ assert_vt_has_ttype <- function(
 
 
 assert_vts_have_same_dtype <- function(x, y, arg = rlang::caller_arg(x)) {
-  # Use direct class comparison to avoid S3 dispatch issues with different types
   dtype_x <- x$type$dtype
   dtype_y <- y$type$dtype
-  same <- class(dtype_x)[1] == class(dtype_y)[1]
-  if (same && test_class(dtype_x, "IntegerType")) {
-    same <- dtype_x$value == dtype_y$value
-  } else if (same && test_class(dtype_x, "UnsignedType")) {
-    same <- dtype_x$value == dtype_y$value
-  } else if (same && test_class(dtype_x, "FloatType")) {
-    same <- dtype_x$value == dtype_y$value
-  }
-  if (!same) {
+
+  if (dtype_x != dtype_y) {
     cli_abort(c(
       "{.arg {arg}} must have the same dtype.",
-      x = "Got {.class {class(dtype_x)[1]}} and {.class {class(dtype_y)[1]}}."
+      x = "Got {repr(dtype_x)} and {repr(dtype_y)}."
     ))
   }
 }
