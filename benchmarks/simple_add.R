@@ -13,4 +13,3 @@ bench::mark(f())
 
 fun <- f()
 bench::mark(repr(fun))
-
