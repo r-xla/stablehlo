@@ -69,6 +69,7 @@ shape_mismatch_error <- function(
 unequal_tensor_types_error <- function(args, call = NULL) {
   nms <- names(args)
   types <- paste0(
+    # nolint: object_usage_linter
     vapply(seq_along(args), FUN.VALUE = character(1), function(i) {
       paste0(nms[i], "=", repr(args[[i]]))
     }),
@@ -178,6 +179,7 @@ tensor_dtype_error <- function(arg, expected, observed, call = NULL) {
 #' @export
 tensor_shape_error <- function(arg, expected, observed, call = NULL) {
   shapevec_repr <- function(shape) {
+    # nolint: object_usage_linter
     sprintf("(%s)", paste0(shape, collapse = ","))
   }
 
