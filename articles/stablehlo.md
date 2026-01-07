@@ -88,26 +88,7 @@ x$value_id
 #> attr(,"class")
 #> [1] "ValueId"
 x$value_type
-#> $type
-#> $dtype
-#> $value
-#> [1] 32
-#> 
-#> attr(,"class")
-#> [1] "FloatType"
-#> 
-#> $shape
-#> $dims
-#> [1] 2 2
-#> 
-#> attr(,"class")
-#> [1] "Shape"
-#> 
-#> attr(,"class")
-#> [1] "TensorType"
-#> 
-#> attr(,"class")
-#> [1] "ValueType"
+#> <ValueType: tensor<2x2xf32>>
 x$func
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #> 

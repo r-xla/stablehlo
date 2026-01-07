@@ -37,13 +37,14 @@
 - [`Shape()`](Shape.md) : Shape
 - [`StringAttr()`](StringAttr.md) : StringAttr
 - [`TensorConstant()`](TensorConstant.md) : TensorConstant
-- [`TensorDataType`](TensorDataType.md) : TensorDataType
+- [`TensorDataType`](TensorDataType.md) : TensorDataType Base Class
 - [`TensorType()`](TensorType.md) : TensorType
 - [`UnsignedType()`](UnsignedType.md) : UnsignedType
 - [`ValueId()`](ValueId.md) : ValueId
 - [`ValueType()`](ValueType.md) : ValueType
 - [`ValueTypes()`](ValueTypes.md) : ValueTypes
 - [`as_dtype()`](as_dtype.md) : Convert to TensorDataType
+- [`class_error()`](class_error.md) : Class Error
 - [`constant_attr()`](constant_attr.md) : Create a ConstantAttr from R
   values
 - [`.current_func()`](dot-current_func.md) : Get the last function
@@ -170,7 +171,16 @@
   Infer types for boolean integerish operations
 - [`infer_types_integerish_uni()`](infer_types_integerish_uni.md) :
   Infer types for integerish unary operations
+- [`invalid_identifier_error()`](invalid_identifier_error.md) : Invalid
+  Identifier Error
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
 - [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
 - [`r_to_string()`](r_to_string.md) : Represent an R value in stableHLO
 - [`repr()`](repr.md) : Generate string representation for object
+- [`shape_mismatch_error()`](shape_mismatch_error.md) : Shape Mismatch
+  Error
+- [`tensor_dtype_error()`](tensor_dtype_error.md) : Tensor Data Type
+  Error
+- [`tensor_shape_error()`](tensor_shape_error.md) : Tensor Shape Error
+- [`unequal_tensor_types_error()`](unequal_tensor_types_error.md) :
+  Unequal Tensor Types Error

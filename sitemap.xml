@@ -49,6 +49,7 @@
 <url><loc>/reference/ValueType.html</loc></url>
 <url><loc>/reference/ValueTypes.html</loc></url>
 <url><loc>/reference/as_dtype.html</loc></url>
+<url><loc>/reference/class_error.html</loc></url>
 <url><loc>/reference/constant_attr.html</loc></url>
 <url><loc>/reference/dot-current_func.html</loc></url>
 <url><loc>/reference/format_double.html</loc></url>
@@ -126,6 +127,7 @@
 <url><loc>/reference/infer_types_generic_uni.html</loc></url>
 <url><loc>/reference/infer_types_integerish_biv.html</loc></url>
 <url><loc>/reference/infer_types_integerish_uni.html</loc></url>
+<url><loc>/reference/invalid_identifier_error.html</loc></url>
 <url><loc>/reference/is_dtype.html</loc></url>
 <url><loc>/reference/new_Op.html</loc></url>
 <url><loc>/reference/new_enum.html</loc></url>
@@ -134,5 +136,9 @@
 <url><loc>/reference/r_to_string.html</loc></url>
 <url><loc>/reference/reexports.html</loc></url>
 <url><loc>/reference/repr.html</loc></url>
+<url><loc>/reference/shape_mismatch_error.html</loc></url>
+<url><loc>/reference/tensor_dtype_error.html</loc></url>
+<url><loc>/reference/tensor_shape_error.html</loc></url>
+<url><loc>/reference/unequal_tensor_types_error.html</loc></url>
 </urlset>
 
