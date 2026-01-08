@@ -178,10 +178,10 @@ is_dtype <- function(x) {
 }
 
 # Helper to check if something is a valid TensorDataType
-assert_tensor_dtype <- function(x, arg = rlang::caller_arg(x)) {
+assert_dtype <- function(x, arg = rlang::caller_arg(x)) {
   if (!is_dtype(x)) {
     cli_abort(
-      "{.arg {arg}} must be a DataType (BooleanType, IntegerType, UnsignedType, or FloatType)"
+      "{.arg {arg}} must be a TensorDataType (BooleanType, IntegerType, UnsignedType, or FloatType)"
     )
   }
 }
@@ -201,10 +201,13 @@ as_dtype <- function(x) {
 
 #' @export
 as_dtype.default <- function(x) {
-  if (is_dtype(x)) {
-    return(x)
-  }
   cli_abort("Cannot convert {.cls {class(x)[1]}} to TensorDataType")
+}
+
+
+#' @export
+as_dtype.TensorDataType <- function(x) {
+  x
 }
 
 dtype_map <- list(
@@ -255,7 +258,7 @@ as.character.FloatType <- function(x, ...) {
 #' @return `TensorType`
 #' @export
 TensorType <- function(dtype, shape) {
-  assert_tensor_dtype(dtype)
+  assert_dtype(dtype)
   checkmate::assert_class(shape, "Shape")
 
   structure(
@@ -425,7 +428,7 @@ print.ValueTypes <- function(x, ...) {
   } else if (n == 1) {
     cat("<ValueTypes: ", repr(x), ">\n", sep = "")
   } else {
-    cat("<ValueTypes[", n, "]>:\n", sep = "")
+    cat("<ValueTypes[", n, "]>\n", sep = "")
     for (i in seq_along(x)) {
       cat("  [", i, "] ", repr(x[[i]]), "\n", sep = "")
     }

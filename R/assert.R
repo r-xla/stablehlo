@@ -133,7 +133,8 @@ assert_vt_has_ttype <- function(
   }
 
   if (!is.null(shape) && !identical(shape(tensor_type), shape)) {
-    shapevec_repr <- function(s) {
+    # fmt: skip
+    shapevec_repr <- function(s) { # nolint
       sprintf("(%s)", paste0(s, collapse = ","))
     }
     cli_abort(c(

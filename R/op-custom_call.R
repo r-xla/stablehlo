@@ -13,21 +13,10 @@ OpCustomCall <- new_Op("OpCustomCall", "custom_call")
 #' @return `CustomOpBackendConfig`
 #' @export
 CustomOpBackendConfig <- function(items = list()) {
-  checkmate::assert_list(items)
-
-  # Validate each item is one of the allowed types
-  for (i in seq_along(items)) {
-    item <- items[[i]]
-    if (
-      !test_class(item, "BoolAttr") &&
-        !test_class(item, "StringAttr") &&
-        !test_class(item, "ScalarAttr")
-    ) {
-      cli_abort(
-        "Expected item to be a BoolAttr, StringAttr, or ScalarAttr. Got {class(item)[1]}."
-      )
-    }
-  }
+  checkmate::assert_list(
+    items,
+    types = c("BoolAttr", "StringAttr", "ScalarAttr")
+  )
 
   # Check for unique names
   if (length(items) > 0) {

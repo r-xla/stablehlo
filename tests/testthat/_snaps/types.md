@@ -120,7 +120,7 @@
         TensorType(FloatType(32), Shape(c(3)))), ValueType(TensorType(BooleanType(),
       Shape(c())))))
     Output
-      <ValueTypes[3]>:
+      <ValueTypes[3]>
         [1] tensor<2xi32>
         [2] tensor<3xf32>
         [3] tensor<i1>

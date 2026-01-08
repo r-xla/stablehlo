@@ -63,7 +63,7 @@ OpInputAttr <- function(name) {
 #' @export
 ScalarAttr <- function(name, value, dtype) {
   checkmate::assert_string(name)
-  assert_tensor_dtype(dtype)
+  assert_dtype(dtype)
 
   structure(
     list(name = name, value = value, dtype = dtype),
