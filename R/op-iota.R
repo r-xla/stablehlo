@@ -55,7 +55,7 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
       output_types = ValueTypes(list(output_type))
     )
   )
-  func$body <- FuncBody(c(func$body$items, list(op)))
+  func$body <- FuncBody(c(func$body, list(op)))
 
   FuncValue(
     value_id = value_id,

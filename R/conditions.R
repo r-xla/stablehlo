@@ -75,8 +75,8 @@ error_shape_mismatch <- function(
 #' @export
 error_unequal_tensor_types <- function(args, call = NULL, signal = TRUE) {
   nms <- names(args)
-  types <- paste0(
-    # nolint: object_usage_linter
+  # fmt: skip
+  types <- paste0( # nolint: object_usage_linter
     vapply(seq_along(args), FUN.VALUE = character(1), function(i) {
       paste0(nms[i], "=", repr(args[[i]]))
     }),
@@ -217,8 +217,8 @@ error_tensor_shape <- function(
   call = NULL,
   signal = TRUE
 ) {
-  shapevec_repr <- function(shape) {
-    # nolint: object_usage_linter
+  # fmt: skip
+  shapevec_repr <- function(shape) { # nolint: object_usage_linter
     sprintf("(%s)", paste0(shape, collapse = ","))
   }
 
@@ -270,7 +270,6 @@ error_tensor_ndims <- function(
   lower <- expected[1L]
   upper <- expected[2L]
 
-  # Format the range string
   # nolint start: object_usage_linter
   if (is.na(lower) && is.na(upper)) {
     range_str <- "any number of dimensions"
@@ -337,8 +336,8 @@ error_dimension_out_of_range <- function(
   dimension <- as.integer(dimension)
   ndims <- as.integer(ndims)
 
-  dims_str <- if (length(dimension) == 1L) {
-    # nolint: object_usage_linter
+  # fmt: skip
+  dims_str <- if (length(dimension) == 1L) { # nolint: object_usage_linter
     paste0("dimension index ", dimension)
   } else {
     paste0("dimension indices: ", paste0(dimension, collapse = ", "))
@@ -463,8 +462,8 @@ error_slice_index <- function(
 ) {
   indices <- as.integer(indices)
 
-  indices_str <- if (length(indices) == 1L) {
-    # nolint: object_usage_linter
+  # fmt: skip
+  indices_str <- if (length(indices) == 1L) { # nolint: object_usage_linter
     paste0("index ", indices)
   } else {
     paste0("indices: ", paste0(indices, collapse = ", "))

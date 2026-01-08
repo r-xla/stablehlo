@@ -44,7 +44,7 @@ infer_types_reduce <- function(..., body, dimensions) {
     }
   }
 
-  dims0 <- as.integer(dimensions$value$data)
+  dims0 <- as.integer(dimensions$data)
   if (length(dims0) > 0L) {
     rank <- length(ref_shape)
     if (any(dims0 < 0L | dims0 >= rank)) {
@@ -64,13 +64,13 @@ infer_types_reduce <- function(..., body, dimensions) {
 
   # Determine output element types from body outputs (C6, C8)
   body_out_types <- ValueTypes(func_output_types(body))
-  if (length(body_out_types$items) != num_inputs) {
+  if (length(body_out_types) != num_inputs) {
     cli_abort("Body must return one tensor per input")
   }
 
   # Build output ValueTypes with shapes after reduction
   out_vts <- lapply(seq_len(num_inputs), function(i) {
-    out_elem_vt <- body_out_types$items[[i]]
+    out_elem_vt <- body_out_types[[i]]
     # Expect 0-D tensor element type; take dtype from it
     if (length(out_elem_vt$type$shape$dims) != 0L) {
       cli_abort("body outputs must be 0-D tensors")

@@ -22,7 +22,7 @@ infer_types_case <- function(index, ...) {
     if (!test_class(branch, "Func")) {
       cli_abort("branches must be a list of Func objects")
     }
-    if (length(branch$inputs$items) != 0L) {
+    if (length(branch$inputs) != 0L) {
       cli_abort("branch functions must not have inputs")
     }
     func_output_types(branch)

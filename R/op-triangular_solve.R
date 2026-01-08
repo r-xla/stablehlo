@@ -120,7 +120,7 @@ repr.OpTriangularSolve <- function(
   ...
 ) {
   attrs_str <- vapply(
-    x$inputs$attrs$items,
+    x$inputs$attrs,
     repr,
     character(1),
     simplify_dense = simplify_dense

@@ -14,7 +14,7 @@ infer_types_transpose <- function(
   operand_dims <- shape(operand)
   rank <- length(operand_dims)
 
-  perm_values <- permutation$value$data
+  perm_values <- permutation$data
 
   if (rank == 0) {
     if (length(perm_values) != 0) {

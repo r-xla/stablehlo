@@ -15,7 +15,7 @@ infer_types_broadcast_in_dim <- function(
   operand_dims <- shape(operand)
   result_dims <- as.integer(shape_out)
 
-  bdims <- broadcast_dimensions$value$data
+  bdims <- broadcast_dimensions$data
 
   # (C2) size(broadcast_dimensions) = rank(operand)
   if (length(bdims) != length(operand_dims)) {

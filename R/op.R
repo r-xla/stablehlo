@@ -6,149 +6,15 @@
 #'
 NULL
 
-#' @title OpMnemonic
-#' @description
-#' This represents the mnemonic of an operation.
-#' @param value (`character(1)`)\cr
-#'   The mnemonic of the operation.
-#' @return `OpMnemonic`
-#' @export
-OpMnemonic <- new_enum(
-  "OpMnemonic",
-  c(
-    "return",
-    "abs",
-    "add",
-    "after_all",
-    "all_gather",
-    "all_reduce",
-    "all_to_all",
-    "and",
-    "atan2",
-    "batch_norm_grad",
-    "batch_norm_inference",
-    "batch_norm_training",
-    "bitcast_convert",
-    "broadcast_in_dim",
-    "case",
-    "cbrt",
-    "ceil",
-    "cholesky",
-    "clamp",
-    "collective_broadcast",
-    "collective_permute",
-    "compare",
-    "complex",
-    "composite",
-    "concatenate",
-    "constant",
-    "convert",
-    "convolution",
-    "cosine",
-    "count_leading_zeros",
-    "custom_call",
-    "divide",
-    "dot_general",
-    "dynamic_broadcast_in_dim",
-    "dynamic_conv",
-    "dynamic_gather",
-    "dynamic_iota",
-    "dynamic_pad",
-    "dynamic_reshape",
-    "dynamic_slice",
-    "dynamic_update_slice",
-    "exponential",
-    "exponential_minus_one",
-    "fft",
-    "floor",
-    "gather",
-    "get_dimension_size",
-    "get_tuple_element",
-    "if",
-    "imag",
-    "infeed",
-    "iota",
-    "is_finite",
-    "log",
-    "log_plus_one",
-    "logistic",
-    "map",
-    "maximum",
-    "minimum",
-    "multiply",
-    "negate",
-    "not",
-    "optimization_barrier",
-    "or",
-    "outfeed",
-    "pad",
-    "partition_id",
-    "popcnt",
-    "power",
-    "real",
-    "recv",
-    "reduce",
-    "reduce_precision",
-    "reduce_scatter",
-    "reduce_window",
-    "remainder",
-    "replica_id",
-    "reshape",
-    "reverse",
-    "rng",
-    "rng_bit_generator",
-    "round_nearest_afz",
-    "round_nearest_even",
-    "rsqrt",
-    "scatter",
-    "select",
-    "select_and_scatter",
-    "send",
-    "shift_left",
-    "shift_right_arithmetic",
-    "shift_right_logical",
-    "sign",
-    "sine",
-    "slice",
-    "sort",
-    "sqrt",
-    "subtract",
-    "tan",
-    "tanh",
-    "transpose",
-    "triangular_solve",
-    "tuple",
-    "uniform_dequantize",
-    "uniform_quantize",
-    "while",
-    "xor"
-  )
-)
-
-#' @export
-`==.OpMnemonic` <- function(e1, e2) {
-  e1$value == e2$value
-}
-
-#' @export
-`!=.OpMnemonic` <- function(e1, e2) {
-  !(e1 == e2)
-}
-
-#' @export
-repr.OpMnemonic <- function(x, ...) {
-  x$value
-}
-
 #' @title OpName
 #' @description
 #' This represents the name of an operation, containing a mnemonic.
-#' @param mnemonic ([`OpMnemonic`])\cr
+#' @param mnemonic (`character(1)`)\cr
 #'   The mnemonic of the operation.
 #' @return (`OpName`)
 #' @export
 OpName <- function(mnemonic) {
-  checkmate::assert_class(mnemonic, "OpMnemonic")
+  checkmate::assert_string(mnemonic)
 
   structure(
     list(mnemonic = mnemonic),
@@ -163,7 +29,7 @@ OpName <- function(mnemonic) {
 
 #' @export
 repr.OpName <- function(x, ...) {
-  paste0("\"stablehlo.", repr(x$mnemonic), "\"")
+  paste0("\"stablehlo.", x$mnemonic, "\"")
 }
 
 # Attribute Types ----------------------------------------------------------
@@ -376,7 +242,7 @@ OpInputValues <- new_list_of(
 
 #' @export
 repr.OpInputValues <- function(x, ...) {
-  paste0(vapply(x$items, repr, character(1)), collapse = ", ")
+  paste0(vapply(x, repr, character(1)), collapse = ", ")
 }
 
 #' @title OpInputAttrs
@@ -390,12 +256,12 @@ OpInputAttrs <- new_list_of("OpInputAttrs", "OpInputAttr")
 
 #' @export
 repr.OpInputAttrs <- function(x, simplify_dense = TRUE, ...) {
-  if (length(x$items) == 0) {
+  if (length(x) == 0) {
     return("")
   }
 
   a <- vapply(
-    x$items,
+    x,
     function(item) repr(item, simplify_dense = simplify_dense),
     character(1)
   ) |>
@@ -494,10 +360,10 @@ OpOutputs <- new_list_of("OpOutputs", "OpOutput")
 
 #' @export
 repr.OpOutputs <- function(x, ...) {
-  if (length(x$items) == 0L) {
+  if (length(x) == 0L) {
     return("")
   } else {
-    paste0(vapply(x$items, repr, character(1)), collapse = ", ")
+    paste0(vapply(x, repr, character(1)), collapse = ", ")
   }
 }
 
@@ -578,7 +444,7 @@ new_Op <- function(classname, mnemonic) {
   # Return a constructor function
   function(inputs, outputs, signature) {
     base_op <- Op(
-      name = OpName(OpMnemonic(mnemonic)),
+      name = OpName(mnemonic),
       inputs = inputs,
       outputs = outputs,
       signature = signature
@@ -611,5 +477,8 @@ repr.Op <- function(x, toplevel = TRUE, simplify_dense = TRUE, ...) {
 
 #' @export
 `!=.Op` <- function(e1, e2) {
-  !(e1 == e2)
+  e1$name != e2$name ||
+    e1$inputs != e2$inputs ||
+    e1$outputs != e2$outputs ||
+    e1$signature != e2$signature
 }

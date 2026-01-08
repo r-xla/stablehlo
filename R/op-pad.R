@@ -20,9 +20,9 @@ infer_types_pad <- function(
   operand_shape <- shape(operand)
   operand_rank <- length(operand_shape)
 
-  low <- edge_padding_low$value$data
-  high <- edge_padding_high$value$data
-  interior <- interior_padding$value$data
+  low <- edge_padding_low$data
+  high <- edge_padding_high$data
+  interior <- interior_padding$data
 
   lowhigh <- rbind(low, high)
   lowhigh[lowhigh > 0] <- 0

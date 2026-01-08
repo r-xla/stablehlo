@@ -45,8 +45,8 @@ shape.Shape <- function(x, ...) {
 }
 
 #' @export
-#' @method dtype TensorConstant
-dtype.TensorConstant <- function(x, ...) {
+#' @method dtype Constant
+dtype.Constant <- function(x, ...) {
   x$type$dtype
 }
 

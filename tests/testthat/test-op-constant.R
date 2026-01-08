@@ -6,7 +6,7 @@ test_that("scalars", {
     } else {
       hlo_scalar(x)
     }
-    expect_snapshot(repr(f$func$body$items[[1]]))
+    expect_snapshot(repr(f$func$body[[1]]))
   }
   check(3.14, "f32")
   check(3.14, "f64")
@@ -146,7 +146,7 @@ test_that("empty array: dense<[]> formatting", {
   skip_if_not_installed("pjrt")
   local_func()
   empty_tensor <- hlo_empty("i64", 0L)
-  constant_op <- empty_tensor$func$body$items[[1]]
+  constant_op <- empty_tensor$func$body[[1]]
   f <- hlo_return(empty_tensor)
   expect_snapshot(repr(f))
   program <- pjrt_program(repr(f))

@@ -2,26 +2,26 @@
 #' @include repr.R
 NULL
 
-#' @title TensorConstant
+#' @title Constant
 #' @description
 #' This represents a constant value.
 #' @param data (any)\cr
 #'   The value of the constant.
 #' @param type ([`TensorType`])\cr
 #'   The type of the constant.
-#' @return `TensorConstant`
+#' @return `Constant`
 #' @export
-TensorConstant <- function(data, type) {
+Constant <- function(data, type) {
   checkmate::assert_class(type, "TensorType")
 
   structure(
     list(data = data, type = type),
-    class = "TensorConstant"
+    class = "Constant"
   )
 }
 
 #' @export
-repr.TensorConstant <- function(x, simplify_dense = TRUE, ...) {
+repr.Constant <- function(x, simplify_dense = TRUE, ...) {
   data <- x$data
   type <- x$type
 
@@ -117,27 +117,6 @@ repr.TensorConstant <- function(x, simplify_dense = TRUE, ...) {
   paste0("dense<", f(value_reprs), "> : ", repr(type))
 }
 
-#' @title Constant
-#' @description
-#' This represents a constant value.
-#' @param value ([`TensorConstant`])\cr
-#'   The value of the constant.
-#' @return `Constant`
-#' @export
-Constant <- function(value) {
-  checkmate::assert_class(value, "TensorConstant")
-
-  structure(
-    list(value = value),
-    class = "Constant"
-  )
-}
-
-#' @export
-repr.Constant <- function(x, simplify_dense = TRUE, ...) {
-  repr(x$value, simplify_dense = simplify_dense)
-}
-
 #' @title Convert R value to Constant
 #' @description
 #' Convert R value to Constant.
@@ -151,9 +130,6 @@ repr.Constant <- function(x, simplify_dense = TRUE, ...) {
 #'   Additional arguments.
 #' @export
 r_to_constant <- function(value, dtype = NULL, shape, ...) {
-  if (!is.null(dtype)) {
-    dtype <- as.character(dtype)
-  }
   UseMethod("r_to_constant")
 }
 
@@ -171,12 +147,7 @@ r_to_constant.logical <- function(value, dtype = NULL, shape, ...) {
 
   tensor_type <- TensorType(dtype = BooleanType(), shape = shape)
 
-  tensor_constant <- TensorConstant(
-    data = value,
-    type = tensor_type
-  )
-
-  return(Constant(value = tensor_constant))
+  return(Constant(data = value, type = tensor_type))
 }
 
 #' @export
@@ -191,12 +162,7 @@ r_to_constant.double <- function(value, dtype = NULL, shape, ...) {
   shape <- Shape(shape)
   tensor_type <- TensorType(dtype, shape)
 
-  tensor_constant <- TensorConstant(
-    data = value,
-    type = tensor_type
-  )
-
-  return(Constant(value = tensor_constant))
+  return(Constant(data = value, type = tensor_type))
 }
 
 #' @export
@@ -215,12 +181,7 @@ r_to_constant.integer <- function(value, dtype = NULL, shape, ...) {
 
   tensor_type <- TensorType(dtype, shape)
 
-  tensor_constant <- TensorConstant(
-    data = value,
-    type = tensor_type
-  )
-
-  return(Constant(value = tensor_constant))
+  return(Constant(data = value, type = tensor_type))
 }
 
 #' @export
@@ -230,16 +191,11 @@ r_to_constant.PJRTBuffer <- function(value, dtype = NULL, shape, ...) {
 
   tensor_type <- TensorType(dtype = as_dtype(dtype), shape = shape)
 
-  tensor_constant <- TensorConstant(
-    data = value,
-    type = tensor_type
-  )
-
-  return(Constant(value = tensor_constant))
+  return(Constant(data = value, type = tensor_type))
 }
 
 #' @export
-#' @method shape TensorConstant
-shape.TensorConstant <- function(x, ...) {
+#' @method shape Constant
+shape.Constant <- function(x, ...) {
   x$type$shape$dims
 }

@@ -57,7 +57,7 @@ FuncInputs <- new_list_of("FuncInputs", "FuncInput")
 repr.FuncInputs <- function(x, ...) {
   paste0(
     "(",
-    paste0(vapply(x$items, repr, character(1)), collapse = ", "),
+    paste0(vapply(x, repr, character(1)), collapse = ", "),
     ")"
   )
 }
@@ -94,15 +94,15 @@ FuncOutputs <- new_list_of("FuncOutputs", "FuncOutput")
 
 #' @export
 repr.FuncOutputs <- function(x, ...) {
-  if (length(x$items) <= 1L) {
+  if (length(x) <= 1L) {
     paste0(
       "-> ",
-      paste0(vapply(x$items, repr, character(1)), collapse = ", ")
+      paste0(vapply(x, repr, character(1)), collapse = ", ")
     )
   } else {
     paste0(
       "-> (",
-      paste0(vapply(x$items, repr, character(1)), collapse = ", "),
+      paste0(vapply(x, repr, character(1)), collapse = ", "),
       ")"
     )
   }
@@ -143,7 +143,7 @@ FuncBody <- new_list_of("FuncBody", "Op")
 
 #' @export
 repr.FuncBody <- function(x, ...) {
-  paste0(vapply(x$items, repr, character(1)), collapse = "\n")
+  paste0(vapply(x, repr, character(1)), collapse = "\n")
 }
 
 #' @title Get the last function created
@@ -310,13 +310,13 @@ OpInputFunc <- function(inputs, body) {
 #' @export
 repr.OpInputFunc <- function(x, ...) {
   # Don't print parameters if there are none:
-  if (length(x$inputs$items) == 0) {
+  if (length(x$inputs) == 0) {
     return(
       paste0(
         "{\n",
         paste0(
           vapply(
-            x$body$items,
+            x$body,
             function(item) repr(item, toplevel = FALSE),
             character(1)
           ),
@@ -332,7 +332,7 @@ repr.OpInputFunc <- function(x, ...) {
     ":\n    ",
     paste0(
       vapply(
-        x$body$items,
+        x$body,
         function(item) repr(item, toplevel = FALSE),
         character(1)
       ),
@@ -358,13 +358,13 @@ OpInputFuncs <- new_list_of("OpInputFuncs", "OpInputFunc")
 
 #' @export
 repr.OpInputFuncs <- function(x, ...) {
-  if (length(x$items) == 0) {
+  if (length(x) == 0) {
     return("")
   }
 
   paste0(
     "(",
-    paste0(vapply(x$items, repr, character(1)), collapse = ", "),
+    paste0(vapply(x, repr, character(1)), collapse = ", "),
     ")"
   )
 }

@@ -75,7 +75,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     }
 
     output_types <- rlang::exec(type_inference, !!!infer_args)
-    nout <- length(output_types$items)
+    nout <- length(output_types)
 
     output_value_ids <- replicate(nout, ValueId(), simplify = FALSE)
     outputs <- OpOutputs(lapply(output_value_ids, OpOutput))
@@ -91,7 +91,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       signature = signature
     )
 
-    func$body <- FuncBody(c(func$body$items, list(op)))
+    func$body <- FuncBody(c(func$body, list(op)))
 
     if (return_func) {
       func$outputs <- FuncOutputs(
@@ -106,7 +106,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       return(
         FuncValue(
           value_id = output_value_ids[[1L]],
-          value_type = output_types$items[[1L]],
+          value_type = output_types[[1L]],
           func = func
         )
       )
@@ -114,7 +114,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     lapply(seq_len(nout), function(i) {
       FuncValue(
         value_id = output_value_ids[[i]],
-        value_type = output_types$items[[i]],
+        value_type = output_types[[i]],
         func = func
       )
     })
@@ -165,7 +165,7 @@ hlo_input <- function(
     type = ValueType(dtype, shape = shape),
     alias = alias
   )
-  func$inputs <- FuncInputs(c(func$inputs$items, list(inp)))
+  func$inputs <- FuncInputs(c(func$inputs, list(inp)))
 
   FuncValue(
     value_id = value_id,

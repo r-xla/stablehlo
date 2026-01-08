@@ -3,15 +3,15 @@ NULL
 
 # Technically this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
 OpReturn <- function(inputs, outputs = OpOutputs(), signature = NULL) {
-  if (length(outputs$items)) {
+  if (length(outputs)) {
     cli_abort("OpReturn op must not have outputs.")
   }
-  if (length(signature$output_types$items)) {
+  if (length(signature$output_types)) {
     cli_abort("Invalid signature for ReturnOp.")
   }
 
   base_op <- Op(
-    name = OpName(OpMnemonic("return")),
+    name = OpName("return"),
     inputs = inputs,
     outputs = outputs,
     signature = signature
@@ -37,8 +37,8 @@ hlo_return <- function(..., func = .current_func()) {
   }
   output_count <- length(dots)
   alias_indices <- vapply(
-    func$inputs$items[
-      !vapply(func$inputs$items, \(x) is.null(x$alias), logical(1))
+    func$inputs[
+      !vapply(func$inputs, \(x) is.null(x$alias), logical(1))
     ],
     \(x) as.integer(x$alias),
     integer(1)

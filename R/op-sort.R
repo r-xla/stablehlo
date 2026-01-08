@@ -17,7 +17,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
 
   # (C3) same(shape(inputs...) + shape(results...)).
   if (
-    !all(vapply(input_dims, \(x) identical(input_dims[[1]], x), logical(1)))
+    !all(vapply(input_dims[-1], \(x) identical(input_dims[[1]], x), logical(1)))
   ) {
     cli_abort("each input must have the same shape")
   }

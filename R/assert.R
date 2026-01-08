@@ -113,8 +113,8 @@ assert_vt_has_ttype <- function(
     }
   }
 
-  if (!is.null(shape) && !identical(stablehlo::shape(tensor_type), shape)) {
-    error_tensor_shape(arg, shape, stablehlo::shape(tensor_type))
+  if (!is.null(shape) && !identical(shape(tensor_type), shape)) {
+    error_tensor_shape(arg, shape, shape(tensor_type))
   }
 }
 

@@ -2,7 +2,7 @@ OpConstant <- function(value, output = NULL) {
   checkmate::assert_class(value, "Constant")
 
   base_op <- Op(
-    name = OpName(OpMnemonic("constant")),
+    name = OpName("constant"),
     inputs = OpInputs(
       values = OpInputValues(list()),
       funcs = OpInputFuncs(),
@@ -18,7 +18,7 @@ OpConstant <- function(value, output = NULL) {
     outputs = output %||% OpOutputs(),
     signature = OpSignature(
       input_types = ValueTypes(list()),
-      output_types = ValueTypes(list(ValueType(value$value$type)))
+      output_types = ValueTypes(list(ValueType(value$type)))
     )
   )
   class(base_op) <- c("OpConstant", "Op")
@@ -216,11 +216,11 @@ impl_hlo_constant <- function(value, dtype, func, shape) {
       )
     )
   )
-  func$body <- FuncBody(c(func$body$items, list(op)))
+  func$body <- FuncBody(c(func$body, list(op)))
 
   FuncValue(
     value_id = value_id,
-    value_type = ValueType(const_value$value$type),
+    value_type = ValueType(const_value$type),
     func = func
   )
 }
@@ -228,7 +228,7 @@ impl_hlo_constant <- function(value, dtype, func, shape) {
 #' @rdname hlo_constant
 #' @export
 infer_types_constant <- function(value) {
-  ValueTypes(list(ValueType(value$value$type)))
+  ValueTypes(list(ValueType(value$type)))
 }
 
 #' @export

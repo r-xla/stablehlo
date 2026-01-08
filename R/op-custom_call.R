@@ -38,8 +38,8 @@ CustomOpBackendConfig <- function(items = list()) {
   }
 
   structure(
-    list(items = items),
-    class = c("CustomOpBackendConfig", "list_of")
+    items,
+    class = c("CustomOpBackendConfig", "list")
   )
 }
 
@@ -49,12 +49,12 @@ repr.CustomOpBackendConfig <- function(
   simplify_dense = TRUE,
   ...
 ) {
-  if (length(x$items) == 0) {
+  if (length(x) == 0) {
     return("backend_config = {}")
   }
 
   config_items <- vapply(
-    x$items,
+    x,
     repr,
     character(1),
     simplify_dense = simplify_dense
@@ -162,7 +162,7 @@ repr.OpCustomCall <- function(
   simplify_dense = TRUE,
   ...
 ) {
-  attrs <- x$inputs$attrs$items
+  attrs <- x$inputs$attrs
   target_name <- NULL
   for (attr in attrs) {
     if (attr$name == "call_target_name") {
@@ -184,7 +184,7 @@ repr.OpCustomCall <- function(
   attrs_str <- paste0("{\n  ", paste(attr_reprs, collapse = ",\n  "), "\n}")
 
   # Build output part
-  outputs_repr <- if (!length(x$outputs$items)) {
+  outputs_repr <- if (!length(x$outputs)) {
     ""
   } else {
     paste0(repr(x$outputs), " = ")

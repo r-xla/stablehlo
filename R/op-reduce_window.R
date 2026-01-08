@@ -62,7 +62,7 @@ infer_types_reduce_window <- function(
   }
 
   rank <- length(ref_shape)
-  window_dims <- as.integer(window_dimensions$value$data)
+  window_dims <- as.integer(window_dimensions$data)
 
   # (C4)
   if (length(window_dims) != rank) {
@@ -74,10 +74,10 @@ infer_types_reduce_window <- function(
     cli_abort("window_dimensions must be positive")
   }
 
-  strides <- as.integer(window_strides$value$data)
-  base_dil <- as.integer(base_dilations$value$data)
-  window_dil <- as.integer(window_dilations$value$data)
-  pad <- padding$value$data
+  strides <- as.integer(window_strides$data)
+  base_dil <- as.integer(base_dilations$data)
+  window_dil <- as.integer(window_dilations$data)
+  pad <- padding$data
 
   # (C12)
   if (!is.matrix(pad) || !is.integer(pad)) {

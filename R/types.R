@@ -1,4 +1,3 @@
-#' @include enum.R
 #' @include shape.R
 #' @include list_of.R
 NULL
@@ -413,22 +412,22 @@ ValueTypes <- new_list_of("ValueTypes", "ValueType")
 #' @export
 repr.ValueTypes <- function(x, ...) {
   paste0(
-    vapply(x$items, repr, character(1)),
+    vapply(x, repr, character(1)),
     collapse = ", "
   )
 }
 
 #' @export
 print.ValueTypes <- function(x, ...) {
-  n <- length(x$items)
+  n <- length(x)
   if (n == 0) {
     cat("<ValueTypes: (empty)>\n")
   } else if (n == 1) {
     cat("<ValueTypes: ", repr(x), ">\n", sep = "")
   } else {
     cat("<ValueTypes[", n, "]:\n", sep = "")
-    for (i in seq_along(x$items)) {
-      cat("  [", i, "] ", repr(x$items[[i]]), "\n", sep = "")
+    for (i in seq_along(x)) {
+      cat("  [", i, "] ", repr(x[[i]]), "\n", sep = "")
     }
   }
   invisible(x)

@@ -15,9 +15,9 @@ infer_types_slice <- function(
 
   # Extract indices and operand rank
   operand_rank <- length(shape(operand))
-  start_idx <- start_indices$value$data
-  limit_idx <- limit_indices$value$data
-  stride_vals <- strides$value$data
+  start_idx <- start_indices$data
+  limit_idx <- limit_indices$data
+  stride_vals <- strides$data
 
   # (C2) size(start_indices) = size(limit_indices) = size(strides) = rank(operand)
   if (length(start_idx) != length(limit_idx)) {

@@ -7,11 +7,11 @@ func_output_types <- function(func) {
   if (!test_class(func, "Func")) {
     cli_abort("func must be a Func object, but got {.class {class(func)[1]}}.")
   }
-  lapply(func$outputs$items, function(x) x$type)
+  lapply(func$outputs, function(x) x$type)
 }
 
 output_types_from_body <- function(body) {
-  body$items[[length(body$items)]]$inputs$values
+  body[[length(body)]]$inputs$values
 }
 
 #' @title Represent an R value in stableHLO

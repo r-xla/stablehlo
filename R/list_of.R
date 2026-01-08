@@ -23,20 +23,20 @@ new_list_of <- function(class_name, item_class, validator = NULL) {
     }
 
     structure(
-      list(items = items),
-      class = c(class_name, "list_of")
+      items,
+      class = c(class_name, "list_of", "list")
     )
   }
 }
 
 #' @export
 `==.list_of` <- function(e1, e2) {
-  length(e1$items) == length(e2$items) &&
+  length(e1) == length(e2) &&
     all(
       vapply(
-        seq_along(e1$items),
+        seq_along(e1),
         function(i) {
-          e1$items[[i]] == e2$items[[i]]
+          e1[[i]] == e2[[i]]
         },
         logical(1)
       )
@@ -45,10 +45,19 @@ new_list_of <- function(class_name, item_class, validator = NULL) {
 
 #' @export
 `!=.list_of` <- function(e1, e2) {
-  !(e1 == e2)
+  length(e1) != length(e2) ||
+    any(
+      vapply(
+        seq_along(e1),
+        function(i) {
+          e1[[i]] != e2[[i]]
+        },
+        logical(1)
+      )
+    )
 }
 
 #' @export
 length.list_of <- function(x) {
-  length(x$items)
+  length(unclass(x))
 }
