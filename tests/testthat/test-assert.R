@@ -3,11 +3,11 @@ test_that("assert_vt_has_ttype", {
 
   expect_error(
     assert_vt_has_ttype(x = 1),
-    "Expected.*ValueType"
+    "must be a ValueType"
   )
   expect_error(
     assert_vt_has_ttype(x = y, "BooleanType", shape = integer()),
-    "Expected.*dtype"
+    "must have dtype"
   )
   expect_error(
     assert_vt_has_ttype(x = y, "IntegerType", shape = 1L),
@@ -25,7 +25,7 @@ test_that("assert_vt_has_ttype", {
   )
   expect_error(
     assert_vt_has_ttype(x = y, IntegerType(64L), shape = integer()),
-    "Expected.*dtype"
+    "must have dtype"
   )
 })
 
@@ -33,13 +33,13 @@ test_that("assert_vt_is_tensor", {
   y <- 1L
   expect_error(
     assert_vt_is_tensor(x = y),
-    "Expected.*ValueType"
+    "must be a ValueType"
   )
 
   token <- ValueType(TokenType())
   expect_error(
     assert_vt_is_tensor(x = token),
-    "Expected.*TensorType"
+    "must contain a TensorType"
   )
 
   z <- make_vt("i32", integer())
@@ -54,11 +54,11 @@ test_that("assert_vts_are_tensors", {
   token <- ValueType(TokenType())
   expect_error(
     assert_vts_are_tensors(x, 1L),
-    "Expected.*ValueType"
+    "must be a ValueType"
   )
   expect_error(
     assert_vts_are_tensors(x = token),
-    "Expected.*TensorType"
+    "must contain a TensorType"
   )
   expect_error(
     assert_vts_are_tensors(x),
@@ -74,11 +74,11 @@ test_that("assert_vt_equal", {
 
   expect_error(
     assert_vt_equal(x, z1),
-    "same tensor type"
+    "to be equal"
   )
   expect_error(
     assert_vt_equal(x, z2),
-    "same tensor type"
+    "to be equal"
   )
 
   expect_error(
@@ -93,7 +93,7 @@ test_that("assert_vts_have_same_dtype", {
   z <- make_vt("i32", 1L)
   expect_error(
     assert_vts_have_same_dtype(x, y),
-    "same tensor type"
+    "must have the same dtype"
   )
   expect_error(
     assert_vts_have_same_dtype(x, z),
@@ -125,7 +125,7 @@ test_that("assert_one_of", {
 
   expect_error(
     assert_one_of(x, "TensorType", "TokenType"),
-    "Expected.*class"
+    "must be a"
   )
 
   expect_error(

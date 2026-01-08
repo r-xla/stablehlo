@@ -102,21 +102,6 @@
 ---
 
     Code
-      ValueType(TensorType(IntegerType(32), Shape(c())))
-    Output
-      <ValueType: tensor<i32>>
-    Code
-      ValueType(TensorType(FloatType(32), Shape(c(10, 20))))
-    Output
-      <ValueType: tensor<10x20xf32>>
-    Code
-      ValueType(TokenType())
-    Output
-      <ValueType: !stablehlo.token>
-
----
-
-    Code
       ValueTypes(list())
     Output
       <ValueTypes: (empty)>
@@ -135,7 +120,7 @@
         TensorType(FloatType(32), Shape(c(3)))), ValueType(TensorType(BooleanType(),
       Shape(c())))))
     Output
-      <ValueTypes[3]:
+      <ValueTypes[3]>:
         [1] tensor<2xi32>
         [2] tensor<3xf32>
         [3] tensor<i1>

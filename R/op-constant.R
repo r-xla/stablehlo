@@ -98,14 +98,6 @@ hlo_scalar.PJRTBuffer <- function(value, ..., func = NULL) {
   )
 }
 
-# Handle TensorDataType objects passed as dtype argument
-#' @export
-hlo_scalar.BooleanType <- function(value, ..., func = NULL) {
-  func <- func %??% .current_func()
-  # value is actually a BooleanType here, swap the arguments
-  hlo_scalar.logical(value = ..1, dtype = "pred", func = func)
-}
-
 #' @rdname hlo_constant
 #' @export
 hlo_tensor <- function(value, ..., dtype = NULL, shape = NULL, func = NULL) {

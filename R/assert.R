@@ -25,9 +25,10 @@ assert_vt_equal <- function(
     return()
   }
 
-  args <- list(x, y)
-  names(args) <- c(arg_x, arg_y)
-  error_unequal_tensor_types(args)
+  cli_abort(c(
+    x = msg %||% "Expected {.arg {arg_x}} and {.arg {arg_y}} to be equal.",
+    i = "Got {.val {repr(x)}} and {.val {repr(y)}}."
+  ))
 }
 
 assert_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
@@ -38,17 +39,37 @@ assert_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
     }
   }
 
-  error_class(arg, unlist(types), class(x)[1])
+  type_names <- vapply(
+    types,
+    function(t) {
+      if (is.character(t)) {
+        return(t)
+      }
+      return(S7::S7_class(t)@name)
+    },
+    character(1)
+  )
+
+  cli_abort(c(
+    "{.arg {arg}} must be a {.or {.cls {type_names}}}.",
+    x = "Got {.cls {class(x)[1]}}."
+  ))
 }
 
 assert_vt_is_tensor <- function(x, arg = rlang::caller_arg(x)) {
   force(arg)
   if (!test_class(x, "ValueType")) {
-    error_class(arg, "ValueType", class(x)[1])
+    cli_abort(c(
+      "{.arg {arg}} must be a ValueType.",
+      x = "Got {.cls {class(x)[1]}}."
+    ))
   }
   x <- x$type
   if (!test_class(x, "TensorType")) {
-    error_class(paste0(arg, "$type"), "TensorType", class(x)[1])
+    cli_abort(c(
+      "{.arg {arg}} must contain a TensorType.",
+      x = "Got {.cls {class(x)[1]}}."
+    ))
   }
 }
 
@@ -74,11 +95,17 @@ assert_vt_has_ttype <- function(
 ) {
   force(arg)
   if (!test_class(x, "ValueType")) {
-    error_class(arg, "ValueType", class(x)[1])
+    cli_abort(c(
+      "{.arg {arg}} must be a ValueType.",
+      x = "Got {.cls {class(x)[1]}}."
+    ))
   }
   tensor_type <- x$type
   if (!test_class(tensor_type, "TensorType")) {
-    error_class(paste0(arg, "$type"), "TensorType", class(tensor_type)[1])
+    cli_abort(c(
+      "{.arg {arg}} must contain a TensorType.",
+      x = "Got {.cls {class(tensor_type)[1]}}."
+    ))
   }
 
   dtypes <- list(...)
@@ -109,12 +136,21 @@ assert_vt_has_ttype <- function(
     }
 
     if (!dtype_matched) {
-      error_tensor_dtype(arg, type_names, repr(tensor_type$dtype))
+      cli_abort(c(
+        "{.arg {arg}} must have dtype {.or {type_names}}.",
+        x = "Got {.cls {repr(tensor_type$dtype)}}."
+      ))
     }
   }
 
   if (!is.null(shape) && !identical(shape(tensor_type), shape)) {
-    error_tensor_shape(arg, shape, shape(tensor_type))
+    shapevec_repr <- function(s) {
+      sprintf("(%s)", paste0(s, collapse = ","))
+    }
+    cli_abort(c(
+      "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
+      x = "Got {shapevec_repr(shape(tensor_type))}."
+    ))
   }
 }
 
@@ -129,8 +165,9 @@ assert_vts_have_same_dtype <- function(
   dtype_y <- y$type$dtype
 
   if (dtype_x != dtype_y) {
-    args <- list(dtype_x, dtype_y)
-    names(args) <- c(arg_x, arg_y)
-    error_unequal_tensor_types(args)
+    cli_abort(c(
+      "{.arg {arg_x}} and {.arg {arg_y}} must have the same dtype.",
+      x = "Got {.cls {repr(dtype_x)}} and {.cls {repr(dtype_y)}}."
+    ))
   }
 }
