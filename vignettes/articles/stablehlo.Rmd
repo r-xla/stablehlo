@@ -17,8 +17,8 @@ knitr::opts_chunk$set(
 In this vignette, we will give an overview of the {stablehlo} package and show how it can be used to create StableHLO programs.
 If you are not familiar with StableHLO, we recommend reading the [StableHLO specification](https://openxla.org/stablehlo/spec) first.
 
-The {stablehlo} package represents StableHLO programs as nested S7 objects.
-When working with the package, you usually don't construct these objects via their `S7`-constructor, but through the more user-friendly `hlo_<name>` functions.
+The {stablehlo} package represents StableHLO programs as nested S3 objects.
+When working with the package, you usually don't construct these objects via their `S3`-constructor, but through the more user-friendly `hlo_<name>` functions.
 
 We start by creating a `Func` object that represents a StableHLO function.
 Such a `Func` object has an ID (`FuncId`), inputs (`FuncInputs`), outputs (`FuncOutputs`) and a body (`FuncBody`).
@@ -68,9 +68,9 @@ Such a `FuncValue` represents a value in a stableHLO function and contains:
 
 ```{r}
 x
-x@value_id
-x@value_type
-x@func
+x$value_id
+x$value_type
+x$func
 ```
 
 Next, we will populate the body of the function with operations.

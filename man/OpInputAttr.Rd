@@ -4,7 +4,7 @@
 \alias{OpInputAttr}
 \title{OpInputAttr}
 \usage{
-OpInputAttr(name = character(0))
+OpInputAttr(name)
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr

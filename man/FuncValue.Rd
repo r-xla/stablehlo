@@ -4,7 +4,7 @@
 \alias{FuncValue}
 \title{FuncValue}
 \usage{
-FuncValue(value_id = ValueId(), value_type = ValueType(), func = Func())
+FuncValue(value_id, value_type, func)
 }
 \arguments{
 \item{value_id}{The name of the variable.}

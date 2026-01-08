@@ -13,8 +13,8 @@ infer_types_dot_general <- function(
   assert_vts_have_same_dtype(lhs, rhs)
   dim_lhs <- shape(lhs)
   dim_rhs <- shape(rhs)
-  contracting_dims <- dot_dimension_numbers@contracting_dims
-  batching_dims <- dot_dimension_numbers@batching_dims
+  contracting_dims <- dot_dimension_numbers$contracting_dims
+  batching_dims <- dot_dimension_numbers$batching_dims
 
   # stableHLO uses 0-based indexing
   dim_merge1 <- dim_lhs[contracting_dims[[1L]] + 1L]
@@ -49,7 +49,7 @@ infer_types_dot_general <- function(
   out_dim <- c(dim_batch1, dim_lhs_remaining, dim_rhs_remaining)
 
   ValueTypes(list(
-    ValueType(TensorType(dtype = lhs@type@dtype, shape = Shape(out_dim)))
+    ValueType(TensorType(dtype = lhs$type$dtype, shape = Shape(out_dim)))
   ))
 }
 
@@ -61,13 +61,12 @@ infer_types_dot_general <- function(
 #' @param batching_dims (`integer()` | `NULL`)\cr
 #'   The batching dimensions.
 #' @export
-DotDimensionNumbers <- new_class(
-  "DotDimensionNumbers",
-  properties = list(
-    contracting_dims = S7::class_any,
-    batching_dims = S7::class_any
+DotDimensionNumbers <- function(contracting_dims, batching_dims = NULL) {
+  structure(
+    list(contracting_dims = contracting_dims, batching_dims = batching_dims),
+    class = "DotDimensionNumbers"
   )
-)
+}
 
 dot_general_impl <- hlo_fn(OpDotGeneral, infer_types_dot_general)
 
@@ -94,32 +93,34 @@ hlo_dot_general <- function(
   )
 }
 
-method(repr, DotDimensionNumbers) <- function(x) {
+#' @export
+repr.DotDimensionNumbers <- function(x, ...) {
   str <- sprintf(
     "contracting_dims = [%s] x [%s]",
-    paste0(x@contracting_dims[[1L]], collapse = ", "),
-    paste0(x@contracting_dims[[2L]], collapse = ", ")
+    paste0(x$contracting_dims[[1L]], collapse = ", "),
+    paste0(x$contracting_dims[[2L]], collapse = ", ")
   )
-  if (is.null(x@batching_dims)) {
+  if (is.null(x$batching_dims)) {
     return(str)
   }
   sprintf(
     "batching_dims = [%s] x [%s], %s",
-    paste0(x@batching_dims[[1L]], collapse = ", "),
-    paste0(x@batching_dims[[2L]], collapse = ", "),
+    paste0(x$batching_dims[[1L]], collapse = ", "),
+    paste0(x$batching_dims[[2L]], collapse = ", "),
     str
   )
 }
 
-method(repr, OpDotGeneral) <- function(x, ...) {
+#' @export
+repr.OpDotGeneral <- function(x, ...) {
   paste0(
-    repr(x@outputs),
+    repr(x$outputs),
     " = ",
     "stablehlo.dot_general ",
-    repr(x@inputs@values),
+    repr(x$inputs$values),
     ", ",
-    repr(x@inputs@custom_attrs$dot_dimension_numbers),
+    repr(x$inputs$custom_attrs$dot_dimension_numbers),
     ": ",
-    repr(x@signature)
+    repr(x$signature)
   )
 }

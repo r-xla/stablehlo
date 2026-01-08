@@ -46,21 +46,22 @@ hlo_compare <- function(
   )
 }
 
-method(repr, OpCompare) <- function(
+#' @export
+repr.OpCompare <- function(
   x,
   toplevel = TRUE,
   simplify_dense = TRUE,
   ...
 ) {
   paste0(
-    repr(x@outputs),
+    repr(x$outputs),
     " = stablehlo.compare ",
-    x@inputs@custom_attrs$comparison_direction,
+    x$inputs$custom_attrs$comparison_direction,
     ", ",
-    repr(x@inputs@values),
+    repr(x$inputs$values),
     ", ",
-    x@inputs@custom_attrs$compare_type,
+    x$inputs$custom_attrs$compare_type,
     " : ",
-    repr(x@signature)
+    repr(x$signature)
   )
 }

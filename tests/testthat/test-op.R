@@ -45,11 +45,11 @@ test_that("CustomOpBackendConfig repr works correctly", {
 test_that("CustomOpBackendConfig validates element types", {
   expect_error(
     CustomOpBackendConfig(list(1, 2, 3)),
-    "Expected item to be of type"
+    "May only contain the following types"
   )
   expect_error(
     CustomOpBackendConfig(list(BoolAttr(name = "a", value = TRUE), 2)),
-    "Expected item to be of type"
+    "May only contain the following types"
   )
 })
 

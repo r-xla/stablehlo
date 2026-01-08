@@ -2,7 +2,6 @@
 #' @include types.R
 #' @include repr.R
 #' @include value_id.R
-#' @importFrom S7 new_class new_property method
 NULL
 
 #' @title FuncInput
@@ -16,26 +15,31 @@ NULL
 #'   With which output buffer to alias this input.
 #' @return (`FuncInput`)
 #' @export
-FuncInput <- new_class(
-  "FuncInput",
-  properties = list(
-    id = ValueId,
-    type = ValueType,
-    # order is important so NULL is the default and not integer(0)
-    alias = NULL | S7::class_integer
-  )
-)
+FuncInput <- function(id, type, alias = NULL) {
+  checkmate::assert_class(id, "ValueId")
+  checkmate::assert_class(type, "ValueType")
+  if (!is.null(alias)) {
+    alias <- as.integer(alias)
+    checkmate::assert_int(alias)
+  }
 
-method(repr, FuncInput) <- function(x) {
+  structure(
+    list(id = id, type = type, alias = alias),
+    class = "FuncInput"
+  )
+}
+
+#' @export
+repr.FuncInput <- function(x, ...) {
   attr_str <- ""
-  if (!is.null(x@alias)) {
-    idx <- as.integer(x@alias)
+  if (!is.null(x$alias)) {
+    idx <- as.integer(x$alias)
     attr_str <- paste0(" {tf.aliasing_output = ", idx, " : i32}")
   }
   paste0(
-    repr(x@id),
+    repr(x$id),
     ": ",
-    repr(x@type),
+    repr(x$type),
     attr_str
   )
 }
@@ -47,12 +51,13 @@ method(repr, FuncInput) <- function(x) {
 #'   The inputs of the function.
 #' @return (`FuncInputs`)
 #' @export
-FuncInputs <- new_list_of("FuncInputs", FuncInput)
+FuncInputs <- new_list_of("FuncInputs", "FuncInput")
 
-method(repr, FuncInputs) <- function(x) {
+#' @export
+repr.FuncInputs <- function(x, ...) {
   paste0(
     "(",
-    paste0(sapply(x@items, repr), collapse = ", "),
+    paste0(vapply(x, repr, character(1)), collapse = ", "),
     ")"
   )
 }
@@ -64,15 +69,18 @@ method(repr, FuncInputs) <- function(x) {
 #'   The type of the output.
 #' @return (`FuncOutput`)
 #' @export
-FuncOutput <- new_class(
-  "FuncOutput",
-  properties = list(
-    type = ValueType
-  )
-)
+FuncOutput <- function(type) {
+  checkmate::assert_class(type, "ValueType")
 
-method(repr, FuncOutput) <- function(x) {
-  repr(x@type)
+  structure(
+    list(type = type),
+    class = "FuncOutput"
+  )
+}
+
+#' @export
+repr.FuncOutput <- function(x, ...) {
+  repr(x$type)
 }
 
 #' @title FuncOutputs
@@ -82,18 +90,19 @@ method(repr, FuncOutput) <- function(x) {
 #'   The outputs of the function.
 #' @return (`FuncOutputs`)
 #' @export
-FuncOutputs <- new_list_of("FuncOutputs", FuncOutput)
+FuncOutputs <- new_list_of("FuncOutputs", "FuncOutput")
 
-method(repr, FuncOutputs) <- function(x) {
-  if (length(x@items) <= 1L) {
+#' @export
+repr.FuncOutputs <- function(x, ...) {
+  if (length(x) <= 1L) {
     paste0(
       "-> ",
-      paste0(sapply(x@items, repr), collapse = ", ")
+      paste0(vapply(x, repr, character(1)), collapse = ", ")
     )
   } else {
     paste0(
       "-> (",
-      paste0(sapply(x@items, repr), collapse = ", "),
+      paste0(vapply(x, repr, character(1)), collapse = ", "),
       ")"
     )
   }
@@ -104,19 +113,23 @@ method(repr, FuncOutputs) <- function(x) {
 #' This represents the id of a function.
 #' @param id The id of the function.
 #' @export
-FuncId <- new_class(
-  "FuncId",
-  properties = list(
-    id = S7::class_character
-  )
-)
+FuncId <- function(id = "main") {
+  checkmate::assert_string(id)
 
-method(repr, FuncId) <- function(x) {
-  paste0("@", x@id)
+  structure(
+    list(id = id),
+    class = "FuncId"
+  )
 }
 
-method(`==`, list(FuncId, FuncId)) <- function(e1, e2) {
-  identical(e1@id, e2@id)
+#' @export
+repr.FuncId <- function(x, ...) {
+  paste0("@", x$id)
+}
+
+#' @export
+`==.FuncId` <- function(e1, e2) {
+  identical(e1$id, e2$id)
 }
 
 #' @title FuncBody
@@ -126,13 +139,11 @@ method(`==`, list(FuncId, FuncId)) <- function(e1, e2) {
 #'   The operations in the function body.
 #' @return (`FuncBody`)
 #' @export
-FuncBody <- new_list_of(
-  "FuncBody",
-  item_type = Op
-)
+FuncBody <- new_list_of("FuncBody", "Op")
 
-method(repr, FuncBody) <- function(x) {
-  paste0(sapply(x@items, repr), collapse = "\n")
+#' @export
+repr.FuncBody <- function(x, ...) {
+  paste0(vapply(x, repr, character(1)), collapse = "\n")
 }
 
 #' @title Get the last function created
@@ -171,7 +182,6 @@ hlo_func <- function(id = "main") {
   return(func)
 }
 
-
 #' @rdname hlo_func
 #' @param envir (`environment`)\cr
 #'   Environment where exit handler will be registered for cleaning up the
@@ -200,6 +210,7 @@ local_func <- function(id = "main", envir = parent.frame()) {
 #' @title Func
 #' @description
 #' This represents a function.
+#' Note: Func uses reference semantics - modifications to a Func object modify the original.
 #' @param id (`FuncId`\cr
 #'   The id of the function.
 #' @param inputs (`FuncInputs`\cr
@@ -210,77 +221,50 @@ local_func <- function(id = "main", envir = parent.frame()) {
 #'   The body of the function.
 #' @return A [`Func`] object.
 #' @export
-Func <- new_class(
-  "Func",
-  properties = list(
-    id = new_property(
-      FuncId,
-      getter = function(self) self@.env[["id"]],
-      setter = function(self, value) {
-        self@.env[["id"]] <- value
-        self
-      }
-    ),
-    inputs = new_property(
-      FuncInputs,
-      getter = function(self) self@.env[["inputs"]],
-      setter = function(self, value) {
-        self@.env[["inputs"]] <- value
-        self
-      }
-    ),
-    outputs = new_property(
-      FuncOutputs,
-      getter = function(self) self@.env[["outputs"]],
-      setter = function(self, value) {
-        self@.env[["outputs"]] <- value
-        self
-      }
-    ),
-    body = new_property(
-      FuncBody,
-      getter = function(self) self@.env[["body"]],
-      setter = function(self, value) {
-        self@.env[["body"]] <- value
-        self
-      }
-    ),
-    .env = S7::new_S3_class("hashtab")
-  ),
-  constructor = function(
-    id = FuncId(),
-    inputs = FuncInputs(),
-    outputs = FuncOutputs(),
-    body = FuncBody()
-  ) {
-    env <- hashtab()
-    env[["id"]] <- id
-    env[["inputs"]] <- inputs
-    env[["outputs"]] <- outputs
-    env[["body"]] <- body
-    new_object(
-      S7::S7_object(),
-      .env = env
-    )
+Func <- function(
+  id = FuncId(),
+  inputs = FuncInputs(),
+  outputs = FuncOutputs(),
+  body = FuncBody()
+) {
+  if (is.character(id)) {
+    id <- FuncId(id)
   }
-)
+  checkmate::assert_class(id, "FuncId")
+  checkmate::assert_class(inputs, "FuncInputs")
+  checkmate::assert_class(outputs, "FuncOutputs")
+  checkmate::assert_class(body, "FuncBody")
 
-method(repr, Func) <- function(x) {
-  # Func        ::= 'func' '.' 'func' FuncId FuncInputs FuncOutputs '{' FuncBody '}'
+  # Use an environment for reference semantics
+  env <- new.env(parent = emptyenv())
+  env$id <- id
+  env$inputs <- inputs
+  env$outputs <- outputs
+  env$body <- body
+
+  # Return the environment directly with Func class
+  class(env) <- c("Func", "environment")
+  env
+}
+
+#' @export
+repr.Func <- function(x, ...) {
+  # Func ::= 'func' '.' 'func' FuncId FuncInputs FuncOutputs '{' FuncBody '}'
   paste0(
     "func.func ",
-    repr(x@id),
+    repr(x$id),
     " ",
-    repr(x@inputs),
+    repr(x$inputs),
     " ",
-    repr(x@outputs),
+    repr(x$outputs),
     " {\n",
-    repr(x@body),
+    repr(x$body),
     "\n}\n"
   )
 }
 
-method(print, Func) <- function(x, ...) {
+#' @export
+print.Func <- function(x, ...) {
   cat(repr(x))
 }
 
@@ -293,22 +277,29 @@ method(print, Func) <- function(x, ...) {
 #'   The body of the function.
 #' @return (`OpInputFunc`)
 #' @export
-OpInputFunc <- new_class(
-  "OpInputFunc",
-  properties = list(
-    inputs = FuncInputs,
-    body = FuncBody
-  )
-)
+OpInputFunc <- function(inputs, body) {
+  checkmate::assert_class(inputs, "FuncInputs")
+  checkmate::assert_class(body, "FuncBody")
 
-method(repr, OpInputFunc) <- function(x) {
+  structure(
+    list(inputs = inputs, body = body),
+    class = "OpInputFunc"
+  )
+}
+
+#' @export
+repr.OpInputFunc <- function(x, ...) {
   # Don't print parameters if there are none:
-  if (length(x@inputs@items) == 0) {
+  if (length(x$inputs) == 0) {
     return(
       paste0(
         "{\n",
         paste0(
-          sapply(x@body@items, repr, toplevel = FALSE),
+          vapply(
+            x$body,
+            function(item) repr(item, toplevel = FALSE),
+            character(1)
+          ),
           collapse = "\n    "
         ),
         "\n}"
@@ -317,15 +308,23 @@ method(repr, OpInputFunc) <- function(x) {
   }
   paste0(
     "{\n  ^bb0",
-    repr(x@inputs),
+    repr(x$inputs),
     ":\n    ",
-    paste0(sapply(x@body@items, repr, toplevel = FALSE), collapse = "\n    "),
+    paste0(
+      vapply(
+        x$body,
+        function(item) repr(item, toplevel = FALSE),
+        character(1)
+      ),
+      collapse = "\n    "
+    ),
     "\n}"
   )
 }
 
-method(`==`, list(OpInputFunc, OpInputFunc)) <- function(e1, e2) {
-  e1@inputs == e2@inputs && e1@body == e2@body
+#' @export
+`==.OpInputFunc` <- function(e1, e2) {
+  e1$inputs == e2$inputs && e1$body == e2$body
 }
 
 #' @title OpInputFuncs
@@ -335,16 +334,17 @@ method(`==`, list(OpInputFunc, OpInputFunc)) <- function(e1, e2) {
 #'   The functions that can be used as inputs to operations.
 #' @return (`OpInputFuncs`)
 #' @export
-OpInputFuncs <- new_list_of("OpInputFuncs", OpInputFunc)
+OpInputFuncs <- new_list_of("OpInputFuncs", "OpInputFunc")
 
-method(repr, OpInputFuncs) <- function(x) {
-  if (length(x@items) == 0) {
+#' @export
+repr.OpInputFuncs <- function(x, ...) {
+  if (length(x) == 0) {
     return("")
   }
 
   paste0(
     "(",
-    paste0(sapply(x@items, repr), collapse = ", "),
+    paste0(vapply(x, repr, character(1)), collapse = ", "),
     ")"
   )
 }

@@ -4,7 +4,7 @@
 \alias{FuncId}
 \title{FuncId}
 \usage{
-FuncId(id = character(0))
+FuncId(id = "main")
 }
 \arguments{
 \item{id}{The id of the function.}

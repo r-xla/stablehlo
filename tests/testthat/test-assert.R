@@ -6,16 +6,26 @@ test_that("assert_vt_has_ttype", {
     "must be a ValueType"
   )
   expect_error(
-    assert_vt_has_ttype(x = y, BooleanType, shape = integer()),
-    "must be one of"
+    assert_vt_has_ttype(x = y, "BooleanType", shape = integer()),
+    "must have dtype"
   )
   expect_error(
-    assert_vt_has_ttype(x = y, IntegerType, shape = 1L),
-    "Got ()"
+    assert_vt_has_ttype(x = y, "IntegerType", shape = 1L),
+    "shape"
   )
   expect_error(
-    assert_vt_has_ttype(x = y, IntegerType, shape = integer()),
+    assert_vt_has_ttype(x = y, "IntegerType", shape = integer()),
     NA
+  )
+
+  # Test with initialized dtype instance
+  expect_error(
+    assert_vt_has_ttype(x = y, IntegerType(32L), shape = integer()),
+    NA
+  )
+  expect_error(
+    assert_vt_has_ttype(x = y, IntegerType(64L), shape = integer()),
+    "must have dtype"
   )
 })
 
@@ -109,17 +119,17 @@ test_that("assert_one_of", {
   x <- make_vt("i32", integer())
 
   expect_error(
-    assert_one_of(x, ValueType),
+    assert_one_of(x, c("ValueType")),
     NA
   )
 
   expect_error(
-    assert_one_of(x, TensorType, TokenType),
+    assert_one_of(x, c("TensorType", "TokenType")),
     "must be a"
   )
 
   expect_error(
-    assert_one_of(x, TensorType, ValueType),
+    assert_one_of(x, c("TensorType", "ValueType")),
     NA
   )
 })

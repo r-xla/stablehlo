@@ -15,12 +15,12 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     simplify = TRUE
   ) {
     lapply(values, function(x) {
-      if (!inherits(x, FuncValue)) {
+      if (!test_class(x, "FuncValue")) {
         cli_abort("All arguments must be FuncValues")
       }
     })
     lapply(funcs, function(x) {
-      if (!inherits(x, Func)) {
+      if (!test_class(x, "Func")) {
         cli_abort("All functions must be Func objects")
       }
     })
@@ -28,7 +28,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     # Process attrs - expect a list of OpInputAttr subclasses
     attrs <- attrs %??% list()
     lapply(attrs, function(x) {
-      if (!S7::S7_inherits(x, OpInputAttr)) {
+      if (!test_class(x, "OpInputAttr")) {
         cli_abort(
           "All attributes must be OpInputAttr subclasses (e.g., ConstantAttr, StringAttr, BoolAttr, ScalarAttr)"
         )
@@ -38,34 +38,34 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     op_input_funcs <- OpInputFuncs(
       lapply(funcs, function(x) {
         OpInputFunc(
-          inputs = x@inputs,
-          body = x@body
+          inputs = x$inputs,
+          body = x$body
         )
       })
     )
 
     op_input_attrs <- OpInputAttrs(attrs)
 
-    func <- merge_funcs(lapply(values, function(x) x@func))
+    func <- merge_funcs(lapply(values, function(x) x$func))
 
     inputs <- OpInputs(
-      OpInputValues(lapply(values, function(x) OpInputValue(x@value_id))),
+      OpInputValues(lapply(values, function(x) OpInputValue(x$value_id))),
       funcs = op_input_funcs,
       attrs = op_input_attrs,
       custom_attrs = custom_attrs %??% list()
     )
 
-    infer_args <- lapply(values, function(x) x@value_type)
+    infer_args <- lapply(values, function(x) x$value_type)
 
     if (length(funcs) > 0L) {
       infer_args <- c(infer_args, funcs)
     }
     # For type inference, extract values from OpInputAttr subclasses as named args
     if (length(attrs) > 0L) {
-      attr_values <- lapply(attrs, function(x) x@value)
+      attr_values <- lapply(attrs, function(x) x$value)
       names(attr_values) <- vapply(
         attrs,
-        function(x) x@name,
+        function(x) x$name,
         character(1)
       )
       infer_args <- c(infer_args, attr_values)
@@ -75,13 +75,13 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     }
 
     output_types <- rlang::exec(type_inference, !!!infer_args)
-    nout <- length(output_types@items)
+    nout <- length(output_types)
 
     output_value_ids <- replicate(nout, ValueId(), simplify = FALSE)
     outputs <- OpOutputs(lapply(output_value_ids, OpOutput))
 
     signature <- OpSignature(
-      input_types = ValueTypes(lapply(values, function(x) x@value_type)),
+      input_types = ValueTypes(lapply(values, function(x) x$value_type)),
       output_types = output_types
     )
 
@@ -91,12 +91,12 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       signature = signature
     )
 
-    func@body <- FuncBody(c(func@body@items, list(op)))
+    func$body <- FuncBody(c(func$body, list(op)))
 
     if (return_func) {
-      func@outputs <- FuncOutputs(
+      func$outputs <- FuncOutputs(
         lapply(values, function(x) {
-          FuncOutput(type = x@value_type)
+          FuncOutput(type = x$value_type)
         })
       )
       return(func)
@@ -106,7 +106,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
       return(
         FuncValue(
           value_id = output_value_ids[[1L]],
-          value_type = output_types@items[[1L]],
+          value_type = output_types[[1L]],
           func = func
         )
       )
@@ -114,7 +114,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     lapply(seq_len(nout), function(i) {
       FuncValue(
         value_id = output_value_ids[[i]],
-        value_type = output_types@items[[i]],
+        value_type = output_types[[i]],
         func = func
       )
     })
@@ -165,7 +165,7 @@ hlo_input <- function(
     type = ValueType(dtype, shape = shape),
     alias = alias
   )
-  func@inputs <- FuncInputs(c(func@inputs@items, inp))
+  func$inputs <- FuncInputs(c(func$inputs, list(inp)))
 
   FuncValue(
     value_id = value_id,
@@ -189,7 +189,7 @@ hlo_input <- function(
 #' print(f)
 hlo_closure <- function(...) {
   vars <- list(...)
-  ids <- vapply(vars, function(v) v@value_id@id, character(1))
+  ids <- vapply(vars, function(v) v$value_id$id, character(1))
   if (anyDuplicated(ids)) {
     cli_abort(
       "Each variable can only be captured once in hlo_closure (duplicate value_id detected)"
@@ -198,8 +198,8 @@ hlo_closure <- function(...) {
   envir <- parent.frame()
   lapply(vars, function(variable) {
     FuncValue(
-      value_id = variable@value_id,
-      value_type = variable@value_type,
+      value_id = variable$value_id,
+      value_type = variable$value_type,
       func = local_func("", envir)
     )
   })

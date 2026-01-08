@@ -6,7 +6,7 @@ OpIf <- new_Op("OpIf", "if")
 #' @rdname hlo_if
 #' @export
 infer_types_if <- function(pred, true_branch, false_branch) {
-  assert_vt_has_ttype(pred, BooleanType, shape = integer())
+  assert_vt_has_ttype(pred, "BooleanType", shape = integer())
   out_types1 <- ValueTypes(func_output_types(true_branch))
   out_types2 <- ValueTypes(func_output_types(false_branch))
   if (length(out_types1) != length(out_types2)) {
@@ -15,7 +15,7 @@ infer_types_if <- function(pred, true_branch, false_branch) {
     )
   }
   for (i in seq_along(out_types1)) {
-    assert_vt_equal(out_types1@items[[i]], out_types2@items[[i]])
+    assert_vt_equal(out_types1[[i]], out_types2[[i]])
   }
   out_types1
 }

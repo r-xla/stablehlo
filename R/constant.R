@@ -2,48 +2,48 @@
 #' @include repr.R
 NULL
 
-#' @title TensorConstant
+#' @title Constant
 #' @description
 #' This represents a constant value.
 #' @param data (any)\cr
 #'   The value of the constant.
 #' @param type ([`TensorType`])\cr
 #'   The type of the constant.
-#' @return `TensorConstant`
+#' @return `Constant`
 #' @export
-TensorConstant <- new_class(
-  "TensorConstant",
-  properties = list(
-    # This can be anything as long as it implements r_to_constant
-    # However, for static function inputs, we need to perform some checks on
-    # the data, so we need a way to convert it to an R array.
-    data = S7::class_any,
-    type = TensorType
+Constant <- function(data, type) {
+  checkmate::assert_class(type, "TensorType")
+
+  structure(
+    list(data = data, type = type),
+    class = "Constant"
   )
-)
+}
 
-method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
-  data <- x@data
-  type <- x@type
+#' @export
+repr.Constant <- function(x, simplify_dense = TRUE, ...) {
+  data <- x$data
+  type <- x$type
 
-  value_reprs <- if (inherits(data, "PJRTBuffer")) {
+  value_reprs <- if (test_class(data, "PJRTBuffer")) {
     pjrt::format_buffer(data)
   } else {
-    if (inherits(type@dtype, FloatType)) {
+    if (test_class(type$dtype, "FloatType")) {
       format_double(
         data,
-        precision = type@dtype@value
+        precision = type$dtype$value
       )
     } else if (
-      inherits(type@dtype, IntegerType) || inherits(type@dtype, UnsignedType)
+      test_class(type$dtype, "IntegerType") ||
+        test_class(type$dtype, "UnsignedType")
     ) {
       as.character(data)
-    } else if (inherits(type@dtype, BooleanType)) {
+    } else if (test_class(type$dtype, "BooleanType")) {
       tolower(as.logical(data))
     }
   }
 
-  data_dims <- x@type@shape@dims
+  data_dims <- x$type$shape$dims
 
   if (simplify_dense) {
     if (length(data_dims) > 1) {
@@ -52,13 +52,13 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
     if (length(value_reprs) == 0) {
       return(paste0(
         "array<",
-        repr(type@dtype),
+        repr(type$dtype),
         ">"
       ))
     } else {
       return(paste0(
         "array<",
-        repr(type@dtype),
+        repr(type$dtype),
         ": ",
         paste(value_reprs, collapse = ", "),
         ">"
@@ -102,7 +102,7 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
     }
   }
 
-  if (!inherits(data, "PJRTBuffer")) {
+  if (!test_class(data, "PJRTBuffer")) {
     dim(value_reprs) <- dim2(data)
   }
 
@@ -117,29 +117,6 @@ method(repr, TensorConstant) <- function(x, simplify_dense = TRUE) {
   paste0("dense<", f(value_reprs), "> : ", repr(type))
 }
 
-#' @title Constant
-#' @description
-#' This represents a constant value.
-#' @param value ([`TensorConstant`])\cr
-#'   The value of the constant.
-#' @return `Constant`
-#' @export
-Constant <- new_class(
-  "Constant",
-  properties = list(
-    value = S7::new_union(
-      # It's not clear to me, why we need the other constant types (FloatType) as there are no real
-      # scalars
-      # TODO: Simplify this
-      TensorConstant
-    )
-  )
-)
-
-method(repr, Constant) <- function(x, simplify_dense = TRUE) {
-  repr(x@value, simplify_dense = simplify_dense)
-}
-
 #' @title Convert R value to Constant
 #' @description
 #' Convert R value to Constant.
@@ -152,23 +129,17 @@ method(repr, Constant) <- function(x, simplify_dense = TRUE) {
 #' @param ... (any)
 #'   Additional arguments.
 #' @export
-r_to_constant <- S7::new_generic(
-  "r_to_constant",
-  "value",
-  function(value, dtype = NULL, shape, ...) {
-    if (!is.null(dtype)) {
-      dtype <- as.character(dtype)
-    }
-    S7::S7_dispatch()
-  }
-)
+r_to_constant <- function(value, dtype = NULL, shape, ...) {
+  UseMethod("r_to_constant")
+}
 
-method(r_to_constant, S7::class_logical) <- function(
-  value,
-  dtype = NULL,
-  shape,
-  ...
-) {
+#' @export
+r_to_constant.default <- function(value, dtype = NULL, shape, ...) {
+  cli_abort("Unsupported type for r_to_constant: {class(value)[1]}")
+}
+
+#' @export
+r_to_constant.logical <- function(value, dtype = NULL, shape, ...) {
   if (!is.null(dtype) && !(dtype %in% c("i1", "pred"))) {
     cli_abort("Invalid dtype for logical")
   }
@@ -176,20 +147,11 @@ method(r_to_constant, S7::class_logical) <- function(
 
   tensor_type <- TensorType(dtype = BooleanType(), shape = shape)
 
-  tensor_constant <- TensorConstant(
-    data = value,
-    type = tensor_type
-  )
-
-  return(Constant(value = tensor_constant))
+  return(Constant(data = value, type = tensor_type))
 }
 
-method(r_to_constant, S7::class_double) <- function(
-  value,
-  dtype = NULL,
-  shape,
-  ...
-) {
+#' @export
+r_to_constant.double <- function(value, dtype = NULL, shape, ...) {
   dtype <- dtype %??% "f32"
   if (dtype %in% c("i8", "i16", "i32", "i64", "ui8", "ui16", "ui32", "ui64")) {
     value <- as.integer(value)
@@ -200,20 +162,11 @@ method(r_to_constant, S7::class_double) <- function(
   shape <- Shape(shape)
   tensor_type <- TensorType(dtype, shape)
 
-  tensor_constant <- TensorConstant(
-    data = value,
-    type = tensor_type
-  )
-
-  return(Constant(value = tensor_constant))
+  return(Constant(data = value, type = tensor_type))
 }
 
-method(r_to_constant, S7::class_integer) <- function(
-  value,
-  dtype = NULL,
-  shape,
-  ...
-) {
+#' @export
+r_to_constant.integer <- function(value, dtype = NULL, shape, ...) {
   dtype <- dtype %??% "i32"
   if (dtype %in% c("i1", "pred")) {
     cli_abort("Invalid dtype for integer")
@@ -228,45 +181,21 @@ method(r_to_constant, S7::class_integer) <- function(
 
   tensor_type <- TensorType(dtype, shape)
 
-  tensor_constant <- TensorConstant(
-    data = value,
-    type = tensor_type
-  )
-
-  return(Constant(value = tensor_constant))
+  return(Constant(data = value, type = tensor_type))
 }
 
-method(r_to_constant, S7::new_S3_class("PJRTBuffer")) <- function(
-  value,
-  dtype = NULL,
-  shape,
-  ...
-) {
+#' @export
+r_to_constant.PJRTBuffer <- function(value, dtype = NULL, shape, ...) {
   dtype <- dtype %??% as.character(pjrt::elt_type(value))
   shape <- Shape(shape)
 
   tensor_type <- TensorType(dtype = as_dtype(dtype), shape = shape)
 
-  tensor_constant <- TensorConstant(
-    data = value,
-    type = tensor_type
-  )
-
-  return(Constant(value = tensor_constant))
+  return(Constant(data = value, type = tensor_type))
 }
-
-method(r_to_constant, S7::class_any) <- function(
-  value,
-  dtype = NULL,
-  shape,
-  ...
-) {
-  cli_abort("Unsupported type for r_to_constant: ", class(value)[1])
-}
-
 
 #' @export
-#' @method shape stablehlo::TensorConstant
-`shape.stablehlo::TensorConstant` <- function(x, ...) {
-  x@type@shape@dims
+#' @method shape Constant
+shape.Constant <- function(x, ...) {
+  x$type$shape$dims
 }

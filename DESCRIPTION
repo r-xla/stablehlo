@@ -21,7 +21,6 @@ Imports:
     cli,
     methods,
     rlang,
-    S7,
     tengen,
     withr
 Suggests:
@@ -46,7 +45,6 @@ Collate:
     'repr.R'
     'list_of.R'
     'shape.R'
-    'enum.R'
     'types.R'
     'constant.R'
     'format_double.R'

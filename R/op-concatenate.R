@@ -16,7 +16,7 @@ infer_types_concatenate <- function(..., dimension) {
   }
 
   # (C1) same(element_type(inputs...))
-  dtypes <- lapply(dots, \(x) x@type@dtype)
+  dtypes <- lapply(dots, \(x) x$type$dtype)
   if (length(unique(dtypes)) != 1) {
     cli_abort("Each input must have same element type")
   }
@@ -45,7 +45,7 @@ infer_types_concatenate <- function(..., dimension) {
   ValueTypes(list(
     ValueType(
       TensorType(
-        dtype = dots[[1]]@type@dtype,
+        dtype = dots[[1]]$type$dtype,
         shape = Shape(result_dims)
       )
     )

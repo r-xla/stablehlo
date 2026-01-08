@@ -4,7 +4,7 @@
 \alias{OpSignature}
 \title{OpSignature}
 \usage{
-OpSignature(input_types = ValueTypes(), output_types = ValueTypes())
+OpSignature(input_types, output_types)
 }
 \arguments{
 \item{input_types}{(\code{\link{ValueTypes}})\cr

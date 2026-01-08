@@ -7,54 +7,51 @@ NULL
 #' @param dims (`integer()`)
 #' @return `Shape`
 #' @export
-Shape <- new_class(
-  "Shape",
-  properties = list(
-    dims = S7::class_numeric
-  ),
-  constructor = function(dims) {
-    new_object(
-      S7::S7_object(),
-      dims = as.integer(dims)
-    )
-  },
-  validator = function(self) {
-    if (!is.integer(self@dims)) {
-      cli_abort("dims must be an integer vector")
-    }
+Shape <- function(dims = integer()) {
+  dims <- as.integer(dims)
 
-    dims <- self@dims
-    if (any(dims[!is.na(dims)] < 0L)) {
-      cli_abort("Dimensions must be >= 0")
-    }
+  if (any(dims[!is.na(dims)] < 0L)) {
+    cli_abort("Dimensions must be >= 0")
   }
-)
 
-method(`==`, list(Shape, Shape)) <- function(e1, e2) {
-  identical(e1@dims, e2@dims)
+  structure(
+    list(dims = dims),
+    class = "Shape"
+  )
 }
 
-method(repr, Shape) <- function(x) {
-  dims <- x@dims
+#' @export
+`==.Shape` <- function(e1, e2) {
+  identical(e1$dims, e2$dims)
+}
+
+#' @export
+repr.Shape <- function(x, ...) {
+  dims <- x$dims
   dims[is.na(dims)] <- "?"
   paste0(dims, collapse = "x")
 }
 
 #' @export
-#' @method shape stablehlo::Shape
-`shape.stablehlo::Shape` <- function(x, ...) {
-  x@dims
-}
-
-
-#' @export
-#' @method dtype stablehlo::TensorConstant
-`dtype.stablehlo::TensorConstant` <- function(x, ...) {
-  x@type@dtype
+print.Shape <- function(x, ...) {
+  cat("Shape[", repr(x), "]\n", sep = "")
+  invisible(x)
 }
 
 #' @export
-#' @method dtype stablehlo::FuncValue
-`dtype.stablehlo::FuncValue` <- function(x, ...) {
-  dtype(x@value_type)
+#' @method shape Shape
+shape.Shape <- function(x, ...) {
+  x$dims
+}
+
+#' @export
+#' @method dtype Constant
+dtype.Constant <- function(x, ...) {
+  x$type$dtype
+}
+
+#' @export
+#' @method dtype FuncValue
+dtype.FuncValue <- function(x, ...) {
+  dtype(x$value_type)
 }

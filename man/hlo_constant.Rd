@@ -8,9 +8,9 @@
 \alias{infer_types_constant}
 \title{Create a Constant}
 \usage{
-hlo_scalar(value, ..., func = NULL)
+hlo_scalar(value, ..., dtype = NULL, func = NULL)
 
-hlo_tensor(value, ..., func = NULL)
+hlo_tensor(value, ..., dtype = NULL, shape = NULL, func = NULL)
 
 hlo_empty(dtype, shape, func = NULL)
 
@@ -23,12 +23,12 @@ Value from which to create a constant.}
 \item{...}{(any)\cr
 Additional arguments.}
 
+\item{dtype}{(\code{character(1)})\cr
+One of: pred, i8, i16, i32, i64, ui8, ui16, ui32, ui64, f32, f64.}
+
 \item{func}{(\code{\link{Func}})\cr
 The function to add the constant to.
 Per default, uses the last function created with \code{\link{hlo_func}} or \code{\link{local_func}}.}
-
-\item{dtype}{(\code{character(1)})\cr
-One of: pred, i8, i16, i32, i64, ui8, ui16, ui32, ui64, f32, f64.}
 
 \item{shape}{(\code{integer()})\cr
 The shape}

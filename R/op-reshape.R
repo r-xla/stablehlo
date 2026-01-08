@@ -24,7 +24,7 @@ infer_types_reshape <- function(
   ValueTypes(list(
     ValueType(
       TensorType(
-        dtype = operand@type@dtype,
+        dtype = operand$type$dtype,
         shape = Shape(result_dims)
       )
     )
