@@ -242,3 +242,303 @@ tensor_shape_error <- function(
 
   err
 }
+
+#' Tensor Number of Dimensions Error
+#'
+#' Creates and optionally signals an error when a tensor has an unexpected number of dimensions.
+#'
+#' @param arg Name of the argument being checked.
+#' @param expected Integer vector of length 2 specifying [lower, upper) bounds.
+#'   Use NA for lower to mean no lower bound, NA for upper to mean no upper bound.
+#'   Use c(n, n+1) to require exactly n dimensions.
+#' @param observed The observed number of dimensions.
+#' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
+#' @export
+tensor_ndims_error <- function(
+  arg,
+  expected,
+  observed,
+  call = NULL,
+  signal = TRUE
+) {
+  expected <- as.integer(expected)
+  if (length(expected) != 2L) {
+    stop("expected must be a length-2 integer vector")
+  }
+
+  lower <- expected[1L]
+  upper <- expected[2L]
+
+  # Format the range string
+  # nolint start: object_usage_linter
+  if (is.na(lower) && is.na(upper)) {
+    range_str <- "any number of dimensions"
+  } else if (is.na(lower)) {
+    range_str <- paste0("less than ", upper, " dimensions")
+  } else if (is.na(upper)) {
+    range_str <- paste0("at least ", lower, " dimensions")
+  } else if (lower == upper - 1L) {
+    range_str <- paste0(
+      "exactly ",
+      lower,
+      " dimension",
+      if (lower != 1L) "s" else ""
+    )
+  } else {
+    range_str <- paste0(
+      "between ",
+      lower,
+      " and ",
+      upper - 1L,
+      " dimensions (inclusive)"
+    )
+  }
+  # nolint end
+
+  message <- format_error(c(
+    "{.var {arg}} must have {range_str}.",
+    i = "Got {observed} dimension{?s}."
+  ))
+
+  err <- new_stablehlo_error(
+    message = message,
+    arg = arg,
+    expected = expected,
+    observed = as.integer(observed),
+    class = "tensor_ndims_error",
+    call = call
+  )
+
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
+}
+
+#' Dimension Out of Range Error
+#'
+#' Creates and optionally signals an error when a dimension index is outside the valid range [0, ndims).
+#'
+#' @param arg Name of the argument being checked.
+#' @param dimension The dimension index(es) that are out of range (0-based).
+#' @param ndims The number of dimensions of the tensor.
+#' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
+#' @export
+dimension_out_of_range_error <- function(
+  arg,
+  dimension,
+  ndims,
+  call = NULL,
+  signal = TRUE
+) {
+  dimension <- as.integer(dimension)
+  ndims <- as.integer(ndims)
+
+  dims_str <- if (length(dimension) == 1L) {
+    # nolint: object_usage_linter
+    paste0("dimension index ", dimension)
+  } else {
+    paste0("dimension indices: ", paste0(dimension, collapse = ", "))
+  }
+
+  message <- format_error(c(
+    "{.var {arg}} contains invalid dimension index{?es}.",
+    i = "Got {dims_str}, but valid range is [0, {ndims})."
+  ))
+
+  err <- new_stablehlo_error(
+    message = message,
+    arg = arg,
+    dimension = dimension,
+    ndims = ndims,
+    class = "dimension_out_of_range_error",
+    call = call
+  )
+
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
+}
+
+#' Dimension Uniqueness Error
+#'
+#' Creates and optionally signals an error when dimension indices are not unique.
+#'
+#' @param arg Name of the argument being checked.
+#' @param dimensions The dimension indices that are not unique (0-based).
+#' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
+#' @export
+dimension_uniqueness_error <- function(
+  arg,
+  dimensions,
+  call = NULL,
+  signal = TRUE
+) {
+  dimensions <- as.integer(dimensions)
+  dims_str <- paste0(dimensions, collapse = ", ") # nolint: object_usage_linter
+
+  message <- format_error(c(
+    "{.var {arg}} contains duplicate dimension indices.",
+    i = "Got [{dims_str}]. Each dimension index must appear only once."
+  ))
+
+  err <- new_stablehlo_error(
+    message = message,
+    arg = arg,
+    dimensions = dimensions,
+    class = "dimension_uniqueness_error",
+    call = call
+  )
+
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
+}
+
+#' Index Out of Bounds Error
+#'
+#' Creates and optionally signals an error when an index is outside the valid range [lower, upper).
+#'
+#' @param arg Name of the argument being checked.
+#' @param lower Lower bound of valid range (0-based).
+#' @param upper Upper bound of valid range, exclusive (0-based).
+#' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
+#' @export
+index_out_of_bounds_error <- function(
+  arg,
+  lower,
+  upper,
+  call = NULL,
+  signal = TRUE
+) {
+  lower <- as.integer(lower)
+  upper <- as.integer(upper)
+
+  message <- format_error(c(
+    "{.var {arg}} contains index{?es} outside the valid range.",
+    i = "Valid range is [{lower}, {upper})."
+  ))
+
+  err <- new_stablehlo_error(
+    message = message,
+    arg = arg,
+    lower = lower,
+    upper = upper,
+    class = "index_out_of_bounds_error",
+    call = call
+  )
+
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
+}
+
+#' Slice Index Error
+#'
+#' Creates and optionally signals an error when slice indices (start_indices, limit_indices) are invalid.
+#'
+#' @param arg Name of the argument being checked.
+#' @param indices The invalid indices (0-based).
+#' @param index_type Type of index: "start" or "limit".
+#' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
+#' @export
+slice_index_error <- function(
+  arg,
+  indices,
+  index_type,
+  call = NULL,
+  signal = TRUE
+) {
+  indices <- as.integer(indices)
+
+  indices_str <- if (length(indices) == 1L) {
+    # nolint: object_usage_linter
+    paste0("index ", indices)
+  } else {
+    paste0("indices: ", paste0(indices, collapse = ", "))
+  }
+
+  index_type_label <- if (index_type == "start") "start" else "limit" # nolint: object_usage_linter
+
+  message <- format_error(c(
+    "{.var {arg}} contains invalid {index_type_label} {if (length(indices) == 1L) 'index' else 'indices'}.",
+    i = "Got {indices_str}."
+  ))
+
+  err <- new_stablehlo_error(
+    message = message,
+    arg = arg,
+    indices = indices,
+    index_type = index_type,
+    class = "slice_index_error",
+    call = call
+  )
+
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
+}
+
+#' Permutation Error
+#'
+#' Creates and optionally signals an error when permutation values are invalid.
+#'
+#' @param arg Name of the argument being checked.
+#' @param permutation The permutation values that are invalid (0-based).
+#' @param ndims The number of dimensions of the tensor.
+#' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
+#' @export
+permutation_error <- function(
+  arg,
+  permutation,
+  ndims,
+  call = NULL,
+  signal = TRUE
+) {
+  permutation <- as.integer(permutation)
+  ndims <- as.integer(ndims)
+
+  # nolint start: object_usage_linter
+  perm_str <- paste0(permutation, collapse = ", ")
+  if (ndims == 0L) {
+    expected_str <- "(empty)"
+  } else {
+    expected_str <- paste0(seq(0, ndims - 1), collapse = ", ")
+  }
+  # nolint end
+
+  message <- format_error(c(
+    "{.var {arg}} must be a permutation of [0, 1, ..., {ndims - 1}].",
+    i = "Got [{perm_str}], but expected a permutation of [{expected_str}]."
+  ))
+
+  err <- new_stablehlo_error(
+    message = message,
+    arg = arg,
+    permutation = permutation,
+    ndims = ndims,
+    class = "permutation_error",
+    call = call
+  )
+
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
+}

@@ -274,7 +274,7 @@ TensorType <- function(dtype, shape) {
 
 #' @export
 `!=.TensorType` <- function(e1, e2) {
-  !(e1 == e2)
+  !(e1 == e2) # nolint
 }
 
 #' @export
@@ -393,7 +393,7 @@ make_vt <- function(type, shape) {
 
 #' @export
 `!=.ValueType` <- function(e1, e2) {
-  !(e1 == e2)
+  !(e1 == e2) # nolint
 }
 
 #' @export

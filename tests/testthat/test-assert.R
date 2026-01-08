@@ -3,15 +3,15 @@ test_that("assert_vt_has_ttype", {
 
   expect_error(
     assert_vt_has_ttype(x = 1),
-    "must be a ValueType"
+    "Expected.*ValueType"
   )
   expect_error(
     assert_vt_has_ttype(x = y, "BooleanType", shape = integer()),
-    "must be one of"
+    "Expected.*dtype"
   )
   expect_error(
     assert_vt_has_ttype(x = y, "IntegerType", shape = 1L),
-    "Got ()"
+    "shape"
   )
   expect_error(
     assert_vt_has_ttype(x = y, "IntegerType", shape = integer()),
@@ -25,7 +25,7 @@ test_that("assert_vt_has_ttype", {
   )
   expect_error(
     assert_vt_has_ttype(x = y, IntegerType(64L), shape = integer()),
-    "must be one of"
+    "Expected.*dtype"
   )
 })
 
@@ -33,13 +33,13 @@ test_that("assert_vt_is_tensor", {
   y <- 1L
   expect_error(
     assert_vt_is_tensor(x = y),
-    "must be a ValueType"
+    "Expected.*ValueType"
   )
 
   token <- ValueType(TokenType())
   expect_error(
     assert_vt_is_tensor(x = token),
-    "must contain a TensorType"
+    "Expected.*TensorType"
   )
 
   z <- make_vt("i32", integer())
@@ -54,11 +54,11 @@ test_that("assert_vts_are_tensors", {
   token <- ValueType(TokenType())
   expect_error(
     assert_vts_are_tensors(x, 1L),
-    "must be a ValueType"
+    "Expected.*ValueType"
   )
   expect_error(
     assert_vts_are_tensors(x = token),
-    "must contain a TensorType"
+    "Expected.*TensorType"
   )
   expect_error(
     assert_vts_are_tensors(x),
@@ -74,11 +74,11 @@ test_that("assert_vt_equal", {
 
   expect_error(
     assert_vt_equal(x, z1),
-    "to be equal"
+    "same tensor type"
   )
   expect_error(
     assert_vt_equal(x, z2),
-    "to be equal"
+    "same tensor type"
   )
 
   expect_error(
@@ -93,7 +93,7 @@ test_that("assert_vts_have_same_dtype", {
   z <- make_vt("i32", 1L)
   expect_error(
     assert_vts_have_same_dtype(x, y),
-    "must have the same dtype"
+    "same tensor type"
   )
   expect_error(
     assert_vts_have_same_dtype(x, z),
@@ -125,7 +125,7 @@ test_that("assert_one_of", {
 
   expect_error(
     assert_one_of(x, "TensorType", "TokenType"),
-    "must be a"
+    "Expected.*class"
   )
 
   expect_error(
