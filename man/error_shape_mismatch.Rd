@@ -20,9 +20,9 @@ error_shape_mismatch(
 
 \item{arg_rhs}{Name of the right-hand side argument.}
 
-\item{dim_lhs}{Dimension index in the left-hand side tensor.}
+\item{dim_lhs}{Dimension index in the left-hand side tensor (0-based).}
 
-\item{dim_rhs}{Dimension index in the right-hand side tensor.}
+\item{dim_rhs}{Dimension index in the right-hand side tensor (0-based).}
 
 \item{size_lhs}{Size of the dimension in the left-hand side tensor.}
 

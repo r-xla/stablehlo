@@ -34,7 +34,7 @@ repr.Shape <- function(x, ...) {
 
 #' @export
 print.Shape <- function(x, ...) {
-  cat("<Shape: ", repr(x), ">\n", sep = "")
+  cat("Shape[", repr(x), "]\n", sep = "")
   invisible(x)
 }
 

@@ -45,11 +45,9 @@ test_that("TensorDataType equality", {
   expect_false(FloatType(32) == FloatType(64))
   expect_true(FloatType(32) != FloatType(64))
 
-  # Cross-type comparisons use dtypes_equal() internally
-  # S3 dispatch for == between different dtype classes is not supported
-  # expect_false(IntegerType(32) == FloatType(32))
-  # expect_true(IntegerType(32) != FloatType(32))
-  # expect_false(BooleanType() == IntegerType(32))
+  expect_false(IntegerType(32) == FloatType(32))
+  expect_true(IntegerType(32) != FloatType(32))
+  expect_false(BooleanType() == IntegerType(32))
 })
 
 test_that("TensorType equality", {

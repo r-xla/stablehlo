@@ -36,7 +36,7 @@ merge_funcs <- function(funcs) {
   all_same <- all(vapply(
     funcs[-1],
     function(f) {
-      identical(f$.env, funcs[[1]]$.env)
+      identical(f, funcs[[1]])
     },
     logical(1)
   ))

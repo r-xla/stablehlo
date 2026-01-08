@@ -242,29 +242,9 @@ Func <- function(
   env$outputs <- outputs
   env$body <- body
 
-  structure(
-    list(.env = env),
-    class = "Func"
-  )
-}
-
-# Accessor functions using active binding-like behavior via $ method
-#' @export
-`$.Func` <- function(x, name) {
-  if (name == ".env") {
-    return(x[[".env"]])
-  }
-  x$.env[[name]]
-}
-
-#' @export
-`$<-.Func` <- function(x, name, value) {
-  if (name == ".env") {
-    x[[".env"]] <- value
-  } else {
-    x$.env[[name]] <- value
-  }
-  x
+  # Return the environment directly with Func class
+  class(env) <- "Func"
+  env
 }
 
 #' @export

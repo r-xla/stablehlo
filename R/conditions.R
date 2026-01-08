@@ -3,19 +3,35 @@ NULL
 
 # Base error constructor
 new_stablehlo_error <- function(
-  message,
-  ...,
-  class = character(),
-  call = NULL
-) {
-  structure(
+    ...,
+    class = character(),
+    call = NULL) {
+  err <- structure(
     list(
-      message = message,
       call = call,
       ...
     ),
     class = c(class, "stablehlo_error", "error", "condition")
   )
+
+  # Populate the message field by calling the appropriate conditionMessage method
+  err$message <- conditionMessage(err)
+  err
+}
+
+#' Convert 0-based indices to 1-based
+#' @description Generic function to convert 0-based indices in error conditions to 1-based
+#' @param x Condition object with indices
+#' @param ... Additional arguments (not used)
+#' @return Condition object with indices converted to 1-based
+#' @export
+to_one_based <- function(x, ...) {
+  UseMethod("to_one_based")
+}
+
+#' @export
+to_one_based.default <- function(x, ...) {
+  x
 }
 
 #' Shape Mismatch Error
@@ -24,30 +40,23 @@ new_stablehlo_error <- function(
 #'
 #' @param arg_lhs Name of the left-hand side argument.
 #' @param arg_rhs Name of the right-hand side argument.
-#' @param dim_lhs Dimension index in the left-hand side tensor.
-#' @param dim_rhs Dimension index in the right-hand side tensor.
+#' @param dim_lhs Dimension index in the left-hand side tensor (0-based).
+#' @param dim_rhs Dimension index in the right-hand side tensor (0-based).
 #' @param size_lhs Size of the dimension in the left-hand side tensor.
 #' @param size_rhs Size of the dimension in the right-hand side tensor.
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_shape_mismatch <- function(
-  arg_lhs,
-  arg_rhs,
-  dim_lhs,
-  dim_rhs,
-  size_lhs,
-  size_rhs,
-  call = NULL,
-  signal = TRUE
-) {
-  message <- format_error(c(
-    "Dimension {dim_lhs} of {.var {arg_lhs}} must match dimension {dim_rhs} of {.var {arg_rhs}}.",
-    i = "Got {.var {arg_lhs}}[{dim_lhs}] = {size_lhs} and {.var {arg_rhs}}[{dim_rhs}] = {size_rhs}."
-  ))
-
+    arg_lhs,
+    arg_rhs,
+    dim_lhs,
+    dim_rhs,
+    size_lhs,
+    size_rhs,
+    call = NULL,
+    signal = TRUE) {
   err <- new_stablehlo_error(
-    message = message,
     arg_lhs = arg_lhs,
     arg_rhs = arg_rhs,
     dim_lhs = as.integer(dim_lhs),
@@ -59,10 +68,25 @@ error_shape_mismatch <- function(
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err)
   }
 
   err
+}
+
+#' @export
+conditionMessage.shape_mismatch_error <- function(c) {
+  format_error(c(
+    "Dimension {c$dim_lhs} of {.var {c$arg_lhs}} must match dimension {c$dim_rhs} of {.var {c$arg_rhs}}.",
+    i = "Got {.var {c$arg_lhs}}[{c$dim_lhs}] = {c$size_lhs} and {.var {c$arg_rhs}}[{c$dim_rhs}] = {c$size_rhs}."
+  ))
+}
+
+#' @export
+to_one_based.shape_mismatch_error <- function(x, ...) {
+  x$dim_lhs <- x$dim_lhs + 1L
+  x$dim_rhs <- x$dim_rhs + 1L
+  x
 }
 
 #' Unequal Tensor Types Error
@@ -74,32 +98,33 @@ error_shape_mismatch <- function(
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_unequal_tensor_types <- function(args, call = NULL, signal = TRUE) {
-  nms <- names(args)
-  # fmt: skip
-  types <- paste0( # nolint: object_usage_linter
-    vapply(seq_along(args), FUN.VALUE = character(1), function(i) {
-      paste0(nms[i], "=", repr(args[[i]]))
-    }),
-    collapse = ", "
-  )
-
-  message <- format_error(c(
-    "Expected all arguments to have the same tensor type.",
-    i = "Got {types}."
-  ))
-
   err <- new_stablehlo_error(
-    message = message,
     args = args,
     class = "unequal_tensor_types_error",
     call = call
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err)
   }
 
   err
+}
+
+#' @export
+conditionMessage.unequal_tensor_types_error <- function(c) {
+  nms <- names(c$args)
+  types <- paste0(
+    vapply(seq_along(c$args), FUN.VALUE = character(1), function(i) {
+      paste0(nms[i], "=", repr(c$args[[i]]))
+    }),
+    collapse = ", "
+  )
+
+  format_error(c(
+    "Expected all arguments to have the same tensor type.",
+    i = "Got {types}."
+  ))
 }
 
 #' Invalid Identifier Error
@@ -111,23 +136,25 @@ error_unequal_tensor_types <- function(args, call = NULL, signal = TRUE) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_invalid_identifier <- function(arg, call = NULL, signal = TRUE) {
-  message <- format_error(c(
-    "Identifiers must start with a letter and contain only letters, numbers, and underscores.",
-    i = "Got {.val {arg}}."
-  ))
-
   err <- new_stablehlo_error(
-    message = message,
     arg = arg,
     class = "invalid_identifier_error",
     call = call
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err)
   }
 
   err
+}
+
+#' @export
+conditionMessage.invalid_identifier_error <- function(c) {
+  format_error(c(
+    "Identifiers must start with a letter and contain only letters, numbers, and underscores.",
+    i = "Got {.val {c$arg}}."
+  ))
 }
 
 #' Class Error
@@ -141,13 +168,7 @@ error_invalid_identifier <- function(arg, call = NULL, signal = TRUE) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_class <- function(arg, expected, observed, call = NULL, signal = TRUE) {
-  message <- format_error(c(
-    "Expected {.var {arg}} to have class {.or {expected}}.",
-    i = "Got {.cls {observed}}."
-  ))
-
   err <- new_stablehlo_error(
-    message = message,
     arg = arg,
     expected = expected,
     observed = observed,
@@ -156,10 +177,18 @@ error_class <- function(arg, expected, observed, call = NULL, signal = TRUE) {
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err)
   }
 
   err
+}
+
+#' @export
+conditionMessage.class_error <- function(c) {
+  format_error(c(
+    "Expected {.var {c$arg}} to have class {.or {c$expected}}.",
+    i = "Got {.cls {c$observed}}."
+  ))
 }
 
 #' Tensor Data Type Error
@@ -173,19 +202,12 @@ error_class <- function(arg, expected, observed, call = NULL, signal = TRUE) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_tensor_dtype <- function(
-  arg,
-  expected,
-  observed,
-  call = NULL,
-  signal = TRUE
-) {
-  message <- format_error(c(
-    "Expected {.var {arg}} to have dtype {.or {expected}}.",
-    i = "Got {.cls {observed}}."
-  ))
-
+    arg,
+    expected,
+    observed,
+    call = NULL,
+    signal = TRUE) {
   err <- new_stablehlo_error(
-    message = message,
     arg = arg,
     expected = expected,
     observed = observed,
@@ -194,10 +216,18 @@ error_tensor_dtype <- function(
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err)
   }
 
   err
+}
+
+#' @export
+conditionMessage.tensor_dtype_error <- function(c) {
+  format_error(c(
+    "Expected {.var {c$arg}} to have dtype {.or {c$expected}}.",
+    i = "Got {.cls {c$observed}}."
+  ))
 }
 
 #' Tensor Shape Error
@@ -211,24 +241,12 @@ error_tensor_dtype <- function(
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_tensor_shape <- function(
-  arg,
-  expected,
-  observed,
-  call = NULL,
-  signal = TRUE
-) {
-  # fmt: skip
-  shapevec_repr <- function(shape) { # nolint: object_usage_linter
-    sprintf("(%s)", paste0(shape, collapse = ","))
-  }
-
-  message <- format_error(c(
-    "Expected {.var {arg}} to have shape {shapevec_repr(expected)}.",
-    i = "Got {shapevec_repr(observed)}."
-  ))
-
+    arg,
+    expected,
+    observed,
+    call = NULL,
+    signal = TRUE) {
   err <- new_stablehlo_error(
-    message = message,
     arg = arg,
     expected = as.integer(expected),
     observed = as.integer(observed),
@@ -237,10 +255,22 @@ error_tensor_shape <- function(
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err)
   }
 
   err
+}
+
+#' @export
+conditionMessage.tensor_shape_error <- function(c) {
+  shapevec_repr <- function(shape) {
+    sprintf("(%s)", paste0(shape, collapse = ","))
+  }
+
+  format_error(c(
+    "Expected {.var {c$arg}} to have shape {shapevec_repr(c$expected)}.",
+    i = "Got {shapevec_repr(c$observed)}."
+  ))
 }
 
 #' Tensor Number of Dimensions Error
@@ -256,21 +286,36 @@ error_tensor_shape <- function(
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_tensor_ndims <- function(
-  arg,
-  expected,
-  observed,
-  call = NULL,
-  signal = TRUE
-) {
+    arg,
+    expected,
+    observed,
+    call = NULL,
+    signal = TRUE) {
   expected <- as.integer(expected)
   if (length(expected) != 2L) {
     stop("expected must be a length-2 integer vector")
   }
 
-  lower <- expected[1L]
-  upper <- expected[2L]
+  err <- new_stablehlo_error(
+    arg = arg,
+    expected = expected,
+    observed = as.integer(observed),
+    class = "tensor_ndims_error",
+    call = call
+  )
 
-  # nolint start: object_usage_linter
+  if (signal) {
+    rlang::cnd_signal(err)
+  }
+
+  err
+}
+
+#' @export
+conditionMessage.tensor_ndims_error <- function(c) {
+  lower <- c$expected[1L]
+  upper <- c$expected[2L]
+
   if (is.na(lower) && is.na(upper)) {
     range_str <- "any number of dimensions"
   } else if (is.na(lower)) {
@@ -293,27 +338,11 @@ error_tensor_ndims <- function(
       " dimensions (inclusive)"
     )
   }
-  # nolint end
 
-  message <- format_error(c(
-    "{.var {arg}} must have {range_str}.",
-    i = "Got {observed} dimension{?s}."
+  format_error(c(
+    "{.var {c$arg}} must have {range_str}.",
+    i = "Got {c$observed} dimension{?s}."
   ))
-
-  err <- new_stablehlo_error(
-    message = message,
-    arg = arg,
-    expected = expected,
-    observed = as.integer(observed),
-    class = "tensor_ndims_error",
-    call = call
-  )
-
-  if (signal) {
-    rlang::abort(message, call = call, condition = err)
-  }
-
-  err
 }
 
 #' Dimension Out of Range Error
@@ -327,41 +356,45 @@ error_tensor_ndims <- function(
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_dimension_out_of_range <- function(
-  arg,
-  dimension,
-  ndims,
-  call = NULL,
-  signal = TRUE
-) {
-  dimension <- as.integer(dimension)
-  ndims <- as.integer(ndims)
-
-  # fmt: skip
-  dims_str <- if (length(dimension) == 1L) { # nolint: object_usage_linter
-    paste0("dimension index ", dimension)
-  } else {
-    paste0("dimension indices: ", paste0(dimension, collapse = ", "))
-  }
-
-  message <- format_error(c(
-    "{.var {arg}} contains invalid dimension index{?es}.",
-    i = "Got {dims_str}, but valid range is [0, {ndims})."
-  ))
-
+    arg,
+    dimension,
+    ndims,
+    call = NULL,
+    signal = TRUE) {
   err <- new_stablehlo_error(
-    message = message,
     arg = arg,
-    dimension = dimension,
-    ndims = ndims,
+    dimension = as.integer(dimension),
+    ndims = as.integer(ndims),
     class = "dimension_out_of_range_error",
     call = call
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err)
   }
 
   err
+}
+
+#' @export
+conditionMessage.dimension_out_of_range_error <- function(c) {
+  dims_str <- if (length(c$dimension) == 1L) {
+    paste0("dimension index ", c$dimension)
+  } else {
+    paste0("dimension indices: ", paste0(c$dimension, collapse = ", "))
+  }
+
+  format_error(c(
+    "{.var {c$arg}} contains invalid dimension index{?es}.",
+    i = "Got {dims_str}, but valid range is [0, {c$ndims})."
+  ))
+}
+
+#' @export
+to_one_based.dimension_out_of_range_error <- function(x, ...) {
+  x$dimension <- x$dimension + 1L
+  # ndims is a count, not an index, so it doesn't need conversion
+  x
 }
 
 #' Dimension Uniqueness Error
@@ -374,32 +407,38 @@ error_dimension_out_of_range <- function(
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_dimension_uniqueness <- function(
-  arg,
-  dimensions,
-  call = NULL,
-  signal = TRUE
-) {
-  dimensions <- as.integer(dimensions)
-  dims_str <- paste0(dimensions, collapse = ", ") # nolint: object_usage_linter
-
-  message <- format_error(c(
-    "{.var {arg}} contains duplicate dimension indices.",
-    i = "Got [{dims_str}]. Each dimension index must appear only once."
-  ))
-
+    arg,
+    dimensions,
+    call = NULL,
+    signal = TRUE) {
   err <- new_stablehlo_error(
-    message = message,
     arg = arg,
-    dimensions = dimensions,
+    dimensions = as.integer(dimensions),
     class = "dimension_uniqueness_error",
     call = call
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err, call = call)
   }
 
   err
+}
+
+#' @export
+conditionMessage.dimension_uniqueness_error <- function(c) {
+  dims_str <- paste0(c$dimensions, collapse = ", ")
+
+  format_error(c(
+    "{.var {c$arg}} contains duplicate dimension indices.",
+    i = "Got [{dims_str}]. Each dimension index must appear only once."
+  ))
+}
+
+#' @export
+to_one_based.dimension_uniqueness_error <- function(x, ...) {
+  x$dimensions <- x$dimensions + 1L
+  x
 }
 
 #' Index Out of Bounds Error
@@ -413,34 +452,39 @@ error_dimension_uniqueness <- function(
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_index_out_of_bounds <- function(
-  arg,
-  lower,
-  upper,
-  call = NULL,
-  signal = TRUE
-) {
-  lower <- as.integer(lower)
-  upper <- as.integer(upper)
-
-  message <- format_error(c(
-    "{.var {arg}} contains index{?es} outside the valid range.",
-    i = "Valid range is [{lower}, {upper})."
-  ))
-
+    arg,
+    lower,
+    upper,
+    call = NULL,
+    signal = TRUE) {
   err <- new_stablehlo_error(
-    message = message,
     arg = arg,
-    lower = lower,
-    upper = upper,
+    lower = as.integer(lower),
+    upper = as.integer(upper),
     class = "index_out_of_bounds_error",
     call = call
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err)
   }
 
   err
+}
+
+#' @export
+conditionMessage.index_out_of_bounds_error <- function(c) {
+  format_error(c(
+    "{.var {c$arg}} contains index{?es} outside the valid range.",
+    i = "Valid range is [{c$lower}, {c$upper})."
+  ))
+}
+
+#' @export
+to_one_based.index_out_of_bounds_error <- function(x, ...) {
+  x$lower <- x$lower + 1L
+  x$upper <- x$upper + 1L
+  x
 }
 
 #' Slice Index Error
@@ -454,42 +498,46 @@ error_index_out_of_bounds <- function(
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_slice_index <- function(
-  arg,
-  indices,
-  index_type,
-  call = NULL,
-  signal = TRUE
-) {
-  indices <- as.integer(indices)
-
-  # fmt: skip
-  indices_str <- if (length(indices) == 1L) { # nolint: object_usage_linter
-    paste0("index ", indices)
-  } else {
-    paste0("indices: ", paste0(indices, collapse = ", "))
-  }
-
-  index_type_label <- if (index_type == "start") "start" else "limit" # nolint: object_usage_linter
-
-  message <- format_error(c(
-    "{.var {arg}} contains invalid {index_type_label} {if (length(indices) == 1L) 'index' else 'indices'}.",
-    i = "Got {indices_str}."
-  ))
-
+    arg,
+    indices,
+    index_type,
+    call = NULL,
+    signal = TRUE) {
   err <- new_stablehlo_error(
-    message = message,
     arg = arg,
-    indices = indices,
+    indices = as.integer(indices),
     index_type = index_type,
     class = "slice_index_error",
     call = call
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err)
   }
 
   err
+}
+
+#' @export
+conditionMessage.slice_index_error <- function(c) {
+  indices_str <- if (length(c$indices) == 1L) {
+    paste0("index ", c$indices)
+  } else {
+    paste0("indices: ", paste0(c$indices, collapse = ", "))
+  }
+
+  index_type_label <- if (c$index_type == "start") "start" else "limit"
+
+  format_error(c(
+    "{.var {c$arg}} contains invalid {index_type_label} {if (length(c$indices) == 1L) 'index' else 'indices'}.",
+    i = "Got {indices_str}."
+  ))
+}
+
+#' @export
+to_one_based.slice_index_error <- function(x, ...) {
+  x$indices <- x$indices + 1L
+  x
 }
 
 #' Permutation Error
@@ -503,41 +551,44 @@ error_slice_index <- function(
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_permutation <- function(
-  arg,
-  permutation,
-  ndims,
-  call = NULL,
-  signal = TRUE
-) {
-  permutation <- as.integer(permutation)
-  ndims <- as.integer(ndims)
-
-  # nolint start: object_usage_linter
-  perm_str <- paste0(permutation, collapse = ", ")
-  if (ndims == 0L) {
-    expected_str <- "(empty)"
-  } else {
-    expected_str <- paste0(seq(0, ndims - 1), collapse = ", ")
-  }
-  # nolint end
-
-  message <- format_error(c(
-    "{.var {arg}} must be a permutation of [0, 1, ..., {ndims - 1}].",
-    i = "Got [{perm_str}], but expected a permutation of [{expected_str}]."
-  ))
-
+    arg,
+    permutation,
+    ndims,
+    call = NULL,
+    signal = TRUE) {
   err <- new_stablehlo_error(
-    message = message,
     arg = arg,
-    permutation = permutation,
-    ndims = ndims,
+    permutation = as.integer(permutation),
+    ndims = as.integer(ndims),
     class = "permutation_error",
     call = call
   )
 
   if (signal) {
-    rlang::abort(message, call = call, condition = err)
+    rlang::cnd_signal(err)
   }
 
   err
+}
+
+#' @export
+conditionMessage.permutation_error <- function(c) {
+  perm_str <- paste0(c$permutation, collapse = ", ")
+  if (c$ndims == 0L) {
+    expected_str <- "(empty)"
+  } else {
+    expected_str <- paste0(seq(0, c$ndims - 1), collapse = ", ")
+  }
+
+  format_error(c(
+    "{.var {c$arg}} must be a permutation of [0, 1, ..., {c$ndims - 1}].",
+    i = "Got [{perm_str}], but expected a permutation of [{expected_str}]."
+  ))
+}
+
+#' @export
+to_one_based.permutation_error <- function(x, ...) {
+  x$permutation <- x$permutation + 1L
+  # ndims is a count, not an index, so it doesn't need conversion
+  x
 }

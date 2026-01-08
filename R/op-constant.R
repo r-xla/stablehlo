@@ -109,7 +109,6 @@ hlo_scalar.BooleanType <- function(value, ..., func = NULL) {
 #' @rdname hlo_constant
 #' @export
 hlo_tensor <- function(value, ..., dtype = NULL, shape = NULL, func = NULL) {
-  func <- func %??% .current_func()
   UseMethod("hlo_tensor")
 }
 
@@ -137,7 +136,6 @@ hlo_tensor.integer <- function(
 ) {
   func <- func %??% .current_func()
   shape <- shape %||% get_dims(value)
-  shape <- shape %||% integer()
   impl_hlo_constant(value, dtype = dtype, func = func, shape = shape)
 }
 
@@ -145,7 +143,6 @@ hlo_tensor.integer <- function(
 hlo_tensor.logical <- function(value, ..., shape = NULL, func = NULL) {
   func <- func %??% .current_func()
   shape <- shape %||% get_dims(value)
-  shape <- shape %||% integer()
   impl_hlo_constant(value, dtype = "i1", func = func, shape = shape)
 }
 
@@ -159,7 +156,6 @@ hlo_tensor.double <- function(
 ) {
   func <- func %??% .current_func()
   shape <- shape %||% get_dims(value)
-  shape <- shape %||% integer()
   impl_hlo_constant(value, dtype = dtype, func = func, shape = shape)
 }
 

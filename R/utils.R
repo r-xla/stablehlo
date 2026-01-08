@@ -14,34 +14,6 @@ output_types_from_body <- function(body) {
   body[[length(body)]]$inputs$values
 }
 
-#' @title Represent an R value in stableHLO
-#' @description
-#' Convert R value to StableHLO string representation
-#' @param value (any)\cr
-#'  The R value to convert
-#' @param dtype (`character(1)`)\cr
-#'   The element type to use.
-#' @return `character(1)`
-r_to_string <- function(value, dtype) {
-  if (is.logical(value)) {
-    if (value) {
-      return("true")
-    } else {
-      return("false")
-    }
-  } else if (is.integer(value)) {
-    return(as.character(value))
-  } else if (is.numeric(value)) {
-    if (dtype == "f32") {
-      format_double(value, precision = 32)
-    } else {
-      format_double(value, precision = 64)
-    }
-  } else {
-    return(as.character(value))
-  }
-}
-
 snake_to_camel <- function(str) {
   paste(capitalize(strsplit(str, "_")[[1]]), collapse = "")
 }
@@ -53,8 +25,7 @@ capitalize <- function(str) {
 
 get_dims <- function(data) {
   if (is.null(dim(data))) {
-    if (length(data) <= 1) {
-      # Single element without dim() is treated as scalar (0-D tensor)
+    if (length(data) == 1) {
       return(integer())
     } else {
       return(length(data))

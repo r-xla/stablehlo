@@ -59,19 +59,19 @@
     Code
       Shape(c())
     Output
-      <Shape: >
+      Shape[]
     Code
       Shape(c(5))
     Output
-      <Shape: 5>
+      Shape[5]
     Code
       Shape(c(2, 3, 4))
     Output
-      <Shape: 2x3x4>
+      Shape[2x3x4]
     Code
       Shape(c(10, NA, 20))
     Output
-      <Shape: 10x?x20>
+      Shape[10x?x20]
 
 ---
 
