@@ -139,6 +139,10 @@ specification. At least initially, it will:
 - [`class_error()`](class_error.md) : Class Error
 - [`constant_attr()`](constant_attr.md) : Create a ConstantAttr from R
   values
+- [`dimension_out_of_range_error()`](dimension_out_of_range_error.md) :
+  Dimension Out of Range Error
+- [`dimension_uniqueness_error()`](dimension_uniqueness_error.md) :
+  Dimension Uniqueness Error
 - [`.current_func()`](dot-current_func.md) : Get the last function
   created
 - [`format_double()`](format_double.md) : Format Double Array with
@@ -253,6 +257,8 @@ specification. At least initially, it will:
 - [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
   While Operator
 - [`hlo_xor()`](hlo_xor.md) : Xor Operator
+- [`index_out_of_bounds_error()`](index_out_of_bounds_error.md) : Index
+  Out of Bounds Error
 - [`infer_types_custom_call()`](infer_types_custom_call.md) : Infer
   types for custom call
 - [`infer_types_generic_biv()`](infer_types_generic_biv.md) : Infer
@@ -266,13 +272,17 @@ specification. At least initially, it will:
 - [`invalid_identifier_error()`](invalid_identifier_error.md) : Invalid
   Identifier Error
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
+- [`permutation_error()`](permutation_error.md) : Permutation Error
 - [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
 - [`r_to_string()`](r_to_string.md) : Represent an R value in stableHLO
 - [`repr()`](repr.md) : Generate string representation for object
 - [`shape_mismatch_error()`](shape_mismatch_error.md) : Shape Mismatch
   Error
+- [`slice_index_error()`](slice_index_error.md) : Slice Index Error
 - [`tensor_dtype_error()`](tensor_dtype_error.md) : Tensor Data Type
   Error
+- [`tensor_ndims_error()`](tensor_ndims_error.md) : Tensor Number of
+  Dimensions Error
 - [`tensor_shape_error()`](tensor_shape_error.md) : Tensor Shape Error
 - [`unequal_tensor_types_error()`](unequal_tensor_types_error.md) :
   Unequal Tensor Types Error
