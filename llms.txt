@@ -138,26 +138,6 @@ specification. At least initially, it will:
   values
 - [`.current_func()`](dot-current_func.md) : Get the last function
   created
-- [`error_class()`](error_class.md) : Class Error
-- [`error_dimension_out_of_range()`](error_dimension_out_of_range.md) :
-  Dimension Out of Range Error
-- [`error_dimension_uniqueness()`](error_dimension_uniqueness.md) :
-  Dimension Uniqueness Error
-- [`error_index_out_of_bounds()`](error_index_out_of_bounds.md) : Index
-  Out of Bounds Error
-- [`error_invalid_identifier()`](error_invalid_identifier.md) : Invalid
-  Identifier Error
-- [`error_permutation()`](error_permutation.md) : Permutation Error
-- [`error_shape_mismatch()`](error_shape_mismatch.md) : Shape Mismatch
-  Error
-- [`error_slice_index()`](error_slice_index.md) : Slice Index Error
-- [`error_tensor_dtype()`](error_tensor_dtype.md) : Tensor Data Type
-  Error
-- [`error_tensor_ndims()`](error_tensor_ndims.md) : Tensor Number of
-  Dimensions Error
-- [`error_tensor_shape()`](error_tensor_shape.md) : Tensor Shape Error
-- [`error_unequal_tensor_types()`](error_unequal_tensor_types.md) :
-  Unequal Tensor Types Error
 - [`format_double()`](format_double.md) : Format Double Array with
   Scientific Notation
 - [`hlo_abs()`](hlo_abs.md) : Abs Operator
@@ -283,8 +263,6 @@ specification. At least initially, it will:
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
 - [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
 - [`repr()`](repr.md) : Generate string representation for object
-- [`to_one_based()`](to_one_based.md) : Convert 0-based indices to
-  1-based
 
 # Articles
 
