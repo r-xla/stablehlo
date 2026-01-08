@@ -20,7 +20,7 @@ new_stablehlo_error <- function(
 
 #' Shape Mismatch Error
 #'
-#' Throws an error when dimension sizes don't match between two tensors.
+#' Creates and optionally signals an error when dimension sizes don't match between two tensors.
 #'
 #' @param arg_lhs Name of the left-hand side argument.
 #' @param arg_rhs Name of the right-hand side argument.
@@ -29,6 +29,7 @@ new_stablehlo_error <- function(
 #' @param size_lhs Size of the dimension in the left-hand side tensor.
 #' @param size_rhs Size of the dimension in the right-hand side tensor.
 #' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 shape_mismatch_error <- function(
   arg_lhs,
@@ -37,7 +38,8 @@ shape_mismatch_error <- function(
   dim_rhs,
   size_lhs,
   size_rhs,
-  call = NULL
+  call = NULL,
+  signal = TRUE
 ) {
   message <- format_error(c(
     "Dimension {dim_lhs} of {.var {arg_lhs}} must match dimension {dim_rhs} of {.var {arg_rhs}}.",
@@ -56,17 +58,22 @@ shape_mismatch_error <- function(
     call = call
   )
 
-  rlang::abort(message, call = call, condition = err)
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
 }
 
 #' Unequal Tensor Types Error
 #'
-#' Throws an error when tensors have different types but are expected to match.
+#' Creates and optionally signals an error when tensors have different types but are expected to match.
 #'
 #' @param args Named list of tensor types that should be equal.
 #' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-unequal_tensor_types_error <- function(args, call = NULL) {
+unequal_tensor_types_error <- function(args, call = NULL, signal = TRUE) {
   nms <- names(args)
   types <- paste0(
     # nolint: object_usage_linter
@@ -88,17 +95,22 @@ unequal_tensor_types_error <- function(args, call = NULL) {
     call = call
   )
 
-  rlang::abort(message, call = call, condition = err)
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
 }
 
 #' Invalid Identifier Error
 #'
-#' Throws an error when an identifier doesn't follow naming rules.
+#' Creates and optionally signals an error when an identifier doesn't follow naming rules.
 #'
 #' @param arg The invalid identifier string.
 #' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-invalid_identifier_error <- function(arg, call = NULL) {
+invalid_identifier_error <- function(arg, call = NULL, signal = TRUE) {
   message <- format_error(c(
     "Identifiers must start with a letter and contain only letters, numbers, and underscores.",
     i = "Got {.val {arg}}."
@@ -111,19 +123,24 @@ invalid_identifier_error <- function(arg, call = NULL) {
     call = call
   )
 
-  rlang::abort(message, call = call, condition = err)
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
 }
 
 #' Class Error
 #'
-#' Throws an error when an object has an unexpected class.
+#' Creates and optionally signals an error when an object has an unexpected class.
 #'
 #' @param arg Name of the argument being checked.
 #' @param expected Character vector of expected class names.
 #' @param observed The observed class name.
 #' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-class_error <- function(arg, expected, observed, call = NULL) {
+class_error <- function(arg, expected, observed, call = NULL, signal = TRUE) {
   message <- format_error(c(
     "Expected {.var {arg}} to have class {.or {expected}}.",
     i = "Got {.cls {observed}}."
@@ -138,19 +155,30 @@ class_error <- function(arg, expected, observed, call = NULL) {
     call = call
   )
 
-  rlang::abort(message, call = call, condition = err)
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
 }
 
 #' Tensor Data Type Error
 #'
-#' Throws an error when a tensor has an unexpected data type.
+#' Creates and optionally signals an error when a tensor has an unexpected data type.
 #'
 #' @param arg Name of the argument being checked.
 #' @param expected Character vector of expected dtype names.
 #' @param observed The observed dtype name.
 #' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-tensor_dtype_error <- function(arg, expected, observed, call = NULL) {
+tensor_dtype_error <- function(
+  arg,
+  expected,
+  observed,
+  call = NULL,
+  signal = TRUE
+) {
   message <- format_error(c(
     "Expected {.var {arg}} to have dtype {.or {expected}}.",
     i = "Got {.cls {observed}}."
@@ -165,19 +193,30 @@ tensor_dtype_error <- function(arg, expected, observed, call = NULL) {
     call = call
   )
 
-  rlang::abort(message, call = call, condition = err)
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
 }
 
 #' Tensor Shape Error
 #'
-#' Throws an error when a tensor has an unexpected shape.
+#' Creates and optionally signals an error when a tensor has an unexpected shape.
 #'
 #' @param arg Name of the argument being checked.
 #' @param expected Integer vector of expected shape dimensions.
 #' @param observed Integer vector of observed shape dimensions.
 #' @param call The calling context for the error.
+#' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-tensor_shape_error <- function(arg, expected, observed, call = NULL) {
+tensor_shape_error <- function(
+  arg,
+  expected,
+  observed,
+  call = NULL,
+  signal = TRUE
+) {
   shapevec_repr <- function(shape) {
     # nolint: object_usage_linter
     sprintf("(%s)", paste0(shape, collapse = ","))
@@ -197,5 +236,9 @@ tensor_shape_error <- function(arg, expected, observed, call = NULL) {
     call = call
   )
 
-  rlang::abort(message, call = call, condition = err)
+  if (signal) {
+    rlang::abort(message, call = call, condition = err)
+  }
+
+  err
 }

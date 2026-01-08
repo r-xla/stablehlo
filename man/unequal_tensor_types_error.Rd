@@ -4,13 +4,15 @@
 \alias{unequal_tensor_types_error}
 \title{Unequal Tensor Types Error}
 \usage{
-unequal_tensor_types_error(args, call = NULL)
+unequal_tensor_types_error(args, call = NULL, signal = TRUE)
 }
 \arguments{
 \item{args}{Named list of tensor types that should be equal.}
 
 \item{call}{The calling context for the error.}
+
+\item{signal}{If TRUE (default), signals the error. If FALSE, returns the condition object.}
 }
 \description{
-Throws an error when tensors have different types but are expected to match.
+Creates and optionally signals an error when tensors have different types but are expected to match.
 }

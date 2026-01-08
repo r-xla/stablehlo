@@ -11,7 +11,8 @@ shape_mismatch_error(
   dim_rhs,
   size_lhs,
   size_rhs,
-  call = NULL
+  call = NULL,
+  signal = TRUE
 )
 }
 \arguments{
@@ -28,7 +29,9 @@ shape_mismatch_error(
 \item{size_rhs}{Size of the dimension in the right-hand side tensor.}
 
 \item{call}{The calling context for the error.}
+
+\item{signal}{If TRUE (default), signals the error. If FALSE, returns the condition object.}
 }
 \description{
-Throws an error when dimension sizes don't match between two tensors.
+Creates and optionally signals an error when dimension sizes don't match between two tensors.
 }

@@ -37,7 +37,9 @@ hlo_return <- function(..., func = .current_func()) {
   }
   output_count <- length(dots)
   alias_indices <- vapply(
-    func$inputs$items[vapply(func$inputs$items, is.null, logical(1))],
+    func$inputs$items[
+      !vapply(func$inputs$items, \(x) is.null(x$alias), logical(1))
+    ],
     \(x) as.integer(x$alias),
     integer(1)
   )

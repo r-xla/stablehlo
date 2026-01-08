@@ -4,7 +4,7 @@
 \alias{class_error}
 \title{Class Error}
 \usage{
-class_error(arg, expected, observed, call = NULL)
+class_error(arg, expected, observed, call = NULL, signal = TRUE)
 }
 \arguments{
 \item{arg}{Name of the argument being checked.}
@@ -14,7 +14,9 @@ class_error(arg, expected, observed, call = NULL)
 \item{observed}{The observed class name.}
 
 \item{call}{The calling context for the error.}
+
+\item{signal}{If TRUE (default), signals the error. If FALSE, returns the condition object.}
 }
 \description{
-Throws an error when an object has an unexpected class.
+Creates and optionally signals an error when an object has an unexpected class.
 }

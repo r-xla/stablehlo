@@ -4,13 +4,15 @@
 \alias{invalid_identifier_error}
 \title{Invalid Identifier Error}
 \usage{
-invalid_identifier_error(arg, call = NULL)
+invalid_identifier_error(arg, call = NULL, signal = TRUE)
 }
 \arguments{
 \item{arg}{The invalid identifier string.}
 
 \item{call}{The calling context for the error.}
+
+\item{signal}{If TRUE (default), signals the error. If FALSE, returns the condition object.}
 }
 \description{
-Throws an error when an identifier doesn't follow naming rules.
+Creates and optionally signals an error when an identifier doesn't follow naming rules.
 }

@@ -4,7 +4,7 @@
 \alias{tensor_shape_error}
 \title{Tensor Shape Error}
 \usage{
-tensor_shape_error(arg, expected, observed, call = NULL)
+tensor_shape_error(arg, expected, observed, call = NULL, signal = TRUE)
 }
 \arguments{
 \item{arg}{Name of the argument being checked.}
@@ -14,7 +14,9 @@ tensor_shape_error(arg, expected, observed, call = NULL)
 \item{observed}{Integer vector of observed shape dimensions.}
 
 \item{call}{The calling context for the error.}
+
+\item{signal}{If TRUE (default), signals the error. If FALSE, returns the condition object.}
 }
 \description{
-Throws an error when a tensor has an unexpected shape.
+Creates and optionally signals an error when a tensor has an unexpected shape.
 }
