@@ -27,7 +27,7 @@ assert_vt_equal <- function(
 
   args <- list(x, y)
   names(args) <- c(arg_x, arg_y)
-  unequal_tensor_types_error(args)
+  error_unequal_tensor_types(args)
 }
 
 assert_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
@@ -38,17 +38,17 @@ assert_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
     }
   }
 
-  class_error(arg, unlist(types), class(x)[1])
+  error_class(arg, unlist(types), class(x)[1])
 }
 
 assert_vt_is_tensor <- function(x, arg = rlang::caller_arg(x)) {
   force(arg)
   if (!test_class(x, "ValueType")) {
-    class_error(arg, "ValueType", class(x)[1])
+    error_class(arg, "ValueType", class(x)[1])
   }
   x <- x$type
   if (!test_class(x, "TensorType")) {
-    class_error(paste0(arg, "$type"), "TensorType", class(x)[1])
+    error_class(paste0(arg, "$type"), "TensorType", class(x)[1])
   }
 }
 
@@ -74,11 +74,11 @@ assert_vt_has_ttype <- function(
 ) {
   force(arg)
   if (!test_class(x, "ValueType")) {
-    class_error(arg, "ValueType", class(x)[1])
+    error_class(arg, "ValueType", class(x)[1])
   }
   tensor_type <- x$type
   if (!test_class(tensor_type, "TensorType")) {
-    class_error(paste0(arg, "$type"), "TensorType", class(tensor_type)[1])
+    error_class(paste0(arg, "$type"), "TensorType", class(tensor_type)[1])
   }
 
   dtypes <- list(...)
@@ -109,12 +109,12 @@ assert_vt_has_ttype <- function(
     }
 
     if (!dtype_matched) {
-      tensor_dtype_error(arg, type_names, repr(tensor_type$dtype))
+      error_tensor_dtype(arg, type_names, repr(tensor_type$dtype))
     }
   }
 
   if (!is.null(shape) && !identical(stablehlo::shape(tensor_type), shape)) {
-    tensor_shape_error(arg, shape, stablehlo::shape(tensor_type))
+    error_tensor_shape(arg, shape, stablehlo::shape(tensor_type))
   }
 }
 
@@ -131,6 +131,6 @@ assert_vts_have_same_dtype <- function(
   if (dtype_x != dtype_y) {
     args <- list(dtype_x, dtype_y)
     names(args) <- c(arg_x, arg_y)
-    unequal_tensor_types_error(args)
+    error_unequal_tensor_types(args)
   }
 }

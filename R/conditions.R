@@ -31,7 +31,7 @@ new_stablehlo_error <- function(
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-shape_mismatch_error <- function(
+error_shape_mismatch <- function(
   arg_lhs,
   arg_rhs,
   dim_lhs,
@@ -73,7 +73,7 @@ shape_mismatch_error <- function(
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-unequal_tensor_types_error <- function(args, call = NULL, signal = TRUE) {
+error_unequal_tensor_types <- function(args, call = NULL, signal = TRUE) {
   nms <- names(args)
   types <- paste0(
     # nolint: object_usage_linter
@@ -110,7 +110,7 @@ unequal_tensor_types_error <- function(args, call = NULL, signal = TRUE) {
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-invalid_identifier_error <- function(arg, call = NULL, signal = TRUE) {
+error_invalid_identifier <- function(arg, call = NULL, signal = TRUE) {
   message <- format_error(c(
     "Identifiers must start with a letter and contain only letters, numbers, and underscores.",
     i = "Got {.val {arg}}."
@@ -140,7 +140,7 @@ invalid_identifier_error <- function(arg, call = NULL, signal = TRUE) {
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-class_error <- function(arg, expected, observed, call = NULL, signal = TRUE) {
+error_class <- function(arg, expected, observed, call = NULL, signal = TRUE) {
   message <- format_error(c(
     "Expected {.var {arg}} to have class {.or {expected}}.",
     i = "Got {.cls {observed}}."
@@ -172,7 +172,7 @@ class_error <- function(arg, expected, observed, call = NULL, signal = TRUE) {
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-tensor_dtype_error <- function(
+error_tensor_dtype <- function(
   arg,
   expected,
   observed,
@@ -210,7 +210,7 @@ tensor_dtype_error <- function(
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-tensor_shape_error <- function(
+error_tensor_shape <- function(
   arg,
   expected,
   observed,
@@ -255,7 +255,7 @@ tensor_shape_error <- function(
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-tensor_ndims_error <- function(
+error_tensor_ndims <- function(
   arg,
   expected,
   observed,
@@ -327,7 +327,7 @@ tensor_ndims_error <- function(
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-dimension_out_of_range_error <- function(
+error_dimension_out_of_range <- function(
   arg,
   dimension,
   ndims,
@@ -374,7 +374,7 @@ dimension_out_of_range_error <- function(
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-dimension_uniqueness_error <- function(
+error_dimension_uniqueness <- function(
   arg,
   dimensions,
   call = NULL,
@@ -413,7 +413,7 @@ dimension_uniqueness_error <- function(
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-index_out_of_bounds_error <- function(
+error_index_out_of_bounds <- function(
   arg,
   lower,
   upper,
@@ -454,7 +454,7 @@ index_out_of_bounds_error <- function(
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-slice_index_error <- function(
+error_slice_index <- function(
   arg,
   indices,
   index_type,
@@ -503,7 +503,7 @@ slice_index_error <- function(
 #' @param call The calling context for the error.
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
-permutation_error <- function(
+error_permutation <- function(
   arg,
   permutation,
   ndims,
