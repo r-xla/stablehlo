@@ -243,7 +243,7 @@ Func <- function(
   env$body <- body
 
   # Return the environment directly with Func class
-  class(env) <- "Func"
+  class(env) <- c("Func", "environment")
   env
 }
 

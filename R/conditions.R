@@ -3,9 +3,10 @@ NULL
 
 # Base error constructor
 new_stablehlo_error <- function(
-    ...,
-    class = character(),
-    call = NULL) {
+  ...,
+  class = character(),
+  call = NULL
+) {
   err <- structure(
     list(
       call = call,
@@ -48,14 +49,15 @@ to_one_based.default <- function(x, ...) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_shape_mismatch <- function(
-    arg_lhs,
-    arg_rhs,
-    dim_lhs,
-    dim_rhs,
-    size_lhs,
-    size_rhs,
-    call = NULL,
-    signal = TRUE) {
+  arg_lhs,
+  arg_rhs,
+  dim_lhs,
+  dim_rhs,
+  size_lhs,
+  size_rhs,
+  call = NULL,
+  signal = TRUE
+) {
   err <- new_stablehlo_error(
     arg_lhs = arg_lhs,
     arg_rhs = arg_rhs,
@@ -202,11 +204,12 @@ conditionMessage.class_error <- function(c) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_tensor_dtype <- function(
-    arg,
-    expected,
-    observed,
-    call = NULL,
-    signal = TRUE) {
+  arg,
+  expected,
+  observed,
+  call = NULL,
+  signal = TRUE
+) {
   err <- new_stablehlo_error(
     arg = arg,
     expected = expected,
@@ -241,11 +244,12 @@ conditionMessage.tensor_dtype_error <- function(c) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_tensor_shape <- function(
-    arg,
-    expected,
-    observed,
-    call = NULL,
-    signal = TRUE) {
+  arg,
+  expected,
+  observed,
+  call = NULL,
+  signal = TRUE
+) {
   err <- new_stablehlo_error(
     arg = arg,
     expected = as.integer(expected),
@@ -286,11 +290,12 @@ conditionMessage.tensor_shape_error <- function(c) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_tensor_ndims <- function(
-    arg,
-    expected,
-    observed,
-    call = NULL,
-    signal = TRUE) {
+  arg,
+  expected,
+  observed,
+  call = NULL,
+  signal = TRUE
+) {
   expected <- as.integer(expected)
   if (length(expected) != 2L) {
     stop("expected must be a length-2 integer vector")
@@ -356,11 +361,12 @@ conditionMessage.tensor_ndims_error <- function(c) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_dimension_out_of_range <- function(
-    arg,
-    dimension,
-    ndims,
-    call = NULL,
-    signal = TRUE) {
+  arg,
+  dimension,
+  ndims,
+  call = NULL,
+  signal = TRUE
+) {
   err <- new_stablehlo_error(
     arg = arg,
     dimension = as.integer(dimension),
@@ -407,10 +413,11 @@ to_one_based.dimension_out_of_range_error <- function(x, ...) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_dimension_uniqueness <- function(
-    arg,
-    dimensions,
-    call = NULL,
-    signal = TRUE) {
+  arg,
+  dimensions,
+  call = NULL,
+  signal = TRUE
+) {
   err <- new_stablehlo_error(
     arg = arg,
     dimensions = as.integer(dimensions),
@@ -452,11 +459,12 @@ to_one_based.dimension_uniqueness_error <- function(x, ...) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_index_out_of_bounds <- function(
-    arg,
-    lower,
-    upper,
-    call = NULL,
-    signal = TRUE) {
+  arg,
+  lower,
+  upper,
+  call = NULL,
+  signal = TRUE
+) {
   err <- new_stablehlo_error(
     arg = arg,
     lower = as.integer(lower),
@@ -498,11 +506,12 @@ to_one_based.index_out_of_bounds_error <- function(x, ...) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_slice_index <- function(
-    arg,
-    indices,
-    index_type,
-    call = NULL,
-    signal = TRUE) {
+  arg,
+  indices,
+  index_type,
+  call = NULL,
+  signal = TRUE
+) {
   err <- new_stablehlo_error(
     arg = arg,
     indices = as.integer(indices),
@@ -551,11 +560,12 @@ to_one_based.slice_index_error <- function(x, ...) {
 #' @param signal If TRUE (default), signals the error. If FALSE, returns the condition object.
 #' @export
 error_permutation <- function(
-    arg,
-    permutation,
-    ndims,
-    call = NULL,
-    signal = TRUE) {
+  arg,
+  permutation,
+  ndims,
+  call = NULL,
+  signal = TRUE
+) {
   err <- new_stablehlo_error(
     arg = arg,
     permutation = as.integer(permutation),

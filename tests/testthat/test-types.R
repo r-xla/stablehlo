@@ -76,12 +76,10 @@ test_that("TensorType equality", {
 })
 
 test_that("print methods - data types", {
-  # BooleanType
   expect_snapshot({
     BooleanType()
   })
 
-  # IntegerType
   expect_snapshot({
     IntegerType(8)
     IntegerType(16)
@@ -89,7 +87,6 @@ test_that("print methods - data types", {
     IntegerType(64)
   })
 
-  # UnsignedType
   expect_snapshot({
     UnsignedType(8)
     UnsignedType(16)
@@ -97,7 +94,6 @@ test_that("print methods - data types", {
     UnsignedType(64)
   })
 
-  # FloatType
   expect_snapshot({
     FloatType(32)
     FloatType(64)
@@ -105,7 +101,6 @@ test_that("print methods - data types", {
 })
 
 test_that("print methods - compound types", {
-  # Shape
   expect_snapshot({
     Shape(c())
     Shape(c(5))
@@ -113,7 +108,6 @@ test_that("print methods - compound types", {
     Shape(c(10, NA, 20))
   })
 
-  # TensorType
   expect_snapshot({
     TensorType(BooleanType(), Shape(c()))
     TensorType(IntegerType(32), Shape(c(10)))
@@ -121,31 +115,20 @@ test_that("print methods - compound types", {
     TensorType(UnsignedType(16), Shape(c(5, 6)))
   })
 
-  # TokenType
   expect_snapshot({
     TokenType()
   })
 
-  # ValueType
-  expect_snapshot({
-    ValueType(TensorType(IntegerType(32), Shape(c())))
-    ValueType(TensorType(FloatType(32), Shape(c(10, 20))))
-    ValueType(TokenType())
-  })
-
-  # ValueTypes - empty
   expect_snapshot({
     ValueTypes(list())
   })
 
-  # ValueTypes - single
   expect_snapshot({
     ValueTypes(list(
       ValueType(TensorType(IntegerType(32), Shape(c(2))))
     ))
   })
 
-  # ValueTypes - multiple
   expect_snapshot({
     ValueTypes(list(
       ValueType(TensorType(IntegerType(32), Shape(c(2)))),

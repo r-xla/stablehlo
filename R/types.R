@@ -425,7 +425,7 @@ print.ValueTypes <- function(x, ...) {
   } else if (n == 1) {
     cat("<ValueTypes: ", repr(x), ">\n", sep = "")
   } else {
-    cat("<ValueTypes[", n, "]:\n", sep = "")
+    cat("<ValueTypes[", n, "]>:\n", sep = "")
     for (i in seq_along(x)) {
       cat("  [", i, "] ", repr(x[[i]]), "\n", sep = "")
     }
