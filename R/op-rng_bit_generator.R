@@ -43,9 +43,7 @@ infer_types_rng_bit_generator <- function(
   out_dtype <- as_dtype(dtype)
   assert_one_of(
     out_dtype,
-    "IntegerType",
-    "UnsignedType",
-    "FloatType"
+    c("IntegerType", "UnsignedType", "FloatType")
   )
   out_shape <- as.integer(shape_out)
 

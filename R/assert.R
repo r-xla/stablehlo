@@ -31,27 +31,16 @@ assert_vt_equal <- function(
   ))
 }
 
-assert_one_of <- function(x, ..., arg = rlang::caller_arg(x)) {
-  types <- list(...)
+assert_one_of <- function(x, types, arg = rlang::caller_arg(x)) {
+  # Check if x inherits from any of the types
   for (type in types) {
-    if (inherits(x, type)) {
+    if (test_class(x, type)) {
       return(invisible(NULL))
     }
   }
 
-  type_names <- vapply(
-    types,
-    function(t) {
-      if (is.character(t)) {
-        return(t)
-      }
-      return(S7::S7_class(t)@name)
-    },
-    character(1)
-  )
-
   cli_abort(c(
-    "{.arg {arg}} must be a {.or {.cls {type_names}}}.",
+    "{.arg {arg}} must be a {.or {.cls {types}}}.",
     x = "Got {.cls {class(x)[1]}}."
   ))
 }

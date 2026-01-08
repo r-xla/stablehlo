@@ -119,17 +119,17 @@ test_that("assert_one_of", {
   x <- make_vt("i32", integer())
 
   expect_error(
-    assert_one_of(x, "ValueType"),
+    assert_one_of(x, c("ValueType")),
     NA
   )
 
   expect_error(
-    assert_one_of(x, "TensorType", "TokenType"),
+    assert_one_of(x, c("TensorType", "TokenType")),
     "must be a"
   )
 
   expect_error(
-    assert_one_of(x, "TensorType", "ValueType"),
+    assert_one_of(x, c("TensorType", "ValueType")),
     NA
   )
 })
