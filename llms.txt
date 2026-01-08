@@ -282,8 +282,9 @@ specification. At least initially, it will:
   Infer types for integerish unary operations
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
 - [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
-- [`r_to_string()`](r_to_string.md) : Represent an R value in stableHLO
 - [`repr()`](repr.md) : Generate string representation for object
+- [`to_one_based()`](to_one_based.md) : Convert 0-based indices to
+  1-based
 
 # Articles
 

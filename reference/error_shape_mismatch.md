@@ -30,11 +30,11 @@ error_shape_mismatch(
 
 - dim_lhs:
 
-  Dimension index in the left-hand side tensor.
+  Dimension index in the left-hand side tensor (0-based).
 
 - dim_rhs:
 
-  Dimension index in the right-hand side tensor.
+  Dimension index in the right-hand side tensor (0-based).
 
 - size_lhs:
 
