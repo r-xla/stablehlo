@@ -12,7 +12,7 @@ OpName(mnemonic)
 
 - mnemonic:
 
-  ([`OpMnemonic`](OpMnemonic.md))  
+  (`character(1)`)  
   The mnemonic of the operation.
 
 ## Value

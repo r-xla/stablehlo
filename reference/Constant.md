@@ -5,15 +5,20 @@ This represents a constant value.
 ## Usage
 
 ``` r
-Constant(value)
+Constant(data, type)
 ```
 
 ## Arguments
 
-- value:
+- data:
 
-  ([`TensorConstant`](TensorConstant.md))  
+  (any)  
   The value of the constant.
+
+- type:
+
+  ([`TensorType`](TensorType.md))  
+  The type of the constant.
 
 ## Value
 

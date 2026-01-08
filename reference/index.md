@@ -28,7 +28,6 @@
 - [`OpInputValue()`](OpInputValue.md) : OpInputValue
 - [`OpInputValues()`](OpInputValues.md) : OpInputValues
 - [`OpInputs()`](OpInputs.md) : OpInputs
-- [`OpMnemonic()`](OpMnemonic.md) : OpMnemonic
 - [`OpName()`](OpName.md) : OpName
 - [`OpOutput()`](OpOutput.md) : OpOutput
 - [`OpOutputs()`](OpOutputs.md) : OpOutputs
@@ -36,7 +35,6 @@
 - [`ScalarAttr()`](ScalarAttr.md) : ScalarAttr
 - [`Shape()`](Shape.md) : Shape
 - [`StringAttr()`](StringAttr.md) : StringAttr
-- [`TensorConstant()`](TensorConstant.md) : TensorConstant
 - [`TensorDataType`](TensorDataType.md) : TensorDataType Base Class
 - [`TensorType()`](TensorType.md) : TensorType
 - [`UnsignedType()`](UnsignedType.md) : UnsignedType
