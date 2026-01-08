@@ -6,7 +6,7 @@ outside the valid range \[0, ndims).
 ## Usage
 
 ``` r
-dimension_out_of_range_error(arg, dimension, ndims, call = NULL, signal = TRUE)
+error_dimension_out_of_range(arg, dimension, ndims, call = NULL, signal = TRUE)
 ```
 
 ## Arguments

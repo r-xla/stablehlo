@@ -6,7 +6,7 @@ number of dimensions.
 ## Usage
 
 ``` r
-tensor_ndims_error(arg, expected, observed, call = NULL, signal = TRUE)
+error_tensor_ndims(arg, expected, observed, call = NULL, signal = TRUE)
 ```
 
 ## Arguments

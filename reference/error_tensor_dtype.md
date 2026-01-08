@@ -1,12 +1,12 @@
-# Class Error
+# Tensor Data Type Error
 
-Creates and optionally signals an error when an object has an unexpected
-class.
+Creates and optionally signals an error when a tensor has an unexpected
+data type.
 
 ## Usage
 
 ``` r
-class_error(arg, expected, observed, call = NULL, signal = TRUE)
+error_tensor_dtype(arg, expected, observed, call = NULL, signal = TRUE)
 ```
 
 ## Arguments
@@ -17,11 +17,11 @@ class_error(arg, expected, observed, call = NULL, signal = TRUE)
 
 - expected:
 
-  Character vector of expected class names.
+  Character vector of expected dtype names.
 
 - observed:
 
-  The observed class name.
+  The observed dtype name.
 
 - call:
 

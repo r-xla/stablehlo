@@ -6,7 +6,7 @@ Creates and optionally signals an error when slice indices
 ## Usage
 
 ``` r
-slice_index_error(arg, indices, index_type, call = NULL, signal = TRUE)
+error_slice_index(arg, indices, index_type, call = NULL, signal = TRUE)
 ```
 
 ## Arguments

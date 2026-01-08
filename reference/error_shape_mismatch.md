@@ -6,7 +6,7 @@ between two tensors.
 ## Usage
 
 ``` r
-shape_mismatch_error(
+error_shape_mismatch(
   arg_lhs,
   arg_rhs,
   dim_lhs,

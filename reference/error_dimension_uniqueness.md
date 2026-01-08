@@ -6,7 +6,7 @@ unique.
 ## Usage
 
 ``` r
-dimension_uniqueness_error(arg, dimensions, call = NULL, signal = TRUE)
+error_dimension_uniqueness(arg, dimensions, call = NULL, signal = TRUE)
 ```
 
 ## Arguments

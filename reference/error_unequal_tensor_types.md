@@ -6,7 +6,7 @@ types but are expected to match.
 ## Usage
 
 ``` r
-unequal_tensor_types_error(args, call = NULL, signal = TRUE)
+error_unequal_tensor_types(args, call = NULL, signal = TRUE)
 ```
 
 ## Arguments

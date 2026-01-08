@@ -6,7 +6,7 @@ shape.
 ## Usage
 
 ``` r
-tensor_shape_error(arg, expected, observed, call = NULL, signal = TRUE)
+error_tensor_shape(arg, expected, observed, call = NULL, signal = TRUE)
 ```
 
 ## Arguments

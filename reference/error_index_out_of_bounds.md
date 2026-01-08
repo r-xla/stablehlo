@@ -6,7 +6,7 @@ valid range \[lower, upper).
 ## Usage
 
 ``` r
-index_out_of_bounds_error(arg, lower, upper, call = NULL, signal = TRUE)
+error_index_out_of_bounds(arg, lower, upper, call = NULL, signal = TRUE)
 ```
 
 ## Arguments

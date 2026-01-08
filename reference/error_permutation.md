@@ -6,7 +6,7 @@ invalid.
 ## Usage
 
 ``` r
-permutation_error(arg, permutation, ndims, call = NULL, signal = TRUE)
+error_permutation(arg, permutation, ndims, call = NULL, signal = TRUE)
 ```
 
 ## Arguments

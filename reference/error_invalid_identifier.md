@@ -6,7 +6,7 @@ follow naming rules.
 ## Usage
 
 ``` r
-invalid_identifier_error(arg, call = NULL, signal = TRUE)
+error_invalid_identifier(arg, call = NULL, signal = TRUE)
 ```
 
 ## Arguments
