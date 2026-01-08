@@ -1,11 +1,12 @@
 # Tensor Shape Error
 
-Throws an error when a tensor has an unexpected shape.
+Creates and optionally signals an error when a tensor has an unexpected
+shape.
 
 ## Usage
 
 ``` r
-tensor_shape_error(arg, expected, observed, call = NULL)
+tensor_shape_error(arg, expected, observed, call = NULL, signal = TRUE)
 ```
 
 ## Arguments
@@ -25,3 +26,8 @@ tensor_shape_error(arg, expected, observed, call = NULL)
 - call:
 
   The calling context for the error.
+
+- signal:
+
+  If TRUE (default), signals the error. If FALSE, returns the condition
+  object.

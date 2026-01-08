@@ -1,11 +1,12 @@
 # Class Error
 
-Throws an error when an object has an unexpected class.
+Creates and optionally signals an error when an object has an unexpected
+class.
 
 ## Usage
 
 ``` r
-class_error(arg, expected, observed, call = NULL)
+class_error(arg, expected, observed, call = NULL, signal = TRUE)
 ```
 
 ## Arguments
@@ -25,3 +26,8 @@ class_error(arg, expected, observed, call = NULL)
 - call:
 
   The calling context for the error.
+
+- signal:
+
+  If TRUE (default), signals the error. If FALSE, returns the condition
+  object.

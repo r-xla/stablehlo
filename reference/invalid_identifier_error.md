@@ -1,11 +1,12 @@
 # Invalid Identifier Error
 
-Throws an error when an identifier doesn't follow naming rules.
+Creates and optionally signals an error when an identifier doesn't
+follow naming rules.
 
 ## Usage
 
 ``` r
-invalid_identifier_error(arg, call = NULL)
+invalid_identifier_error(arg, call = NULL, signal = TRUE)
 ```
 
 ## Arguments
@@ -17,3 +18,8 @@ invalid_identifier_error(arg, call = NULL)
 - call:
 
   The calling context for the error.
+
+- signal:
+
+  If TRUE (default), signals the error. If FALSE, returns the condition
+  object.

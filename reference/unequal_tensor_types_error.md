@@ -1,12 +1,12 @@
 # Unequal Tensor Types Error
 
-Throws an error when tensors have different types but are expected to
-match.
+Creates and optionally signals an error when tensors have different
+types but are expected to match.
 
 ## Usage
 
 ``` r
-unequal_tensor_types_error(args, call = NULL)
+unequal_tensor_types_error(args, call = NULL, signal = TRUE)
 ```
 
 ## Arguments
@@ -18,3 +18,8 @@ unequal_tensor_types_error(args, call = NULL)
 - call:
 
   The calling context for the error.
+
+- signal:
+
+  If TRUE (default), signals the error. If FALSE, returns the condition
+  object.

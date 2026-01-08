@@ -1,6 +1,7 @@
 # Shape Mismatch Error
 
-Throws an error when dimension sizes don't match between two tensors.
+Creates and optionally signals an error when dimension sizes don't match
+between two tensors.
 
 ## Usage
 
@@ -12,7 +13,8 @@ shape_mismatch_error(
   dim_rhs,
   size_lhs,
   size_rhs,
-  call = NULL
+  call = NULL,
+  signal = TRUE
 )
 ```
 
@@ -45,3 +47,8 @@ shape_mismatch_error(
 - call:
 
   The calling context for the error.
+
+- signal:
+
+  If TRUE (default), signals the error. If FALSE, returns the condition
+  object.
