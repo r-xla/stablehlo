@@ -5,26 +5,26 @@
 \title{IndexOutOfBoundsError}
 \usage{
 IndexOutOfBoundsError(
+  arg,
+  lower,
+  upper,
   message = character(),
   call = NULL,
-  .data = list(),
-  arg = character(0),
-  lower = integer(0),
-  upper = integer(0)
+  ...
 )
 }
 \arguments{
-\item{message}{(\code{character(1)})\cr Error message}
-
-\item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
-
-\item{.data}{(\code{list()})\cr Additional data to store in the condition}
-
 \item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
 
 \item{lower}{(\code{integer(1)})\cr Lower bound of valid range (0-based)}
 
 \item{upper}{(\code{integer(1)})\cr Upper bound of valid range, exclusive (0-based)}
+
+\item{message}{(\code{character(1)})\cr Error message}
+
+\item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
+
+\item{...}{Additional fields}
 }
 \description{
 Error when an index is outside the valid range [lower, upper)

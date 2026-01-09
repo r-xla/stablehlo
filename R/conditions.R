@@ -20,9 +20,9 @@ pascal_to_snake <- function(str) {
 }
 
 #' Factory function to create error helper functions
-#' @param error_class_name The error class name (as string)
 #' @param error_constructor The error constructor function
 #' @return A function that creates and throws the error
+#' @keywords internal
 make_error_function <- function(error_constructor) {
   function(..., call = sys.call(-1)) {
     throw_error(
@@ -82,7 +82,12 @@ ArgumentError <- function(arg, message = character(), call = NULL, ...) {
   )
 }
 
-InvalidIdentifierError <- function(arg, message = character(), call = NULL, ...) {
+InvalidIdentifierError <- function(
+  arg,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       arg = arg,
@@ -90,7 +95,13 @@ InvalidIdentifierError <- function(arg, message = character(), call = NULL, ...)
       call = call,
       ...
     ),
-    class = c("InvalidIdentifierError", "ArgumentError", "StablehloError", "error", "condition")
+    class = c(
+      "InvalidIdentifierError",
+      "ArgumentError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -106,7 +117,12 @@ conditionMessage.InvalidIdentifierError <- function(c, ...) {
 
 # When two tensors are expected to have the same type, but don't
 #' @include types.R
-UnequalTensorTypesError <- function(args, message = character(), call = NULL, ...) {
+UnequalTensorTypesError <- function(
+  args,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       args = args,
@@ -114,7 +130,13 @@ UnequalTensorTypesError <- function(args, message = character(), call = NULL, ..
       call = call,
       ...
     ),
-    class = c("UnequalTensorTypesError", "InferenceError", "StablehloError", "error", "condition")
+    class = c(
+      "UnequalTensorTypesError",
+      "InferenceError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -135,7 +157,14 @@ conditionMessage.UnequalTensorTypesError <- function(c, ...) {
   ))
 }
 
-ClassError <- function(arg, expected, observed, message = character(), call = NULL, ...) {
+ClassError <- function(
+  arg,
+  expected,
+  observed,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       arg = arg,
@@ -145,7 +174,13 @@ ClassError <- function(arg, expected, observed, message = character(), call = NU
       call = call,
       ...
     ),
-    class = c("ClassError", "ArgumentError", "StablehloError", "error", "condition")
+    class = c(
+      "ClassError",
+      "ArgumentError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -168,11 +203,24 @@ TensorError <- function(arg, message = character(), call = NULL, ...) {
       call = call,
       ...
     ),
-    class = c("TensorError", "ArgumentError", "StablehloError", "error", "condition")
+    class = c(
+      "TensorError",
+      "ArgumentError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
-TensorDTypeError <- function(arg, expected, observed, message = character(), call = NULL, ...) {
+TensorDTypeError <- function(
+  arg,
+  expected,
+  observed,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       arg = arg,
@@ -182,7 +230,13 @@ TensorDTypeError <- function(arg, expected, observed, message = character(), cal
       call = call,
       ...
     ),
-    class = c("TensorDTypeError", "ClassError", "StablehloError", "error", "condition")
+    class = c(
+      "TensorDTypeError",
+      "ClassError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -196,13 +250,20 @@ conditionMessage.TensorDTypeError <- function(c, ...) {
   ))
 }
 
-TensorNDimsError <- function(arg, expected, observed, message = character(), call = NULL, ...) {
+TensorNDimsError <- function(
+  arg,
+  expected,
+  observed,
+  message = character(),
+  call = NULL,
+  ...
+) {
   expected <- as.integer(expected)
   if (length(expected) != 2L) {
     cli::cli_abort("expected must be a length-2 integer vector")
   }
   observed <- as.integer(observed)
-  
+
   structure(
     list(
       arg = arg,
@@ -212,7 +273,13 @@ TensorNDimsError <- function(arg, expected, observed, message = character(), cal
       call = call,
       ...
     ),
-    class = c("TensorNDimsError", "TensorError", "StablehloError", "error", "condition")
+    class = c(
+      "TensorNDimsError",
+      "TensorError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -254,7 +321,14 @@ conditionMessage.TensorNDimsError <- function(c, ...) {
   ))
 }
 
-TensorShapeError <- function(arg, expected, observed, message = character(), call = NULL, ...) {
+TensorShapeError <- function(
+  arg,
+  expected,
+  observed,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       arg = arg,
@@ -264,7 +338,13 @@ TensorShapeError <- function(arg, expected, observed, message = character(), cal
       call = call,
       ...
     ),
-    class = c("TensorShapeError", "TensorError", "StablehloError", "error", "condition")
+    class = c(
+      "TensorShapeError",
+      "TensorError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -282,7 +362,17 @@ conditionMessage.TensorShapeError <- function(c, ...) {
   ))
 }
 
-ShapeMismatchError <- function(arg_lhs, arg_rhs, dim_lhs, dim_rhs, size_lhs, size_rhs, message = character(), call = NULL, ...) {
+ShapeMismatchError <- function(
+  arg_lhs,
+  arg_rhs,
+  dim_lhs,
+  dim_rhs,
+  size_lhs,
+  size_rhs,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       arg_lhs = arg_lhs,
@@ -295,7 +385,13 @@ ShapeMismatchError <- function(arg_lhs, arg_rhs, dim_lhs, dim_rhs, size_lhs, siz
       call = call,
       ...
     ),
-    class = c("ShapeMismatchError", "InferenceError", "StablehloError", "error", "condition")
+    class = c(
+      "ShapeMismatchError",
+      "InferenceError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -318,7 +414,14 @@ conditionMessage.ShapeMismatchError <- function(c, ...) {
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param ... Additional fields
 #' @export
-DimensionOutOfRangeError <- function(arg, dimension, ndims, message = character(), call = NULL, ...) {
+DimensionOutOfRangeError <- function(
+  arg,
+  dimension,
+  ndims,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       arg = arg,
@@ -328,7 +431,13 @@ DimensionOutOfRangeError <- function(arg, dimension, ndims, message = character(
       call = call,
       ...
     ),
-    class = c("DimensionOutOfRangeError", "ArgumentError", "StablehloError", "error", "condition")
+    class = c(
+      "DimensionOutOfRangeError",
+      "ArgumentError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -355,7 +464,13 @@ conditionMessage.DimensionOutOfRangeError <- function(c, ...) {
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param ... Additional fields
 #' @export
-DimensionUniquenessError <- function(arg, dimensions, message = character(), call = NULL, ...) {
+DimensionUniquenessError <- function(
+  arg,
+  dimensions,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       arg = arg,
@@ -364,7 +479,13 @@ DimensionUniquenessError <- function(arg, dimensions, message = character(), cal
       call = call,
       ...
     ),
-    class = c("DimensionUniquenessError", "ArgumentError", "StablehloError", "error", "condition")
+    class = c(
+      "DimensionUniquenessError",
+      "ArgumentError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -388,7 +509,14 @@ conditionMessage.DimensionUniquenessError <- function(c, ...) {
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param ... Additional fields
 #' @export
-IndexOutOfBoundsError <- function(arg, lower, upper, message = character(), call = NULL, ...) {
+IndexOutOfBoundsError <- function(
+  arg,
+  lower,
+  upper,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       arg = arg,
@@ -398,7 +526,13 @@ IndexOutOfBoundsError <- function(arg, lower, upper, message = character(), call
       call = call,
       ...
     ),
-    class = c("IndexOutOfBoundsError", "ArgumentError", "StablehloError", "error", "condition")
+    class = c(
+      "IndexOutOfBoundsError",
+      "ArgumentError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -458,7 +592,14 @@ to_one_based.ShapeMismatchError <- function(x, ...) {
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param ... Additional fields
 #' @export
-SliceIndexError <- function(arg, indices, index_type, message = character(), call = NULL, ...) {
+SliceIndexError <- function(
+  arg,
+  indices,
+  index_type,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       arg = arg,
@@ -468,7 +609,13 @@ SliceIndexError <- function(arg, indices, index_type, message = character(), cal
       call = call,
       ...
     ),
-    class = c("SliceIndexError", "ArgumentError", "StablehloError", "error", "condition")
+    class = c(
+      "SliceIndexError",
+      "ArgumentError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 
@@ -503,7 +650,14 @@ to_one_based.SliceIndexError <- function(x, ...) {
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param ... Additional fields
 #' @export
-PermutationError <- function(arg, permutation, ndims, message = character(), call = NULL, ...) {
+PermutationError <- function(
+  arg,
+  permutation,
+  ndims,
+  message = character(),
+  call = NULL,
+  ...
+) {
   structure(
     list(
       arg = arg,
@@ -513,7 +667,13 @@ PermutationError <- function(arg, permutation, ndims, message = character(), cal
       call = call,
       ...
     ),
-    class = c("PermutationError", "ArgumentError", "StablehloError", "error", "condition")
+    class = c(
+      "PermutationError",
+      "ArgumentError",
+      "StablehloError",
+      "error",
+      "condition"
+    )
   )
 }
 

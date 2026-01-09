@@ -5,26 +5,26 @@
 \title{SliceIndexError}
 \usage{
 SliceIndexError(
+  arg,
+  indices,
+  index_type,
   message = character(),
   call = NULL,
-  .data = list(),
-  arg = character(0),
-  indices = integer(0),
-  index_type = character(0)
+  ...
 )
 }
 \arguments{
-\item{message}{(\code{character(1)})\cr Error message}
-
-\item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
-
-\item{.data}{(\code{list()})\cr Additional data to store in the condition}
-
 \item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
 
 \item{indices}{(\code{integer()})\cr The invalid indices (0-based)}
 
 \item{index_type}{(\code{character(1)})\cr Type of index: "start" or "limit"}
+
+\item{message}{(\code{character(1)})\cr Error message}
+
+\item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
+
+\item{...}{Additional fields}
 }
 \description{
 Error when slice indices (start_indices, limit_indices) are invalid

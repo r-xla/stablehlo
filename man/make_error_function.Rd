@@ -4,10 +4,10 @@
 \alias{make_error_function}
 \title{Factory function to create error helper functions}
 \usage{
-make_error_function(error_class)
+make_error_function(error_constructor)
 }
 \arguments{
-\item{error_class}{The S7 error class}
+\item{error_constructor}{The error constructor function}
 }
 \value{
 A function that creates and throws the error
@@ -15,3 +15,4 @@ A function that creates and throws the error
 \description{
 Factory function to create error helper functions
 }
+\keyword{internal}

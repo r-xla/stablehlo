@@ -166,4 +166,3 @@ test_that("PermutationError", {
     )
   )
 })
-

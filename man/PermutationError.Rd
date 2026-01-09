@@ -5,26 +5,26 @@
 \title{PermutationError}
 \usage{
 PermutationError(
+  arg,
+  permutation,
+  ndims,
   message = character(),
   call = NULL,
-  .data = list(),
-  arg = character(0),
-  permutation = integer(0),
-  ndims = integer(0)
+  ...
 )
 }
 \arguments{
-\item{message}{(\code{character(1)})\cr Error message}
-
-\item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
-
-\item{.data}{(\code{list()})\cr Additional data to store in the condition}
-
 \item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
 
 \item{permutation}{(\code{integer()})\cr The permutation values that are invalid (0-based)}
 
 \item{ndims}{(\code{integer(1)})\cr The number of dimensions of the tensor}
+
+\item{message}{(\code{character(1)})\cr Error message}
+
+\item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
+
+\item{...}{Additional fields}
 }
 \description{
 Error when permutation values are invalid (not a valid permutation of dimension indices)

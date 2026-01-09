@@ -5,23 +5,23 @@
 \title{DimensionUniquenessError}
 \usage{
 DimensionUniquenessError(
+  arg,
+  dimensions,
   message = character(),
   call = NULL,
-  .data = list(),
-  arg = character(0),
-  dimensions = integer(0)
+  ...
 )
 }
 \arguments{
+\item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
+
+\item{dimensions}{(\code{integer()})\cr The dimension indices that are not unique (0-based)}
+
 \item{message}{(\code{character(1)})\cr Error message}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
 
-\item{.data}{(\code{list()})\cr Additional data to store in the condition}
-
-\item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
-
-\item{dimensions}{(\code{integer()})\cr The dimension indices that are not unique (0-based)}
+\item{...}{Additional fields}
 }
 \description{
 Error when dimension indices are not unique

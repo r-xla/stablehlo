@@ -4,14 +4,14 @@
 \alias{InferenceError}
 \title{InferenceError}
 \usage{
-InferenceError(message = character(), call = NULL, .data = list())
+InferenceError(message = character(), call = NULL, ...)
 }
 \arguments{
 \item{message}{(\code{character(1)})\cr Error message}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
 
-\item{.data}{(\code{list()})\cr Additional data to store in the condition}
+\item{...}{Additional fields to store in the condition}
 }
 \description{
 Base class for type inference errors
