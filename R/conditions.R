@@ -2,11 +2,12 @@
 NULL
 
 throw_error <- function(c, call = NULL) {
-  call <- call %??% c$call
-  if (is.null(call)) {
-    call <- sys.call(-1)
+  c$call <- call %??% c$call
+  if (is.null(c$call)) {
+    c$call <- sys.call(-1)
   }
-  rlang::abort(conditionMessage(c), call = call, .subclass = class(c))
+  # Signal the condition directly
+  stop(c)
 }
 
 #' Convert PascalCase to snake_case
@@ -112,7 +113,7 @@ conditionMessage.InvalidIdentifierError <- function(c, ...) {
   format_error(c(
     "Invalid identifier: {.var {c$arg}}.",
     i = "Identifiers must start with a letter and contain only letters, numbers, and underscores."
-  ))
+  ), .envir = environment())
 }
 
 # When two tensors are expected to have the same type, but don't
@@ -154,7 +155,7 @@ conditionMessage.UnequalTensorTypesError <- function(c, ...) {
   format_error(c(
     "All arguments must have the same tensor type.",
     i = "Got: {types}."
-  ))
+  ), .envir = environment())
 }
 
 ClassError <- function(
@@ -191,7 +192,7 @@ conditionMessage.ClassError <- function(c, ...) {
   format_error(c(
     "Expected {.var {c$arg}} to have class {.or {c$expected}}.",
     i = "Got {.cls {c$observed}}."
-  ))
+  ), .envir = environment())
 }
 
 
@@ -247,7 +248,7 @@ conditionMessage.TensorDTypeError <- function(c, ...) {
   format_error(c(
     "Expected {.var {c$arg}} to have dtype {.or {c$expected}}.",
     i = "Got {.cls {c$observed}}."
-  ))
+  ), .envir = environment())
 }
 
 TensorNDimsError <- function(
@@ -318,7 +319,7 @@ conditionMessage.TensorNDimsError <- function(c, ...) {
   format_error(c(
     "{.var {c$arg}} must have {range_str}.",
     i = "Got {c$observed} dimension{?s}."
-  ))
+  ), .envir = environment())
 }
 
 TensorShapeError <- function(
@@ -359,7 +360,7 @@ conditionMessage.TensorShapeError <- function(c, ...) {
   format_error(c(
     "{.var {c$arg}} must have shape {shapevec_repr(c$expected)}.",
     i = "Got shape {shapevec_repr(c$observed)}."
-  ))
+  ), .envir = environment())
 }
 
 ShapeMismatchError <- function(
@@ -402,7 +403,7 @@ conditionMessage.ShapeMismatchError <- function(c, ...) {
   format_error(c(
     "Dimension {c$dim_lhs} of {.var {c$arg_lhs}} must match dimension {c$dim_rhs} of {.var {c$arg_rhs}}.",
     i = "{.var {c$arg_lhs}} has size {c$size_lhs} at dimension {c$dim_lhs}, but {.var {c$arg_rhs}} has size {c$size_rhs} at dimension {c$dim_rhs}."
-  ))
+  ), .envir = environment())
 }
 
 #' @title DimensionOutOfRangeError
@@ -453,7 +454,7 @@ conditionMessage.DimensionOutOfRangeError <- function(c, ...) {
   format_error(c(
     "{.var {c$arg}} contains invalid dimension index{?es}.",
     i = "Got {dims_str}, but valid range is [0, {c$ndims})."
-  ))
+  ), .envir = environment())
 }
 
 #' @title DimensionUniquenessError
@@ -497,7 +498,7 @@ conditionMessage.DimensionUniquenessError <- function(c, ...) {
   format_error(c(
     "{.var {c$arg}} contains duplicate dimension indices.",
     i = "Got [{dims_str}]. Each dimension index must appear only once."
-  ))
+  ), .envir = environment())
 }
 
 #' @title IndexOutOfBoundsError
@@ -543,7 +544,7 @@ conditionMessage.IndexOutOfBoundsError <- function(c, ...) {
   format_error(c(
     "{.var {c$arg}} contains index{?es} outside the valid range.",
     i = "Valid range is [{c$lower}, {c$upper})."
-  ))
+  ), .envir = environment())
 }
 
 #' @title Convert 0-based indices to 1-based
@@ -632,7 +633,7 @@ conditionMessage.SliceIndexError <- function(c, ...) {
   format_error(c(
     "{.var {c$arg}} contains invalid {index_type_label} {if (length(c$indices) == 1L) 'index' else 'indices'}.",
     i = "Got {indices_str}."
-  ))
+  ), .envir = environment())
 }
 
 #' @export
@@ -690,7 +691,7 @@ conditionMessage.PermutationError <- function(c, ...) {
   format_error(c(
     "{.var {c$arg}} must be a permutation of [0, 1, ..., {c$ndims - 1}].",
     i = "Got [{perm_str}], but expected a permutation of [{expected_str}]."
-  ))
+  ), .envir = environment())
 }
 
 #' @export
