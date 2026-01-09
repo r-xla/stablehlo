@@ -85,6 +85,11 @@
 - [`hlo_divide()`](hlo_divide.md) : Divide Operator
 - [`infer_types_dot_general()`](hlo_dot_general.md)
   [`hlo_dot_general()`](hlo_dot_general.md) : DotGeneral Operator
+- [`infer_types_dynamic_slice()`](hlo_dynamic_slice.md)
+  [`hlo_dynamic_slice()`](hlo_dynamic_slice.md) : DynamicSlice Operator
+- [`infer_types_dynamic_update_slice()`](hlo_dynamic_update_slice.md)
+  [`hlo_dynamic_update_slice()`](hlo_dynamic_update_slice.md) :
+  DynamicUpdateSlice Operator
 - [`hlo_exponential()`](hlo_exponential.md) : Exponential Operator
 - [`hlo_exponential_minus_one()`](hlo_exponential_minus_one.md) :
   ExponentialMinusOne Operator

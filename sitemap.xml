@@ -72,6 +72,8 @@
 <url><loc>/reference/hlo_custom_call.html</loc></url>
 <url><loc>/reference/hlo_divide.html</loc></url>
 <url><loc>/reference/hlo_dot_general.html</loc></url>
+<url><loc>/reference/hlo_dynamic_slice.html</loc></url>
+<url><loc>/reference/hlo_dynamic_update_slice.html</loc></url>
 <url><loc>/reference/hlo_exponential.html</loc></url>
 <url><loc>/reference/hlo_exponential_minus_one.html</loc></url>
 <url><loc>/reference/hlo_floor.html</loc></url>
