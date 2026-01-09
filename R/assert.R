@@ -19,7 +19,7 @@ assert_valid_id <- function(
   call = rlang::caller_env()
 ) {
   if (!is_valid_id(name)) {
-    cli::cli_abort(
+    cli_abort(
       c(
         "Identifiers must start with a letter or be all digits.",
         x = "{.arg {arg}} is {.val {name}}."
@@ -49,7 +49,7 @@ assert_vt_equal <- function(
     return()
   }
 
-  cli::cli_abort(
+  cli_abort(
     c(
       "{.arg {arg_x}} and {.arg {arg_y}} must have the same tensor type.",
       x = "Got {repr(x$type)} and {repr(y$type)}."
@@ -71,7 +71,7 @@ assert_one_of <- function(
     }
   }
 
-  cli::cli_abort(
+  cli_abort(
     c(
       "{.arg {arg}} must be a {.or {.cls {types}}}.",
       x = "Got {.cls {class(x)[1]}}."
@@ -101,7 +101,7 @@ assert_vt_is_tensor <- function(
 ) {
   force(arg)
   if (!test_class(x, "ValueType")) {
-    cli::cli_abort(
+    cli_abort(
       c(
         "{.arg {arg}} must be a ValueType.",
         x = "Got {.cls {class(x)[1]}}."
@@ -111,7 +111,7 @@ assert_vt_is_tensor <- function(
   }
   tensor_type <- x$type
   if (!test_class(tensor_type, "TensorType")) {
-    cli::cli_abort(
+    cli_abort(
       c(
         "{.arg {arg}} must contain a TensorType.",
         x = "Got {.cls {class(tensor_type)[1]}}."
@@ -133,7 +133,7 @@ assert_vt_has_ttype <- function(
   force(arg)
 
   if (!test_class(x, "ValueType")) {
-    cli::cli_abort(
+    cli_abort(
       c(
         "{.arg {arg}} must be a ValueType.",
         x = "Got {.cls {class(x)[1]}}."
@@ -144,7 +144,7 @@ assert_vt_has_ttype <- function(
 
   tensor_type <- x$type
   if (!test_class(tensor_type, "TensorType")) {
-    cli::cli_abort(
+    cli_abort(
       c(
         "{.arg {arg}} must contain a TensorType.",
         x = "Got {.cls {class(tensor_type)[1]}}."
@@ -179,7 +179,7 @@ assert_vt_has_ttype <- function(
     }
 
     if (!dtype_matched) {
-      cli::cli_abort(
+      cli_abort(
         c(
           "{.arg {arg}} must have dtype {.or {type_names}}.",
           x = "Got {.cls {repr(tensor_type$dtype)}}."
@@ -194,7 +194,7 @@ assert_vt_has_ttype <- function(
     shapevec_repr <- function(s) { # nolint
       sprintf("(%s)", paste0(s, collapse = ","))
     }
-    cli::cli_abort(
+    cli_abort(
       c(
         "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
         x = "Got {shapevec_repr(stablehlo::shape(tensor_type))}."
@@ -215,7 +215,7 @@ assert_vts_have_same_dtype <- function(
   dtype_y <- y$type$dtype
 
   if (dtype_x != dtype_y) {
-    cli::cli_abort(
+    cli_abort(
       c(
         "{.arg {arg_x}} and {.arg {arg_y}} must have the same dtype.",
         x = "Got {.cls {repr(dtype_x)}} and {.cls {repr(dtype_y)}}."

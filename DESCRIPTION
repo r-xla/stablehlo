@@ -22,8 +22,7 @@ Imports:
     methods,
     rlang,
     tengen,
-    withr,
-    xlamisc
+    withr
 Suggests:
     rmarkdown,
     knitr,

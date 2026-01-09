@@ -9,21 +9,21 @@ infer_types_case <- function(index, ...) {
   branches <- list(...)
   assert_vt_has_ttype(index, "IntegerType", shape = integer())
   if (index$type$dtype$value != 32L) {
-    cli::cli_abort("index must be a 32-bit integer")
+    cli_abort("index must be a 32-bit integer")
   }
 
   if (length(branches) == 0L) {
-    cli::cli_abort("branches must be a non-empty list")
+    cli_abort("branches must be a non-empty list")
   }
 
   # (C2) input_types(branches...) = [] and
   # (C3) same(output_types(branches...))
   get_branch_out_types <- function(branch) {
     if (!test_class(branch, "Func")) {
-      cli::cli_abort("branches must be a list of Func objects")
+      cli_abort("branches must be a list of Func objects")
     }
     if (length(branch$inputs) != 0L) {
-      cli::cli_abort("branch functions must not have inputs")
+      cli_abort("branch functions must not have inputs")
     }
     func_output_types(branch)
   }
@@ -32,7 +32,7 @@ infer_types_case <- function(index, ...) {
 
   for (i in seq_along(out_types_list[-1L])) {
     if (!identical(out_types_list[[i]], out_types_list[[1L]])) {
-      cli::cli_abort("all branch functions must have the same output types")
+      cli_abort("all branch functions must have the same output types")
     }
   }
 

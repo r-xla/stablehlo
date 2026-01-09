@@ -14,7 +14,7 @@ infer_types_select <- function(
   assert_vt_has_ttype(pred, "BooleanType")
 
   if (ndims(pred) != 0 && !identical(shape(pred), shape(on_true))) {
-    cli::cli_abort("rank of pred must be 0 or equal to rank of on_true")
+    cli_abort("rank of pred must be 0 or equal to rank of on_true")
   }
 
   ValueTypes(list(

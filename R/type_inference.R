@@ -2,21 +2,21 @@ baseline_type <- function(x) {
   if (test_class(x, "TensorType")) {
     return(x)
   }
-  cli::cli_abort("Not implemented")
+  cli_abort("Not implemented")
   # this function is defined in the stablhlo spec and primarily for quantized tensors
 }
 
 # shortcut for element_type(baseline_type(x))
 baseline_element_type <- function(x) {
   if (!test_class(x, "ValueType")) {
-    cli::cli_abort("x must be a ValueType, but got {.class {class(x)[1]}}.")
+    cli_abort("x must be a ValueType, but got {.class {class(x)[1]}}.")
   }
   if (test_class(x$type, "TensorType")) {
     return(x$type$dtype)
   } else if (test_class(x$type, "TokenType")) {
-    cli::cli_abort("Invalid input")
+    cli_abort("Invalid input")
   } else {
-    cli::cli_abort("Not implemented yet")
+    cli_abort("Not implemented yet")
   }
 }
 

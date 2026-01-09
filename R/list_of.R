@@ -19,7 +19,7 @@ new_list_of <- function(class_name, item_class, validator = NULL) {
       validator <- get("validator") # r-cmd-check NOTE: undefined global
       err <- validator(items)
       if (!checkmate::test_null(err)) {
-        cli::cli_abort(err)
+        cli_abort(err)
       }
     }
 

@@ -54,7 +54,7 @@ format_shapes_msg <- function(prefix, ...) {
   shapes <- list(...)
 
   if (!all(names(shapes) != "")) {
-    cli::cli_abort("All shapes should be named")
+    cli_abort("All shapes should be named")
   }
 
   msgs <- paste0(

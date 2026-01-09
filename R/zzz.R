@@ -5,6 +5,5 @@
 #' @import tengen
 #' @importFrom utils hashtab
 #' @importFrom cli cli_abort
-#' @importFrom xlamisc list_of
 #' @importFrom stats setNames
 NULL

@@ -273,7 +273,7 @@ TensorNDimsError <- function(
 ) {
   expected <- as.integer(expected)
   if (length(expected) != 2L) {
-    cli::cli_abort("expected must be a length-2 integer vector")
+    cli_abort("expected must be a length-2 integer vector")
   }
   observed <- as.integer(observed)
 

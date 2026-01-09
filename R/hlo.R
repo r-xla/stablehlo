@@ -16,12 +16,12 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
   ) {
     lapply(values, function(x) {
       if (!test_class(x, "FuncValue")) {
-        cli::cli_abort("All arguments must be FuncValues")
+        cli_abort("All arguments must be FuncValues")
       }
     })
     lapply(funcs, function(x) {
       if (!test_class(x, "Func")) {
-        cli::cli_abort("All functions must be Func objects")
+        cli_abort("All functions must be Func objects")
       }
     })
 
@@ -29,7 +29,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     attrs <- attrs %??% list()
     lapply(attrs, function(x) {
       if (!test_class(x, "OpInputAttr")) {
-        cli::cli_abort(
+        cli_abort(
           "All attributes must be OpInputAttr subclasses (e.g., ConstantAttr, StringAttr, BoolAttr, ScalarAttr)"
         )
       }
@@ -191,7 +191,7 @@ hlo_closure <- function(...) {
   vars <- list(...)
   ids <- vapply(vars, function(v) v$value_id$id, character(1))
   if (anyDuplicated(ids)) {
-    cli::cli_abort(
+    cli_abort(
       "Each variable can only be captured once in hlo_closure (duplicate value_id detected)"
     )
   }
