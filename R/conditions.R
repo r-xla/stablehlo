@@ -6,8 +6,8 @@ throw_error <- function(c, call = NULL) {
   if (is.null(c$call)) {
     c$call <- sys.call(-1)
   }
-  # Signal the condition directly
-  stop(c)
+  # Signal the condition
+  rlang::cnd_signal(c)
 }
 
 #' Convert PascalCase to snake_case
