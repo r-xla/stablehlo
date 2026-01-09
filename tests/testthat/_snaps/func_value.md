@@ -1,7 +1,7 @@
 # c works
 
     Code
-      z[[1]]@func
+      z[[1]]$func
     Output
       func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
       
@@ -10,7 +10,7 @@
 ---
 
     Code
-      z[[2]]@func
+      z[[2]]$func
     Output
       func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
       

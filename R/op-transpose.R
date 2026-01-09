@@ -14,7 +14,7 @@ infer_types_transpose <- function(
   operand_dims <- shape(operand)
   num_dims <- length(operand_dims)
 
-  perm_values <- permutation@value@data
+  perm_values <- permutation$data
 
   if (num_dims == 0) {
     if (length(perm_values) != 0) {
@@ -23,7 +23,7 @@ infer_types_transpose <- function(
     return(ValueTypes(list(
       ValueType(
         TensorType(
-          dtype = operand@type@dtype,
+          dtype = operand$type$dtype,
           shape = Shape(integer())
         )
       )
@@ -61,7 +61,7 @@ infer_types_transpose <- function(
   ValueTypes(list(
     ValueType(
       TensorType(
-        dtype = operand@type@dtype,
+        dtype = operand$type$dtype,
         shape = Shape(result_dims)
       )
     )

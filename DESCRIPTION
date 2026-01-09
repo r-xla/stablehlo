@@ -21,7 +21,6 @@ Imports:
     cli,
     methods,
     rlang,
-    S7,
     tengen,
     withr,
     xlamisc
@@ -47,7 +46,6 @@ Collate:
     'list_of.R'
     'repr.R'
     'shape.R'
-    'enum.R'
     'types.R'
     'conditions.R'
     'constant.R'
@@ -120,6 +118,7 @@ Collate:
     'op-tan.R'
     'op-tanh.R'
     'op-transpose.R'
+    'op-triangular_solve.R'
     'op-while.R'
     'op-xor.R'
     'reexports.R'

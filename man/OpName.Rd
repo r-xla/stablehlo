@@ -4,10 +4,10 @@
 \alias{OpName}
 \title{OpName}
 \usage{
-OpName(mnemonic = OpMnemonic())
+OpName(mnemonic)
 }
 \arguments{
-\item{mnemonic}{(\code{\link{OpMnemonic}})\cr
+\item{mnemonic}{(\code{character(1)})\cr
 The mnemonic of the operation.}
 }
 \value{

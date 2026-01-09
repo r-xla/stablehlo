@@ -4,11 +4,14 @@
 \alias{Constant}
 \title{Constant}
 \usage{
-Constant(value = TensorConstant())
+Constant(data, type)
 }
 \arguments{
-\item{value}{(\code{\link{TensorConstant}})\cr
+\item{data}{(any)\cr
 The value of the constant.}
+
+\item{type}{(\code{\link{TensorType}})\cr
+The type of the constant.}
 }
 \value{
 \code{Constant}

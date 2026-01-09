@@ -5,7 +5,7 @@
 \title{OpInputs}
 \usage{
 OpInputs(
-  values = OpInputValues(),
+  values,
   funcs = OpInputFuncs(),
   attrs = OpInputAttrs(),
   custom_attrs = list()

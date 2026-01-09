@@ -21,3 +21,4 @@ SPEC.md
 ^AGENTS.md$
 ^Makefile$
 ^vignettes/articles$
+^benchmarks/

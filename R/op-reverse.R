@@ -12,7 +12,7 @@ infer_types_reverse <- function(
   assert_vt_is_tensor(operand)
 
   operand_dims <- shape(operand)
-  revdims <- dimensions@value@data
+  revdims <- dimensions$data
 
   # (C2) is_unique(dimensions).
   if (anyDuplicated(revdims) > 0) {
@@ -39,7 +39,7 @@ infer_types_reverse <- function(
   ValueTypes(list(
     ValueType(
       TensorType(
-        dtype = operand@type@dtype,
+        dtype = operand$type$dtype,
         shape = Shape(operand_dims)
       )
     )

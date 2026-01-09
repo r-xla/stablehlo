@@ -10,8 +10,8 @@ OpShiftRightLogical <- new_Op(
 #' @export
 # fmt: skip
 infer_types_shift_right_logical <- function(lhs, rhs) { # nolint
-  assert_vt_is_tensor(lhs, expected_dtypes = list(IntegerType, UnsignedType, BooleanType))
-  assert_vt_is_tensor(rhs, expected_dtypes = list(IntegerType, UnsignedType, BooleanType))
+  assert_vt_has_ttype(lhs, "IntegerType", "UnsignedType", "BooleanType")
+  assert_vt_has_ttype(rhs, "IntegerType", "UnsignedType", "BooleanType")
   assert_vt_equal(lhs, rhs)
   ValueTypes(list(lhs))
 }

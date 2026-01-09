@@ -4,7 +4,7 @@
 \alias{FuncOutput}
 \title{FuncOutput}
 \usage{
-FuncOutput(type = ValueType())
+FuncOutput(type)
 }
 \arguments{
 \item{type}{(\code{ValueType})\cr

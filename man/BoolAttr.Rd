@@ -4,7 +4,7 @@
 \alias{BoolAttr}
 \title{BoolAttr}
 \usage{
-BoolAttr(name = character(0), value = logical(0))
+BoolAttr(name, value)
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr

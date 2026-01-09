@@ -4,7 +4,7 @@
 \alias{OpInputFunc}
 \title{OpInputFunc}
 \usage{
-OpInputFunc(inputs = FuncInputs(), body = FuncBody())
+OpInputFunc(inputs, body)
 }
 \arguments{
 \item{inputs}{(\code{FuncInputs})\cr

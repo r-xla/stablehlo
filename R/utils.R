@@ -4,42 +4,14 @@ NULL
 
 
 func_output_types <- function(func) {
-  if (!inherits(func, Func)) {
+  if (!test_class(func, "Func")) {
     cli_abort("func must be a Func object, but got {.class {class(func)[1]}}.")
   }
-  lapply(func@outputs@items, function(x) x@type)
+  lapply(func$outputs, function(x) x$type)
 }
 
 output_types_from_body <- function(body) {
-  body@items[[length(body@items)]]@inputs@values
-}
-
-#' @title Represent an R value in stableHLO
-#' @description
-#' Convert R value to StableHLO string representation
-#' @param value (any)\cr
-#'  The R value to convert
-#' @param dtype (`character(1)`)\cr
-#'   The element type to use.
-#' @return `character(1)`
-r_to_stablehlo_string <- function(value, dtype) {
-  if (is.logical(value)) {
-    if (value) {
-      return("true")
-    } else {
-      return("false")
-    }
-  } else if (is.integer(value)) {
-    return(as.character(value))
-  } else if (is.numeric(value)) {
-    if (dtype == "f32") {
-      format_double(value, precision = 32)
-    } else {
-      format_double(value, precision = 64)
-    }
-  } else {
-    return(as.character(value))
-  }
+  body[[length(body)]]$inputs$values
 }
 
 snake_to_camel <- function(str) {
@@ -54,8 +26,6 @@ capitalize <- function(str) {
 get_dims <- function(data) {
   if (is.null(dim(data))) {
     if (length(data) == 1) {
-      return(1L)
-    } else if (length(data) == 0) {
       return(integer())
     } else {
       return(length(data))

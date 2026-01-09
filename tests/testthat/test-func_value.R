@@ -3,10 +3,10 @@ test_that("c works", {
   x <- hlo_input("x", "f32", shape = c(2, 2))
   y <- hlo_input("y", "f32", shape = c(2, 2))
   z <- c(x, y)
-  expect_list(z, types = "stablehlo::FuncValue", len = 2L)
+  expect_list(z, types = "FuncValue", len = 2L)
   expect_null(names(z))
-  expect_snapshot(z[[1]]@func)
-  expect_snapshot(z[[2]]@func)
+  expect_snapshot(z[[1]]$func)
+  expect_snapshot(z[[2]]$func)
 
   x2 <- hlo_add(x, y)
   y2 <- hlo_add(x, y)

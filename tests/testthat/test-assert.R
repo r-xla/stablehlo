@@ -1,3 +1,30 @@
+test_that("assert_vt_has_ttype", {
+  y <- make_vt("i32", integer())
+
+  expect_error(
+    assert_vt_has_ttype(x = y, "BooleanType", shape = integer()),
+    "must have dtype"
+  )
+  expect_error(
+    assert_vt_has_ttype(x = y, "IntegerType", shape = 1L),
+    "shape"
+  )
+  expect_error(
+    assert_vt_has_ttype(x = y, "IntegerType", shape = integer()),
+    NA
+  )
+
+  # Test with initialized dtype instance
+  expect_error(
+    assert_vt_has_ttype(x = y, IntegerType(32L), shape = integer()),
+    NA
+  )
+  expect_error(
+    assert_vt_has_ttype(x = y, IntegerType(64L), shape = integer()),
+    "must have dtype"
+  )
+})
+
 test_that("assert_vt_is_tensor", {
   y <- make_vt("i32", integer())
 
@@ -5,52 +32,7 @@ test_that("assert_vt_is_tensor", {
     assert_vt_is_tensor(x = 1),
     error = TRUE
   )
-  expect_snapshot(
-    assert_vt_is_tensor(
-      x = y,
-      expected_dtypes = list(BooleanType),
-      expected_shape = integer()
-    ),
-    error = TRUE
-  )
-  expect_snapshot(
-    assert_vt_is_tensor(
-      x = y,
-      expected_dtypes = list(IntegerType),
-      expected_shape = 1L
-    ),
-    error = TRUE
-  )
-  expect_snapshot(
-    assert_vt_is_tensor(
-      x = y,
-      expected_dtypes = list(IntegerType),
-      expected_shape = integer()
-    ),
-    error = FALSE
-  )
 
-  # Test with instantiated dtypes
-  expect_snapshot(
-    assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType(32))),
-    error = FALSE
-  )
-  expect_snapshot(
-    assert_vt_is_tensor(x = y, expected_dtypes = list(IntegerType(64))),
-    error = TRUE
-  )
-
-  # Test mixing classes and instances
-  expect_snapshot(
-    assert_vt_is_tensor(
-      x = y,
-      expected_dtypes = list(BooleanType, IntegerType(32))
-    ),
-    error = FALSE
-  )
-})
-
-test_that("assert_vt_is_tensor", {
   y <- 1L
   expect_snapshot(
     assert_vt_is_tensor(x = y),
@@ -140,17 +122,17 @@ test_that("assert_one_of", {
   x <- make_vt("i32", integer())
 
   expect_error(
-    assert_one_of(x, ValueType),
+    assert_one_of(x, c("ValueType")),
     NA
   )
 
   expect_error(
-    assert_one_of(x, TensorType, TokenType),
-    "Expected"
+    assert_one_of(x, c("TensorType", "TokenType")),
+    "must be a"
   )
 
   expect_error(
-    assert_one_of(x, TensorType, ValueType),
+    assert_one_of(x, c("TensorType", "ValueType")),
     NA
   )
 })

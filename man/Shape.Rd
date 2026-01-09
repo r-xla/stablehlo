@@ -4,7 +4,7 @@
 \alias{Shape}
 \title{Shape}
 \usage{
-Shape(dims)
+Shape(dims = integer())
 }
 \arguments{
 \item{dims}{(\code{integer()})}

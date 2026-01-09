@@ -6,22 +6,26 @@ is_valid_id <- function(name) {
 }
 
 dtype_repr <- function(dtype) {
-  if (inherits(dtype, "S7_class")) {
-    return(dtype@name)
+  if (is.character(dtype)) {
+    return(dtype)
   }
-  if (inherits(dtype, BooleanType)) {
-    return("BooleanType")
-  }
-  sprintf("%s(%d)", S7_class(dtype)@name, dtype@value)
+  # For initialized instances
+  repr(dtype)
 }
 
 assert_valid_id <- function(
   name,
   arg = rlang::caller_arg(name),
-  call = sys.call(-1)
+  call = rlang::caller_env()
 ) {
   if (!is_valid_id(name)) {
-    throw_error(InvalidIdentifierError(arg = arg), call = call)
+    cli::cli_abort(
+      c(
+        "Identifiers must start with a letter or be all digits.",
+        x = "{.arg {arg}} is {.val {name}}."
+      ),
+      call = call
+    )
   }
 }
 
@@ -33,7 +37,7 @@ assert_vt_equal <- function(
   is_tensor = TRUE,
   arg_x = rlang::caller_arg(x),
   arg_y = rlang::caller_arg(y),
-  call = sys.call(-1)
+  call = rlang::caller_env()
 ) {
   rlang::check_dots_empty()
 
@@ -45,38 +49,33 @@ assert_vt_equal <- function(
     return()
   }
 
-  unequal_tensor_types_error(
-    args = setNames(list(x@type, y@type), c(arg_x, arg_y)),
+  cli::cli_abort(
+    c(
+      "{.arg {arg_x}} and {.arg {arg_y}} must have the same tensor type.",
+      x = "Got {repr(x$type)} and {repr(y$type)}."
+    ),
     call = call
   )
 }
 
 assert_one_of <- function(
   x,
-  ...,
+  types,
   arg = rlang::caller_arg(x),
-  call = sys.call(-1)
+  call = rlang::caller_env()
 ) {
-  types <- list(...)
+  # Check if x inherits from any of the types
   for (type in types) {
-    if (inherits(x, type)) {
+    if (test_class(x, type)) {
       return(invisible(NULL))
     }
   }
 
-  # fmt: skip
-  type_names <- vapply( # nolint
-    types,
-    function(t) {
-      return(t@name)
-    },
-    character(1)
-  )
-
-  class_error(
-    arg = arg,
-    observed = class(x)[1],
-    expected = type_names,
+  cli::cli_abort(
+    c(
+      "{.arg {arg}} must be a {.or {.cls {types}}}.",
+      x = "Got {.cls {class(x)[1]}}."
+    ),
     call = call
   )
 }
@@ -85,68 +84,94 @@ assert_vts_are_tensors <- function(...) {
   args <- list(...)
   arg_names <- names(args)
   if (is.null(arg_names)) {
-    arg_names <- vapply(
-      substitute(list(...))[-1],
-      deparse,
-      character(1)
-    )
-  }
-  for (i in seq_along(args)) {
-    assert_vt_is_tensor(args[[i]], arg = arg_names[i])
+    for (i in seq_along(args)) {
+      assert_vt_is_tensor(args[[i]])
+    }
+  } else {
+    for (i in seq_along(args)) {
+      assert_vt_is_tensor(args[[i]], arg = arg_names[i])
+    }
   }
 }
 
 assert_vt_is_tensor <- function(
   x,
-  expected_dtypes = NULL,
-  expected_shape = NULL,
   arg = rlang::caller_arg(x),
-  call = sys.call(-1)
+  call = rlang::caller_env()
 ) {
-  if (!is.null(expected_dtypes) && !is.list(expected_dtypes)) {
-    expected_dtypes <- list(expected_dtypes)
-  }
   force(arg)
-  if (!inherits(x, ValueType)) {
-    throw_error(
-      ClassError(
-        arg = arg,
-        observed = class(x)[1],
-        expected = "stablehlo::ValueType"
+  if (!test_class(x, "ValueType")) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} must be a ValueType.",
+        x = "Got {.cls {class(x)[1]}}."
       ),
       call = call
     )
   }
-  x <- x@type
-  if (!inherits(x, TensorType)) {
-    throw_error(
-      ClassError(
-        arg = sprintf("%s@value", arg),
-        observed = S7::S7_class(x)@name,
-        expected = "stablehlo::TensorType"
+  tensor_type <- x$type
+  if (!test_class(tensor_type, "TensorType")) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} must contain a TensorType.",
+        x = "Got {.cls {class(tensor_type)[1]}}."
+      ),
+      call = call
+    )
+  }
+}
+
+# New simplified function for checking tensor types
+assert_vt_has_ttype <- function(
+  x,
+  ...,
+  shape = NULL,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  dtypes <- list(...)
+  force(arg)
+
+  if (!test_class(x, "ValueType")) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} must be a ValueType.",
+        x = "Got {.cls {class(x)[1]}}."
       ),
       call = call
     )
   }
 
-  dtypes <- expected_dtypes
+  tensor_type <- x$type
+  if (!test_class(tensor_type, "TensorType")) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} must contain a TensorType.",
+        x = "Got {.cls {class(tensor_type)[1]}}."
+      ),
+      call = call
+    )
+  }
 
   if (length(dtypes) > 0) {
-    # Extract type names, handling both classes and instances
-    type_names <- vapply(dtypes, dtype_repr, character(1))
-
     dtype_matched <- FALSE
-    for (dtype in dtypes) {
-      # Check if dtype is a class or an instance
-      if (inherits(dtype, "S7_class")) {
-        # dtype is a class, use inherits
-        if (inherits(x@dtype, dtype)) {
+    type_names <- character(length(dtypes))
+
+    for (i in seq_along(dtypes)) {
+      dtype <- dtypes[[i]]
+
+      # dtype should be either a class name (string) or an initialized instance
+      if (is.character(dtype)) {
+        # dtype is a class name string - use test_class
+        type_names[i] <- dtype
+        if (test_class(tensor_type$dtype, dtype)) {
           dtype_matched <- TRUE
           break
         }
       } else {
-        # dtype is an instance, check exact equality (not just class match)
-        if (identical(x@dtype, dtype)) {
+        # dtype is an initialized instance - compare with identical
+        type_names[i] <- repr(dtype)
+        if (identical(tensor_type$dtype, dtype)) {
           dtype_matched <- TRUE
           break
         }
@@ -154,33 +179,48 @@ assert_vt_is_tensor <- function(
     }
 
     if (!dtype_matched) {
-      throw_error(
-        TensorDTypeError(
-          arg = arg,
-          expected = type_names,
-          observed = dtype_repr(x@dtype)
-        )
+      cli::cli_abort(
+        c(
+          "{.arg {arg}} must have dtype {.or {type_names}}.",
+          x = "Got {.cls {repr(tensor_type$dtype)}}."
+        ),
+        call = call
       )
     }
   }
 
-  if (
-    !is.null(expected_shape) && !identical(stablehlo::shape(x), expected_shape)
-  ) {
-    tensor_shape_error(
-      arg = arg,
-      expected = expected_shape,
-      observed = stablehlo::shape(x)
+  if (!is.null(shape) && !identical(stablehlo::shape(tensor_type), shape)) {
+    # fmt: skip
+    shapevec_repr <- function(s) { # nolint
+      sprintf("(%s)", paste0(s, collapse = ","))
+    }
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
+        x = "Got {shapevec_repr(stablehlo::shape(tensor_type))}."
+      ),
+      call = call
     )
   }
 }
 
+assert_vts_have_same_dtype <- function(
+  x,
+  y,
+  arg_x = rlang::caller_arg(x),
+  arg_y = rlang::caller_arg(y),
+  call = rlang::caller_env()
+) {
+  dtype_x <- x$type$dtype
+  dtype_y <- y$type$dtype
 
-assert_vts_have_same_dtype <- function(x, y, arg = rlang::caller_arg(x)) {
-  if (x@type@dtype != y@type@dtype) {
-    cli_abort(c(
-      "{.arg {arg}} must have the same dtype.",
-      x = "Got {.class {S7::S7_class(x@type@dtype)@name}} and {.class {S7::S7_class(y@type@dtype)@name}}."
-    ))
+  if (dtype_x != dtype_y) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg_x}} and {.arg {arg_y}} must have the same dtype.",
+        x = "Got {.cls {repr(dtype_x)}} and {.cls {repr(dtype_y)}}."
+      ),
+      call = call
+    )
   }
 }

@@ -74,3 +74,66 @@ test_that("TensorType equality", {
   expect_false(t1 == t4)
   expect_false(t1 == t3)
 })
+
+test_that("print methods - data types", {
+  expect_snapshot({
+    BooleanType()
+  })
+
+  expect_snapshot({
+    IntegerType(8)
+    IntegerType(16)
+    IntegerType(32)
+    IntegerType(64)
+  })
+
+  expect_snapshot({
+    UnsignedType(8)
+    UnsignedType(16)
+    UnsignedType(32)
+    UnsignedType(64)
+  })
+
+  expect_snapshot({
+    FloatType(32)
+    FloatType(64)
+  })
+})
+
+test_that("print methods - compound types", {
+  expect_snapshot({
+    Shape(c())
+    Shape(c(5))
+    Shape(c(2, 3, 4))
+    Shape(c(10, NA, 20))
+  })
+
+  expect_snapshot({
+    TensorType(BooleanType(), Shape(c()))
+    TensorType(IntegerType(32), Shape(c(10)))
+    TensorType(FloatType(64), Shape(c(2, 3, 4)))
+    TensorType(UnsignedType(16), Shape(c(5, 6)))
+  })
+
+  expect_snapshot({
+    TokenType()
+  })
+
+  expect_snapshot({
+    ValueTypes(list())
+  })
+
+  expect_snapshot({
+    ValueTypes(list(
+      ValueType(TensorType(IntegerType(32), Shape(c(2))))
+    ))
+  })
+
+  expect_snapshot({
+    ValueTypes(list(
+      ValueType(TensorType(IntegerType(32), Shape(c(2)))),
+      ValueType(TensorType(FloatType(32), Shape(c(3)))),
+      ValueType(TensorType(BooleanType(), Shape(c())))
+    ))
+  })
+})

@@ -6,24 +6,31 @@
 #' @param x The object to generate a string representation of.
 #' @param ... Additional arguments passed to the method.
 #' @return `character(1)`
-#' @importFrom S7 new_generic
 #' @export
-repr <- new_generic("repr", "x", function(x, ...) {
+repr <- function(x, ...) {
   if (is.null(FUNC_ENV$vars)) {
     local_vars()
   }
-  S7::S7_dispatch()
-})
+  UseMethod("repr")
+}
 
-method(repr, NULL) <- function(x) {
+#' @export
+repr.default <- function(x, ...) {
+  stop("repr not implemented for class: ", paste(class(x), collapse = ", "))
+}
+
+#' @export
+repr.NULL <- function(x, ...) {
   ""
 }
 
-method(repr, S7::class_integer) <- function(x) {
+#' @export
+repr.integer <- function(x, ...) {
   as.character(x)
 }
 
-method(repr, S7::class_logical) <- function(x) {
+#' @export
+repr.logical <- function(x, ...) {
   if (x) "true" else "false"
 }
 

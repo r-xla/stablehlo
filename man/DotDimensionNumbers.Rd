@@ -4,7 +4,7 @@
 \alias{DotDimensionNumbers}
 \title{DotDimensionNumbers}
 \usage{
-DotDimensionNumbers(contracting_dims = NULL, batching_dims = NULL)
+DotDimensionNumbers(contracting_dims, batching_dims = NULL)
 }
 \arguments{
 \item{contracting_dims}{(\code{integer()})\cr

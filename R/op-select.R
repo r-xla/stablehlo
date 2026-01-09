@@ -11,16 +11,16 @@ infer_types_select <- function(
   on_false
 ) {
   assert_vt_equal(on_true, on_false)
-  assert_vt_is_tensor(pred, expected_dtypes = list(BooleanType))
+  assert_vt_has_ttype(pred, "BooleanType")
 
   if (ndims(pred) != 0 && !identical(shape(pred), shape(on_true))) {
-    cli_abort("rank of pred must be 0 or equal to rank of on_true")
+    cli::cli_abort("rank of pred must be 0 or equal to rank of on_true")
   }
 
   ValueTypes(list(
     ValueType(
       TensorType(
-        dtype = on_true@type@dtype,
+        dtype = on_true$type$dtype,
         shape = Shape(shape(on_true))
       )
     )

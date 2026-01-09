@@ -12,27 +12,38 @@ OpCustomCall <- new_Op("OpCustomCall", "custom_call")
 #'   A list of `BoolAttr`, `StringAttr`, or `ScalarAttr` objects.
 #' @return `CustomOpBackendConfig`
 #' @export
-CustomOpBackendConfig <- new_list_of(
-  "CustomOpBackendConfig",
-  S7::new_union(BoolAttr, StringAttr, ScalarAttr),
-  validator = function(value) {
-    if (length(value) > 0) {
-      nms <- vapply(value, function(x) x@name, character(1))
-      if (anyDuplicated(nms)) {
-        return("All attribute names must be unique")
-      }
-    }
-    NULL
-  }
-)
+CustomOpBackendConfig <- function(items = list()) {
+  checkmate::assert_list(
+    items,
+    types = c("BoolAttr", "StringAttr", "ScalarAttr")
+  )
 
-method(repr, CustomOpBackendConfig) <- function(x, simplify_dense = TRUE) {
-  if (length(x@items) == 0) {
+  # Check for unique names
+  if (length(items) > 0) {
+    nms <- vapply(items, function(x) x$name, character(1))
+    if (anyDuplicated(nms)) {
+      cli_abort("All attribute names must be unique")
+    }
+  }
+
+  structure(
+    items,
+    class = c("CustomOpBackendConfig", "list")
+  )
+}
+
+#' @export
+repr.CustomOpBackendConfig <- function(
+  x,
+  simplify_dense = TRUE,
+  ...
+) {
+  if (length(x) == 0) {
     return("backend_config = {}")
   }
 
   config_items <- vapply(
-    x@items,
+    x,
     repr,
     character(1),
     simplify_dense = simplify_dense
@@ -73,7 +84,7 @@ infer_types_custom_call <- function(
     return(ValueTypes(list()))
   }
 
-  if (!inherits(output_types, "ValueTypes")) {
+  if (!test_class(output_types, "ValueTypes")) {
     output_types <- ValueTypes(output_types)
   }
 
@@ -133,16 +144,18 @@ hlo_custom_call <- function(
   )
 }
 
-method(repr, OpCustomCall) <- function(
+#' @export
+repr.OpCustomCall <- function(
   x,
   toplevel = TRUE,
-  simplify_dense = TRUE
+  simplify_dense = TRUE,
+  ...
 ) {
-  attrs <- x@inputs@attrs@items
+  attrs <- x$inputs$attrs
   target_name <- NULL
   for (attr in attrs) {
-    if (attr@name == "call_target_name") {
-      target_name <- attr@value
+    if (attr$name == "call_target_name") {
+      target_name <- attr$value
       break
     }
   }
@@ -153,17 +166,17 @@ method(repr, OpCustomCall) <- function(
     character(1),
     simplify_dense = simplify_dense
   )
-  bec <- x@inputs@custom_attrs$backend_config
+  bec <- x$inputs$custom_attrs$backend_config
   if (!is.null(bec)) {
     attr_reprs <- c(attr_reprs, repr(bec))
   }
   attrs_str <- paste0("{\n  ", paste(attr_reprs, collapse = ",\n  "), "\n}")
 
   # Build output part
-  outputs_repr <- if (!length(x@outputs@items)) {
+  outputs_repr <- if (!length(x$outputs)) {
     ""
   } else {
-    paste0(repr(x@outputs), " = ")
+    paste0(repr(x$outputs), " = ")
   }
 
   paste0(
@@ -171,10 +184,10 @@ method(repr, OpCustomCall) <- function(
     "stablehlo.custom_call @",
     target_name,
     "(",
-    repr(x@inputs@values),
+    repr(x$inputs$values),
     ") ",
     attrs_str,
     " : ",
-    repr(x@signature)
+    repr(x$signature)
   )
 }

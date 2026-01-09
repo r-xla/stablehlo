@@ -26,7 +26,7 @@ infer_types_cholesky <- function(
   ValueTypes(list(
     ValueType(
       TensorType(
-        dtype = operand@type@dtype,
+        dtype = operand$type$dtype,
         shape = Shape(operand_dims)
       )
     )

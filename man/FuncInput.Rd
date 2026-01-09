@@ -4,7 +4,7 @@
 \alias{FuncInput}
 \title{FuncInput}
 \usage{
-FuncInput(id = ValueId(), type = ValueType(), alias = NULL)
+FuncInput(id, type, alias = NULL)
 }
 \arguments{
 \item{id}{(\code{\link{ValueId}})\cr

@@ -4,7 +4,7 @@
 \alias{OpInputValue}
 \title{OpInputValue}
 \usage{
-OpInputValue(id = ValueId())
+OpInputValue(id)
 }
 \arguments{
 \item{id}{(\code{\link{ValueId}})\cr

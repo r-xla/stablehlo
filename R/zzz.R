@@ -10,7 +10,3 @@
 #' @importFrom xlamisc list_of
 #' @importFrom stats setNames
 NULL
-
-.onLoad <- function(...) {
-  S7::methods_register()
-}
