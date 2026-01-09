@@ -14,6 +14,8 @@
 <url><loc>/reference/Constant.html</loc></url>
 <url><loc>/reference/ConstantAttr.html</loc></url>
 <url><loc>/reference/CustomOpBackendConfig.html</loc></url>
+<url><loc>/reference/DimensionOutOfRangeError.html</loc></url>
+<url><loc>/reference/DimensionUniquenessError.html</loc></url>
 <url><loc>/reference/DotDimensionNumbers.html</loc></url>
 <url><loc>/reference/FloatType.html</loc></url>
 <url><loc>/reference/Func.html</loc></url>
@@ -24,6 +26,8 @@
 <url><loc>/reference/FuncOutput.html</loc></url>
 <url><loc>/reference/FuncOutputs.html</loc></url>
 <url><loc>/reference/FuncValue.html</loc></url>
+<url><loc>/reference/IndexOutOfBoundsError.html</loc></url>
+<url><loc>/reference/InferenceError.html</loc></url>
 <url><loc>/reference/IntegerType.html</loc></url>
 <url><loc>/reference/Op.html</loc></url>
 <url><loc>/reference/OpInputAttr.html</loc></url>
@@ -37,8 +41,11 @@
 <url><loc>/reference/OpOutput.html</loc></url>
 <url><loc>/reference/OpOutputs.html</loc></url>
 <url><loc>/reference/OpSignature.html</loc></url>
+<url><loc>/reference/PermutationError.html</loc></url>
 <url><loc>/reference/ScalarAttr.html</loc></url>
 <url><loc>/reference/Shape.html</loc></url>
+<url><loc>/reference/SliceIndexError.html</loc></url>
+<url><loc>/reference/StablehloError.html</loc></url>
 <url><loc>/reference/StringAttr.html</loc></url>
 <url><loc>/reference/TensorDataType.html</loc></url>
 <url><loc>/reference/TensorType.html</loc></url>
@@ -127,10 +134,13 @@
 <url><loc>/reference/infer_types_integerish_biv.html</loc></url>
 <url><loc>/reference/infer_types_integerish_uni.html</loc></url>
 <url><loc>/reference/is_dtype.html</loc></url>
+<url><loc>/reference/make_error_function.html</loc></url>
 <url><loc>/reference/new_Op.html</loc></url>
 <url><loc>/reference/new_list_of.html</loc></url>
+<url><loc>/reference/pascal_to_snake.html</loc></url>
 <url><loc>/reference/r_to_constant.html</loc></url>
 <url><loc>/reference/reexports.html</loc></url>
 <url><loc>/reference/repr.html</loc></url>
+<url><loc>/reference/to_one_based.html</loc></url>
 </urlset>
 

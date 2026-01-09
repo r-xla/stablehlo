@@ -8,6 +8,10 @@
 - [`ConstantAttr()`](ConstantAttr.md) : ConstantAttr
 - [`CustomOpBackendConfig()`](CustomOpBackendConfig.md) :
   CustomOpBackendConfig
+- [`DimensionOutOfRangeError()`](DimensionOutOfRangeError.md) :
+  DimensionOutOfRangeError
+- [`DimensionUniquenessError()`](DimensionUniquenessError.md) :
+  DimensionUniquenessError
 - [`DotDimensionNumbers()`](DotDimensionNumbers.md) :
   DotDimensionNumbers
 - [`FloatType()`](FloatType.md) : FloatType
@@ -19,6 +23,9 @@
 - [`FuncOutput()`](FuncOutput.md) : FuncOutput
 - [`FuncOutputs()`](FuncOutputs.md) : FuncOutputs
 - [`FuncValue()`](FuncValue.md) : FuncValue
+- [`IndexOutOfBoundsError()`](IndexOutOfBoundsError.md) :
+  IndexOutOfBoundsError
+- [`InferenceError()`](InferenceError.md) : InferenceError
 - [`IntegerType()`](IntegerType.md) : IntegerType (signed)
 - [`Op()`](Op.md) : Op
 - [`OpInputAttr()`](OpInputAttr.md) : OpInputAttr
@@ -32,8 +39,11 @@
 - [`OpOutput()`](OpOutput.md) : OpOutput
 - [`OpOutputs()`](OpOutputs.md) : OpOutputs
 - [`OpSignature()`](OpSignature.md) : OpSignature
+- [`PermutationError()`](PermutationError.md) : PermutationError
 - [`ScalarAttr()`](ScalarAttr.md) : ScalarAttr
 - [`Shape()`](Shape.md) : Shape
+- [`SliceIndexError()`](SliceIndexError.md) : SliceIndexError
+- [`StablehloError()`](StablehloError.md) : StablehloError
 - [`StringAttr()`](StringAttr.md) : StringAttr
 - [`TensorDataType`](TensorDataType.md) : TensorDataType Base Class
 - [`TensorType()`](TensorType.md) : TensorType
@@ -174,5 +184,9 @@
 - [`infer_types_integerish_uni()`](infer_types_integerish_uni.md) :
   Infer types for integerish unary operations
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
+- [`pascal_to_snake()`](pascal_to_snake.md) : Convert PascalCase to
+  snake_case
 - [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
 - [`repr()`](repr.md) : Generate string representation for object
+- [`to_one_based()`](to_one_based.md) : Convert 0-based indices to
+  1-based
