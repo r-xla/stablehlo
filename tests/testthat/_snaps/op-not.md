@@ -10,7 +10,7 @@
     Code
       hlo_not(x)
     Condition
-      Error in `hlo_not()`:
-      ! Expected `operand` to have dtype BooleanType, IntegerType, or UnsignedType.
-      i Got <FloatType(32)>.
+      Error:
+      ! `operand` must have dtype BooleanType, IntegerType, or UnsignedType.
+      x Got <f32>.
 

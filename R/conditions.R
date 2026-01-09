@@ -2,11 +2,11 @@
 NULL
 
 throw_error <- function(c, call = NULL) {
-  call <- call %??% c@call
+  call <- call %??% c$call
   if (is.null(call)) {
     call <- sys.call(-1)
   }
-  rlang::abort(conditionMessage(c), call = call, condition = c)
+  rlang::abort(conditionMessage(c), call = call, .subclass = class(c))
 }
 
 #' Convert PascalCase to snake_case
@@ -20,119 +20,112 @@ pascal_to_snake <- function(str) {
 }
 
 #' Factory function to create error helper functions
-#' @param error_class The S7 error class
+#' @param error_class_name The error class name (as string)
+#' @param error_constructor The error constructor function
 #' @return A function that creates and throws the error
-make_error_function <- function(error_class) {
+make_error_function <- function(error_constructor) {
   function(..., call = sys.call(-1)) {
     throw_error(
-      error_class(...),
+      error_constructor(...),
       call = call
     )
   }
 }
 
-S3_error_condition <- S7::new_S3_class(
-  class = c("error", "condition"),
-  constructor = function(.data = list(), message = "", call = NULL) {
-    if (!is.list(.data)) {
-      .data <- as.list(.data)
-    }
-
-    # Store fields as LIST ELEMENTS so base condition tools work
-    .data$message <- as.character(message)[1]
-    .data$call <- call
-
-    structure(.data, class = c("error", "condition"))
-  }
-)
-
 #' @title StablehloError
 #' @description Base error class for all stablehlo errors
 #' @param message (`character(1)`)\cr Error message
 #' @param call (`call` or `NULL`)\cr Call that generated the error
-#' @param .data (`list()`)\cr Additional data to store in the condition
+#' @param ... Additional fields to store in the condition
 #' @export
-StablehloError <- S7::new_class(
-  "StablehloError",
-  parent = S3_error_condition,
-  properties = list(
-    message = new_property(
-      getter = function(self) self$message,
-      setter = function(self, value) {
-        self$message <- value
-      }
+StablehloError <- function(message = character(), call = NULL, ...) {
+  structure(
+    list(
+      message = as.character(message)[1],
+      call = call,
+      ...
     ),
-    call = new_property(
-      getter = function(self) self$call,
-      setter = function(self, value) {
-        self$call <- value
-      }
-    )
-  ),
-  constructor = function(message = character(), call = NULL, .data = list()) {
-    base <- S3_error_condition$constructor(
-      .data = .data,
-      message = message,
-      call = call
-    )
-    S7::new_object(base)
-  }
-)
+    class = c("StablehloError", "error", "condition")
+  )
+}
 
-method(conditionMessage, StablehloError) <- function(c, ...) {
-  c@message
+#' @export
+conditionMessage.StablehloError <- function(c, ...) {
+  c$message
 }
 
 #' @title InferenceError
 #' @description Base class for type inference errors
 #' @inheritParams StablehloError
 #' @export
-InferenceError <- S7::new_class(
-  "InferenceError",
-  parent = StablehloError
-)
+InferenceError <- function(message = character(), call = NULL, ...) {
+  structure(
+    list(
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("InferenceError", "StablehloError", "error", "condition")
+  )
+}
 
 # When a single argument is invalid
-ArgumentError <- S7::new_class(
-  "InvalidArgumentError",
-  parent = StablehloError,
-  properties = list(
-    arg = new_property(class_character)
+ArgumentError <- function(arg, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("ArgumentError", "StablehloError", "error", "condition")
   )
-)
+}
 
-InvalidIdentifierError <- S7::new_class(
-  "InvalidIdentifierError",
-  parent = ArgumentError
-)
+InvalidIdentifierError <- function(arg, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("InvalidIdentifierError", "ArgumentError", "StablehloError", "error", "condition")
+  )
+}
 
 invalid_identifier_error <- make_error_function(InvalidIdentifierError)
 
-method(conditionMessage, InvalidIdentifierError) <- function(c, ...) {
+#' @export
+conditionMessage.InvalidIdentifierError <- function(c, ...) {
   format_error(c(
-    "Invalid identifier: {.var {c@arg}}.",
+    "Invalid identifier: {.var {c$arg}}.",
     i = "Identifiers must start with a letter and contain only letters, numbers, and underscores."
   ))
 }
 
 # When two tensors are expected to have the same type, but don't
 #' @include types.R
-UnequalTensorTypesError <- S7::new_class(
-  "UnequalTypesError",
-  parent = InferenceError,
-  properties = list(
-    # named
-    args = list_of(TensorType)
+UnequalTensorTypesError <- function(args, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      args = args,
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("UnequalTensorTypesError", "InferenceError", "StablehloError", "error", "condition")
   )
-)
+}
 
 unequal_tensor_types_error <- make_error_function(UnequalTensorTypesError)
 
-method(conditionMessage, UnequalTensorTypesError) <- function(c, ...) {
-  nms <- names(c@args)
+#' @export
+conditionMessage.UnequalTensorTypesError <- function(c, ...) {
+  nms <- names(c$args)
   types <- paste0(
-    vapply(seq_along(c@args), FUN.VALUE = character(1), function(i) {
-      paste0(nms[i], " = ", repr(c@args[[i]]))
+    vapply(seq_along(c$args), FUN.VALUE = character(1), function(i) {
+      paste0(nms[i], " = ", repr(c$args[[i]]))
     }),
     collapse = ", "
   )
@@ -142,72 +135,92 @@ method(conditionMessage, UnequalTensorTypesError) <- function(c, ...) {
   ))
 }
 
-ClassError <- S7::new_class(
-  "ClassError",
-  parent = ArgumentError,
-  properties = list(
-    # character vector of class names
-    expected = class_character,
-    observed = class_character
+ClassError <- function(arg, expected, observed, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      expected = expected,
+      observed = observed,
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("ClassError", "ArgumentError", "StablehloError", "error", "condition")
   )
-)
+}
 
 class_error <- make_error_function(ClassError)
 
-method(conditionMessage, ClassError) <- function(c, ...) {
+#' @export
+conditionMessage.ClassError <- function(c, ...) {
   format_error(c(
-    "Expected {.var {c@arg}} to have class {.or {c@expected}}.",
-    i = "Got {.cls {c@observed}}."
+    "Expected {.var {c$arg}} to have class {.or {c$expected}}.",
+    i = "Got {.cls {c$observed}}."
   ))
 }
 
 
-TensorError <- S7::new_class(
-  "TensorError",
-  parent = ArgumentError
-)
-
-TensorDTypeError <- S7::new_class(
-  "TensorDTypeError",
-  parent = ClassError,
-  properties = list(
-    expected = class_character,
-    observed = class_character
+TensorError <- function(arg, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("TensorError", "ArgumentError", "StablehloError", "error", "condition")
   )
-)
+}
+
+TensorDTypeError <- function(arg, expected, observed, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      expected = expected,
+      observed = observed,
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("TensorDTypeError", "ClassError", "StablehloError", "error", "condition")
+  )
+}
 
 tensor_dtype_error <- make_error_function(TensorDTypeError)
 
-method(conditionMessage, TensorDTypeError) <- function(c, ...) {
+#' @export
+conditionMessage.TensorDTypeError <- function(c, ...) {
   format_error(c(
-    "Expected {.var {c@arg}} to have dtype {.or {c@expected}}.",
-    i = "Got {.cls {c@observed}}."
+    "Expected {.var {c$arg}} to have dtype {.or {c$expected}}.",
+    i = "Got {.cls {c$observed}}."
   ))
 }
 
-TensorNDimsError <- S7::new_class(
-  "TensorNDimsError",
-  parent = TensorError,
-  properties = list(
-    expected = new_property(
-      class_integer,
-      setter = function(self, value) {
-        value <- as.integer(value)
-        if (length(value) != 2L) {
-          cli::cli_abort("expected must be a length-2 integer vector")
-        }
-        self@expected <- value
-        self
-      }
+TensorNDimsError <- function(arg, expected, observed, message = character(), call = NULL, ...) {
+  expected <- as.integer(expected)
+  if (length(expected) != 2L) {
+    cli::cli_abort("expected must be a length-2 integer vector")
+  }
+  observed <- as.integer(observed)
+  
+  structure(
+    list(
+      arg = arg,
+      expected = expected,
+      observed = observed,
+      message = as.character(message)[1],
+      call = call,
+      ...
     ),
-    observed = new_property(class_integer)
+    class = c("TensorNDimsError", "TensorError", "StablehloError", "error", "condition")
   )
-)
+}
 
 tensor_ndims_error <- make_error_function(TensorNDimsError)
 
-method(conditionMessage, TensorNDimsError) <- function(c, ...) {
-  expected_range <- c@expected
+#' @export
+conditionMessage.TensorNDimsError <- function(c, ...) {
+  expected_range <- c$expected
   lower <- expected_range[1L]
   upper <- expected_range[2L]
 
@@ -236,25 +249,24 @@ method(conditionMessage, TensorNDimsError) <- function(c, ...) {
   }
 
   format_error(c(
-    "{.var {c@arg}} must have {range_str}.",
-    i = "Got {c@observed} dimension{?s}."
+    "{.var {c$arg}} must have {range_str}.",
+    i = "Got {c$observed} dimension{?s}."
   ))
 }
 
-TensorShapeError <- S7::new_class(
-  "TensorShapeError",
-  parent = TensorError,
-  properties = list(
-    expected = new_property(class_integer, setter = function(self, value) {
-      self@expected <- as.integer(value)
-      self
-    }),
-    observed = new_property(class_integer, setter = function(self, value) {
-      self@observed <- as.integer(value)
-      self
-    })
+TensorShapeError <- function(arg, expected, observed, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      expected = as.integer(expected),
+      observed = as.integer(observed),
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("TensorShapeError", "TensorError", "StablehloError", "error", "condition")
   )
-)
+}
 
 tensor_shape_error <- make_error_function(TensorShapeError)
 
@@ -262,45 +274,38 @@ shapevec_repr <- function(shape) {
   sprintf("(%s)", paste0(shape, collapse = ","))
 }
 
-method(conditionMessage, TensorShapeError) <- function(c, ...) {
+#' @export
+conditionMessage.TensorShapeError <- function(c, ...) {
   format_error(c(
-    "{.var {c@arg}} must have shape {shapevec_repr(c@expected)}.",
-    i = "Got shape {shapevec_repr(c@observed)}."
+    "{.var {c$arg}} must have shape {shapevec_repr(c$expected)}.",
+    i = "Got shape {shapevec_repr(c$observed)}."
   ))
 }
 
-ShapeMismatchError <- S7::new_class(
-  "ShapeMismatchError",
-  parent = InferenceError,
-  properties = list(
-    arg_lhs = new_property(class_character),
-    arg_rhs = new_property(class_character),
-    dim_lhs = new_property(class_integer, setter = function(self, value) {
-      self@dim_lhs <- as.integer(value)
-      self
-    }),
-    dim_rhs = new_property(class_integer, setter = function(self, value) {
-      self@dim_rhs <- as.integer(value)
-      self
-    }),
-    size_lhs = new_property(class_integer, setter = function(self, value) {
-      self@size_lhs <- as.integer(value)
-      self
-    }),
-    size_rhs = new_property(class_integer, setter = function(self, value) {
-      self@size_rhs <- as.integer(value)
-      self
-    })
+ShapeMismatchError <- function(arg_lhs, arg_rhs, dim_lhs, dim_rhs, size_lhs, size_rhs, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg_lhs = arg_lhs,
+      arg_rhs = arg_rhs,
+      dim_lhs = as.integer(dim_lhs),
+      dim_rhs = as.integer(dim_rhs),
+      size_lhs = as.integer(size_lhs),
+      size_rhs = as.integer(size_rhs),
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("ShapeMismatchError", "InferenceError", "StablehloError", "error", "condition")
   )
-)
+}
 
 shape_mismatch_error <- make_error_function(ShapeMismatchError)
 
-# TODO: Continue here and test this in test-op-dot_general.R
-method(conditionMessage, ShapeMismatchError) <- function(c, ...) {
+#' @export
+conditionMessage.ShapeMismatchError <- function(c, ...) {
   format_error(c(
-    "Dimension {c@dim_lhs} of {.var {c@arg_lhs}} must match dimension {c@dim_rhs} of {.var {c@arg_rhs}}.",
-    i = "{.var {c@arg_lhs}} has size {c@size_lhs} at dimension {c@dim_lhs}, but {.var {c@arg_rhs}} has size {c@size_rhs} at dimension {c@dim_rhs}."
+    "Dimension {c$dim_lhs} of {.var {c$arg_lhs}} must match dimension {c$dim_rhs} of {.var {c$arg_rhs}}.",
+    i = "{.var {c$arg_lhs}} has size {c$size_lhs} at dimension {c$dim_lhs}, but {.var {c$arg_rhs}} has size {c$size_rhs} at dimension {c$dim_rhs}."
   ))
 }
 
@@ -309,34 +314,36 @@ method(conditionMessage, ShapeMismatchError) <- function(c, ...) {
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
 #' @param dimension (`integer()`)\cr The dimension index(es) that are out of range (0-based)
 #' @param ndims (`integer(1)`)\cr The number of dimensions of the tensor
-#' @inheritParams StablehloError
+#' @param message (`character(1)`)\cr Error message
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param ... Additional fields
 #' @export
-DimensionOutOfRangeError <- S7::new_class(
-  "DimensionOutOfRangeError",
-  parent = ArgumentError,
-  properties = list(
-    dimension = new_property(class_integer, setter = function(self, value) {
-      self@dimension <- as.integer(value)
-      self
-    }),
-    ndims = new_property(class_integer, setter = function(self, value) {
-      self@ndims <- as.integer(value)
-      self
-    })
+DimensionOutOfRangeError <- function(arg, dimension, ndims, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      dimension = as.integer(dimension),
+      ndims = as.integer(ndims),
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("DimensionOutOfRangeError", "ArgumentError", "StablehloError", "error", "condition")
   )
-)
+}
 
 dimension_out_of_range_error <- make_error_function(DimensionOutOfRangeError)
 
-method(conditionMessage, DimensionOutOfRangeError) <- function(c, ...) {
-  dims_str <- if (length(c@dimension) == 1L) {
-    paste0("dimension index ", c@dimension)
+#' @export
+conditionMessage.DimensionOutOfRangeError <- function(c, ...) {
+  dims_str <- if (length(c$dimension) == 1L) {
+    paste0("dimension index ", c$dimension)
   } else {
-    paste0("dimension indices: ", paste0(c@dimension, collapse = ", "))
+    paste0("dimension indices: ", paste0(c$dimension, collapse = ", "))
   }
   format_error(c(
-    "{.var {c@arg}} contains invalid dimension index{?es}.",
-    i = "Got {dims_str}, but valid range is [0, {c@ndims})."
+    "{.var {c$arg}} contains invalid dimension index{?es}.",
+    i = "Got {dims_str}, but valid range is [0, {c$ndims})."
   ))
 }
 
@@ -344,25 +351,30 @@ method(conditionMessage, DimensionOutOfRangeError) <- function(c, ...) {
 #' @description Error when dimension indices are not unique
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
 #' @param dimensions (`integer()`)\cr The dimension indices that are not unique (0-based)
-#' @inheritParams StablehloError
+#' @param message (`character(1)`)\cr Error message
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param ... Additional fields
 #' @export
-DimensionUniquenessError <- S7::new_class(
-  "DimensionUniquenessError",
-  parent = ArgumentError,
-  properties = list(
-    dimensions = new_property(class_integer, setter = function(self, value) {
-      self@dimensions <- as.integer(value)
-      self
-    })
+DimensionUniquenessError <- function(arg, dimensions, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      dimensions = as.integer(dimensions),
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("DimensionUniquenessError", "ArgumentError", "StablehloError", "error", "condition")
   )
-)
+}
 
 dimension_uniqueness_error <- make_error_function(DimensionUniquenessError)
 
-method(conditionMessage, DimensionUniquenessError) <- function(c, ...) {
-  dims_str <- paste0(c@dimensions, collapse = ", ")
+#' @export
+conditionMessage.DimensionUniquenessError <- function(c, ...) {
+  dims_str <- paste0(c$dimensions, collapse = ", ")
   format_error(c(
-    "{.var {c@arg}} contains duplicate dimension indices.",
+    "{.var {c$arg}} contains duplicate dimension indices.",
     i = "Got [{dims_str}]. Each dimension index must appear only once."
   ))
 }
@@ -372,29 +384,31 @@ method(conditionMessage, DimensionUniquenessError) <- function(c, ...) {
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
 #' @param lower (`integer(1)`)\cr Lower bound of valid range (0-based)
 #' @param upper (`integer(1)`)\cr Upper bound of valid range, exclusive (0-based)
-#' @inheritParams StablehloError
+#' @param message (`character(1)`)\cr Error message
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param ... Additional fields
 #' @export
-IndexOutOfBoundsError <- S7::new_class(
-  "IndexOutOfBoundsError",
-  parent = ArgumentError,
-  properties = list(
-    lower = new_property(class_integer, setter = function(self, value) {
-      self@lower <- as.integer(value)
-      self
-    }),
-    upper = new_property(class_integer, setter = function(self, value) {
-      self@upper <- as.integer(value)
-      self
-    })
+IndexOutOfBoundsError <- function(arg, lower, upper, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      lower = as.integer(lower),
+      upper = as.integer(upper),
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("IndexOutOfBoundsError", "ArgumentError", "StablehloError", "error", "condition")
   )
-)
+}
 
 index_out_of_bounds_error <- make_error_function(IndexOutOfBoundsError)
 
-method(conditionMessage, IndexOutOfBoundsError) <- function(c, ...) {
+#' @export
+conditionMessage.IndexOutOfBoundsError <- function(c, ...) {
   format_error(c(
-    "{.var {c@arg}} contains index{?es} outside the valid range.",
-    i = "Valid range is [{c@lower}, {c@upper})."
+    "{.var {c$arg}} contains index{?es} outside the valid range.",
+    i = "Valid range is [{c$lower}, {c$upper})."
   ))
 }
 
@@ -404,28 +418,34 @@ method(conditionMessage, IndexOutOfBoundsError) <- function(c, ...) {
 #' @param ... Additional arguments (not used)
 #' @return Condition object with indices converted to 1-based
 #' @export
-to_one_based <- S7::new_generic("to_one_based", "x")
+to_one_based <- function(x, ...) {
+  UseMethod("to_one_based")
+}
 
-method(to_one_based, DimensionOutOfRangeError) <- function(x) {
-  x@dimension <- x@dimension + 1L
+#' @export
+to_one_based.DimensionOutOfRangeError <- function(x, ...) {
+  x$dimension <- x$dimension + 1L
   # ndims is a count, not an index, so it doesn't need conversion
   x
 }
 
-method(to_one_based, DimensionUniquenessError) <- function(x) {
-  x@dimensions <- x@dimensions + 1L
+#' @export
+to_one_based.DimensionUniquenessError <- function(x, ...) {
+  x$dimensions <- x$dimensions + 1L
   x
 }
 
-method(to_one_based, IndexOutOfBoundsError) <- function(x) {
-  x@lower <- x@lower + 1L
-  x@upper <- x@upper + 1L
+#' @export
+to_one_based.IndexOutOfBoundsError <- function(x, ...) {
+  x$lower <- x$lower + 1L
+  x$upper <- x$upper + 1L
   x
 }
 
-method(to_one_based, ShapeMismatchError) <- function(x) {
-  x@dim_lhs <- x@dim_lhs + 1L
-  x@dim_rhs <- x@dim_rhs + 1L
+#' @export
+to_one_based.ShapeMismatchError <- function(x, ...) {
+  x$dim_lhs <- x$dim_lhs + 1L
+  x$dim_rhs <- x$dim_rhs + 1L
   x
 }
 
@@ -434,37 +454,43 @@ method(to_one_based, ShapeMismatchError) <- function(x) {
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
 #' @param indices (`integer()`)\cr The invalid indices (0-based)
 #' @param index_type (`character(1)`)\cr Type of index: "start" or "limit"
-#' @inheritParams StablehloError
+#' @param message (`character(1)`)\cr Error message
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param ... Additional fields
 #' @export
-SliceIndexError <- S7::new_class(
-  "SliceIndexError",
-  parent = ArgumentError,
-  properties = list(
-    indices = new_property(class_integer, setter = function(self, value) {
-      self@indices <- as.integer(value)
-      self
-    }),
-    index_type = new_property(class_character) # "start" or "limit"
+SliceIndexError <- function(arg, indices, index_type, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      indices = as.integer(indices),
+      index_type = index_type,
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("SliceIndexError", "ArgumentError", "StablehloError", "error", "condition")
   )
-)
+}
 
 slice_index_error <- make_error_function(SliceIndexError)
 
-method(conditionMessage, SliceIndexError) <- function(c, ...) {
-  indices_str <- if (length(c@indices) == 1L) {
-    paste0("index ", c@indices)
+#' @export
+conditionMessage.SliceIndexError <- function(c, ...) {
+  indices_str <- if (length(c$indices) == 1L) {
+    paste0("index ", c$indices)
   } else {
-    paste0("indices: ", paste0(c@indices, collapse = ", "))
+    paste0("indices: ", paste0(c$indices, collapse = ", "))
   }
-  index_type_label <- if (c@index_type == "start") "start" else "limit"
+  index_type_label <- if (c$index_type == "start") "start" else "limit"
   format_error(c(
-    "{.var {c@arg}} contains invalid {index_type_label} {if (length(c@indices) == 1L) 'index' else 'indices'}.",
+    "{.var {c$arg}} contains invalid {index_type_label} {if (length(c$indices) == 1L) 'index' else 'indices'}.",
     i = "Got {indices_str}."
   ))
 }
 
-method(to_one_based, SliceIndexError) <- function(x) {
-  x@indices <- x@indices + 1L
+#' @export
+to_one_based.SliceIndexError <- function(x, ...) {
+  x$indices <- x$indices + 1L
   x
 }
 
@@ -473,40 +499,43 @@ method(to_one_based, SliceIndexError) <- function(x) {
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
 #' @param permutation (`integer()`)\cr The permutation values that are invalid (0-based)
 #' @param ndims (`integer(1)`)\cr The number of dimensions of the tensor
-#' @inheritParams StablehloError
+#' @param message (`character(1)`)\cr Error message
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param ... Additional fields
 #' @export
-PermutationError <- S7::new_class(
-  "PermutationError",
-  parent = ArgumentError,
-  properties = list(
-    permutation = new_property(class_integer, setter = function(self, value) {
-      self@permutation <- as.integer(value)
-      self
-    }),
-    ndims = new_property(class_integer, setter = function(self, value) {
-      self@ndims <- as.integer(value)
-      self
-    })
+PermutationError <- function(arg, permutation, ndims, message = character(), call = NULL, ...) {
+  structure(
+    list(
+      arg = arg,
+      permutation = as.integer(permutation),
+      ndims = as.integer(ndims),
+      message = as.character(message)[1],
+      call = call,
+      ...
+    ),
+    class = c("PermutationError", "ArgumentError", "StablehloError", "error", "condition")
   )
-)
+}
 
 permutation_error <- make_error_function(PermutationError)
 
-method(conditionMessage, PermutationError) <- function(c, ...) {
-  perm_str <- paste0(c@permutation, collapse = ", ")
-  if (c@ndims == 0L) {
+#' @export
+conditionMessage.PermutationError <- function(c, ...) {
+  perm_str <- paste0(c$permutation, collapse = ", ")
+  if (c$ndims == 0L) {
     expected_str <- "(empty)"
   } else {
-    expected_str <- paste0(seq(0, c@ndims - 1), collapse = ", ")
+    expected_str <- paste0(seq(0, c$ndims - 1), collapse = ", ")
   }
   format_error(c(
-    "{.var {c@arg}} must be a permutation of [0, 1, ..., {c@ndims - 1}].",
+    "{.var {c$arg}} must be a permutation of [0, 1, ..., {c$ndims - 1}].",
     i = "Got [{perm_str}], but expected a permutation of [{expected_str}]."
   ))
 }
 
-method(to_one_based, PermutationError) <- function(x) {
-  x@permutation <- x@permutation + 1L
+#' @export
+to_one_based.PermutationError <- function(x, ...) {
+  x$permutation <- x$permutation + 1L
   # ndims is a count, not an index, so it doesn't need conversion
   x
 }
