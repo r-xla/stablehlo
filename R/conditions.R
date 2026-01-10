@@ -1,39 +1,30 @@
 #' @importFrom cli format_error
 NULL
 
-throw_error <- function(c, call = NULL) {
-  c$call <- call %??% c$call
-  if (is.null(c$call)) {
-    c$call <- sys.call(-1)
-  }
-  rlang::cnd_signal(c)
-}
-
 #' @title StablehloError
 #' @description Base error class for all stablehlo errors
-#' @param message (`character(1)`)\cr Error message
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param ... Additional fields to store in the condition
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
 #' @export
 stablehlo_error <- function(
-  message = character(),
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   ...,
   class = character(),
   signal = TRUE
 ) {
   cond <- structure(
     list(
-      message = message,
       call = call,
+      # Use header field so rlang calls conditionMessage lazily
+      header = function(cnd, ...) conditionMessage(cnd),
       ...
     ),
     class = c(class, "StablehloError", "error", "condition")
   )
   if (signal) {
-    throw_error(cond, call = call)
+    rlang::cnd_signal(cond)
   }
   cond
 }
@@ -42,6 +33,7 @@ stablehlo_error <- function(
 conditionMessage.StablehloError <- function(c, ...) {
   c$message
 }
+
 #' @title DimensionOutOfRangeError
 #' @description Error when a dimension index is outside the valid range [0, ndims)
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
@@ -55,7 +47,7 @@ dimension_out_of_range_error <- function(
   arg,
   dimension,
   ndims,
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
 ) {
@@ -82,7 +74,8 @@ conditionMessage.DimensionOutOfRangeError <- function(c, ...) {
     c(
       "{.var {c$arg}} contains invalid dimension index{?es}.",
       i = "Got {dims_str}, but valid range is [0, {c$ndims})."
-    )
+    ),
+    .envir = environment()
   )
 }
 
@@ -97,7 +90,7 @@ conditionMessage.DimensionOutOfRangeError <- function(c, ...) {
 dimension_uniqueness_error <- function(
   arg,
   dimensions,
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
 ) {
@@ -175,6 +168,11 @@ to_one_based <- function(x, ...) {
 }
 
 #' @export
+to_one_based.default <- function(x, ...) {
+  x
+}
+
+#' @export
 to_one_based.DimensionOutOfRangeError <- function(x, ...) {
   x$dimension <- x$dimension + 1L
   # ndims is a count, not an index, so it doesn't need conversion
@@ -210,7 +208,7 @@ slice_index_error <- function(
   index,
   lower,
   upper,
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
 ) {
@@ -258,7 +256,7 @@ permute_index_error <- function(
   arg,
   permutation,
   expected,
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
 ) {

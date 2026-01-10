@@ -22,7 +22,8 @@ Imports:
     methods,
     rlang,
     tengen,
-    withr
+    withr,
+    xlamisc
 Suggests:
     rmarkdown,
     knitr,
@@ -30,7 +31,8 @@ Suggests:
     testthat (>= 3.0.0)
 Remotes:
     r-xla/pjrt,
-    r-xla/tengen
+    r-xla/tengen,
+    r-xla/xlamisc
 Additional_repositories:
     https://r-xla.r-universe.dev
 Config/build/compilation-database: true
@@ -43,7 +45,6 @@ Collate:
     'assert.R'
     'conditions.R'
     'repr.R'
-    'list_of.R'
     'shape.R'
     'types.R'
     'constant.R'

@@ -1,8 +1,22 @@
+test_that("can handle conditions", {
+  x <- tryCatch(
+    dimension_uniqueness_error(
+      arg = "dimensions",
+      dimensions = c(0L, 1L, 0L, 2L),
+      call = call("abc")
+    ),
+    error = function(e) {
+      to_one_based(e)
+    }
+  )
+})
+
 test_that("DimensionOutOfRangeError", {
   expect_snapshot_error(
     dimension_out_of_range_error(
       arg = "dimension",
       dimension = 5L,
+      call = call("abc"),
       ndims = 3L
     )
   )
@@ -12,6 +26,7 @@ test_that("DimensionOutOfRangeError", {
     dimension_out_of_range_error(
       arg = "dimensions",
       dimension = c(0L, 1L, 5L),
+      call = call("abc"),
       ndims = 3L
     )
   )
@@ -21,7 +36,8 @@ test_that("DimensionUniquenessError", {
   expect_snapshot_error(
     dimension_uniqueness_error(
       arg = "dimensions",
-      dimensions = c(0L, 1L, 0L, 2L)
+      dimensions = c(0L, 1L, 0L, 2L),
+      call = call("abc")
     )
   )
 })
@@ -32,7 +48,8 @@ test_that("IndexOutOfBoundsError", {
       arg = "alias_indices",
       index = 7L,
       lower = 0L,
-      upper = 5L
+      upper = 5L,
+      call = call("abc")
     )
   )
 })
@@ -43,7 +60,8 @@ test_that("SliceIndexError", {
       arg = "start_indices",
       index = -1L,
       lower = 0L,
-      upper = 10L
+      upper = 10L,
+      call = call("abc")
     )
   )
 })
@@ -53,7 +71,8 @@ test_that("PermuteIndexError", {
     permute_index_error(
       arg = "permutation",
       permutation = c(0L, 2L, 1L, 3L),
-      expected = c(0L, 1L, 2L)
+      expected = c(0L, 1L, 2L),
+      call = call("abc")
     )
   )
 })

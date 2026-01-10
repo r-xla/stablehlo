@@ -6,4 +6,5 @@
 #' @importFrom utils hashtab
 #' @importFrom cli cli_abort
 #' @importFrom stats setNames
+#' @importFrom xlamisc new_list_of
 NULL

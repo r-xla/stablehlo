@@ -8,7 +8,7 @@ permute_index_error(
   arg,
   permutation,
   expected,
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
 )

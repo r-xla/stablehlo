@@ -9,7 +9,7 @@ slice_index_error(
   index,
   lower,
   upper,
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
 )

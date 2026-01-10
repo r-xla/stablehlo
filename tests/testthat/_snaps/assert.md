@@ -108,7 +108,7 @@
       assert_valid_id("_foo")
     Condition
       Error:
-      ! Identifiers must start with a letter or be all digits.
+      ! Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
       x `"_foo"` is "_foo".
 
 ---
@@ -117,7 +117,7 @@
       assert_valid_id("1abc")
     Condition
       Error:
-      ! Identifiers must start with a letter or be all digits.
+      ! Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
       x `"1abc"` is "1abc".
 
 ---
@@ -126,7 +126,7 @@
       assert_valid_id("foo-bar")
     Condition
       Error:
-      ! Identifiers must start with a letter or be all digits.
+      ! Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
       x `"foo-bar"` is "foo-bar".
 
 ---
@@ -135,7 +135,7 @@
       assert_valid_id("")
     Condition
       Error:
-      ! Identifiers must start with a letter or be all digits.
+      ! Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
       x `""` is "".
 
 # assert_one_of

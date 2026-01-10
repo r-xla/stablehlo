@@ -5,16 +5,13 @@
 \title{StablehloError}
 \usage{
 stablehlo_error(
-  message = character(),
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   ...,
   class = character(),
   signal = TRUE
 )
 }
 \arguments{
-\item{message}{(\code{character(1)})\cr Error message}
-
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
 
 \item{...}{Additional fields to store in the condition}

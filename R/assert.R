@@ -21,7 +21,7 @@ assert_valid_id <- function(
   if (!is_valid_id(name)) {
     cli_abort(
       c(
-        "Identifiers must start with a letter or be all digits.",
+        "Identifiers can only contain {{letters, digits, _}}; They must start with a letter or be all digits.",
         x = "{.arg {arg}} is {.val {name}}."
       ),
       call = call
