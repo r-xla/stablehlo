@@ -1,14 +1,14 @@
 #' @importFrom cli format_error
 NULL
 
-#' @title StablehloError
+#' @title ErrorStablehlo
 #' @description Base error class for all stablehlo errors
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param ... Additional fields to store in the condition
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
 #' @export
-stablehlo_error <- function(
+error_stablehlo <- function(
   call = sys.call(-1)[1L],
   ...,
   class = character(),
@@ -21,7 +21,7 @@ stablehlo_error <- function(
       header = function(cnd, ...) conditionMessage(cnd),
       ...
     ),
-    class = c(class, "StablehloError", "error", "condition")
+    class = c(class, "ErrorStablehlo", "error", "condition")
   )
   if (signal) {
     rlang::cnd_signal(cond)
@@ -30,7 +30,7 @@ stablehlo_error <- function(
 }
 
 #' @export
-conditionMessage.StablehloError <- function(c, ...) {
+conditionMessage.ErrorStablehlo <- function(c, ...) {
   c$message
 }
 
@@ -52,7 +52,7 @@ error_dimension_out_of_range <- function(
   class = character(),
   signal = TRUE
 ) {
-  stablehlo_error(
+  error_stablehlo(
     arg = arg,
     dimension = as.integer(dimension),
     ndims = as.integer(ndims),
@@ -95,7 +95,7 @@ error_dimension_uniqueness <- function(
   class = character(),
   signal = TRUE
 ) {
-  stablehlo_error(
+  error_stablehlo(
     arg = arg,
     dimensions = as.integer(dimensions),
     call = call,
@@ -135,7 +135,7 @@ error_index_out_of_bounds <- function(
   class = character(),
   signal = TRUE
 ) {
-  stablehlo_error(
+  error_stablehlo(
     arg = arg,
     index = as.integer(index),
     lower = as.integer(lower),
@@ -213,7 +213,7 @@ error_slice_index <- function(
   class = character(),
   signal = TRUE
 ) {
-  stablehlo_error(
+  error_stablehlo(
     arg = arg,
     index = as.integer(index),
     lower = as.integer(lower),
@@ -261,7 +261,7 @@ error_permute_index <- function(
   class = character(),
   signal = TRUE
 ) {
-  stablehlo_error(
+  error_stablehlo(
     arg = arg,
     permutation = as.integer(permutation),
     expected = as.integer(expected),
