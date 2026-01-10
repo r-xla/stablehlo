@@ -9,6 +9,7 @@ dimension_out_of_range_error(
   dimension,
   ndims,
   call = sys.call(-1),
+  class = character(),
   signal = TRUE
 )
 }
@@ -20,6 +21,8 @@ dimension_out_of_range_error(
 \item{ndims}{(\code{integer(1)})\cr The number of dimensions of the tensor}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
+
+\item{class}{(\code{character()})\cr Additional classes to prepend}
 
 \item{signal}{(\code{logical(1)})\cr Whether to signal the error (default TRUE)}
 }

@@ -10,6 +10,7 @@ index_out_of_bounds_error(
   lower,
   upper,
   call = sys.call(-1),
+  class = character(),
   signal = TRUE
 )
 }
@@ -23,6 +24,8 @@ index_out_of_bounds_error(
 \item{upper}{(\code{integer(1)})\cr Upper bound of valid range, exclusive (0-based)}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
+
+\item{class}{(\code{character()})\cr Additional classes to prepend}
 
 \item{signal}{(\code{logical(1)})\cr Whether to signal the error (default TRUE)}
 }

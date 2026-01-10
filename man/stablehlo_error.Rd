@@ -4,7 +4,13 @@
 \alias{stablehlo_error}
 \title{StablehloError}
 \usage{
-stablehlo_error(message = character(), call = sys.call(-1), ..., signal = TRUE)
+stablehlo_error(
+  message = character(),
+  call = sys.call(-1),
+  ...,
+  class = character(),
+  signal = TRUE
+)
 }
 \arguments{
 \item{message}{(\code{character(1)})\cr Error message}
@@ -12,6 +18,8 @@ stablehlo_error(message = character(), call = sys.call(-1), ..., signal = TRUE)
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
 
 \item{...}{Additional fields to store in the condition}
+
+\item{class}{(\code{character()})\cr Additional classes to prepend}
 
 \item{signal}{(\code{logical(1)})\cr Whether to signal the error (default TRUE)}
 }

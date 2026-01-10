@@ -4,7 +4,13 @@
 \alias{dimension_uniqueness_error}
 \title{DimensionUniquenessError}
 \usage{
-dimension_uniqueness_error(arg, dimensions, call = sys.call(-1), signal = TRUE)
+dimension_uniqueness_error(
+  arg,
+  dimensions,
+  call = sys.call(-1),
+  class = character(),
+  signal = TRUE
+)
 }
 \arguments{
 \item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
@@ -12,6 +18,8 @@ dimension_uniqueness_error(arg, dimensions, call = sys.call(-1), signal = TRUE)
 \item{dimensions}{(\code{integer()})\cr The dimension indices that are not unique (0-based)}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
+
+\item{class}{(\code{character()})\cr Additional classes to prepend}
 
 \item{signal}{(\code{logical(1)})\cr Whether to signal the error (default TRUE)}
 }

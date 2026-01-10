@@ -4,7 +4,15 @@
 \alias{slice_index_error}
 \title{SliceIndexError}
 \usage{
-slice_index_error(arg, index, lower, upper, call = sys.call(-1), signal = TRUE)
+slice_index_error(
+  arg,
+  index,
+  lower,
+  upper,
+  call = sys.call(-1),
+  class = character(),
+  signal = TRUE
+)
 }
 \arguments{
 \item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
@@ -16,6 +24,8 @@ slice_index_error(arg, index, lower, upper, call = sys.call(-1), signal = TRUE)
 \item{upper}{(\code{integer(1)})\cr Upper bound of valid range, exclusive (0-based)}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
+
+\item{class}{(\code{character()})\cr Additional classes to prepend}
 
 \item{signal}{(\code{logical(1)})\cr Whether to signal the error (default TRUE)}
 }

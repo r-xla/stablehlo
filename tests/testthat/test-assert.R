@@ -1,13 +1,13 @@
 test_that("assert_vt_has_ttype", {
   y <- make_vt("i32", integer())
 
-  expect_error(
+  expect_snapshot(
     assert_vt_has_ttype(x = y, "BooleanType", shape = integer()),
-    "must have dtype"
+    error = TRUE
   )
-  expect_error(
+  expect_snapshot(
     assert_vt_has_ttype(x = y, "IntegerType", shape = 1L),
-    "shape"
+    error = TRUE
   )
   expect_error(
     assert_vt_has_ttype(x = y, "IntegerType", shape = integer()),
@@ -19,9 +19,9 @@ test_that("assert_vt_has_ttype", {
     assert_vt_has_ttype(x = y, IntegerType(32L), shape = integer()),
     NA
   )
-  expect_error(
+  expect_snapshot(
     assert_vt_has_ttype(x = y, IntegerType(64L), shape = integer()),
-    "must have dtype"
+    error = TRUE
   )
 })
 
@@ -75,13 +75,13 @@ test_that("assert_vt_equal", {
   z1 <- make_vt("i32", 1L)
   z2 <- make_vt("f32", integer())
 
-  expect_error(
+  expect_snapshot(
     assert_vt_equal(x, z1),
-    "same tensor type"
+    error = TRUE
   )
-  expect_error(
+  expect_snapshot(
     assert_vt_equal(x, z2),
-    "same tensor type"
+    error = TRUE
   )
 
   expect_error(
@@ -94,9 +94,9 @@ test_that("assert_vts_have_same_dtype", {
   x <- make_vt("i32", integer())
   y <- make_vt("f32", integer())
   z <- make_vt("i32", 1L)
-  expect_error(
+  expect_snapshot(
     assert_vts_have_same_dtype(x, y),
-    "must have the same dtype"
+    error = TRUE
   )
   expect_error(
     assert_vts_have_same_dtype(x, z),
@@ -112,10 +112,10 @@ test_that("assert_valid_id", {
   expect_error(assert_valid_id("123"), NA)
   expect_error(assert_valid_id("0"), NA)
 
-  expect_error(assert_valid_id("_foo"), "Identifiers must start")
-  expect_error(assert_valid_id("1abc"), "Identifiers must start")
-  expect_error(assert_valid_id("foo-bar"), "Identifiers must start")
-  expect_error(assert_valid_id(""), "Identifiers must start")
+  expect_snapshot(assert_valid_id("_foo"), error = TRUE)
+  expect_snapshot(assert_valid_id("1abc"), error = TRUE)
+  expect_snapshot(assert_valid_id("foo-bar"), error = TRUE)
+  expect_snapshot(assert_valid_id(""), error = TRUE)
 })
 
 test_that("assert_one_of", {
@@ -126,9 +126,9 @@ test_that("assert_one_of", {
     NA
   )
 
-  expect_error(
+  expect_snapshot(
     assert_one_of(x, c("TensorType", "TokenType")),
-    "must be a"
+    error = TRUE
   )
 
   expect_error(

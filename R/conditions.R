@@ -195,13 +195,6 @@ to_one_based.IndexOutOfBoundsError <- function(x, ...) {
   x
 }
 
-#' @export
-to_one_based.ShapeMismatchError <- function(x, ...) {
-  x$dim_lhs <- x$dim_lhs + 1L
-  x$dim_rhs <- x$dim_rhs + 1L
-  x
-}
-
 #' @title SliceIndexError
 #' @description Error when slice indices are invalid
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error

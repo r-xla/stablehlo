@@ -9,6 +9,7 @@ permute_index_error(
   permutation,
   expected,
   call = sys.call(-1),
+  class = character(),
   signal = TRUE
 )
 }
@@ -20,6 +21,8 @@ permute_index_error(
 \item{expected}{(\code{integer()})\cr The expected indices to be permuted (0-based)}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
+
+\item{class}{(\code{character()})\cr Additional classes to prepend}
 
 \item{signal}{(\code{logical(1)})\cr Whether to signal the error (default TRUE)}
 }
