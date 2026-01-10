@@ -22,9 +22,6 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
     cli_abort("each input must have the same shape")
   }
 
-  # Convert 0-based dimension to 1-based for R indexing
-  dim_r <- dimension + 1L
-
   # (C4) 0 <= dimension < R, where R = rank(inputs[0]).
   num_dims <- length(input_dims[[1]])
   if (dimension < 0L || dimension >= num_dims) {

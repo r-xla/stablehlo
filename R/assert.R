@@ -189,7 +189,7 @@ assert_vt_has_ttype <- function(
     }
   }
 
-  if (!is.null(shape) && !identical(stablehlo::shape(tensor_type), shape)) {
+  if (!is.null(shape) && !identical(shape(tensor_type), shape)) {
     # fmt: skip
     shapevec_repr <- function(s) { # nolint
       sprintf("(%s)", paste0(s, collapse = ","))
@@ -197,7 +197,7 @@ assert_vt_has_ttype <- function(
     cli_abort(
       c(
         "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
-        x = "Got {shapevec_repr(stablehlo::shape(tensor_type))}."
+        x = "Got {shapevec_repr(shape(tensor_type))}."
       ),
       call = call
     )
