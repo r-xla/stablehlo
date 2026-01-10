@@ -41,7 +41,7 @@ infer_types_slice <- function(
 
   if (any(start_idx < 0)) {
     invalid_positions <- which(start_idx < 0)
-    slice_index_error(
+    error_slice_index(
       arg = "start_indices",
       index = start_idx[invalid_positions],
       lower = 0L,
@@ -51,7 +51,7 @@ infer_types_slice <- function(
 
   if (any(start_idx > limit_idx)) {
     invalid_positions <- which(start_idx > limit_idx)
-    slice_index_error(
+    error_slice_index(
       arg = "start_indices",
       index = start_idx[invalid_positions],
       lower = 0L,
@@ -61,7 +61,7 @@ infer_types_slice <- function(
 
   if (any(limit_idx > operand_shape)) {
     invalid_positions <- which(limit_idx > operand_shape)
-    slice_index_error(
+    error_slice_index(
       arg = "limit_indices",
       index = limit_idx[invalid_positions],
       lower = start_idx[invalid_positions],

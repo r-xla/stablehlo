@@ -27,7 +27,7 @@ infer_types_concatenate <- function(..., dimension) {
   # (C4) 0 <= dimension < rank(inputs[0])
   num_dims <- length(shape(dots[[1]]))
   if (dimension < 0L || dimension >= num_dims) {
-    dimension_out_of_range_error(
+    error_dimension_out_of_range(
       arg = "dimension",
       dimension = dimension,
       ndims = num_dims

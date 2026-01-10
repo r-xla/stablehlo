@@ -23,7 +23,7 @@ infer_types_broadcast_in_dim <- function(
   }
 
   if (any(bdims < 0L | bdims >= length(result_dims))) {
-    dimension_out_of_range_error(
+    error_dimension_out_of_range(
       arg = "broadcast_dimensions",
       dimension = bdims,
       ndims = length(result_dims)
@@ -32,7 +32,7 @@ infer_types_broadcast_in_dim <- function(
 
   # (C4) is_unique(broadcast_dimensions)
   if (anyDuplicated(bdims)) {
-    dimension_uniqueness_error(
+    error_dimension_uniqueness(
       arg = "broadcast_dimensions",
       dimensions = bdims
     )

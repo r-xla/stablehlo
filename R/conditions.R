@@ -34,16 +34,17 @@ conditionMessage.StablehloError <- function(c, ...) {
   c$message
 }
 
-#' @title DimensionOutOfRangeError
+#' @title ErrorDimensionOutOfRange
 #' @description Error when a dimension index is outside the valid range [0, ndims)
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
-#' @param dimension (`integer()`)\cr The dimension index(es) that are out of range (0-based)
+#' @param dimension (`integer()`)\cr All dimension index(es) (0-based). The error message will
+#'   identify which ones are out of range.
 #' @param ndims (`integer(1)`)\cr The number of dimensions of the tensor
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
 #' @export
-dimension_out_of_range_error <- function(
+error_dimension_out_of_range <- function(
   arg,
   dimension,
   ndims,
@@ -56,13 +57,13 @@ dimension_out_of_range_error <- function(
     dimension = as.integer(dimension),
     ndims = as.integer(ndims),
     call = call,
-    class = c(class, "DimensionOutOfRangeError"),
+    class = c(class, "ErrorDimensionOutOfRange"),
     signal = signal
   )
 }
 
 #' @export
-conditionMessage.DimensionOutOfRangeError <- function(c, ...) {
+conditionMessage.ErrorDimensionOutOfRange <- function(c, ...) {
   dims_str <- paste0(c$dimension, collapse = ", ") # nolint
   if (length(c$dimension) == 1) {
     dims_str <- paste0("dimension index ", dims_str)
@@ -79,7 +80,7 @@ conditionMessage.DimensionOutOfRangeError <- function(c, ...) {
   )
 }
 
-#' @title DimensionUniquenessError
+#' @title ErrorDimensionUniqueness
 #' @description Error when dimension indices are not unique
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
 #' @param dimensions (`integer()`)\cr The dimension indices that are not unique (0-based)
@@ -87,7 +88,7 @@ conditionMessage.DimensionOutOfRangeError <- function(c, ...) {
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
 #' @export
-dimension_uniqueness_error <- function(
+error_dimension_uniqueness <- function(
   arg,
   dimensions,
   call = sys.call(-1)[1L],
@@ -98,13 +99,13 @@ dimension_uniqueness_error <- function(
     arg = arg,
     dimensions = as.integer(dimensions),
     call = call,
-    class = c(class, "DimensionUniquenessError"),
+    class = c(class, "ErrorDimensionUniqueness"),
     signal = signal
   )
 }
 
 #' @export
-conditionMessage.DimensionUniquenessError <- function(c, ...) {
+conditionMessage.ErrorDimensionUniqueness <- function(c, ...) {
   dims_str <- paste0(c$dimensions, collapse = ", ") # nolint
   format_error(
     c(
@@ -115,7 +116,7 @@ conditionMessage.DimensionUniquenessError <- function(c, ...) {
   )
 }
 
-#' @title IndexOutOfBoundsError
+#' @title ErrorIndexOutOfBounds
 #' @description Error when an index is outside the valid range [lower, upper)
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
 #' @param index (`integer()`)\cr The observed index value(s) (0-based)
@@ -125,7 +126,7 @@ conditionMessage.DimensionUniquenessError <- function(c, ...) {
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
 #' @export
-index_out_of_bounds_error <- function(
+error_index_out_of_bounds <- function(
   arg,
   index,
   lower,
@@ -140,13 +141,13 @@ index_out_of_bounds_error <- function(
     lower = as.integer(lower),
     upper = as.integer(upper),
     call = call,
-    class = c(class, "IndexOutOfBoundsError"),
+    class = c(class, "ErrorIndexOutOfBounds"),
     signal = signal
   )
 }
 
 #' @export
-conditionMessage.IndexOutOfBoundsError <- function(c, ...) {
+conditionMessage.ErrorIndexOutOfBounds <- function(c, ...) {
   index_str <- paste0(c$index, collapse = ", ") # nolint
   format_error(
     c(
@@ -173,27 +174,27 @@ to_one_based.default <- function(x, ...) {
 }
 
 #' @export
-to_one_based.DimensionOutOfRangeError <- function(x, ...) {
+to_one_based.ErrorDimensionOutOfRange <- function(x, ...) {
   x$dimension <- x$dimension + 1L
   # ndims is a count, not an index, so it doesn't need conversion
   x
 }
 
 #' @export
-to_one_based.DimensionUniquenessError <- function(x, ...) {
+to_one_based.ErrorDimensionUniqueness <- function(x, ...) {
   x$dimensions <- x$dimensions + 1L
   x
 }
 
 #' @export
-to_one_based.IndexOutOfBoundsError <- function(x, ...) {
+to_one_based.ErrorIndexOutOfBounds <- function(x, ...) {
   x$index <- x$index + 1L
   x$lower <- x$lower + 1L
   x$upper <- x$upper + 1L
   x
 }
 
-#' @title SliceIndexError
+#' @title ErrorSliceIndex
 #' @description Error when slice indices are invalid
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
 #' @param index (`integer()`)\cr The invalid index value(s) (0-based)
@@ -203,7 +204,7 @@ to_one_based.IndexOutOfBoundsError <- function(x, ...) {
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
 #' @export
-slice_index_error <- function(
+error_slice_index <- function(
   arg,
   index,
   lower,
@@ -218,13 +219,13 @@ slice_index_error <- function(
     lower = as.integer(lower),
     upper = as.integer(upper),
     call = call,
-    class = c(class, "SliceIndexError"),
+    class = c(class, "ErrorSliceIndex"),
     signal = signal
   )
 }
 
 #' @export
-conditionMessage.SliceIndexError <- function(c, ...) {
+conditionMessage.ErrorSliceIndex <- function(c, ...) {
   index_str <- paste0(c$index, collapse = ", ") # nolint
   format_error(
     c(
@@ -236,14 +237,14 @@ conditionMessage.SliceIndexError <- function(c, ...) {
 }
 
 #' @export
-to_one_based.SliceIndexError <- function(x, ...) {
+to_one_based.ErrorSliceIndex <- function(x, ...) {
   x$index <- x$index + 1L
   x$lower <- x$lower + 1L
   x$upper <- x$upper + 1L
   x
 }
 
-#' @title PermuteIndexError
+#' @title ErrorPermuteIndex
 #' @description Error when permutation values are invalid (not a valid permutation of indices)
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
 #' @param permutation (`integer()`)\cr The permutation values that are invalid (0-based)
@@ -252,7 +253,7 @@ to_one_based.SliceIndexError <- function(x, ...) {
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
 #' @export
-permute_index_error <- function(
+error_permute_index <- function(
   arg,
   permutation,
   expected,
@@ -265,13 +266,13 @@ permute_index_error <- function(
     permutation = as.integer(permutation),
     expected = as.integer(expected),
     call = call,
-    class = c(class, "PermuteIndexError"),
+    class = c(class, "ErrorPermuteIndex"),
     signal = signal
   )
 }
 
 #' @export
-conditionMessage.PermuteIndexError <- function(c, ...) {
+conditionMessage.ErrorPermuteIndex <- function(c, ...) {
   perm_str <- paste0(c$permutation, collapse = ", ") # nolint
   expected_str <- paste0(c$expected, collapse = ", ") # nolint
   format_error(
@@ -284,7 +285,7 @@ conditionMessage.PermuteIndexError <- function(c, ...) {
 }
 
 #' @export
-to_one_based.PermuteIndexError <- function(x, ...) {
+to_one_based.ErrorPermuteIndex <- function(x, ...) {
   x$permutation <- x$permutation + 1L
   x$expected <- x$expected + 1L
   x

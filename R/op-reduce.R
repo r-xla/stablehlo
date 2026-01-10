@@ -48,14 +48,14 @@ infer_types_reduce <- function(..., body, dimensions) {
   if (length(dims0) > 0L) {
     num_dims <- length(ref_shape)
     if (any(dims0 < 0L | dims0 >= num_dims)) {
-      dimension_out_of_range_error(
+      error_dimension_out_of_range(
         arg = "dimensions",
         dimension = dims0,
         ndims = num_dims
       )
     }
     if (anyDuplicated(dims0)) {
-      dimension_uniqueness_error(
+      error_dimension_uniqueness(
         arg = "dimensions",
         dimensions = dims0
       )

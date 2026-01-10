@@ -16,7 +16,7 @@ infer_types_reverse <- function(
 
   # (C2) is_unique(dimensions).
   if (anyDuplicated(revdims) > 0) {
-    dimension_uniqueness_error(
+    error_dimension_uniqueness(
       arg = "dimensions",
       dimensions = revdims
     )
@@ -29,7 +29,7 @@ infer_types_reverse <- function(
     )
   }
   if (any(revdims < 0L | revdims >= length(operand_dims))) {
-    dimension_out_of_range_error(
+    error_dimension_out_of_range(
       arg = "dimensions",
       dimension = revdims,
       ndims = length(operand_dims)

@@ -37,17 +37,16 @@ infer_types_transpose <- function(
 
   # Check if any permutation values are out of range
   if (any(perm_values < 0L | perm_values >= num_dims)) {
-    invalid_dims <- perm_values[perm_values < 0L | perm_values >= num_dims]
-    dimension_out_of_range_error(
+    error_dimension_out_of_range(
       arg = "permutation",
-      dimension = invalid_dims,
+      dimension = perm_values,
       ndims = num_dims
     )
   }
 
   expected_perm <- seq(0L, num_dims - 1L)
   if (!setequal(perm_values, expected_perm)) {
-    permute_index_error(
+    error_permute_index(
       arg = "permutation",
       permutation = perm_values,
       expected = expected_perm

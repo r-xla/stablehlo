@@ -25,7 +25,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
   # (C4) 0 <= dimension < R, where R = rank(inputs[0]).
   num_dims <- length(input_dims[[1]])
   if (dimension < 0L || dimension >= num_dims) {
-    dimension_out_of_range_error(
+    error_dimension_out_of_range(
       arg = "dimension",
       dimension = dimension,
       ndims = num_dims
