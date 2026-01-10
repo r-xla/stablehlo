@@ -114,4 +114,12 @@ test_that("get nice error messages when shapes don't match", {
       contracting_dims = list(0L, 0L)
     )
   })
+  expect_error(
+    hlo_dot_general(
+      lhs,
+      rhs,
+      contracting_dims = list(0L, 0L)
+    ),
+    "Contracting dimensions must be the same"
+  )
 })

@@ -54,7 +54,7 @@ format_shapes_msg <- function(prefix, ...) {
   shapes <- list(...)
 
   if (!all(names(shapes) != "")) {
-    cli::cli_abort("All shapes should be named")
+    cli_abort("All shapes should be named")
   }
 
   msgs <- paste0(
@@ -66,4 +66,9 @@ format_shapes_msg <- function(prefix, ...) {
   )
 
   paste(prefix, paste(msgs, collapse = ", "))
+}
+
+shapevec_repr <- function(shape) {
+  shape[is.na(shape)] <- "?"
+  sprintf("(%s)", paste(shape, collapse = ","))
 }
