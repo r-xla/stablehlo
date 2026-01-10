@@ -8,7 +8,7 @@ Error when dimension indices are not unique
 dimension_uniqueness_error(
   arg,
   dimensions,
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
 )

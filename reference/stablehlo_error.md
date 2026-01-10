@@ -6,8 +6,7 @@ Base error class for all stablehlo errors
 
 ``` r
 stablehlo_error(
-  message = character(),
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   ...,
   class = character(),
   signal = TRUE
@@ -15,11 +14,6 @@ stablehlo_error(
 ```
 
 ## Arguments
-
-- message:
-
-  (`character(1)`)  
-  Error message
 
 - call:
 

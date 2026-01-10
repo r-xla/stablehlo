@@ -9,7 +9,7 @@ dimension_out_of_range_error(
   arg,
   dimension,
   ndims,
-  call = sys.call(-1),
+  call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
 )
