@@ -5,7 +5,7 @@ Base error class for all stablehlo errors
 ## Usage
 
 ``` r
-StablehloError(message = character(), call = NULL, ...)
+stablehlo_error(message = character(), call = sys.call(-1), ..., signal = TRUE)
 ```
 
 ## Arguments
@@ -23,3 +23,8 @@ StablehloError(message = character(), call = NULL, ...)
 - ...:
 
   Additional fields to store in the condition
+
+- signal:
+
+  (`logical(1)`)  
+  Whether to signal the error (default TRUE)

@@ -5,13 +5,7 @@ Error when dimension indices are not unique
 ## Usage
 
 ``` r
-DimensionUniquenessError(
-  arg,
-  dimensions,
-  message = character(),
-  call = NULL,
-  ...
-)
+dimension_uniqueness_error(arg, dimensions, call = sys.call(-1), signal = TRUE)
 ```
 
 ## Arguments
@@ -26,16 +20,12 @@ DimensionUniquenessError(
   ([`integer()`](https://rdrr.io/r/base/integer.html))  
   The dimension indices that are not unique (0-based)
 
-- message:
-
-  (`character(1)`)  
-  Error message
-
 - call:
 
   (`call` or `NULL`)  
   Call that generated the error
 
-- ...:
+- signal:
 
-  Additional fields
+  (`logical(1)`)  
+  Whether to signal the error (default TRUE)

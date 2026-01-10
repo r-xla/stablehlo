@@ -8,10 +8,6 @@
 - [`ConstantAttr()`](ConstantAttr.md) : ConstantAttr
 - [`CustomOpBackendConfig()`](CustomOpBackendConfig.md) :
   CustomOpBackendConfig
-- [`DimensionOutOfRangeError()`](DimensionOutOfRangeError.md) :
-  DimensionOutOfRangeError
-- [`DimensionUniquenessError()`](DimensionUniquenessError.md) :
-  DimensionUniquenessError
 - [`DotDimensionNumbers()`](DotDimensionNumbers.md) :
   DotDimensionNumbers
 - [`FloatType()`](FloatType.md) : FloatType
@@ -23,9 +19,6 @@
 - [`FuncOutput()`](FuncOutput.md) : FuncOutput
 - [`FuncOutputs()`](FuncOutputs.md) : FuncOutputs
 - [`FuncValue()`](FuncValue.md) : FuncValue
-- [`IndexOutOfBoundsError()`](IndexOutOfBoundsError.md) :
-  IndexOutOfBoundsError
-- [`InferenceError()`](InferenceError.md) : InferenceError
 - [`IntegerType()`](IntegerType.md) : IntegerType (signed)
 - [`Op()`](Op.md) : Op
 - [`OpInputAttr()`](OpInputAttr.md) : OpInputAttr
@@ -39,11 +32,8 @@
 - [`OpOutput()`](OpOutput.md) : OpOutput
 - [`OpOutputs()`](OpOutputs.md) : OpOutputs
 - [`OpSignature()`](OpSignature.md) : OpSignature
-- [`PermutationError()`](PermutationError.md) : PermutationError
 - [`ScalarAttr()`](ScalarAttr.md) : ScalarAttr
 - [`Shape()`](Shape.md) : Shape
-- [`SliceIndexError()`](SliceIndexError.md) : SliceIndexError
-- [`StablehloError()`](StablehloError.md) : StablehloError
 - [`StringAttr()`](StringAttr.md) : StringAttr
 - [`TensorDataType`](TensorDataType.md) : TensorDataType Base Class
 - [`TensorType()`](TensorType.md) : TensorType
@@ -54,6 +44,10 @@
 - [`as_dtype()`](as_dtype.md) : Convert to TensorDataType
 - [`constant_attr()`](constant_attr.md) : Create a ConstantAttr from R
   values
+- [`dimension_out_of_range_error()`](dimension_out_of_range_error.md) :
+  DimensionOutOfRangeError
+- [`dimension_uniqueness_error()`](dimension_uniqueness_error.md) :
+  DimensionUniquenessError
 - [`.current_func()`](dot-current_func.md) : Get the last function
   created
 - [`format_double()`](format_double.md) : Format Double Array with
@@ -173,6 +167,8 @@
 - [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
   While Operator
 - [`hlo_xor()`](hlo_xor.md) : Xor Operator
+- [`index_out_of_bounds_error()`](index_out_of_bounds_error.md) :
+  IndexOutOfBoundsError
 - [`infer_types_custom_call()`](infer_types_custom_call.md) : Infer
   types for custom call
 - [`infer_types_generic_biv()`](infer_types_generic_biv.md) : Infer
@@ -184,9 +180,10 @@
 - [`infer_types_integerish_uni()`](infer_types_integerish_uni.md) :
   Infer types for integerish unary operations
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
-- [`pascal_to_snake()`](pascal_to_snake.md) : Convert PascalCase to
-  snake_case
+- [`permute_index_error()`](permute_index_error.md) : PermuteIndexError
 - [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
 - [`repr()`](repr.md) : Generate string representation for object
+- [`slice_index_error()`](slice_index_error.md) : SliceIndexError
+- [`stablehlo_error()`](stablehlo_error.md) : StablehloError
 - [`to_one_based()`](to_one_based.md) : Convert 0-based indices to
   1-based

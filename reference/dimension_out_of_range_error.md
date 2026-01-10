@@ -5,13 +5,12 @@ Error when a dimension index is outside the valid range \[0, ndims)
 ## Usage
 
 ``` r
-DimensionOutOfRangeError(
+dimension_out_of_range_error(
   arg,
   dimension,
   ndims,
-  message = character(),
-  call = NULL,
-  ...
+  call = sys.call(-1),
+  signal = TRUE
 )
 ```
 
@@ -32,16 +31,12 @@ DimensionOutOfRangeError(
   (`integer(1)`)  
   The number of dimensions of the tensor
 
-- message:
-
-  (`character(1)`)  
-  Error message
-
 - call:
 
   (`call` or `NULL`)  
   Call that generated the error
 
-- ...:
+- signal:
 
-  Additional fields
+  (`logical(1)`)  
+  Whether to signal the error (default TRUE)

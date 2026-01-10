@@ -1,18 +1,17 @@
-# PermutationError
+# PermuteIndexError
 
 Error when permutation values are invalid (not a valid permutation of
-dimension indices)
+indices)
 
 ## Usage
 
 ``` r
-PermutationError(
+permute_index_error(
   arg,
   permutation,
-  ndims,
-  message = character(),
-  call = NULL,
-  ...
+  expected,
+  call = sys.call(-1),
+  signal = TRUE
 )
 ```
 
@@ -28,21 +27,17 @@ PermutationError(
   ([`integer()`](https://rdrr.io/r/base/integer.html))  
   The permutation values that are invalid (0-based)
 
-- ndims:
+- expected:
 
-  (`integer(1)`)  
-  The number of dimensions of the tensor
-
-- message:
-
-  (`character(1)`)  
-  Error message
+  ([`integer()`](https://rdrr.io/r/base/integer.html))  
+  The expected indices to be permuted (0-based)
 
 - call:
 
   (`call` or `NULL`)  
   Call that generated the error
 
-- ...:
+- signal:
 
-  Additional fields
+  (`logical(1)`)  
+  Whether to signal the error (default TRUE)

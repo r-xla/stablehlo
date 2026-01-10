@@ -5,13 +5,13 @@ Error when an index is outside the valid range \[lower, upper)
 ## Usage
 
 ``` r
-IndexOutOfBoundsError(
+index_out_of_bounds_error(
   arg,
+  index,
   lower,
   upper,
-  message = character(),
-  call = NULL,
-  ...
+  call = sys.call(-1),
+  signal = TRUE
 )
 ```
 
@@ -21,6 +21,11 @@ IndexOutOfBoundsError(
 
   (`character(1)`)  
   Name of the argument that caused the error
+
+- index:
+
+  ([`integer()`](https://rdrr.io/r/base/integer.html))  
+  The observed index value(s) (0-based)
 
 - lower:
 
@@ -32,16 +37,12 @@ IndexOutOfBoundsError(
   (`integer(1)`)  
   Upper bound of valid range, exclusive (0-based)
 
-- message:
-
-  (`character(1)`)  
-  Error message
-
 - call:
 
   (`call` or `NULL`)  
   Call that generated the error
 
-- ...:
+- signal:
 
-  Additional fields
+  (`logical(1)`)  
+  Whether to signal the error (default TRUE)
