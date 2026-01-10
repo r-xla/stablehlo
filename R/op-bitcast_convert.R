@@ -50,7 +50,9 @@ infer_types_bitcast_convert <- function(
     result_dims <- operand_dims
   } else if (cst_fct > 1) {
     if (identical(operand_dims, integer(0))) {
-      tensor_ndims_error(expected = c(0L, NA), observed = length(operand_dims))
+      cli_abort(
+        "{.var operand} must have at least 1 dimension for this bitcast conversion."
+      )
     } else if (operand_dims[[length(operand_dims)]] != cst_fct) {
       cli_abort(
         "The last dimension of {.var operand} must be {cst_fct} for this bitcast conversion.",

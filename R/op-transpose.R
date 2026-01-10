@@ -45,12 +45,12 @@ infer_types_transpose <- function(
     )
   }
 
-  expected_perm <- seq(0, num_dims - 1)
+  expected_perm <- seq(0L, num_dims - 1L)
   if (!setequal(perm_values, expected_perm)) {
-    permutation_error(
+    permute_index_error(
       arg = "permutation",
       permutation = perm_values,
-      ndims = num_dims
+      expected = expected_perm
     )
   }
 

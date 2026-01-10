@@ -41,11 +41,11 @@ RoxygenNote: 7.3.3
 Collate:
     'aaa.R'
     'assert.R'
+    'conditions.R'
     'repr.R'
     'list_of.R'
     'shape.R'
     'types.R'
-    'conditions.R'
     'constant.R'
     'format_double.R'
     'value_id.R'

@@ -67,3 +67,8 @@ format_shapes_msg <- function(prefix, ...) {
 
   paste(prefix, paste(msgs, collapse = ", "))
 }
+
+shapevec_repr <- function(shape) {
+  shape[is.na(shape)] <- "?"
+  sprintf("(%s)", paste(shape, collapse = ","))
+}
