@@ -1,13 +1,14 @@
-# DimensionUniquenessError
+# ErrorDimensionOutOfRange
 
-Error when dimension indices are not unique
+Error when a dimension index is outside the valid range \[0, ndims)
 
 ## Usage
 
 ``` r
-dimension_uniqueness_error(
+error_dimension_out_of_range(
   arg,
-  dimensions,
+  dimension,
+  ndims,
   call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
@@ -21,10 +22,16 @@ dimension_uniqueness_error(
   (`character(1)`)  
   Name of the argument that caused the error
 
-- dimensions:
+- dimension:
 
   ([`integer()`](https://rdrr.io/r/base/integer.html))  
-  The dimension indices that are not unique (0-based)
+  All dimension index(es) (0-based). The error message will identify
+  which ones are out of range.
+
+- ndims:
+
+  (`integer(1)`)  
+  The number of dimensions of the tensor
 
 - call:
 

@@ -44,12 +44,16 @@
 - [`as_dtype()`](as_dtype.md) : Convert to TensorDataType
 - [`constant_attr()`](constant_attr.md) : Create a ConstantAttr from R
   values
-- [`dimension_out_of_range_error()`](dimension_out_of_range_error.md) :
-  DimensionOutOfRangeError
-- [`dimension_uniqueness_error()`](dimension_uniqueness_error.md) :
-  DimensionUniquenessError
 - [`.current_func()`](dot-current_func.md) : Get the last function
   created
+- [`error_dimension_out_of_range()`](error_dimension_out_of_range.md) :
+  ErrorDimensionOutOfRange
+- [`error_dimension_uniqueness()`](error_dimension_uniqueness.md) :
+  ErrorDimensionUniqueness
+- [`error_index_out_of_bounds()`](error_index_out_of_bounds.md) :
+  ErrorIndexOutOfBounds
+- [`error_permute_index()`](error_permute_index.md) : ErrorPermuteIndex
+- [`error_slice_index()`](error_slice_index.md) : ErrorSliceIndex
 - [`format_double()`](format_double.md) : Format Double Array with
   Scientific Notation
 - [`hlo_abs()`](hlo_abs.md) : Abs Operator
@@ -167,8 +171,6 @@
 - [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
   While Operator
 - [`hlo_xor()`](hlo_xor.md) : Xor Operator
-- [`index_out_of_bounds_error()`](index_out_of_bounds_error.md) :
-  IndexOutOfBoundsError
 - [`infer_types_custom_call()`](infer_types_custom_call.md) : Infer
   types for custom call
 - [`infer_types_generic_biv()`](infer_types_generic_biv.md) : Infer
@@ -180,10 +182,8 @@
 - [`infer_types_integerish_uni()`](infer_types_integerish_uni.md) :
   Infer types for integerish unary operations
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
-- [`permute_index_error()`](permute_index_error.md) : PermuteIndexError
 - [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
 - [`repr()`](repr.md) : Generate string representation for object
-- [`slice_index_error()`](slice_index_error.md) : SliceIndexError
 - [`stablehlo_error()`](stablehlo_error.md) : StablehloError
 - [`to_one_based()`](to_one_based.md) : Convert 0-based indices to
   1-based

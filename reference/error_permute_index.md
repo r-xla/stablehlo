@@ -1,4 +1,4 @@
-# PermuteIndexError
+# ErrorPermuteIndex
 
 Error when permutation values are invalid (not a valid permutation of
 indices)
@@ -6,7 +6,7 @@ indices)
 ## Usage
 
 ``` r
-permute_index_error(
+error_permute_index(
   arg,
   permutation,
   expected,

@@ -1,16 +1,16 @@
-# SliceIndexError
+# ErrorIndexOutOfBounds
 
-Error when slice indices are invalid
+Error when an index is outside the valid range \[lower, upper)
 
 ## Usage
 
 ``` r
-slice_index_error(
+error_index_out_of_bounds(
   arg,
   index,
   lower,
   upper,
-  call = sys.call(-1)[1L],
+  call = sys.call(-1),
   class = character(),
   signal = TRUE
 )
@@ -26,7 +26,7 @@ slice_index_error(
 - index:
 
   ([`integer()`](https://rdrr.io/r/base/integer.html))  
-  The invalid index value(s) (0-based)
+  The observed index value(s) (0-based)
 
 - lower:
 

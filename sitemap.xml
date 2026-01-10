@@ -48,9 +48,12 @@
 <url><loc>/reference/ValueTypes.html</loc></url>
 <url><loc>/reference/as_dtype.html</loc></url>
 <url><loc>/reference/constant_attr.html</loc></url>
-<url><loc>/reference/dimension_out_of_range_error.html</loc></url>
-<url><loc>/reference/dimension_uniqueness_error.html</loc></url>
 <url><loc>/reference/dot-current_func.html</loc></url>
+<url><loc>/reference/error_dimension_out_of_range.html</loc></url>
+<url><loc>/reference/error_dimension_uniqueness.html</loc></url>
+<url><loc>/reference/error_index_out_of_bounds.html</loc></url>
+<url><loc>/reference/error_permute_index.html</loc></url>
+<url><loc>/reference/error_slice_index.html</loc></url>
 <url><loc>/reference/format_double.html</loc></url>
 <url><loc>/reference/hlo_abs.html</loc></url>
 <url><loc>/reference/hlo_add.html</loc></url>
@@ -123,7 +126,6 @@
 <url><loc>/reference/hlo_while.html</loc></url>
 <url><loc>/reference/hlo_xor.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
-<url><loc>/reference/index_out_of_bounds_error.html</loc></url>
 <url><loc>/reference/infer_types_custom_call.html</loc></url>
 <url><loc>/reference/infer_types_generic_biv.html</loc></url>
 <url><loc>/reference/infer_types_generic_uni.html</loc></url>
@@ -131,11 +133,9 @@
 <url><loc>/reference/infer_types_integerish_uni.html</loc></url>
 <url><loc>/reference/is_dtype.html</loc></url>
 <url><loc>/reference/new_Op.html</loc></url>
-<url><loc>/reference/permute_index_error.html</loc></url>
 <url><loc>/reference/r_to_constant.html</loc></url>
 <url><loc>/reference/reexports.html</loc></url>
 <url><loc>/reference/repr.html</loc></url>
-<url><loc>/reference/slice_index_error.html</loc></url>
 <url><loc>/reference/stablehlo_error.html</loc></url>
 <url><loc>/reference/to_one_based.html</loc></url>
 </urlset>
