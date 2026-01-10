@@ -54,6 +54,7 @@
   ErrorIndexOutOfBounds
 - [`error_permute_index()`](error_permute_index.md) : ErrorPermuteIndex
 - [`error_slice_index()`](error_slice_index.md) : ErrorSliceIndex
+- [`error_stablehlo()`](error_stablehlo.md) : ErrorStablehlo
 - [`format_double()`](format_double.md) : Format Double Array with
   Scientific Notation
 - [`hlo_abs()`](hlo_abs.md) : Abs Operator
@@ -184,6 +185,5 @@
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
 - [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
 - [`repr()`](repr.md) : Generate string representation for object
-- [`stablehlo_error()`](stablehlo_error.md) : StablehloError
 - [`to_one_based()`](to_one_based.md) : Convert 0-based indices to
   1-based

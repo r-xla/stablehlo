@@ -1,11 +1,11 @@
-# StablehloError
+# ErrorStablehlo
 
 Base error class for all stablehlo errors
 
 ## Usage
 
 ``` r
-stablehlo_error(
+error_stablehlo(
   call = sys.call(-1)[1L],
   ...,
   class = character(),
