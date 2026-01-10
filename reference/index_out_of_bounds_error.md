@@ -11,6 +11,7 @@ index_out_of_bounds_error(
   lower,
   upper,
   call = sys.call(-1),
+  class = character(),
   signal = TRUE
 )
 ```
@@ -41,6 +42,11 @@ index_out_of_bounds_error(
 
   (`call` or `NULL`)  
   Call that generated the error
+
+- class:
+
+  ([`character()`](https://rdrr.io/r/base/character.html))  
+  Additional classes to prepend
 
 - signal:
 

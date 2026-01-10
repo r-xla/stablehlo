@@ -11,6 +11,7 @@ permute_index_error(
   permutation,
   expected,
   call = sys.call(-1),
+  class = character(),
   signal = TRUE
 )
 ```
@@ -36,6 +37,11 @@ permute_index_error(
 
   (`call` or `NULL`)  
   Call that generated the error
+
+- class:
+
+  ([`character()`](https://rdrr.io/r/base/character.html))  
+  Additional classes to prepend
 
 - signal:
 

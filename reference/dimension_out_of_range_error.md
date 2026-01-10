@@ -10,6 +10,7 @@ dimension_out_of_range_error(
   dimension,
   ndims,
   call = sys.call(-1),
+  class = character(),
   signal = TRUE
 )
 ```
@@ -35,6 +36,11 @@ dimension_out_of_range_error(
 
   (`call` or `NULL`)  
   Call that generated the error
+
+- class:
+
+  ([`character()`](https://rdrr.io/r/base/character.html))  
+  Additional classes to prepend
 
 - signal:
 

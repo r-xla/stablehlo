@@ -5,7 +5,15 @@ Error when slice indices are invalid
 ## Usage
 
 ``` r
-slice_index_error(arg, index, lower, upper, call = sys.call(-1), signal = TRUE)
+slice_index_error(
+  arg,
+  index,
+  lower,
+  upper,
+  call = sys.call(-1),
+  class = character(),
+  signal = TRUE
+)
 ```
 
 ## Arguments
@@ -34,6 +42,11 @@ slice_index_error(arg, index, lower, upper, call = sys.call(-1), signal = TRUE)
 
   (`call` or `NULL`)  
   Call that generated the error
+
+- class:
+
+  ([`character()`](https://rdrr.io/r/base/character.html))  
+  Additional classes to prepend
 
 - signal:
 

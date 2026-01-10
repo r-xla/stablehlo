@@ -5,7 +5,13 @@ Error when dimension indices are not unique
 ## Usage
 
 ``` r
-dimension_uniqueness_error(arg, dimensions, call = sys.call(-1), signal = TRUE)
+dimension_uniqueness_error(
+  arg,
+  dimensions,
+  call = sys.call(-1),
+  class = character(),
+  signal = TRUE
+)
 ```
 
 ## Arguments
@@ -24,6 +30,11 @@ dimension_uniqueness_error(arg, dimensions, call = sys.call(-1), signal = TRUE)
 
   (`call` or `NULL`)  
   Call that generated the error
+
+- class:
+
+  ([`character()`](https://rdrr.io/r/base/character.html))  
+  Additional classes to prepend
 
 - signal:
 

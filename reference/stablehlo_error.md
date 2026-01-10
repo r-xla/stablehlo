@@ -5,7 +5,13 @@ Base error class for all stablehlo errors
 ## Usage
 
 ``` r
-stablehlo_error(message = character(), call = sys.call(-1), ..., signal = TRUE)
+stablehlo_error(
+  message = character(),
+  call = sys.call(-1),
+  ...,
+  class = character(),
+  signal = TRUE
+)
 ```
 
 ## Arguments
@@ -23,6 +29,11 @@ stablehlo_error(message = character(), call = sys.call(-1), ..., signal = TRUE)
 - ...:
 
   Additional fields to store in the condition
+
+- class:
+
+  ([`character()`](https://rdrr.io/r/base/character.html))  
+  Additional classes to prepend
 
 - signal:
 
