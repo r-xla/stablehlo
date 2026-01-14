@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#negate> for details.
 ## Usage
 
 ``` r
+infer_types_negate(operand)
+
 hlo_negate(operand)
 ```
 

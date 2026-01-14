@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#rsqrt> for details.
 ## Usage
 
 ``` r
+infer_types_rsqrt(operand)
+
 hlo_rsqrt(operand)
 ```
 

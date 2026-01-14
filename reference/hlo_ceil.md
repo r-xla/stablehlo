@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#ceil> for details.
 ## Usage
 
 ``` r
+infer_types_ceil(operand)
+
 hlo_ceil(operand)
 ```
 

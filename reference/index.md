@@ -59,11 +59,14 @@
   Scientific Notation
 - [`infer_types_abs()`](hlo_abs.md) [`hlo_abs()`](hlo_abs.md) : Abs
   Operator
-- [`hlo_add()`](hlo_add.md) : Add Operator
+- [`infer_types_add()`](hlo_add.md) [`hlo_add()`](hlo_add.md) : Add
+  Operator
 - [`infer_types_after_all()`](hlo_after_all.md)
   [`hlo_after_all()`](hlo_after_all.md) : AfterAll Operator
-- [`hlo_and()`](hlo_and.md) : And Operator
-- [`hlo_atan2()`](hlo_atan2.md) : Atan2 Operator
+- [`infer_types_and()`](hlo_and.md) [`hlo_and()`](hlo_and.md) : And
+  Operator
+- [`infer_types_atan2()`](hlo_atan2.md) [`hlo_atan2()`](hlo_atan2.md) :
+  Atan2 Operator
 - [`infer_types_bitcast_convert()`](hlo_bitcast_convert.md)
   [`hlo_bitcast_convert()`](hlo_bitcast_convert.md) : BitcastConvert
   Operator
@@ -72,8 +75,10 @@
   Operator
 - [`infer_types_case()`](hlo_case.md) [`hlo_case()`](hlo_case.md) : Case
   Operator
-- [`hlo_cbrt()`](hlo_cbrt.md) : Cbrt Operator
-- [`hlo_ceil()`](hlo_ceil.md) : Ceil Operator
+- [`infer_types_cbrt()`](hlo_cbrt.md) [`hlo_cbrt()`](hlo_cbrt.md) : Cbrt
+  Operator
+- [`infer_types_ceil()`](hlo_ceil.md) [`hlo_ceil()`](hlo_ceil.md) : Ceil
+  Operator
 - [`hlo_cholesky()`](hlo_cholesky.md) : Cholesky Operator
 - [`infer_types_clamp()`](hlo_clamp.md) [`hlo_clamp()`](hlo_clamp.md) :
   Clamp Operator
@@ -87,11 +92,14 @@
   [`infer_types_constant()`](hlo_constant.md) : Create a Constant
 - [`infer_types_convert()`](hlo_convert.md)
   [`hlo_convert()`](hlo_convert.md) : Convert Operator
-- [`hlo_cosine()`](hlo_cosine.md) : Cosine Operator
-- [`hlo_count_leading_zeros()`](hlo_count_leading_zeros.md) :
+- [`infer_types_cosine()`](hlo_cosine.md)
+  [`hlo_cosine()`](hlo_cosine.md) : Cosine Operator
+- [`infer_types_count_leading_zeros()`](hlo_count_leading_zeros.md)
+  [`hlo_count_leading_zeros()`](hlo_count_leading_zeros.md) :
   CountLeadingZeros Operator
 - [`hlo_custom_call()`](hlo_custom_call.md) : Custom Call Operation
-- [`hlo_divide()`](hlo_divide.md) : Divide Operator
+- [`infer_types_divide()`](hlo_divide.md)
+  [`hlo_divide()`](hlo_divide.md) : Divide Operator
 - [`infer_types_dot_general()`](hlo_dot_general.md)
   [`hlo_dot_general()`](hlo_dot_general.md) : DotGeneral Operator
 - [`infer_types_dynamic_slice()`](hlo_dynamic_slice.md)
@@ -99,10 +107,13 @@
 - [`infer_types_dynamic_update_slice()`](hlo_dynamic_update_slice.md)
   [`hlo_dynamic_update_slice()`](hlo_dynamic_update_slice.md) :
   DynamicUpdateSlice Operator
-- [`hlo_exponential()`](hlo_exponential.md) : Exponential Operator
-- [`hlo_exponential_minus_one()`](hlo_exponential_minus_one.md) :
+- [`infer_types_exponential()`](hlo_exponential.md)
+  [`hlo_exponential()`](hlo_exponential.md) : Exponential Operator
+- [`infer_types_exponential_minus_one()`](hlo_exponential_minus_one.md)
+  [`hlo_exponential_minus_one()`](hlo_exponential_minus_one.md) :
   ExponentialMinusOne Operator
-- [`hlo_floor()`](hlo_floor.md) : Floor Operator
+- [`infer_types_floor()`](hlo_floor.md) [`hlo_floor()`](hlo_floor.md) :
+  Floor Operator
 - [`hlo_func()`](hlo_func.md) [`local_func()`](hlo_func.md) : Create a
   function
 - [`infer_types_if()`](hlo_if.md) [`hlo_if()`](hlo_if.md) : If Operator
@@ -111,24 +122,35 @@
   Operator
 - [`infer_types_is_finite()`](hlo_is_finite.md)
   [`hlo_is_finite()`](hlo_is_finite.md) : IsFinite Operator
-- [`hlo_log()`](hlo_log.md) : Log Operator
-- [`hlo_log_plus_one()`](hlo_log_plus_one.md) : LogPlusOne Operator
-- [`hlo_logistic()`](hlo_logistic.md) : Logistic Operator
-- [`hlo_maximum()`](hlo_maximum.md) : Maximum Operator
-- [`hlo_minimum()`](hlo_minimum.md) : Minimum Operator
-- [`hlo_multiply()`](hlo_multiply.md) : Multiply Operator
-- [`hlo_negate()`](hlo_negate.md) : Negate Operator
-- [`hlo_not()`](hlo_not.md) : Not Operator
-- [`hlo_or()`](hlo_or.md) : Or Operator
+- [`infer_types_log()`](hlo_log.md) [`hlo_log()`](hlo_log.md) : Log
+  Operator
+- [`infer_types_log_plus_one()`](hlo_log_plus_one.md)
+  [`hlo_log_plus_one()`](hlo_log_plus_one.md) : LogPlusOne Operator
+- [`infer_types_logistic()`](hlo_logistic.md)
+  [`hlo_logistic()`](hlo_logistic.md) : Logistic Operator
+- [`infer_types_maximum()`](hlo_maximum.md)
+  [`hlo_maximum()`](hlo_maximum.md) : Maximum Operator
+- [`infer_types_minimum()`](hlo_minimum.md)
+  [`hlo_minimum()`](hlo_minimum.md) : Minimum Operator
+- [`infer_types_multiply()`](hlo_multiply.md)
+  [`hlo_multiply()`](hlo_multiply.md) : Multiply Operator
+- [`infer_types_negate()`](hlo_negate.md)
+  [`hlo_negate()`](hlo_negate.md) : Negate Operator
+- [`infer_types_not()`](hlo_not.md) [`hlo_not()`](hlo_not.md) : Not
+  Operator
+- [`infer_types_or()`](hlo_or.md) [`hlo_or()`](hlo_or.md) : Or Operator
 - [`infer_types_pad()`](hlo_pad.md) [`hlo_pad()`](hlo_pad.md) : Pad
   Operator
-- [`hlo_popcnt()`](hlo_popcnt.md) : Popcnt Operator
-- [`hlo_power()`](hlo_power.md) : Power Operator
+- [`infer_types_popcnt()`](hlo_popcnt.md)
+  [`hlo_popcnt()`](hlo_popcnt.md) : Popcnt Operator
+- [`infer_types_power()`](hlo_power.md) [`hlo_power()`](hlo_power.md) :
+  Power Operator
 - [`infer_types_reduce()`](hlo_reduce.md)
   [`hlo_reduce()`](hlo_reduce.md) : Reduce Operator
 - [`infer_types_reduce_window()`](hlo_reduce_window.md)
   [`hlo_reduce_window()`](hlo_reduce_window.md) : ReduceWindow Operator
-- [`hlo_remainder()`](hlo_remainder.md) : Remainder Operator
+- [`infer_types_remainder()`](hlo_remainder.md)
+  [`hlo_remainder()`](hlo_remainder.md) : Remainder Operator
 - [`infer_types_reshape()`](hlo_reshape.md)
   [`hlo_reshape()`](hlo_reshape.md) : Reshape Operator
 - [`infer_types_return()`](hlo_return.md)
@@ -138,29 +160,40 @@
 - [`infer_types_rng_bit_generator()`](hlo_rng_bit_generator.md)
   [`hlo_rng_bit_generator()`](hlo_rng_bit_generator.md) :
   RngBitGenerator Operator
-- [`hlo_round_nearest_afz()`](hlo_round_nearest_afz.md) :
+- [`infer_types_round_nearest_afz()`](hlo_round_nearest_afz.md)
+  [`hlo_round_nearest_afz()`](hlo_round_nearest_afz.md) :
   RoundNearestAfz Operator
-- [`hlo_round_nearest_even()`](hlo_round_nearest_even.md) :
+- [`infer_types_round_nearest_even()`](hlo_round_nearest_even.md)
+  [`hlo_round_nearest_even()`](hlo_round_nearest_even.md) :
   RoundNearestEven Operator
-- [`hlo_rsqrt()`](hlo_rsqrt.md) : Rsqrt Operator
+- [`infer_types_rsqrt()`](hlo_rsqrt.md) [`hlo_rsqrt()`](hlo_rsqrt.md) :
+  Rsqrt Operator
 - [`infer_types_select()`](hlo_select.md)
   [`hlo_select()`](hlo_select.md) : Select Operator
-- [`hlo_shift_left()`](hlo_shift_left.md) : ShiftLeft Operator
-- [`hlo_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md) :
+- [`infer_types_shift_left()`](hlo_shift_left.md)
+  [`hlo_shift_left()`](hlo_shift_left.md) : ShiftLeft Operator
+- [`infer_types_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md)
+  [`hlo_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md) :
   ShiftRightArithmetic Operator
-- [`hlo_shift_right_logical()`](hlo_shift_right_logical.md) :
+- [`infer_types_shift_right_logical()`](hlo_shift_right_logical.md)
+  [`hlo_shift_right_logical()`](hlo_shift_right_logical.md) :
   ShiftRightLogical Operator
 - [`infer_types_sign()`](hlo_sign.md) [`hlo_sign()`](hlo_sign.md) : Sign
   Operator
-- [`hlo_sine()`](hlo_sine.md) : Sine Operator
+- [`infer_types_sine()`](hlo_sine.md) [`hlo_sine()`](hlo_sine.md) : Sine
+  Operator
 - [`infer_types_slice()`](hlo_slice.md) [`hlo_slice()`](hlo_slice.md) :
   Slice Operator
 - [`infer_types_sort()`](hlo_sort.md) [`hlo_sort()`](hlo_sort.md) : Sort
   Operator
-- [`hlo_sqrt()`](hlo_sqrt.md) : Sqrt Operator
-- [`hlo_subtract()`](hlo_subtract.md) : Subtract Operator
-- [`hlo_tan()`](hlo_tan.md) : Tan Operator
-- [`hlo_tanh()`](hlo_tanh.md) : Tanh Operator
+- [`infer_types_sqrt()`](hlo_sqrt.md) [`hlo_sqrt()`](hlo_sqrt.md) : Sqrt
+  Operator
+- [`infer_types_subtract()`](hlo_subtract.md)
+  [`hlo_subtract()`](hlo_subtract.md) : Subtract Operator
+- [`infer_types_tan()`](hlo_tan.md) [`hlo_tan()`](hlo_tan.md) : Tan
+  Operator
+- [`infer_types_tanh()`](hlo_tanh.md) [`hlo_tanh()`](hlo_tanh.md) : Tanh
+  Operator
 - [`infer_types_transpose()`](hlo_transpose.md)
   [`hlo_transpose()`](hlo_transpose.md) : Transpose Operator
 - [`infer_types_triangular_solve()`](hlo_triangular_solve.md)
@@ -168,7 +201,8 @@
   Operator
 - [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
   While Operator
-- [`hlo_xor()`](hlo_xor.md) : Xor Operator
+- [`infer_types_xor()`](hlo_xor.md) [`hlo_xor()`](hlo_xor.md) : Xor
+  Operator
 - [`infer_types_custom_call()`](infer_types_custom_call.md) : Infer
   types for custom call
 - [`infer_types_float_biv()`](infer_types_float_biv.md) : Infer types

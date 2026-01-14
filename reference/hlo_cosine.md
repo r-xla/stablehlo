@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#cosine> for details.
 ## Usage
 
 ``` r
+infer_types_cosine(operand)
+
 hlo_cosine(operand)
 ```
 

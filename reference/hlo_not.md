@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#not> for details.
 ## Usage
 
 ``` r
+infer_types_not(operand)
+
 hlo_not(operand)
 ```
 

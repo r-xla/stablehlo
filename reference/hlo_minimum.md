@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#minimum> for details.
 ## Usage
 
 ``` r
+infer_types_minimum(lhs, rhs)
+
 hlo_minimum(lhs, rhs)
 ```
 

@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#power> for details.
 ## Usage
 
 ``` r
+infer_types_power(lhs, rhs)
+
 hlo_power(lhs, rhs)
 ```
 

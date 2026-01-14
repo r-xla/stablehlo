@@ -6,6 +6,8 @@ details.
 ## Usage
 
 ``` r
+infer_types_exponential_minus_one(operand)
+
 hlo_exponential_minus_one(operand)
 ```
 

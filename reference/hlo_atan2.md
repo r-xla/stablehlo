@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#atan2> for details.
 ## Usage
 
 ``` r
+infer_types_atan2(lhs, rhs)
+
 hlo_atan2(lhs, rhs)
 ```
 
