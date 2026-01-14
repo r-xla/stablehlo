@@ -5,7 +5,8 @@ OpCountLeadingZeros <- new_Op("OpCountLeadingZeros", "count_leading_zeros")
 
 #' @rdname hlo_count_leading_zeros
 #' @export
-infer_types_count_leading_zeros <- infer_types_integer_uni
+# fmt: skip
+infer_types_count_leading_zeros <- infer_types_integer_uni # nolint
 
 hlo_count_leading_zeros_impl <- hlo_fn(
   OpCountLeadingZeros,

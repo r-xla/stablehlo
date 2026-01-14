@@ -8,7 +8,8 @@ OpExponentialMinusOne <- new_Op(
 
 #' @rdname hlo_exponential_minus_one
 #' @export
-infer_types_exponential_minus_one <- infer_types_float_uni
+# fmt: skip
+infer_types_exponential_minus_one <- infer_types_float_uni # nolint
 
 hlo_exponential_minus_one_impl <- hlo_fn(
   OpExponentialMinusOne,

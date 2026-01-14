@@ -8,7 +8,8 @@ OpShiftRightArithmetic <- new_Op(
 
 #' @rdname hlo_shift_right_arithmetic
 #' @export
-infer_types_shift_right_arithmetic <- infer_types_integerish_biv
+# fmt: skip
+infer_types_shift_right_arithmetic <- infer_types_integerish_biv # nolint
 
 # fmt: skip
 hlo_shift_right_arithmetic_impl <- hlo_fn( # nolint
