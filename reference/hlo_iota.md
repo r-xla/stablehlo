@@ -5,9 +5,9 @@ See <https://openxla.org/stablehlo/spec#iota> for details.
 ## Usage
 
 ``` r
-hlo_iota(iota_dimension, dtype, shape, func = NULL)
-
 infer_types_iota(iota_dimension, dtype, shape)
+
+hlo_iota(iota_dimension, dtype, shape, func = NULL)
 ```
 
 ## Arguments

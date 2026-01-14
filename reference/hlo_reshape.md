@@ -5,14 +5,14 @@ See <https://openxla.org/stablehlo/spec#reshape> for details.
 ## Usage
 
 ``` r
-infer_types_reshape(operand, shape_out)
+infer_types_reshape(operand, shape)
 
-hlo_reshape(operand, shape_out)
+hlo_reshape(operand, shape)
 ```
 
 ## Arguments
 
-- operand, shape_out:
+- operand, shape:
 
   ([`FuncValue`](FuncValue.md))  
 

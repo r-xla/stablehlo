@@ -99,6 +99,10 @@
 <h2 id="adding-new-operations">Adding New Operations<a class="anchor" aria-label="anchor" href="#adding-new-operations"></a></h2>
 <p>When implementing a new operation, closely follow the specification described in SPEC.md. Also, annotate each check in the inference function with the corresponding requirement from the specification (C1, C2, C3, etc.).</p>
 </div>
+<div class="section level2">
+<h2 id="error-messages">Error Messages<a class="anchor" aria-label="anchor" href="#error-messages"></a></h2>
+<p>The error messages should make it clear what went wrong (i.e. what was expected) and what the actual input was. Also, error messages referencing 0-based values (like indices) should be wrapped in custom error classes (reusing existing error classes if possible) and implement the <code><a href="reference/to_one_based.html">to_one_based()</a></code> generic function to convert the 0-based values to 1-based values in the error message.</p>
+</div>
 
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -53,11 +53,14 @@
 - [`error_index_out_of_bounds()`](error_index_out_of_bounds.md) :
   ErrorIndexOutOfBounds
 - [`error_permute_index()`](error_permute_index.md) : ErrorPermuteIndex
-- [`error_slice_index()`](error_slice_index.md) : ErrorSliceIndex
 - [`error_stablehlo()`](error_stablehlo.md) : ErrorStablehlo
+- [`error_unequal_types()`](error_unequal_types.md) : ErrorUnequalTypes
+- [`error_unexpected_type()`](error_unexpected_type.md) :
+  ErrorUnexpectedType
 - [`format_double()`](format_double.md) : Format Double Array with
   Scientific Notation
-- [`hlo_abs()`](hlo_abs.md) : Abs Operator
+- [`infer_types_abs()`](hlo_abs.md) [`hlo_abs()`](hlo_abs.md) : Abs
+  Operator
 - [`hlo_add()`](hlo_add.md) : Add Operator
 - [`infer_types_after_all()`](hlo_after_all.md)
   [`hlo_after_all()`](hlo_after_all.md) : AfterAll Operator
@@ -87,8 +90,7 @@
 - [`infer_types_convert()`](hlo_convert.md)
   [`hlo_convert()`](hlo_convert.md) : Convert Operator
 - [`hlo_cosine()`](hlo_cosine.md) : Cosine Operator
-- [`infer_types_count_leading_zeros()`](hlo_count_leading_zeros.md)
-  [`hlo_count_leading_zeros()`](hlo_count_leading_zeros.md) :
+- [`hlo_count_leading_zeros()`](hlo_count_leading_zeros.md) :
   CountLeadingZeros Operator
 - [`hlo_custom_call()`](hlo_custom_call.md) : Custom Call Operation
 - [`hlo_divide()`](hlo_divide.md) : Divide Operator
@@ -107,7 +109,7 @@
   function
 - [`infer_types_if()`](hlo_if.md) [`hlo_if()`](hlo_if.md) : If Operator
 - [`hlo_input()`](hlo_input.md) : Create a input to a function
-- [`hlo_iota()`](hlo_iota.md) [`infer_types_iota()`](hlo_iota.md) : Iota
+- [`infer_types_iota()`](hlo_iota.md) [`hlo_iota()`](hlo_iota.md) : Iota
   Operator
 - [`infer_types_is_finite()`](hlo_is_finite.md)
   [`hlo_is_finite()`](hlo_is_finite.md) : IsFinite Operator
@@ -122,8 +124,7 @@
 - [`hlo_or()`](hlo_or.md) : Or Operator
 - [`infer_types_pad()`](hlo_pad.md) [`hlo_pad()`](hlo_pad.md) : Pad
   Operator
-- [`infer_types_popcnt()`](hlo_popcnt.md)
-  [`hlo_popcnt()`](hlo_popcnt.md) : Popcnt Operator
+- [`hlo_popcnt()`](hlo_popcnt.md) : Popcnt Operator
 - [`hlo_power()`](hlo_power.md) : Power Operator
 - [`infer_types_reduce()`](hlo_reduce.md)
   [`hlo_reduce()`](hlo_reduce.md) : Reduce Operator
@@ -132,8 +133,8 @@
 - [`hlo_remainder()`](hlo_remainder.md) : Remainder Operator
 - [`infer_types_reshape()`](hlo_reshape.md)
   [`hlo_reshape()`](hlo_reshape.md) : Reshape Operator
-- [`hlo_return()`](hlo_return.md)
-  [`infer_types_return()`](hlo_return.md) : Return Values
+- [`infer_types_return()`](hlo_return.md)
+  [`hlo_return()`](hlo_return.md) : Return Values
 - [`infer_types_reverse()`](hlo_reverse.md)
   [`hlo_reverse()`](hlo_reverse.md) : Reverse Operator
 - [`infer_types_rng_bit_generator()`](hlo_rng_bit_generator.md)
@@ -146,15 +147,13 @@
 - [`hlo_rsqrt()`](hlo_rsqrt.md) : Rsqrt Operator
 - [`infer_types_select()`](hlo_select.md)
   [`hlo_select()`](hlo_select.md) : Select Operator
-- [`infer_types_shift_left()`](hlo_shift_left.md)
-  [`hlo_shift_left()`](hlo_shift_left.md) : ShiftLeft Operator
-- [`infer_types_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md)
-  [`hlo_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md) :
+- [`hlo_shift_left()`](hlo_shift_left.md) : ShiftLeft Operator
+- [`hlo_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md) :
   ShiftRightArithmetic Operator
-- [`infer_types_shift_right_logical()`](hlo_shift_right_logical.md)
-  [`hlo_shift_right_logical()`](hlo_shift_right_logical.md) :
+- [`hlo_shift_right_logical()`](hlo_shift_right_logical.md) :
   ShiftRightLogical Operator
-- [`hlo_sign()`](hlo_sign.md) : Sign Operator
+- [`infer_types_sign()`](hlo_sign.md) [`hlo_sign()`](hlo_sign.md) : Sign
+  Operator
 - [`hlo_sine()`](hlo_sine.md) : Sine Operator
 - [`infer_types_slice()`](hlo_slice.md) [`hlo_slice()`](hlo_slice.md) :
   Slice Operator
@@ -174,14 +173,24 @@
 - [`hlo_xor()`](hlo_xor.md) : Xor Operator
 - [`infer_types_custom_call()`](infer_types_custom_call.md) : Infer
   types for custom call
+- [`infer_types_float_biv()`](infer_types_float_biv.md) : Infer types
+  for float binary operations
+- [`infer_types_float_uni()`](infer_types_float_uni.md) : Infer types
+  for float unary operations
 - [`infer_types_generic_biv()`](infer_types_generic_biv.md) : Infer
   types for binary operations
 - [`infer_types_generic_uni()`](infer_types_generic_uni.md) : Infer
   types for unary operations
+- [`infer_types_integer_uni()`](infer_types_integer_uni.md) : Infer
+  types for integer unary operations
 - [`infer_types_integerish_biv()`](infer_types_integerish_biv.md) :
   Infer types for boolean integerish operations
 - [`infer_types_integerish_uni()`](infer_types_integerish_uni.md) :
   Infer types for integerish unary operations
+- [`infer_types_numeric_biv()`](infer_types_numeric_biv.md) : Infer
+  types for numeric binary operations
+- [`infer_types_numeric_uni()`](infer_types_numeric_uni.md) : Infer
+  types for numeric unary operations
 - [`is_dtype()`](is_dtype.md) : Is TensorDataType
 - [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
 - [`repr()`](repr.md) : Generate string representation for object

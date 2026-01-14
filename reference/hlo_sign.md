@@ -5,6 +5,8 @@ See <https://openxla.org/stablehlo/spec#sign> for details.
 ## Usage
 
 ``` r
+infer_types_sign(operand)
+
 hlo_sign(operand)
 ```
 

@@ -24,7 +24,7 @@ error_dimension_uniqueness(
 - dimensions:
 
   ([`integer()`](https://rdrr.io/r/base/integer.html))  
-  The dimension indices that are not unique (0-based)
+  The dimension indices that are not unique.
 
 - call:
 

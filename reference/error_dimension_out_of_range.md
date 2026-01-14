@@ -1,6 +1,6 @@
 # ErrorDimensionOutOfRange
 
-Error when a dimension index is outside the valid range \[0, ndims)
+Error when a dimension index is outside the valid range
 
 ## Usage
 
@@ -8,7 +8,8 @@ Error when a dimension index is outside the valid range \[0, ndims)
 error_dimension_out_of_range(
   arg,
   dimension,
-  ndims,
+  dim_range,
+  inclusive = c(TRUE, FALSE),
   call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
@@ -25,13 +26,19 @@ error_dimension_out_of_range(
 - dimension:
 
   ([`integer()`](https://rdrr.io/r/base/integer.html))  
-  All dimension index(es) (0-based). The error message will identify
-  which ones are out of range.
+  All dimension index(es). The error message will identify which ones
+  are out of range.
 
-- ndims:
+- dim_range:
 
-  (`integer(1)`)  
-  The number of dimensions of the tensor
+  (`integer(2)`)  
+  The valid dimension range as c(min, max).
+
+- inclusive:
+
+  (`logical(2)`)  
+  Whether lower and upper bounds are inclusive, as c(lower_inclusive,
+  upper_inclusive). Default is c(TRUE, FALSE) meaning \[lower, upper)
 
 - call:
 

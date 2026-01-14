@@ -65,3 +65,12 @@ When implementing a new operation, closely follow the specification
 described in SPEC.md. Also, annotate each check in the inference
 function with the corresponding requirement from the specification (C1,
 C2, C3, etc.).
+
+## Error Messages
+
+The error messages should make it clear what went wrong (i.e. what was
+expected) and what the actual input was. Also, error messages
+referencing 0-based values (like indices) should be wrapped in custom
+error classes (reusing existing error classes if possible) and implement
+the [`to_one_based()`](reference/to_one_based.md) generic function to
+convert the 0-based values to 1-based values in the error message.

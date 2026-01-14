@@ -26,17 +26,17 @@ error_index_out_of_bounds(
 - index:
 
   ([`integer()`](https://rdrr.io/r/base/integer.html))  
-  The observed index value(s) (0-based)
+  The observed index value(s).
 
 - lower:
 
   (`integer(1)`)  
-  Lower bound of valid range (0-based)
+  Lower bound of valid range.
 
 - upper:
 
   (`integer(1)`)  
-  Upper bound of valid range, exclusive (0-based)
+  Upper bound of valid range, exclusive.
 
 - call:
 

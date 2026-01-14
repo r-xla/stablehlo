@@ -5,14 +5,14 @@ See <https://openxla.org/stablehlo/spec#clamp> for details.
 ## Usage
 
 ``` r
-infer_types_clamp(Min, operand, Max)
+infer_types_clamp(min, operand, max)
 
-hlo_clamp(Min, operand, Max)
+hlo_clamp(min, operand, max)
 ```
 
 ## Arguments
 
-- Min, operand, Max:
+- min, operand, max:
 
   ([`FuncValue`](FuncValue.md))  
 

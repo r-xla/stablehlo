@@ -6,8 +6,6 @@ details.
 ## Usage
 
 ``` r
-infer_types_shift_right_logical(lhs, rhs)
-
 hlo_shift_right_logical(lhs, rhs)
 ```
 

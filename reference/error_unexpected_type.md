@@ -1,15 +1,15 @@
-# ErrorSliceIndex
+# ErrorUnexpectedType
 
-Error when slice indices are invalid
+Error when an element in a list has an unexpected type
 
 ## Usage
 
 ``` r
-error_slice_index(
+error_unexpected_type(
   arg,
   index,
-  lower,
-  upper,
+  expected,
+  actual,
   call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
@@ -21,22 +21,22 @@ error_slice_index(
 - arg:
 
   (`character(1)`)  
-  Name of the argument that caused the error
+  Name of the argument
 
 - index:
 
-  ([`integer()`](https://rdrr.io/r/base/integer.html))  
-  The invalid index value(s) (0-based)
-
-- lower:
-
   (`integer(1)`)  
-  Lower bound of valid range (0-based)
+  The index where the type is unexpected (0-based)
 
-- upper:
+- expected:
 
-  (`integer(1)`)  
-  Upper bound of valid range, exclusive (0-based)
+  (`character(1)`)  
+  Description of what was expected
+
+- actual:
+
+  (`character(1)`)  
+  What was observed
 
 - call:
 

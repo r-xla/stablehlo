@@ -26,12 +26,12 @@ error_permute_index(
 - permutation:
 
   ([`integer()`](https://rdrr.io/r/base/integer.html))  
-  The permutation values that are invalid (0-based)
+  The permutation values that are invalid.
 
 - expected:
 
   ([`integer()`](https://rdrr.io/r/base/integer.html))  
-  The expected indices to be permuted (0-based)
+  The expected indices to be permuted.
 
 - call:
 
