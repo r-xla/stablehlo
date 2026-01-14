@@ -66,6 +66,14 @@ f
 #> }
 ```
 
+## Main Features
+
+- Implements type inference to easily build up stableHLO programs.
+- Simple, functional API.
+- Clear error messages.
+- Easy installation because the implementation is in R and does not
+  depend on the stableHLO C++ builder, which depends on LLVM and MLIR.
+
 ## Important notes
 
 stableHLO uses 0-based indexing. Wherever operations take dimension
@@ -138,8 +146,6 @@ specification. At least initially, it will:
   values
 - [`.current_func()`](dot-current_func.md) : Get the last function
   created
-- [`error_dimension_out_of_range()`](error_dimension_out_of_range.md) :
-  ErrorDimensionOutOfRange
 - [`error_dimension_uniqueness()`](error_dimension_uniqueness.md) :
   ErrorDimensionUniqueness
 - [`error_index_out_of_bounds()`](error_index_out_of_bounds.md) :

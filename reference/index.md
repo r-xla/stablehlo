@@ -46,8 +46,6 @@
   values
 - [`.current_func()`](dot-current_func.md) : Get the last function
   created
-- [`error_dimension_out_of_range()`](error_dimension_out_of_range.md) :
-  ErrorDimensionOutOfRange
 - [`error_dimension_uniqueness()`](error_dimension_uniqueness.md) :
   ErrorDimensionUniqueness
 - [`error_index_out_of_bounds()`](error_index_out_of_bounds.md) :
