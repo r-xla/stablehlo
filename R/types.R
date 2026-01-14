@@ -444,6 +444,6 @@ check_types_equal <- function(lhs, rhs, ..., msg = NULL) {
 
   cli_abort(c(
     x = msg %||% "Expected types to be equal.",
-    i = "Got lhs={.val {repr(lhs)}}, rhs={.val {repr(rhs)}}."
+    x = "Got lhs={.val {repr(lhs)}}, rhs={.val {repr(rhs)}}."
   ))
 }
