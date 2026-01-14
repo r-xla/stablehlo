@@ -37,8 +37,8 @@ error_dimension_out_of_range(
 - inclusive:
 
   (`logical(2)`)  
-  Whether lower and upper bounds are inclusive, as c(lower_inclusive,
-  upper_inclusive). Default is c(TRUE, FALSE) meaning \[lower, upper)
+  Whether lower and upper bounds are inclusive. Default is c(TRUE,
+  FALSE) meaning \[lower, upper)
 
 - call:
 
