@@ -1,5 +1,5 @@
 test_that("can handle conditions", {
-  x <- tryCatch(
+  e <- tryCatch(
     error_dimension_uniqueness(
       arg = "dimensions",
       dimensions = c(0L, 1L, 0L, 2L),
@@ -9,6 +9,7 @@ test_that("can handle conditions", {
       to_one_based(e)
     }
   )
+  expect_equal(e$dimensions, c(1L, 2L, 1L, 3L))
 })
 
 test_that("to_one_based works with ErrorDimensionOutOfRange", {
