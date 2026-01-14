@@ -5,17 +5,17 @@
 \alias{hlo_rng_bit_generator}
 \title{RngBitGenerator Operator}
 \usage{
-infer_types_rng_bit_generator(initial_state, rng_algorithm, dtype, shape_out)
+infer_types_rng_bit_generator(initial_state, rng_algorithm, dtype, shape)
 
 hlo_rng_bit_generator(
   initial_state,
   rng_algorithm = c("DEFAULT", "THREE_FRY", "PHILOX"),
   dtype,
-  shape_out
+  shape
 )
 }
 \arguments{
-\item{initial_state, rng_algorithm, dtype, shape_out}{(\code{\link{FuncValue}})\cr}
+\item{initial_state, rng_algorithm, dtype, shape}{(\code{\link{FuncValue}})\cr}
 }
 \value{
 \code{\link{FuncValue}}\cr

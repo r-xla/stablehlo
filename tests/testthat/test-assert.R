@@ -23,6 +23,39 @@ test_that("assert_vt_has_ttype", {
     assert_vt_has_ttype(x = y, IntegerType(64L), shape = integer()),
     error = TRUE
   )
+
+  # Test with ndims argument
+  scalar <- make_vt("f32", integer())
+  vector <- make_vt("f32", 3L)
+  matrix <- make_vt("f32", c(2L, 3L))
+
+  # Should pass when ndims matches
+  expect_error(
+    assert_vt_has_ttype(scalar, ndims = 0L),
+    NA
+  )
+  expect_error(
+    assert_vt_has_ttype(vector, ndims = 1L),
+    NA
+  )
+  expect_error(
+    assert_vt_has_ttype(matrix, ndims = 2L),
+    NA
+  )
+
+  # Should fail when ndims doesn't match
+  expect_snapshot(
+    assert_vt_has_ttype(scalar, ndims = 1L),
+    error = TRUE
+  )
+  expect_snapshot(
+    assert_vt_has_ttype(vector, ndims = 2L),
+    error = TRUE
+  )
+  expect_snapshot(
+    assert_vt_has_ttype(matrix, ndims = 1L),
+    error = TRUE
+  )
 })
 
 test_that("assert_vt_is_tensor", {

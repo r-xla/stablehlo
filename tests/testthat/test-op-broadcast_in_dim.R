@@ -4,7 +4,7 @@ test_that("basic tests", {
   y <- hlo_broadcast_in_dim(
     x,
     broadcast_dimensions = c(0L, 2L),
-    shape_out = c(2L, 1L, 3L)
+    shape = c(2L, 1L, 3L)
   )
   f <- hlo_return(y)
   expect_snapshot(repr(f))
@@ -28,7 +28,7 @@ test_that("append dims at the end", {
   y <- hlo_broadcast_in_dim(
     x,
     broadcast_dimensions = 0L,
-    shape_out = c(5L, 2L)
+    shape = c(5L, 2L)
   )
   f <- hlo_return(y)
 

@@ -41,3 +41,22 @@ test_that("If operator works", {
     as_array(pjrt_scalar(2))
   )
 })
+
+test_that("If operator errors on mismatched output types", {
+  func <- local_func()
+  pred <- hlo_input("pred", "i1", integer())
+  x1 <- hlo_input("x1", "f32", integer())
+  x2 <- hlo_input("x2", "i32", integer())
+
+  f1 <- hlo_return(hlo_closure(x1)[[1L]])
+  f2 <- hlo_return(hlo_closure(x2)[[1L]])
+
+  expect_error(
+    hlo_if(
+      pred = pred,
+      true_branch = f1,
+      false_branch = f2
+    ),
+    class = "ErrorUnequalTypes"
+  )
+})

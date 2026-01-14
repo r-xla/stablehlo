@@ -7,6 +7,7 @@ OpConvert <- new_Op("OpConvert", "convert")
 #' @export
 infer_types_convert <- function(operand, dtype) {
   assert_vt_is_tensor(operand)
+  # (C1)
   output_dtype <- as_dtype(dtype)
   ValueTypes(list(
     ValueType(

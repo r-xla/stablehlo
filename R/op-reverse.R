@@ -10,6 +10,7 @@ infer_types_reverse <- function(
   dimensions
 ) {
   assert_vt_is_tensor(operand)
+  assert_const(dimensions, dtype = IntegerType(64L), ndims = 1L)
 
   operand_dims <- shape(operand)
   revdims <- dimensions$data
@@ -32,7 +33,7 @@ infer_types_reverse <- function(
     error_dimension_out_of_range(
       arg = "dimensions",
       dimension = revdims,
-      ndims = length(operand_dims)
+      dim_range = c(0L, length(operand_dims))
     )
   }
 
@@ -64,8 +65,8 @@ hlo_reverse <- function(
       constant_attr(
         "dimensions",
         as.integer(dimensions),
-        dtype = "i64",
-        shape = c()
+        shape = length(dimensions),
+        dtype = "i64"
       )
     )
   )

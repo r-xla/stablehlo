@@ -3,7 +3,7 @@ NULL
 
 OpSine <- new_Op("OpSine", "sine")
 
-hlo_sine_impl <- hlo_fn(OpSine, infer_types_generic_uni)
+hlo_sine_impl <- hlo_fn(OpSine, infer_types_float_uni)
 
 #' @templateVar mnemonic sine
 #' @template op

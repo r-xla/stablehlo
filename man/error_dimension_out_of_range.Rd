@@ -7,7 +7,8 @@
 error_dimension_out_of_range(
   arg,
   dimension,
-  ndims,
+  dim_range,
+  inclusive = c(TRUE, FALSE),
   call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
@@ -16,10 +17,13 @@ error_dimension_out_of_range(
 \arguments{
 \item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
 
-\item{dimension}{(\code{integer()})\cr All dimension index(es) (0-based). The error message will
+\item{dimension}{(\code{integer()})\cr All dimension index(es). The error message will
 identify which ones are out of range.}
 
-\item{ndims}{(\code{integer(1)})\cr The number of dimensions of the tensor}
+\item{dim_range}{(\code{integer(2)})\cr The valid dimension range as c(min, max).}
+
+\item{inclusive}{(\code{logical(2)})\cr Whether lower and upper bounds are inclusive, as c(lower_inclusive, upper_inclusive).
+Default is c(TRUE, FALSE) meaning [lower, upper)}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
 
@@ -28,5 +32,5 @@ identify which ones are out of range.}
 \item{signal}{(\code{logical(1)})\cr Whether to signal the error (default TRUE)}
 }
 \description{
-Error when a dimension index is outside the valid range [0, ndims)
+Error when a dimension index is outside the valid range
 }

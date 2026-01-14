@@ -16,9 +16,9 @@ error_permute_index(
 \arguments{
 \item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
 
-\item{permutation}{(\code{integer()})\cr The permutation values that are invalid (0-based)}
+\item{permutation}{(\code{integer()})\cr The permutation values that are invalid.}
 
-\item{expected}{(\code{integer()})\cr The expected indices to be permuted (0-based)}
+\item{expected}{(\code{integer()})\cr The expected indices to be permuted.}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
 

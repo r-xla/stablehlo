@@ -3,7 +3,7 @@ NULL
 
 OpNegate <- new_Op("OpNegate", "negate")
 
-hlo_negate_impl <- hlo_fn(OpNegate, infer_types_generic_uni)
+hlo_negate_impl <- hlo_fn(OpNegate, infer_types_numeric_uni)
 
 #' @templateVar mnemonic negate
 #' @template op

@@ -54,6 +54,7 @@ Collate:
     'func_value.R'
     'type_inference.R'
     'hlo.R'
+    'utils.R'
     'op.R'
     'op-abs.R'
     'op-add.R'
@@ -122,6 +123,5 @@ Collate:
     'op-xor.R'
     'reexports.R'
     'roxygen.R'
-    'utils.R'
     'zzz.R'
 Config/Needs/website: rmarkdown

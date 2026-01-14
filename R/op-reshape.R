@@ -7,20 +7,22 @@ OpReshape <- new_Op("OpReshape", "reshape")
 #' @export
 infer_types_reshape <- function(
   operand,
-  shape_out
+  shape
 ) {
   assert_vt_is_tensor(operand)
 
-  result_dims <- as.integer(shape_out)
+  result_dims <- as.integer(shape)
 
-  # (C2) size(operand) = size(result)
+  # (C2)
   if (prod(shape(operand)) != prod(result_dims)) {
     cli_abort(
       "Size of output must equal to size of operand",
-      x = "Got {.val {prod(shape(operand))}} and {.val {prod(result_dims)}}."
+      # fmt: skip
+      x = "Got shape(operand) ={.val {shapevec_repr(shape(operand))}} and shape(result) ={.val {shapevec_repr(result_dims)}}." # nolint
     )
   }
 
+  # (C1)
   ValueTypes(list(
     ValueType(
       TensorType(
@@ -41,10 +43,10 @@ hlo_reshape_impl <- hlo_fn(
 #' @export
 hlo_reshape <- function(
   operand,
-  shape_out
+  shape
 ) {
   hlo_reshape_impl(
     values = list(operand = operand),
-    custom_attrs = list(shape_out = as.integer(shape_out))
+    custom_attrs = list(shape = as.integer(shape))
   )
 }

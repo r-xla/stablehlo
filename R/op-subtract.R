@@ -3,7 +3,7 @@ NULL
 
 OpSubtract <- new_Op("OpSubtract", "subtract")
 
-hlo_subtract_impl <- hlo_fn(OpSubtract, infer_types_generic_biv)
+hlo_subtract_impl <- hlo_fn(OpSubtract, infer_types_numeric_biv)
 
 #' @templateVar mnemonic subtract
 #' @template op

@@ -5,12 +5,12 @@
 \alias{hlo_broadcast_in_dim}
 \title{BroadcastInDim Operator}
 \usage{
-infer_types_broadcast_in_dim(operand, broadcast_dimensions, shape_out)
+infer_types_broadcast_in_dim(operand, broadcast_dimensions, shape)
 
-hlo_broadcast_in_dim(operand, broadcast_dimensions, shape_out)
+hlo_broadcast_in_dim(operand, broadcast_dimensions, shape)
 }
 \arguments{
-\item{operand, broadcast_dimensions, shape_out}{(\code{\link{FuncValue}})\cr}
+\item{operand, broadcast_dimensions, shape}{(\code{\link{FuncValue}})\cr}
 }
 \value{
 \code{\link{FuncValue}}\cr

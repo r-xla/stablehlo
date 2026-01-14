@@ -16,6 +16,12 @@ infer_types_triangular_solve <- function(
   # (C1)
   assert_vts_are_tensors(a, b)
   assert_vts_have_same_dtype(a, b)
+  assert_const(left_side, dtype = BooleanType(), shape = integer())
+  assert_const(lower, dtype = BooleanType(), shape = integer())
+  assert_const(unit_diagonal, dtype = BooleanType(), shape = integer())
+  left_side <- left_side$data
+  lower <- lower$data
+  unit_diagonal <- unit_diagonal$data
 
   a_dims <- shape(a)
   b_dims <- shape(b)
@@ -24,22 +30,34 @@ infer_types_triangular_solve <- function(
 
   # (C2)
   if (rank_a < 2) {
-    cli_abort("'a' must have rank >= 2")
+    cli_abort(c(
+      "{.arg {a}} must have rank >= 2",
+      i = "Got rank = {rank_a}."
+    ))
   }
   if (rank_a != rank_b) {
-    cli_abort("'a' and 'b' must have the same rank")
+    cli_abort(c(
+      "{.arg {a}} and {.arg {b}} must have the same rank",
+      i = "Got rank = {rank_a} and {rank_b}."
+    ))
   }
 
   # (C3)
   if (a_dims[rank_a] != a_dims[rank_a - 1]) {
-    cli_abort("'a' must be a square matrix (last two dimensions must be equal)")
+    cli_abort(c(
+      "{.arg {a}} must be a square matrix (last two dimensions must be equal)",
+      i = "Got {shapevec_repr(a_dims)}."
+    ))
   }
 
   if (rank_a > 2) {
     a_batch <- a_dims[seq_len(rank_a - 2)]
     b_batch <- b_dims[seq_len(rank_b - 2)]
     if (!identical(a_batch, b_batch)) {
-      cli_abort("Batch dimensions of 'a' and 'b' must match")
+      cli_abort(c(
+        "Batch dimensions of {.arg {a}} and {.arg {b}} must match",
+        i = "Got shapes {shapevec_repr(a_batch)} and {shapevec_repr(b_batch)}."
+      ))
     }
   }
 
@@ -47,19 +65,17 @@ infer_types_triangular_solve <- function(
   a_size <- a_dims[rank_a]
   b_relevant_dim <- if (left_side) b_dims[rank_b - 1] else b_dims[rank_b]
   if (a_size != b_relevant_dim) {
-    cli_abort(sprintf(
-      "Dimension mismatch: dim(a, -1) = %d but dim(b, %s) = %d",
-      a_size,
-      if (left_side) "-2" else "-1",
-      b_relevant_dim
+    cli_abort(c(
+      "Dimension mismatch",
+      i = "Got shapes {shapevec_repr(a_dims)} and {shapevec_repr(b_dims)}."
     ))
   }
 
   valid_transpose <- c("NO_TRANSPOSE", "TRANSPOSE", "ADJOINT")
-  if (!transpose_a %in% valid_transpose) {
-    cli_abort(sprintf(
-      "'transpose_a' must be one of: %s",
-      paste(valid_transpose, collapse = ", ")
+  if (!test_choice(transpose_a, valid_transpose)) {
+    cli_abort(c(
+      "{.arg transpose_a} must be one of: {.val {valid_transpose}}.",
+      i = "Got {transpose_a}."
     ))
   }
 

@@ -12,26 +12,60 @@ infer_types_while <- function(..., cond, body) {
     cli_abort("hlo_while must have at least one operand")
   }
 
-  # (C1) cond has type (T0, ..., TN-1) -> tensor<i1>
+  # (C1)
   if (length(cond$outputs) != 1L) {
     cli_abort("cond must have exactly one output")
   }
-  cond_out <- cond$outputs[[1L]]$type
-  assert_vt_has_ttype(cond_out, "BooleanType")
-  if (length(cond_out$type$shape$dims) != 0L) {
-    cli_abort("cond output must be a 0-D tensor")
+  if (length(cond$inputs) != length(value_types)) {
+    cli_abort(c(
+      "cond must have the same number of inputs as inputs",
+      i = "Got {length(cond$inputs)} inputs and {length(value_types)} inputs."
+    ))
+  }
+  cond_in_types <- lapply(cond$inputs, function(x) x$type)
+  for (i in seq_along(value_types)) {
+    if (cond_in_types[[i]] != value_types[[i]]) {
+      error_unequal_types(
+        arg1 = "cond input",
+        arg2 = "input",
+        index = i - 1L,
+        expected = "must have the same type",
+        actual1 = repr(cond_in_types[[i]]),
+        actual2 = repr(value_types[[i]])
+      )
+    }
   }
 
-  # (C2) body has type (T0, ..., TN-1) -> (T0, ..., TN-1)
+  cond_out <- cond$outputs[[1L]]$type
+  assert_vt_has_ttype(
+    cond_out,
+    "BooleanType",
+    shape = integer(),
+    arg = "output(condition)"
+  )
+
+  # (C2)
   body_out_types <- func_output_types(body)
   if (length(body_out_types) != length(value_types)) {
-    cli_abort("body must have the same number of outputs as inputs")
+    cli_abort(c(
+      "body must have the same number of outputs as inputs",
+      i = "Got {length(body_out_types)} outputs and {length(value_types)} inputs."
+    ))
   }
   for (i in seq_along(value_types)) {
-    assert_vt_equal(body_out_types[[i]], value_types[[i]])
+    if (body_out_types[[i]] != value_types[[i]]) {
+      error_unequal_types(
+        arg1 = "body output",
+        arg2 = "input",
+        index = i - 1L, # 0-based
+        expected = "must have the same type",
+        actual1 = repr(body_out_types[[i]]),
+        actual2 = repr(value_types[[i]])
+      )
+    }
   }
 
-  # (C3) result types equal operand types
+  # (C3)
   ValueTypes(value_types)
 }
 

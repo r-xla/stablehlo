@@ -1,33 +1,54 @@
-#' @include op.R
+#' @include op.R hlo.R
 NULL
 
 OpIota <- new_Op("OpIota", "iota")
-impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
-  iota_dimension <- assert_int(iota_dimension, coerce = TRUE)
+
+#' @rdname hlo_iota
+#' @export
+infer_types_iota <- function(iota_dimension, dtype, shape) {
+  assert_const(iota_dimension, dtype = "i64", shape = c())
   shape <- as.integer(shape)
 
-  # (C1) 0 <= iota_dimension < rank(output)
+  iota_dim <- as.integer(iota_dimension$data)
+
+  # (C1)
   num_dims <- length(shape)
-  if (iota_dimension < 0L || iota_dimension >= num_dims) {
+  if (iota_dim < 0L || iota_dim >= num_dims) {
     error_dimension_out_of_range(
       arg = "iota_dimension",
-      dimension = iota_dimension,
-      ndims = num_dims
+      dimension = iota_dim,
+      dim_range = c(0L, num_dims)
     )
   }
 
-  out_dtype <- as_dtype(dtype)
-  # iota supports integer, floating-point, or complex types (we don't support complex)
+  dtype <- as_dtype(dtype)
   assert_one_of(
-    out_dtype,
+    dtype,
     c("IntegerType", "UnsignedType", "FloatType")
   )
 
-  output_type <- ValueType(
-    TensorType(
-      dtype = out_dtype,
-      shape = Shape(shape)
+  ValueTypes(list(
+    ValueType(
+      TensorType(
+        dtype = dtype,
+        shape = Shape(shape)
+      )
     )
+  ))
+}
+
+impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
+  iota_dimension_const <- r_to_constant(
+    as.integer(iota_dimension),
+    dtype = "i64",
+    shape = c()
+  )
+
+  # Run type inference
+  output_types <- infer_types_iota(
+    iota_dimension = iota_dimension_const,
+    dtype = dtype,
+    shape = shape
   )
 
   value_id <- ValueId()
@@ -39,7 +60,7 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
         list(
           ScalarAttr(
             name = "iota_dimension",
-            value = iota_dimension,
+            value = as.integer(iota_dimension_const$data),
             dtype = IntegerType(64L)
           )
         )
@@ -52,14 +73,14 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
     ),
     signature = OpSignature(
       input_types = ValueTypes(list()),
-      output_types = ValueTypes(list(output_type))
+      output_types = output_types
     )
   )
   func$body <- FuncBody(c(func$body, list(op)))
 
   FuncValue(
     value_id = value_id,
-    value_type = output_type,
+    value_type = output_types[[1L]],
     func = func
   )
 }
@@ -85,46 +106,4 @@ hlo_iota <- function(iota_dimension, dtype, shape, func = NULL) {
   impl_hlo_iota(iota_dimension, dtype, shape, func)
 }
 
-#' @rdname hlo_iota
-#' @export
-infer_types_iota <- function(iota_dimension, dtype, shape) {
-  iota_dimension <- assert_int(iota_dimension, coerce = TRUE)
-  shape <- as.integer(shape)
-
-  num_dims <- length(shape)
-  if (iota_dimension < 0L || iota_dimension >= num_dims) {
-    error_dimension_out_of_range(
-      arg = "iota_dimension",
-      dimension = iota_dimension,
-      ndims = num_dims
-    )
-  }
-
-  out_dtype <- as_dtype(dtype)
-  assert_one_of(
-    out_dtype,
-    c("IntegerType", "UnsignedType", "FloatType")
-  )
-
-  ValueTypes(list(
-    ValueType(
-      TensorType(
-        dtype = out_dtype,
-        shape = Shape(shape)
-      )
-    )
-  ))
-}
-
-#' @export
-repr.OpIota <- function(x, ...) {
-  paste0(
-    repr(x$outputs),
-    " = ",
-    repr(x$name),
-    " ",
-    repr(x$inputs),
-    ": ",
-    repr(x$signature)
-  )
-}
+globals[["infer_fn"]][["iota"]] <- infer_types_iota

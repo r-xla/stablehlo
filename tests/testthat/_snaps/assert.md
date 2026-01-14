@@ -25,6 +25,33 @@
       ! `y` must have dtype i64.
       x Got <i32>.
 
+---
+
+    Code
+      assert_vt_has_ttype(scalar, ndims = 1L)
+    Condition
+      Error:
+      ! `scalar` must have 1 dimensions.
+      x Got 0 dimensions.
+
+---
+
+    Code
+      assert_vt_has_ttype(vector, ndims = 2L)
+    Condition
+      Error:
+      ! `vector` must have 2 dimensions.
+      x Got 1 dimensions.
+
+---
+
+    Code
+      assert_vt_has_ttype(matrix, ndims = 1L)
+    Condition
+      Error:
+      ! `matrix` must have 1 dimensions.
+      x Got 2 dimensions.
+
 # assert_vt_is_tensor
 
     Code

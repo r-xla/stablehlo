@@ -5,7 +5,7 @@ OpRoundNearestEven <- new_Op("OpRoundNearestEven", "round_nearest_even")
 
 hlo_round_nearest_even_impl <- hlo_fn(
   OpRoundNearestEven,
-  infer_types_generic_uni
+  infer_types_float_uni
 )
 
 #' @templateVar mnemonic round_nearest_even

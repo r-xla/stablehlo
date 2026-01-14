@@ -17,11 +17,11 @@ error_index_out_of_bounds(
 \arguments{
 \item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
 
-\item{index}{(\code{integer()})\cr The observed index value(s) (0-based)}
+\item{index}{(\code{integer()})\cr The observed index value(s).}
 
-\item{lower}{(\code{integer(1)})\cr Lower bound of valid range (0-based)}
+\item{lower}{(\code{integer(1)})\cr Lower bound of valid range.}
 
-\item{upper}{(\code{integer(1)})\cr Upper bound of valid range, exclusive (0-based)}
+\item{upper}{(\code{integer(1)})\cr Upper bound of valid range, exclusive.}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
 

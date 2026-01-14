@@ -10,6 +10,7 @@ infer_types_bitcast_convert <- function(
   dtype
 ) {
   assert_vt_is_tensor(operand)
+  dtype <- as.character(dtype)
 
   if (
     # https://github.com/openxla/stablehlo/issues/1672
@@ -17,7 +18,7 @@ infer_types_bitcast_convert <- function(
       c("i1", "pred") ||
       (test_class(operand$type$dtype, "BooleanType"))
   ) {
-    cli_abort("Bitcast conversions from and to booleans are not supported.")
+    cli_abort("Bitcast conversions from and to bool/i1 are not supported.")
   }
 
   if (

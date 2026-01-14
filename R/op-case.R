@@ -7,17 +7,13 @@ OpCase <- new_Op("OpCase", "case")
 #' @export
 infer_types_case <- function(index, ...) {
   branches <- list(...)
-  assert_vt_has_ttype(index, "IntegerType", shape = integer())
-  if (index$type$dtype$value != 32L) {
-    cli_abort("index must be a 32-bit integer")
-  }
+  assert_vt_has_ttype(index, IntegerType(32L))
 
   if (length(branches) == 0L) {
     cli_abort("branches must be a non-empty list")
   }
 
-  # (C2) input_types(branches...) = [] and
-  # (C3) same(output_types(branches...))
+  # (C2)
   get_branch_out_types <- function(branch) {
     if (!test_class(branch, "Func")) {
       cli_abort("branches must be a list of Func objects")
@@ -30,12 +26,14 @@ infer_types_case <- function(index, ...) {
 
   out_types_list <- lapply(branches, get_branch_out_types)
 
+  # (C3)
   for (i in seq_along(out_types_list[-1L])) {
     if (!identical(out_types_list[[i]], out_types_list[[1L]])) {
       cli_abort("all branch functions must have the same output types")
     }
   }
 
+  # (C4)
   ValueTypes(out_types_list[[1L]])
 }
 

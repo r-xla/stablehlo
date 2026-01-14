@@ -3,7 +3,7 @@ NULL
 
 OpTan <- new_Op("OpTan", "tan")
 
-hlo_tan_impl <- hlo_fn(OpTan, infer_types_generic_uni)
+hlo_tan_impl <- hlo_fn(OpTan, infer_types_float_uni)
 
 #' @templateVar mnemonic tan
 #' @template op

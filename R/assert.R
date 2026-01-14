@@ -64,7 +64,6 @@ assert_one_of <- function(
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
-  # Check if x inherits from any of the types
   for (type in types) {
     if (test_class(x, type)) {
       return(invisible(NULL))
@@ -126,6 +125,7 @@ assert_vt_has_ttype <- function(
   x,
   ...,
   shape = NULL,
+  ndims = NULL,
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
@@ -202,6 +202,16 @@ assert_vt_has_ttype <- function(
       call = call
     )
   }
+  if (!is.null(ndims) && ndims(tensor_type) != ndims) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must have {ndims} dimensions.",
+        x = "Got {length(shape(tensor_type))} dimensions."
+      ),
+      call = call
+    )
+  }
+  invisible(NULL)
 }
 
 assert_vts_have_same_dtype <- function(
@@ -219,6 +229,76 @@ assert_vts_have_same_dtype <- function(
       c(
         "{.arg {arg_x}} and {.arg {arg_y}} must have the same dtype.",
         x = "Got {.cls {repr(dtype_x)}} and {.cls {repr(dtype_y)}}."
+      ),
+      call = call
+    )
+  }
+}
+
+assert_const <- function(
+  x,
+  dtype = NULL,
+  shape = NULL,
+  ndims = NULL,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  if (!inherits(x, "Constant")) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must be a ConstantAttr.",
+        x = "Got {.cls {class(x)[1]}}."
+      ),
+      call = call
+    )
+  }
+  if (!is.null(dtype)) {
+    dtype <- as_dtype(dtype)
+    if (!identical(x$type$dtype, dtype)) {
+      cli_abort(
+        c(
+          "{.arg {arg}} must have dtype {.cls {dtype}}.",
+          x = "Got {.cls {x$type$dtype}}."
+        ),
+        call = call
+      )
+    }
+  }
+  if (!is.null(shape) && !identical(shape(x$type), shape)) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
+        x = "Got {shapevec_repr(shape(x$type))}."
+      ),
+      call = call
+    )
+  }
+  if (!is.null(ndims) && ndims(x$type) != ndims) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must have {ndims} dimensions.",
+        x = "Got {length(shape(x$type))} dimensions."
+      ),
+      call = call
+    )
+  }
+  invisible(NULL)
+}
+
+assert_shapevec <- function(x) {
+  assert_integerish(x, lower = 0, any.missing = FALSE)
+}
+
+assert_func <- function(
+  x,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  if (!test_class(x, "Func")) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must be a Func.",
+        x = "Got {.cls {class(x)[1]}}."
       ),
       call = call
     )

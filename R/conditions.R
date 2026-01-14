@@ -34,12 +34,29 @@ conditionMessage.ErrorStablehlo <- function(c, ...) {
   c$message
 }
 
+#' @title Convert 0-based indices to 1-based
+#' @description Generic function to convert 0-based indices in error conditions to 1-based
+#' @param x Condition object with indices
+#' @param ... Additional arguments (not used)
+#' @return Condition object with indices converted to 1-based
+#' @export
+to_one_based <- function(x, ...) {
+  UseMethod("to_one_based")
+}
+
+#' @export
+to_one_based.default <- function(x, ...) {
+  x
+}
+
 #' @title ErrorDimensionOutOfRange
-#' @description Error when a dimension index is outside the valid range [0, ndims)
+#' @description Error when a dimension index is outside the valid range
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
-#' @param dimension (`integer()`)\cr All dimension index(es) (0-based). The error message will
+#' @param dimension (`integer()`)\cr All dimension index(es). The error message will
 #'   identify which ones are out of range.
-#' @param ndims (`integer(1)`)\cr The number of dimensions of the tensor
+#' @param dim_range (`integer(2)`)\cr The valid dimension range as c(min, max).
+#' @param inclusive (`logical(2)`)\cr Whether lower and upper bounds are inclusive.
+#'   Default is c(TRUE, FALSE) meaning [lower, upper)
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
@@ -47,7 +64,8 @@ conditionMessage.ErrorStablehlo <- function(c, ...) {
 error_dimension_out_of_range <- function(
   arg,
   dimension,
-  ndims,
+  dim_range,
+  inclusive = c(TRUE, FALSE),
   call = sys.call(-1)[1L],
   class = character(),
   signal = TRUE
@@ -55,12 +73,14 @@ error_dimension_out_of_range <- function(
   error_stablehlo(
     arg = arg,
     dimension = as.integer(dimension),
-    ndims = as.integer(ndims),
+    dim_range = as.integer(dim_range),
+    inclusive = inclusive,
     call = call,
     class = c(class, "ErrorDimensionOutOfRange"),
     signal = signal
   )
 }
+
 
 #' @export
 conditionMessage.ErrorDimensionOutOfRange <- function(c, ...) {
@@ -71,19 +91,38 @@ conditionMessage.ErrorDimensionOutOfRange <- function(c, ...) {
     dims_str <- paste0("dimension indices: ", dims_str)
   }
 
+  # Determine bracket notation based on inclusive
+  lower_bracket <- if (c$inclusive[[1L]]) "[" else "("
+  upper_bracket <- if (c$inclusive[[2L]]) "]" else ")"
+  # fmt: skip
+  range_str <- paste0( # nolint
+    lower_bracket,
+    c$dim_range[[1L]],
+    ", ",
+    c$dim_range[[2L]],
+    upper_bracket
+  )
+
   format_error(
     c(
       "{.var {c$arg}} contains invalid dimension index{?es}.",
-      i = "Got {dims_str}, but valid range is [0, {c$ndims})."
+      x = "Got {dims_str}, but valid range is {range_str}."
     ),
     .envir = environment()
   )
 }
 
+#' @export
+to_one_based.ErrorDimensionOutOfRange <- function(x, ...) {
+  x$dimension <- x$dimension + 1L
+  x$dim_range <- x$dim_range + 1L
+  x
+}
+
 #' @title ErrorDimensionUniqueness
 #' @description Error when dimension indices are not unique
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
-#' @param dimensions (`integer()`)\cr The dimension indices that are not unique (0-based)
+#' @param dimensions (`integer()`)\cr The dimension indices that are not unique.
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
@@ -110,18 +149,24 @@ conditionMessage.ErrorDimensionUniqueness <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg}} contains duplicate dimension indices.",
-      i = "Got [{dims_str}]. Each dimension index must appear only once."
+      x = "Got [{dims_str}]. Each dimension index must appear only once."
     ),
     .envir = environment()
   )
 }
 
+#' @export
+to_one_based.ErrorDimensionUniqueness <- function(x, ...) {
+  x$dimensions <- x$dimensions + 1L
+  x
+}
+
 #' @title ErrorIndexOutOfBounds
 #' @description Error when an index is outside the valid range [lower, upper)
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
-#' @param index (`integer()`)\cr The observed index value(s) (0-based)
-#' @param lower (`integer(1)`)\cr Lower bound of valid range (0-based)
-#' @param upper (`integer(1)`)\cr Upper bound of valid range, exclusive (0-based)
+#' @param index (`integer()`)\cr The observed index value(s).
+#' @param lower (`integer(1)`)\cr Lower bound of valid range.
+#' @param upper (`integer(1)`)\cr Upper bound of valid range, exclusive.
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
@@ -152,38 +197,10 @@ conditionMessage.ErrorIndexOutOfBounds <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg}} contains index{?es} outside the valid range.",
-      i = "Got {index_str}, but valid range is [{c$lower}, {c$upper})."
+      x = "Got {index_str}, but valid range is [{c$lower}, {c$upper})."
     ),
     .envir = environment()
   )
-}
-
-#' @title Convert 0-based indices to 1-based
-#' @description Generic function to convert 0-based indices in error conditions to 1-based
-#' @param x Condition object with indices
-#' @param ... Additional arguments (not used)
-#' @return Condition object with indices converted to 1-based
-#' @export
-to_one_based <- function(x, ...) {
-  UseMethod("to_one_based")
-}
-
-#' @export
-to_one_based.default <- function(x, ...) {
-  x
-}
-
-#' @export
-to_one_based.ErrorDimensionOutOfRange <- function(x, ...) {
-  x$dimension <- x$dimension + 1L
-  # ndims is a count, not an index, so it doesn't need conversion
-  x
-}
-
-#' @export
-to_one_based.ErrorDimensionUniqueness <- function(x, ...) {
-  x$dimensions <- x$dimensions + 1L
-  x
 }
 
 #' @export
@@ -194,61 +211,11 @@ to_one_based.ErrorIndexOutOfBounds <- function(x, ...) {
   x
 }
 
-#' @title ErrorSliceIndex
-#' @description Error when slice indices are invalid
-#' @param arg (`character(1)`)\cr Name of the argument that caused the error
-#' @param index (`integer()`)\cr The invalid index value(s) (0-based)
-#' @param lower (`integer(1)`)\cr Lower bound of valid range (0-based)
-#' @param upper (`integer(1)`)\cr Upper bound of valid range, exclusive (0-based)
-#' @param call (`call` or `NULL`)\cr Call that generated the error
-#' @param class (`character()`)\cr Additional classes to prepend
-#' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
-#' @export
-error_slice_index <- function(
-  arg,
-  index,
-  lower,
-  upper,
-  call = sys.call(-1)[1L],
-  class = character(),
-  signal = TRUE
-) {
-  error_stablehlo(
-    arg = arg,
-    index = as.integer(index),
-    lower = as.integer(lower),
-    upper = as.integer(upper),
-    call = call,
-    class = c(class, "ErrorSliceIndex"),
-    signal = signal
-  )
-}
-
-#' @export
-conditionMessage.ErrorSliceIndex <- function(c, ...) {
-  index_str <- paste0(c$index, collapse = ", ") # nolint
-  format_error(
-    c(
-      "{.var {c$arg}} contains invalid index{?es}.",
-      i = "Got {index_str}, but valid range is [{c$lower}, {c$upper})."
-    ),
-    .envir = environment()
-  )
-}
-
-#' @export
-to_one_based.ErrorSliceIndex <- function(x, ...) {
-  x$index <- x$index + 1L
-  x$lower <- x$lower + 1L
-  x$upper <- x$upper + 1L
-  x
-}
-
 #' @title ErrorPermuteIndex
 #' @description Error when permutation values are invalid (not a valid permutation of indices)
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
-#' @param permutation (`integer()`)\cr The permutation values that are invalid (0-based)
-#' @param expected (`integer()`)\cr The expected indices to be permuted (0-based)
+#' @param permutation (`integer()`)\cr The permutation values that are invalid.
+#' @param expected (`integer()`)\cr The expected indices to be permuted.
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
@@ -278,7 +245,7 @@ conditionMessage.ErrorPermuteIndex <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg}} must be a permutation of c({expected_str}).",
-      i = "Got c({perm_str})."
+      x = "Got c({perm_str})."
     ),
     .envir = environment()
   )
@@ -288,5 +255,105 @@ conditionMessage.ErrorPermuteIndex <- function(c, ...) {
 to_one_based.ErrorPermuteIndex <- function(x, ...) {
   x$permutation <- x$permutation + 1L
   x$expected <- x$expected + 1L
+  x
+}
+
+#' @title ErrorUnexpectedType
+#' @description Error when an element in a list has an unexpected type
+#' @param arg (`character(1)`)\cr Name of the argument
+#' @param index (`integer(1)`)\cr The index where the type is unexpected (0-based)
+#' @param expected (`character(1)`)\cr Description of what was expected
+#' @param actual (`character(1)`)\cr What was observed
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param class (`character()`)\cr Additional classes to prepend
+#' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
+#' @export
+error_unexpected_type <- function(
+  arg,
+  index,
+  expected,
+  actual,
+  call = sys.call(-1)[1L],
+  class = character(),
+  signal = TRUE
+) {
+  error_stablehlo(
+    arg = arg,
+    index = as.integer(index),
+    expected = expected,
+    actual = as.character(actual),
+    call = call,
+    class = c(class, "ErrorUnexpectedType"),
+    signal = signal
+  )
+}
+
+#' @export
+conditionMessage.ErrorUnexpectedType <- function(c, ...) {
+  format_error(
+    c(
+      "{.var {c$arg}[{c$index}]} {c$expected}.",
+      x = "Got {c$actual}."
+    ),
+    .envir = environment()
+  )
+}
+
+#' @export
+to_one_based.ErrorUnexpectedType <- function(x, ...) {
+  x$index <- x$index + 1L
+  x
+}
+
+#' @title ErrorUnequalTypes
+#' @description Error when types at the same index in two lists don't match
+#' @param arg1 (`character(1)`)\cr Name of the first argument
+#' @param arg2 (`character(1)`)\cr Name of the second argument
+#' @param index (`integer(1)`)\cr The index where types don't match (0-based)
+#' @param expected (`character(1)`)\cr Description of what was expected
+#' @param actual1 (`character(1)`)\cr Type from the first argument
+#' @param actual2 (`character(1)`)\cr Type from the second argument
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param class (`character()`)\cr Additional classes to prepend
+#' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
+#' @export
+error_unequal_types <- function(
+  arg1,
+  arg2,
+  index,
+  expected,
+  actual1,
+  actual2,
+  call = sys.call(-1)[1L],
+  class = character(),
+  signal = TRUE
+) {
+  error_stablehlo(
+    arg1 = arg1,
+    arg2 = arg2,
+    index = as.integer(index),
+    expected = expected,
+    actual1 = as.character(actual1),
+    actual2 = as.character(actual2),
+    call = call,
+    class = c(class, "ErrorUnequalTypes"),
+    signal = signal
+  )
+}
+
+#' @export
+conditionMessage.ErrorUnequalTypes <- function(c, ...) {
+  format_error(
+    c(
+      "{.var {c$arg1}[{c$index}]} and {.var {c$arg2}[{c$index}]} {c$expected}.",
+      x = "Got {c$actual1} and {c$actual2}."
+    ),
+    .envir = environment()
+  )
+}
+
+#' @export
+to_one_based.ErrorUnequalTypes <- function(x, ...) {
+  x$index <- x$index + 1L
   x
 }

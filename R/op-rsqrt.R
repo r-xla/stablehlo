@@ -3,7 +3,7 @@ NULL
 
 OpRsqrt <- new_Op("OpRsqrt", "rsqrt")
 
-hlo_rsqrt_impl <- hlo_fn(OpRsqrt, infer_types_generic_uni)
+hlo_rsqrt_impl <- hlo_fn(OpRsqrt, infer_types_float_uni)
 
 #' @templateVar mnemonic rsqrt
 #' @template op

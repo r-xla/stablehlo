@@ -15,7 +15,7 @@ error_dimension_uniqueness(
 \arguments{
 \item{arg}{(\code{character(1)})\cr Name of the argument that caused the error}
 
-\item{dimensions}{(\code{integer()})\cr The dimension indices that are not unique (0-based)}
+\item{dimensions}{(\code{integer()})\cr The dimension indices that are not unique.}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
 

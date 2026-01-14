@@ -10,53 +10,26 @@ infer_types_transpose <- function(
   permutation
 ) {
   assert_vt_is_tensor(operand)
+  assert_const(permutation, dtype = IntegerType(64L), ndims = 1L)
 
   operand_dims <- shape(operand)
   num_dims <- length(operand_dims)
 
   perm_values <- permutation$data
 
-  if (num_dims == 0) {
-    if (length(perm_values) != 0) {
-      cli_abort("Length of permutation must be 0 for scalar operands")
-    }
-    return(ValueTypes(list(
-      ValueType(
-        TensorType(
-          dtype = operand$type$dtype,
-          shape = Shape(integer())
-        )
-      )
-    )))
-  }
-
-  # (C2) permutation is a permutation of range(rank(operand))
-  if (length(perm_values) != num_dims) {
-    cli_abort("Length of permutation must equal rank of operand")
-  }
-
-  # Check if any permutation values are out of range
-  if (any(perm_values < 0L | perm_values >= num_dims)) {
-    error_dimension_out_of_range(
-      arg = "permutation",
-      dimension = perm_values,
-      ndims = num_dims
-    )
-  }
-
-  expected_perm <- seq(0L, num_dims - 1L)
-  if (!setequal(perm_values, expected_perm)) {
+  # (C2)
+  if (!setequal(perm_values, seq_len(num_dims) - 1L)) {
     error_permute_index(
       arg = "permutation",
       permutation = perm_values,
-      expected = expected_perm
+      expected = seq_len(num_dims) - 1L
     )
   }
 
-  # (C3) shape(result) = dim(operand, permutation...)
-  # Convert 0-based permutation to 1-based for R indexing
+  # (C3)
   result_dims <- operand_dims[perm_values + 1L]
 
+  # (C1)
   ValueTypes(list(
     ValueType(
       TensorType(
@@ -82,8 +55,7 @@ hlo_transpose <- function(
       constant_attr(
         "permutation",
         as.integer(permutation),
-        dtype = "i64",
-        shape = c()
+        dtype = "i64"
       )
     )
   )

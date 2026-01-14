@@ -5,7 +5,7 @@ OpRoundNearestAfz <- new_Op("OpRoundNearestAfz", "round_nearest_afz")
 
 hlo_round_nearest_afz_impl <- hlo_fn(
   OpRoundNearestAfz,
-  infer_types_generic_uni
+  infer_types_float_uni
 )
 
 #' @templateVar mnemonic round_nearest_afz

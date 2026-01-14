@@ -3,7 +3,7 @@ test_that("basic tests", {
   x <- hlo_input("x", "f32", shape = c(2L, 3L, 2L))
   y <- hlo_reshape(
     x,
-    shape_out = c(4L, 3L)
+    shape = c(4L, 3L)
   )
   f <- hlo_return(y)
   expect_snapshot(repr(f))

@@ -1,9 +1,17 @@
-#' @include op.R hlo.R type_inference.R
+#' @include op.R hlo.R type_inference.R utils.R
 NULL
 
 OpAbs <- new_Op("OpAbs", "abs")
 
-hlo_abs_impl <- hlo_fn(OpAbs, infer_types_generic_uni)
+
+#' @rdname hlo_abs
+#' @export
+infer_types_abs <- function(operand) {
+  assert_vt_has_ttype(operand, "FloatType", "IntegerType")
+  ValueTypes(list(operand))
+}
+
+hlo_abs_impl <- hlo_fn(OpAbs, infer_types_numeric_uni)
 
 #' @templateVar mnemonic abs
 #' @template op

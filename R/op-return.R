@@ -20,6 +20,14 @@ OpReturn <- function(inputs, outputs = OpOutputs(), signature = NULL) {
   base_op
 }
 
+#' @rdname hlo_return
+#' @export
+infer_types_return <- function(...) {
+  assert_vts_are_tensors(...)
+  ValueTypes()
+}
+
+
 hlo_return_impl <- hlo_fn(OpReturn, infer_types_return, TRUE)
 
 #' @title Return Values
@@ -51,18 +59,14 @@ hlo_return <- function(..., func = .current_func()) {
     )
   }
   if (anyDuplicated(alias_indices)) {
-    cli_abort("Multiple inputs alias to the same output index")
+    cli_abort(c(
+      "Alias indices must be unique",
+      i = "Got {alias_indices}."
+    ))
   }
   func <- hlo_return_impl(values = dots)
   maybe_restore_previous_func()
   return(func)
-}
-
-#' @rdname hlo_return
-#' @export
-infer_types_return <- function(...) {
-  assert_vts_are_tensors(...)
-  ValueTypes()
 }
 
 #' @export
