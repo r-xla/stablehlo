@@ -35,7 +35,8 @@ infer_types_dynamic_slice <- function(
   if (length(start_indices) > 0) {
     start_types <- lapply(start_indices, function(x) x$type)
     if (length(unique(start_types)) != 1) {
-      type_strs <- vapply(start_types, repr, character(1))
+      # fmt: skip
+      type_strs <- vapply(start_types, repr, character(1)) # nolint
       cli_abort(c(
         "All start_indices must have the same type.",
         i = "Got types: {paste0(type_strs, collapse = ', ')}."

@@ -39,23 +39,23 @@
 
 ---
 
-    `lhs_batching_dims` contains invalid dimension index.
-    x Got dimension index 5, but valid range is [0, 3).
+    `lhs_batching_dims` contains index outside the valid range.
+    x Got 5, but valid range is [0, 3).
 
 ---
 
-    `lhs_contracting_dims` contains invalid dimension index.
-    x Got dimension index 5, but valid range is [0, 2).
+    `lhs_contracting_dims` contains index outside the valid range.
+    x Got 5, but valid range is [0, 2).
 
 ---
 
-    `rhs_batching_dims` contains invalid dimension index.
-    x Got dimension index 5, but valid range is [0, 2).
+    `rhs_batching_dims` contains index outside the valid range.
+    x Got 5, but valid range is [0, 2).
 
 ---
 
-    `rhs_contracting_dims` contains invalid dimension index.
-    x Got dimension index 5, but valid range is [0, 2).
+    `rhs_contracting_dims` contains index outside the valid range.
+    x Got 5, but valid range is [0, 2).
 
 ---
 

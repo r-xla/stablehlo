@@ -26,10 +26,11 @@ infer_types_broadcast_in_dim <- function(
 
   # (C3)
   if (any(bdims < 0L | bdims >= length(result_dims))) {
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "broadcast_dimensions",
-      dimension = bdims,
-      dim_range = c(0L, length(result_dims))
+      index = bdims,
+      lower = 0L,
+      upper = length(result_dims)
     )
   }
 

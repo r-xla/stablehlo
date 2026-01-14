@@ -30,10 +30,11 @@ infer_types_reverse <- function(
     )
   }
   if (any(revdims < 0L | revdims >= length(operand_dims))) {
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "dimensions",
-      dimension = revdims,
-      dim_range = c(0L, length(operand_dims))
+      index = revdims,
+      lower = 0L,
+      upper = length(operand_dims)
     )
   }
 

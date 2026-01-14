@@ -34,10 +34,11 @@ infer_types_concatenate <- function(..., dimension) {
   # (C4)
   num_dims <- length(shape(dots[[1]]))
   if (dimension >= num_dims) {
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "dimension",
-      dimension = dimension,
-      dim_range = c(0L, num_dims)
+      index = dimension,
+      lower = 0L,
+      upper = num_dims
     )
   }
 

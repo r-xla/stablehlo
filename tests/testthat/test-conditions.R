@@ -12,37 +12,41 @@ test_that("can handle conditions", {
   expect_equal(e$dimensions, c(1L, 2L, 1L, 3L))
 })
 
-test_that("to_one_based works with ErrorDimensionOutOfRange", {
-  err <- error_dimension_out_of_range(
+test_that("to_one_based works with ErrorIndexOutOfBounds", {
+  err <- error_index_out_of_bounds(
     arg = "dimension",
-    dimension = 5L,
-    dim_range = c(0L, 3L),
+    index = 5L,
+    lower = 0L,
+    upper = 3L,
     call = call("abc"),
     signal = FALSE
   )
 
   converted <- to_one_based(err)
 
-  expect_equal(converted$dimension, 6L)
-  expect_equal(converted$dim_range, c(1L, 4L))
+  expect_equal(converted$index, 6L)
+  expect_equal(converted$lower, 1L)
+  expect_equal(converted$upper, 4L)
 })
 
-test_that("ErrorDimensionOutOfRange", {
+test_that("ErrorIndexOutOfBounds", {
   expect_snapshot_error(
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "dimension",
-      dimension = 5L,
-      dim_range = c(0L, 3L),
+      index = 5L,
+      lower = 0L,
+      upper = 3L,
       call = call("abc")
     )
   )
 
-  # Test with multiple dimensions
+  # Test with multiple indices
   expect_snapshot_error(
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "dimensions",
-      dimension = c(0L, 1L, 5L),
-      dim_range = c(0L, 3L),
+      index = c(0L, 1L, 5L),
+      lower = 0L,
+      upper = 3L,
       call = call("abc")
     )
   )

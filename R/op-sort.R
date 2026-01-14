@@ -39,10 +39,11 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
   # (C4)
   num_dims <- length(input_dims[[1]])
   if ((dimension < -num_dims) || (dimension >= num_dims)) {
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "dimension",
-      dimension = dimension,
-      dim_range = c(-num_dims, num_dims)
+      index = dimension,
+      lower = -num_dims,
+      upper = num_dims
     )
   }
 

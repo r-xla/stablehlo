@@ -55,10 +55,11 @@ infer_types_reduce <- function(..., body, dimensions) {
     num_dims <- length(ref_shape)
     # (C4)
     if (any(dims0 < 0L | dims0 >= num_dims)) {
-      error_dimension_out_of_range(
+      error_index_out_of_bounds(
         arg = "dimensions",
-        dimension = dims0,
-        dim_range = c(0L, num_dims)
+        index = dims0,
+        lower = 0L,
+        upper = num_dims
       )
     }
     # (C5)

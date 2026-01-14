@@ -1,22 +1,22 @@
-# ErrorDimensionOutOfRange
+# ErrorIndexOutOfBounds
 
-    `dimension` contains invalid dimension index.
-    x Got dimension index 5, but valid range is [0, 3).
+    `dimension` contains index outside the valid range.
+    x Got 5, but valid range is [0, 3).
 
 ---
 
-    `dimensions` contains invalid dimension index.
-    x Got dimension indices: 0, 1, 5, but valid range is [0, 3).
+    `dimensions` contains index outside the valid range.
+    x Got 0, 1, 5, but valid range is [0, 3).
+
+---
+
+    `alias_indices` contains index outside the valid range.
+    x Got 7, but valid range is [0, 5).
 
 # ErrorDimensionUniqueness
 
     `dimensions` contains duplicate dimension indices.
     x Got [0, 1, 0, 2]. Each dimension index must appear only once.
-
-# ErrorIndexOutOfBounds
-
-    `alias_indices` contains index outside the valid range.
-    x Got 7, but valid range is [0, 5).
 
 # ErrorPermuteIndex
 

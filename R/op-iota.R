@@ -14,10 +14,11 @@ infer_types_iota <- function(iota_dimension, dtype, shape) {
   # (C1)
   num_dims <- length(shape)
   if (iota_dim < 0L || iota_dim >= num_dims) {
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "iota_dimension",
-      dimension = iota_dim,
-      dim_range = c(0L, num_dims)
+      index = iota_dim,
+      lower = 0L,
+      upper = num_dims
     )
   }
 

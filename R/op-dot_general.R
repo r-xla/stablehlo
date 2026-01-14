@@ -104,10 +104,11 @@ infer_types_dot_general <- function(
     length(lhs_batching) > 0 &&
       (any(lhs_batching < 0L) || any(lhs_batching >= rank_lhs))
   ) {
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "lhs_batching_dims",
-      dimension = lhs_batching,
-      dim_range = c(0L, rank_lhs)
+      index = lhs_batching,
+      lower = 0L,
+      upper = rank_lhs
     )
   }
 
@@ -116,10 +117,11 @@ infer_types_dot_general <- function(
     length(lhs_contracting) > 0 &&
       (any(lhs_contracting < 0L) || any(lhs_contracting >= rank_lhs))
   ) {
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "lhs_contracting_dims",
-      dimension = lhs_contracting,
-      dim_range = c(0L, rank_lhs)
+      index = lhs_contracting,
+      lower = 0L,
+      upper = rank_lhs
     )
   }
 
@@ -128,10 +130,11 @@ infer_types_dot_general <- function(
     length(rhs_batching) > 0 &&
       (any(rhs_batching < 0L) || any(rhs_batching >= rank_rhs))
   ) {
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "rhs_batching_dims",
-      dimension = rhs_batching,
-      dim_range = c(0L, rank_rhs)
+      index = rhs_batching,
+      lower = 0L,
+      upper = rank_rhs
     )
   }
 
@@ -140,10 +143,11 @@ infer_types_dot_general <- function(
     length(rhs_contracting) > 0 &&
       (any(rhs_contracting < 0L) || any(rhs_contracting >= rank_rhs))
   ) {
-    error_dimension_out_of_range(
+    error_index_out_of_bounds(
       arg = "rhs_contracting_dims",
-      dimension = rhs_contracting,
-      dim_range = c(0L, rank_rhs)
+      index = rhs_contracting,
+      lower = 0L,
+      upper = rank_rhs
     )
   }
 
