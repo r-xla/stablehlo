@@ -20,14 +20,14 @@ infer_types_dynamic_slice <- function(
   if (length(start_indices) != operand_rank) {
     cli_abort(c(
       "size(start_indices) must equal rank(operand).",
-      i = "Got {length(start_indices)} start_indices and rank {operand_rank}."
+      x = "Got {length(start_indices)} start_indices and rank {operand_rank}."
     ))
   }
 
   if (length(slice_sizes_data) != operand_rank) {
     cli_abort(c(
       "size(slice_sizes) must equal rank(operand).",
-      i = "Got {length(slice_sizes_data)} slice_sizes and rank {operand_rank}."
+      x = "Got {length(slice_sizes_data)} slice_sizes and rank {operand_rank}."
     ))
   }
 
@@ -39,7 +39,7 @@ infer_types_dynamic_slice <- function(
       type_strs <- vapply(start_types, repr, character(1)) # nolint
       cli_abort(c(
         "All start_indices must have the same type.",
-        i = "Got types: {paste0(type_strs, collapse = ', ')}."
+        x = "Got types: {paste0(type_strs, collapse = ', ')}."
       ))
     }
 
@@ -61,7 +61,7 @@ infer_types_dynamic_slice <- function(
   if (any(slice_sizes_data > shape(operand))) {
     cli_abort(c(
       "slice_sizes must not be greater than operand's shape.",
-      i = "Got slice_sizes {shapevec_repr(slice_sizes_data)} and operand shape {shapevec_repr(shape(operand))}."
+      x = "Got slice_sizes {shapevec_repr(slice_sizes_data)} and operand shape {shapevec_repr(shape(operand))}."
     ))
   }
 

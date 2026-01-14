@@ -61,7 +61,7 @@ hlo_return <- function(..., func = .current_func()) {
   if (anyDuplicated(alias_indices)) {
     cli_abort(c(
       "Alias indices must be unique",
-      i = "Got {alias_indices}."
+      x = "Got {alias_indices}."
     ))
   }
   func <- hlo_return_impl(values = dots)

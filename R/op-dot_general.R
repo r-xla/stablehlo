@@ -28,7 +28,7 @@ conditionMessage.ErrorDotGeneralDimMismatch <- function(c, ...) {
   format_error(
     c(
       "Can't perform dot general where shape(lhs) = {shapevec_repr(c$shape_lhs)} and shape(rhs) = {shapevec_repr(c$shape_rhs)} because the sizes of the {c$arg} don't match.", # nolint
-      i = "They {c$arg} are {c$dims[[1L]]} for lhs and {c$dims[[2L]]} for rhs"
+      x = "They {c$arg} are {c$dims[[1L]]} for lhs and {c$dims[[2L]]} for rhs"
     ),
     .envir = environment()
   )

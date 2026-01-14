@@ -15,7 +15,7 @@
 # get nice error messages when shapes don't match
 
     Can't perform dot general where shape(lhs) = (10,1) and shape(rhs) = (5,3) because the sizes of the contracting_dims don't match.
-    i They contracting_dims are 0 for lhs and 0 for rhs
+    x They contracting_dims are 0 for lhs and 0 for rhs
 
 # error messages
 
@@ -30,40 +30,40 @@
 ---
 
     `lhs batching_dims and contracting_dims` contains duplicate dimension indices.
-    i Got [0, 0]. Each dimension index must appear only once.
+    x Got [0, 0]. Each dimension index must appear only once.
 
 ---
 
     `rhs batching_dims and contracting_dims` contains duplicate dimension indices.
-    i Got [0, 0]. Each dimension index must appear only once.
+    x Got [0, 0]. Each dimension index must appear only once.
 
 ---
 
     `lhs_batching_dims` contains index outside the valid range.
-    i Got 5, but valid range is [0, 3).
+    x Got 5, but valid range is [0, 3).
 
 ---
 
     `lhs_contracting_dims` contains index outside the valid range.
-    i Got 5, but valid range is [0, 2).
+    x Got 5, but valid range is [0, 2).
 
 ---
 
     `rhs_batching_dims` contains index outside the valid range.
-    i Got 5, but valid range is [0, 2).
+    x Got 5, but valid range is [0, 2).
 
 ---
 
     `rhs_contracting_dims` contains index outside the valid range.
-    i Got 5, but valid range is [0, 2).
+    x Got 5, but valid range is [0, 2).
 
 ---
 
     Can't perform dot general where shape(lhs) = (2,3) and shape(rhs) = (1,3) because the sizes of the batching_dims don't match.
-    i They batching_dims are 0 for lhs and 0 for rhs
+    x They batching_dims are 0 for lhs and 0 for rhs
 
 ---
 
     Can't perform dot general where shape(lhs) = (2,3) and shape(rhs) = (1,4) because the sizes of the contracting_dims don't match.
-    i They contracting_dims are 1 for lhs and 1 for rhs
+    x They contracting_dims are 1 for lhs and 1 for rhs
 

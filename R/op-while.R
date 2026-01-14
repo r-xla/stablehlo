@@ -19,7 +19,7 @@ infer_types_while <- function(..., cond, body) {
   if (length(cond$inputs) != length(value_types)) {
     cli_abort(c(
       "cond must have the same number of inputs as inputs",
-      i = "Got {length(cond$inputs)} inputs and {length(value_types)} inputs."
+      x = "Got {length(cond$inputs)} inputs and {length(value_types)} inputs."
     ))
   }
   cond_in_types <- lapply(cond$inputs, function(x) x$type)
@@ -49,7 +49,7 @@ infer_types_while <- function(..., cond, body) {
   if (length(body_out_types) != length(value_types)) {
     cli_abort(c(
       "body must have the same number of outputs as inputs",
-      i = "Got {length(body_out_types)} outputs and {length(value_types)} inputs."
+      x = "Got {length(body_out_types)} outputs and {length(value_types)} inputs."
     ))
   }
   for (i in seq_along(value_types)) {
