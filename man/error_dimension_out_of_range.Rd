@@ -22,7 +22,7 @@ identify which ones are out of range.}
 
 \item{dim_range}{(\code{integer(2)})\cr The valid dimension range as c(min, max).}
 
-\item{inclusive}{(\code{logical(2)})\cr Whether lower and upper bounds are inclusive, as c(lower_inclusive, upper_inclusive).
+\item{inclusive}{(\code{logical(2)})\cr Whether lower and upper bounds are inclusive.
 Default is c(TRUE, FALSE) meaning [lower, upper)}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
