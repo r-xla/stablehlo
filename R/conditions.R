@@ -79,7 +79,7 @@ conditionMessage.ErrorDimensionUniqueness <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg}} contains duplicate dimension indices.",
-      x = "Got [{dims_str}]. Each dimension index must appear only once."
+      i = "Got [{dims_str}]. Each dimension index must appear only once."
     ),
     .envir = environment()
   )
@@ -127,7 +127,7 @@ conditionMessage.ErrorIndexOutOfBounds <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg}} contains index{?es} outside the valid range.",
-      x = "Got {index_str}, but valid range is [{c$lower}, {c$upper})."
+      i = "Got {index_str}, but valid range is [{c$lower}, {c$upper})."
     ),
     .envir = environment()
   )
@@ -175,7 +175,7 @@ conditionMessage.ErrorPermuteIndex <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg}} must be a permutation of c({expected_str}).",
-      x = "Got c({perm_str})."
+      i = "Got c({perm_str})."
     ),
     .envir = environment()
   )
@@ -223,7 +223,7 @@ conditionMessage.ErrorUnexpectedType <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg}[{c$index}]} {c$expected}.",
-      x = "Got {c$actual}."
+      i = "Got {c$actual}."
     ),
     .envir = environment()
   )
@@ -276,7 +276,7 @@ conditionMessage.ErrorUnequalTypes <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg1}[{c$index}]} and {.var {c$arg2}[{c$index}]} {c$expected}.",
-      x = "Got {c$actual1} and {c$actual2}."
+      i = "Got {c$actual1} and {c$actual2}."
     ),
     .envir = environment()
   )

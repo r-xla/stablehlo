@@ -30,32 +30,32 @@
 ---
 
     `lhs batching_dims and contracting_dims` contains duplicate dimension indices.
-    x Got [0, 0]. Each dimension index must appear only once.
+    i Got [0, 0]. Each dimension index must appear only once.
 
 ---
 
     `rhs batching_dims and contracting_dims` contains duplicate dimension indices.
-    x Got [0, 0]. Each dimension index must appear only once.
+    i Got [0, 0]. Each dimension index must appear only once.
 
 ---
 
     `lhs_batching_dims` contains index outside the valid range.
-    x Got 5, but valid range is [0, 3).
+    i Got 5, but valid range is [0, 3).
 
 ---
 
     `lhs_contracting_dims` contains index outside the valid range.
-    x Got 5, but valid range is [0, 2).
+    i Got 5, but valid range is [0, 2).
 
 ---
 
     `rhs_batching_dims` contains index outside the valid range.
-    x Got 5, but valid range is [0, 2).
+    i Got 5, but valid range is [0, 2).
 
 ---
 
     `rhs_contracting_dims` contains index outside the valid range.
-    x Got 5, but valid range is [0, 2).
+    i Got 5, but valid range is [0, 2).
 
 ---
 

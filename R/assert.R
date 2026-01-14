@@ -22,7 +22,7 @@ assert_valid_id <- function(
     cli_abort(
       c(
         "Identifiers can only contain {{letters, digits, _}}; They must start with a letter or be all digits.",
-        x = "{.arg {arg}} is {.val {name}}."
+        i = "{.arg {arg}} is {.val {name}}."
       ),
       call = call
     )
@@ -196,7 +196,7 @@ assert_vt_has_ttype <- function(
     cli_abort(
       c(
         "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
-        x = "Got {shapevec_repr(shape(tensor_type))}."
+        i = "Got {shapevec_repr(shape(tensor_type))}."
       ),
       call = call
     )
@@ -205,7 +205,7 @@ assert_vt_has_ttype <- function(
     cli_abort(
       c(
         "{.arg {arg}} must have {ndims} dimensions.",
-        x = "Got {length(shape(tensor_type))} dimensions."
+        i = "Got {length(shape(tensor_type))} dimensions."
       ),
       call = call
     )
@@ -227,7 +227,7 @@ assert_vts_have_same_dtype <- function(
     cli_abort(
       c(
         "{.arg {arg_x}} and {.arg {arg_y}} must have the same dtype.",
-        x = "Got {.cls {repr(dtype_x)}} and {.cls {repr(dtype_y)}}."
+        i = "Got {.cls {repr(dtype_x)}} and {.cls {repr(dtype_y)}}."
       ),
       call = call
     )
@@ -246,7 +246,7 @@ assert_const <- function(
     cli_abort(
       c(
         "{.arg {arg}} must be a ConstantAttr.",
-        x = "Got {.cls {class(x)[1]}}."
+        i = "Got {.cls {class(x)[1]}}."
       ),
       call = call
     )
@@ -257,7 +257,7 @@ assert_const <- function(
       cli_abort(
         c(
           "{.arg {arg}} must have dtype {.cls {dtype}}.",
-          x = "Got {.cls {x$type$dtype}}."
+          i = "Got {.cls {x$type$dtype}}."
         ),
         call = call
       )
@@ -267,7 +267,7 @@ assert_const <- function(
     cli_abort(
       c(
         "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
-        x = "Got {shapevec_repr(shape(x$type))}."
+        i = "Got {shapevec_repr(shape(x$type))}."
       ),
       call = call
     )
@@ -276,7 +276,7 @@ assert_const <- function(
     cli_abort(
       c(
         "{.arg {arg}} must have {ndims} dimensions.",
-        x = "Got {length(shape(x$type))} dimensions."
+        i = "Got {length(shape(x$type))} dimensions."
       ),
       call = call
     )
@@ -297,7 +297,7 @@ assert_func <- function(
     cli_abort(
       c(
         "{.arg {arg}} must be a Func.",
-        x = "Got {.cls {class(x)[1]}}."
+        i = "Got {.cls {class(x)[1]}}."
       ),
       call = call
     )

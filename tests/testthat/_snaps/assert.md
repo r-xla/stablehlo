@@ -14,7 +14,7 @@
     Condition
       Error:
       ! `y` must have shape (1).
-      x Got ().
+      i Got ().
 
 ---
 
@@ -32,7 +32,7 @@
     Condition
       Error:
       ! `scalar` must have 1 dimensions.
-      x Got 0 dimensions.
+      i Got 0 dimensions.
 
 ---
 
@@ -41,7 +41,7 @@
     Condition
       Error:
       ! `vector` must have 2 dimensions.
-      x Got 1 dimensions.
+      i Got 1 dimensions.
 
 ---
 
@@ -50,7 +50,7 @@
     Condition
       Error:
       ! `matrix` must have 1 dimensions.
-      x Got 2 dimensions.
+      i Got 2 dimensions.
 
 # assert_vt_is_tensor
 
@@ -127,7 +127,7 @@
     Condition
       Error:
       ! `x` and `y` must have the same dtype.
-      x Got <i32> and <f32>.
+      i Got <i32> and <f32>.
 
 # assert_valid_id
 
@@ -136,7 +136,7 @@
     Condition
       Error:
       ! Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
-      x `"_foo"` is "_foo".
+      i `"_foo"` is "_foo".
 
 ---
 
@@ -145,7 +145,7 @@
     Condition
       Error:
       ! Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
-      x `"1abc"` is "1abc".
+      i `"1abc"` is "1abc".
 
 ---
 
@@ -154,7 +154,7 @@
     Condition
       Error:
       ! Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
-      x `"foo-bar"` is "foo-bar".
+      i `"foo-bar"` is "foo-bar".
 
 ---
 
@@ -163,7 +163,7 @@
     Condition
       Error:
       ! Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
-      x `""` is "".
+      i `""` is "".
 
 # assert_one_of
 
