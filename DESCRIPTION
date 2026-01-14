@@ -77,6 +77,8 @@ Collate:
     'op-custom_call.R'
     'op-divide.R'
     'op-dot_general.R'
+    'op-dynamic_slice.R'
+    'op-dynamic_update_slice.R'
     'op-exponential.R'
     'op-exponential_minus_one.R'
     'op-floor.R'
