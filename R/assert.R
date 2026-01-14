@@ -120,7 +120,6 @@ assert_vt_is_tensor <- function(
   }
 }
 
-# New simplified function for checking tensor types
 assert_vt_has_ttype <- function(
   x,
   ...,
