@@ -3,7 +3,7 @@ NULL
 
 OpCeil <- new_Op("OpCeil", "ceil")
 
-hlo_ceil_impl <- hlo_fn(OpCeil, infer_types_generic_uni)
+hlo_ceil_impl <- hlo_fn(OpCeil, infer_types_float_uni)
 
 #' @templateVar mnemonic ceil
 #' @template op

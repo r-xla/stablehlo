@@ -8,7 +8,7 @@ OpExponentialMinusOne <- new_Op(
 
 hlo_exponential_minus_one_impl <- hlo_fn(
   OpExponentialMinusOne,
-  infer_types_generic_uni
+  infer_types_float_uni
 )
 
 #' @templateVar mnemonic exponential_minus_one

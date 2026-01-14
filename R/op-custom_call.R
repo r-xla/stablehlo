@@ -28,7 +28,7 @@ CustomOpBackendConfig <- function(items = list()) {
 
   structure(
     items,
-    class = c("CustomOpBackendConfig", "list")
+    class = c("CustomOpBackendConfig")
   )
 }
 

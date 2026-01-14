@@ -10,13 +10,17 @@ infer_types_reverse <- function(
   dimensions
 ) {
   assert_vt_is_tensor(operand)
+  assert_const(dimensions, dtype = IntegerType(64L), ndims = 1L)
 
   operand_dims <- shape(operand)
   revdims <- dimensions$data
 
   # (C2) is_unique(dimensions).
   if (anyDuplicated(revdims) > 0) {
-    cli_abort("dimensions must be unique")
+    error_dimension_uniqueness(
+      arg = "dimensions",
+      dimensions = revdims
+    )
   }
 
   # (C3) 0 <= dimensions < rank(result)
@@ -26,9 +30,11 @@ infer_types_reverse <- function(
     )
   }
   if (any(revdims < 0L | revdims >= length(operand_dims))) {
-    cli_abort(
-      "dimensions must be within [0, rank(result))",
-      x = "Got {.val {renvdims}}"
+    error_index_out_of_bounds(
+      arg = "dimensions",
+      index = revdims,
+      lower = 0L,
+      upper = length(operand_dims)
     )
   }
 
@@ -60,8 +66,8 @@ hlo_reverse <- function(
       constant_attr(
         "dimensions",
         as.integer(dimensions),
-        dtype = "i64",
-        shape = c()
+        shape = length(dimensions),
+        dtype = "i64"
       )
     )
   )

@@ -6,20 +6,10 @@ OpShiftRightArithmetic <- new_Op(
   "shift_right_arithmetic"
 )
 
-#' @rdname hlo_shift_right_arithmetic
-#' @export
-# fmt: skip
-infer_types_shift_right_arithmetic <- function(lhs, rhs) { # nolint
-  assert_vt_has_ttype(lhs, "IntegerType", "UnsignedType", "BooleanType")
-  assert_vt_has_ttype(rhs, "IntegerType", "UnsignedType", "BooleanType")
-  assert_vt_equal(lhs, rhs)
-  ValueTypes(list(lhs))
-}
-
 # fmt: skip
 hlo_shift_right_arithmetic_impl <- hlo_fn( # nolint
   OpShiftRightArithmetic,
-  infer_types_shift_right_arithmetic
+  infer_types_integerish_biv
 )
 
 #' @templateVar mnemonic shift_right_arithmetic

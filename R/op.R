@@ -1,4 +1,3 @@
-#' @include list_of.R
 #' @include value_id.R
 #' @include types.R
 #' @include constant.R
@@ -39,13 +38,17 @@ repr.OpName <- function(x, ...) {
 #' Base class for operation input attributes.
 #' @param name (`character(1)`)\cr
 #'   The name of the attribute.
+#' @param value (any)\cr
+#'   The value of the attribute.
+#' @param dtype ([`TensorDataType`])\cr
+#'   The dtype of the attribute.
 #' @return (`OpInputAttr`)
 #' @export
-OpInputAttr <- function(name) {
+OpInputAttr <- function(name, value, dtype) {
   checkmate::assert_string(name)
 
   structure(
-    list(name = name),
+    list(name = name, value = value, dtype = dtype),
     class = "OpInputAttr"
   )
 }
@@ -65,8 +68,10 @@ ScalarAttr <- function(name, value, dtype) {
   checkmate::assert_string(name)
   assert_dtype(dtype)
 
+  constant <- r_to_constant(value, dtype = repr(dtype), shape = integer())
+
   structure(
-    list(name = name, value = value, dtype = dtype),
+    list(name = name, value = constant, dtype = dtype),
     class = c("ScalarAttr", "OpInputAttr")
   )
 }
@@ -74,18 +79,19 @@ ScalarAttr <- function(name, value, dtype) {
 #' @export
 repr.ScalarAttr <- function(x, simplify_dense = TRUE, ...) {
   type_repr <- repr(x$dtype)
+  data <- x$value$data
   value_repr <- if (test_class(x$dtype, "BooleanType")) {
-    sprintf("%s : %s", tolower(as.character(x$value)), type_repr)
+    sprintf("%s : %s", tolower(as.character(data)), type_repr)
   } else if (
     test_class(x$dtype, "IntegerType") ||
       test_class(x$dtype, "UnsignedType")
   ) {
-    sprintf("%d : %s", as.integer(x$value), type_repr)
+    sprintf("%d : %s", as.integer(data), type_repr)
   } else {
     precision <- x$dtype$value
     sprintf(
       "%s : %s",
-      format_double(as.double(x$value), precision = precision),
+      format_double(as.double(data), precision = precision),
       type_repr
     )
   }
@@ -105,15 +111,17 @@ BoolAttr <- function(name, value) {
   checkmate::assert_string(name)
   checkmate::assert_flag(value)
 
+  constant <- r_to_constant(value, dtype = "i1", shape = integer())
+
   structure(
-    list(name = name, value = value),
+    list(name = name, value = constant, dtype = BooleanType()),
     class = c("BoolAttr", "OpInputAttr")
   )
 }
 
 #' @export
 repr.BoolAttr <- function(x, simplify_dense = TRUE, ...) {
-  paste0(x$name, " = ", tolower(as.character(x$value)))
+  paste0(x$name, " = ", tolower(as.character(x$value$data)))
 }
 
 #' @title StringAttr

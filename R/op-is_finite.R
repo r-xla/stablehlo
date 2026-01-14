@@ -6,7 +6,8 @@ OpIsFinite <- new_Op("IsFinite", "is_finite")
 #' @rdname hlo_is_finite
 #' @export
 infer_types_is_finite <- function(operand) {
-  assert_vt_is_tensor(operand)
+  assert_vt_has_ttype(operand, "FloatType")
+  # (C1)
   ValueTypes(list(
     make_vt("pred", shape(operand))
   ))

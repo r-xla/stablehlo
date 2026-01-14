@@ -5,12 +5,12 @@
 \alias{hlo_reshape}
 \title{Reshape Operator}
 \usage{
-infer_types_reshape(operand, shape_out)
+infer_types_reshape(operand, shape)
 
-hlo_reshape(operand, shape_out)
+hlo_reshape(operand, shape)
 }
 \arguments{
-\item{operand, shape_out}{(\code{\link{FuncValue}})\cr}
+\item{operand, shape}{(\code{\link{FuncValue}})\cr}
 }
 \value{
 \code{\link{FuncValue}}\cr

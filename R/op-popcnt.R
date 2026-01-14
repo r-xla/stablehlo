@@ -3,14 +3,7 @@ NULL
 
 OpPopcnt <- new_Op("Popcnt", "popcnt")
 
-#' @rdname hlo_popcnt
-#' @export
-infer_types_popcnt <- function(operand) {
-  assert_vt_has_ttype(operand, "IntegerType", "UnsignedType")
-  ValueTypes(list(operand))
-}
-
-hlo_popcnt_impl <- hlo_fn(OpPopcnt, infer_types_popcnt)
+hlo_popcnt_impl <- hlo_fn(OpPopcnt, infer_types_integer_uni)
 
 #' @templateVar mnemonic popcnt
 #' @template op

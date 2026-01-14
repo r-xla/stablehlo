@@ -106,7 +106,7 @@ test_that("no contracting dims", {
 test_that("get nice error messages when shapes don't match", {
   local_func()
   lhs <- hlo_input("lhs", "f32", shape = c(10, 1))
-  rhs <- hlo_input("rhs", "f32", shape = c())
+  rhs <- hlo_input("rhs", "f32", shape = c(5, 3))
   expect_snapshot_error({
     hlo_dot_general(
       lhs,
@@ -114,4 +114,46 @@ test_that("get nice error messages when shapes don't match", {
       contracting_dims = list(0L, 0L)
     )
   })
+})
+
+test_that("error messages", {
+  check <- function(
+    shape_lhs,
+    shape_rhs,
+    contracting_dims,
+    batching_dims = NULL
+  ) {
+    local_func()
+    lhs <- hlo_input("lhs", "f32", shape = shape_lhs)
+    rhs <- hlo_input("rhs", "f32", shape = shape_rhs)
+    expect_snapshot_error({
+      hlo_dot_general(
+        lhs,
+        rhs,
+        contracting_dims = contracting_dims,
+        batching_dims = batching_dims
+      )
+    })
+  }
+
+  # C1: batching_dims must have equal length for lhs and rhs
+  check(c(2, 3, 4), c(2, 4, 5), list(2L, 1L), list(0L, integer()))
+  # C2: contracting_dims must have equal length for lhs and rhs
+  check(c(2, 3, 4), c(2, 4, 5), list(1:2, 1L))
+  # C3: lhs batching and contracting dims must be unique
+  check(c(2, 3, 4), c(2, 4, 5), list(0L, 1L), list(0L, 0L))
+  # C4: rhs batching and contracting dims must be unique
+  check(c(2, 3, 4), c(2, 4, 5), list(2L, 0L), list(0L, 0L))
+  # C5: lhs_batching_dims must be in valid range
+  check(c(2, 3, 4), c(2, 4, 5), list(1L, 1L), list(5L, 0L))
+  # C6: lhs_contracting_dims must be in valid range
+  check(c(2, 3), c(3, 4), list(5L, 0L))
+  # C7: rhs_batching_dims must be in valid range
+  check(c(2, 3), c(2, 4), list(1L, 1L), list(0L, 5L))
+  # C8: rhs_contracting_dims must be in valid range
+  check(c(2, 3), c(3, 4), list(1L, 5L))
+  # C9: batching_dims sizes don't match
+  check(c(2, 3), c(1, 3), list(1L, 1L), list(0L, 0L))
+  # C10: contracting_dims sizes don't match
+  check(c(2, 3), c(1, 4), list(1L, 1L))
 })

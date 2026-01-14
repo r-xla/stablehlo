@@ -1,9 +1,32 @@
-assert_valid_name <- function(name, arg = rlang::caller_arg(name)) {
-  assert_string(
-    name,
-    pattern = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[0-9]+$)",
-    .var.name = arg
-  )
+#' @importFrom stats setNames
+NULL
+
+is_valid_id <- function(name) {
+  test_string(name, pattern = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[0-9]+$)")
+}
+
+dtype_repr <- function(dtype) {
+  if (is.character(dtype)) {
+    return(dtype)
+  }
+  # For initialized instances
+  repr(dtype)
+}
+
+assert_valid_id <- function(
+  name,
+  arg = rlang::caller_arg(name),
+  call = rlang::caller_env()
+) {
+  if (!is_valid_id(name)) {
+    cli_abort(
+      c(
+        "Identifiers can only contain {{letters, digits, _}}; They must start with a letter or be all digits.",
+        i = "{.arg {arg}} is {.val {name}}."
+      ),
+      call = call
+    )
+  }
 }
 
 assert_vt_equal <- function(
@@ -13,7 +36,8 @@ assert_vt_equal <- function(
   msg = NULL,
   is_tensor = TRUE,
   arg_x = rlang::caller_arg(x),
-  arg_y = rlang::caller_arg(y)
+  arg_y = rlang::caller_arg(y),
+  call = rlang::caller_env()
 ) {
   rlang::check_dots_empty()
 
@@ -25,41 +49,34 @@ assert_vt_equal <- function(
     return()
   }
 
-  cli_abort(c(
-    x = msg %||% "Expected {.arg {arg_x}} and {.arg {arg_y}} to be equal.",
-    i = "Got {.val {repr(x)}} and {.val {repr(y)}}."
-  ))
+  cli_abort(
+    c(
+      "{.arg {arg_x}} and {.arg {arg_y}} must have the same tensor type.",
+      x = "Got {repr(x$type)} and {repr(y$type)}."
+    ),
+    call = call
+  )
 }
 
-assert_one_of <- function(x, types, arg = rlang::caller_arg(x)) {
-  # Check if x inherits from any of the types
+assert_one_of <- function(
+  x,
+  types,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
   for (type in types) {
     if (test_class(x, type)) {
       return(invisible(NULL))
     }
   }
 
-  cli_abort(c(
-    "{.arg {arg}} must be a {.or {.cls {types}}}.",
-    x = "Got {.cls {class(x)[1]}}."
-  ))
-}
-
-assert_vt_is_tensor <- function(x, arg = rlang::caller_arg(x)) {
-  force(arg)
-  if (!test_class(x, "ValueType")) {
-    cli_abort(c(
-      "{.arg {arg}} must be a ValueType.",
+  cli_abort(
+    c(
+      "{.arg {arg}} must be a {.or {.cls {types}}}.",
       x = "Got {.cls {class(x)[1]}}."
-    ))
-  }
-  x <- x$type
-  if (!test_class(x, "TensorType")) {
-    cli_abort(c(
-      "{.arg {arg}} must contain a TensorType.",
-      x = "Got {.cls {class(x)[1]}}."
-    ))
-  }
+    ),
+    call = call
+  )
 }
 
 assert_vts_are_tensors <- function(...) {
@@ -76,28 +93,64 @@ assert_vts_are_tensors <- function(...) {
   }
 }
 
+assert_vt_is_tensor <- function(
+  x,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  force(arg)
+  if (!test_class(x, "ValueType")) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must be a ValueType.",
+        x = "Got {.cls {class(x)[1]}}."
+      ),
+      call = call
+    )
+  }
+  tensor_type <- x$type
+  if (!test_class(tensor_type, "TensorType")) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must contain a TensorType.",
+        x = "Got {.cls {class(tensor_type)[1]}}."
+      ),
+      call = call
+    )
+  }
+}
+
 assert_vt_has_ttype <- function(
   x,
   ...,
   shape = NULL,
-  arg = rlang::caller_arg(x)
+  ndims = NULL,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
 ) {
+  dtypes <- list(...)
   force(arg)
+
   if (!test_class(x, "ValueType")) {
-    cli_abort(c(
-      "{.arg {arg}} must be a ValueType.",
-      x = "Got {.cls {class(x)[1]}}."
-    ))
-  }
-  tensor_type <- x$type
-  if (!test_class(tensor_type, "TensorType")) {
-    cli_abort(c(
-      "{.arg {arg}} must contain a TensorType.",
-      x = "Got {.cls {class(tensor_type)[1]}}."
-    ))
+    cli_abort(
+      c(
+        "{.arg {arg}} must be a ValueType.",
+        x = "Got {.cls {class(x)[1]}}."
+      ),
+      call = call
+    )
   }
 
-  dtypes <- list(...)
+  tensor_type <- x$type
+  if (!test_class(tensor_type, "TensorType")) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must contain a TensorType.",
+        x = "Got {.cls {class(tensor_type)[1]}}."
+      ),
+      call = call
+    )
+  }
 
   if (length(dtypes) > 0) {
     dtype_matched <- FALSE
@@ -125,10 +178,13 @@ assert_vt_has_ttype <- function(
     }
 
     if (!dtype_matched) {
-      cli_abort(c(
-        "{.arg {arg}} must have dtype {.or {type_names}}.",
-        x = "Got {.cls {repr(tensor_type$dtype)}}."
-      ))
+      cli_abort(
+        c(
+          "{.arg {arg}} must have dtype {.or {type_names}}.",
+          x = "Got {.cls {repr(tensor_type$dtype)}}."
+        ),
+        call = call
+      )
     }
   }
 
@@ -137,27 +193,113 @@ assert_vt_has_ttype <- function(
     shapevec_repr <- function(s) { # nolint
       sprintf("(%s)", paste0(s, collapse = ","))
     }
-    cli_abort(c(
-      "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
-      x = "Got {shapevec_repr(shape(tensor_type))}."
-    ))
+    cli_abort(
+      c(
+        "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
+        i = "Got {shapevec_repr(shape(tensor_type))}."
+      ),
+      call = call
+    )
   }
+  if (!is.null(ndims) && ndims(tensor_type) != ndims) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must have {ndims} dimensions.",
+        i = "Got {length(shape(tensor_type))} dimensions."
+      ),
+      call = call
+    )
+  }
+  invisible(NULL)
 }
-
 
 assert_vts_have_same_dtype <- function(
   x,
   y,
   arg_x = rlang::caller_arg(x),
-  arg_y = rlang::caller_arg(y)
+  arg_y = rlang::caller_arg(y),
+  call = rlang::caller_env()
 ) {
   dtype_x <- x$type$dtype
   dtype_y <- y$type$dtype
 
   if (dtype_x != dtype_y) {
-    cli_abort(c(
-      "{.arg {arg_x}} and {.arg {arg_y}} must have the same dtype.",
-      x = "Got {.cls {repr(dtype_x)}} and {.cls {repr(dtype_y)}}."
-    ))
+    cli_abort(
+      c(
+        "{.arg {arg_x}} and {.arg {arg_y}} must have the same dtype.",
+        i = "Got {.cls {repr(dtype_x)}} and {.cls {repr(dtype_y)}}."
+      ),
+      call = call
+    )
+  }
+}
+
+assert_const <- function(
+  x,
+  dtype = NULL,
+  shape = NULL,
+  ndims = NULL,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  if (!inherits(x, "Constant")) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must be a ConstantAttr.",
+        i = "Got {.cls {class(x)[1]}}."
+      ),
+      call = call
+    )
+  }
+  if (!is.null(dtype)) {
+    dtype <- as_dtype(dtype)
+    if (!identical(x$type$dtype, dtype)) {
+      cli_abort(
+        c(
+          "{.arg {arg}} must have dtype {.cls {dtype}}.",
+          i = "Got {.cls {x$type$dtype}}."
+        ),
+        call = call
+      )
+    }
+  }
+  if (!is.null(shape) && !identical(shape(x$type), shape)) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
+        i = "Got {shapevec_repr(shape(x$type))}."
+      ),
+      call = call
+    )
+  }
+  if (!is.null(ndims) && ndims(x$type) != ndims) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must have {ndims} dimensions.",
+        i = "Got {length(shape(x$type))} dimensions."
+      ),
+      call = call
+    )
+  }
+  invisible(NULL)
+}
+
+assert_shapevec <- function(x) {
+  assert_integerish(x, lower = 0, any.missing = FALSE)
+}
+
+assert_func <- function(
+  x,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  if (!test_class(x, "Func")) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must be a Func.",
+        i = "Got {.cls {class(x)[1]}}."
+      ),
+      call = call
+    )
   }
 }

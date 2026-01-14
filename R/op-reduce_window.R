@@ -15,17 +15,28 @@ infer_types_reduce_window <- function(
   window_dilations,
   padding
 ) {
+  assert_func(body)
   assert_vts_are_tensors(...)
+  assert_const(window_dimensions, dtype = IntegerType(64L), ndims = 1L)
+  assert_const(window_strides, dtype = IntegerType(64L), ndims = 1)
+  assert_const(base_dilations, dtype = IntegerType(64L), ndims = 1L)
+  assert_const(window_dilations, dtype = IntegerType(64L), ndims = 1L)
+  assert_const(padding, dtype = IntegerType(64L), ndims = 2L)
+
   value_types <- list(...)
 
   # (C1)
   if (length(value_types) %% 2L != 0L) {
-    cli_abort(
-      "Number of arguments must be divisible by 2 (pairs of inputs and init values)"
-    )
+    cli_abort(c(
+      "Number of arguments must be divisible by 2 (pairs of inputs and init values).",
+      i = "Got {length(value_types)} argument{?s}."
+    ))
   }
   if (length(value_types) == 0L) {
-    cli_abort("No arguments provided")
+    cli_abort(c(
+      "At least one input and one init value must be provided.",
+      i = "Got 0 arguments."
+    ))
   }
 
   num_inputs <- length(value_types) / 2L
@@ -35,9 +46,15 @@ infer_types_reduce_window <- function(
 
   # Check init_values are 0-D tensors
 
-  lapply(init_value_types, function(vt) {
+  lapply(seq_along(init_value_types), function(i) {
+    vt <- init_value_types[[i]]
     if (length(vt$type$shape$dims) != 0L) {
-      cli_abort("init_values must be 0-D tensors")
+      error_unexpected_type(
+        arg = "init_values",
+        index = i - 1L, # 0-based
+        expected = "must be 0-D tensors",
+        actual = paste("shape", shapevec_repr(vt$type$shape$dims))
+      )
     }
   })
 
@@ -47,7 +64,15 @@ infer_types_reduce_window <- function(
   if (
     !all(vapply(input_shapes, function(s) identical(s, ref_shape), logical(1L)))
   ) {
-    cli_abort("All inputs to reduce_window must have the same shape")
+    # fmt: skip
+    shape_strs <- paste( # nolint
+      vapply(input_shapes, shapevec_repr, character(1)),
+      collapse = ", "
+    )
+    cli_abort(c(
+      "All inputs to reduce_window must have the same shape.",
+      i = "Got shapes: {shape_strs}."
+    ))
   }
 
   # (C3) Each input must have the same dtype as its corresponding init_value
@@ -55,8 +80,13 @@ infer_types_reduce_window <- function(
     input_dtype <- input_value_types[[i]]$type$dtype
     init_dtype <- init_value_types[[i]]$type$dtype
     if (input_dtype != init_dtype) {
-      cli_abort(
-        "inputs[{i}] and init_values[{i}] must have the same dtype, got: {repr(input_dtype)} and {repr(init_dtype)}."
+      error_unequal_types(
+        arg1 = "inputs",
+        arg2 = "init_values",
+        index = i - 1L, # 0-based
+        expected = "must have the same dtype",
+        actual1 = repr(input_dtype),
+        actual2 = repr(init_dtype)
       )
     }
   }
@@ -66,12 +96,18 @@ infer_types_reduce_window <- function(
 
   # (C4)
   if (length(window_dims) != rank) {
-    cli_abort("window_dimensions must have length equal to input rank")
+    cli_abort(c(
+      "window_dimensions must have length equal to input rank.",
+      i = "Expected length {rank}, got {length(window_dims)}."
+    ))
   }
 
   # (C5)
   if (any(window_dims < 1L)) {
-    cli_abort("window_dimensions must be positive")
+    cli_abort(c(
+      "window_dimensions must be positive.",
+      i = "Got {window_dims}"
+    ))
   }
 
   strides <- as.integer(window_strides$data)
@@ -80,39 +116,57 @@ infer_types_reduce_window <- function(
   pad <- padding$data
 
   # (C12)
-  if (!is.matrix(pad) || !is.integer(pad)) {
-    cli_abort("padding must be a 2D integer matrix")
-  }
   if (nrow(pad) != rank || ncol(pad) != 2L) {
-    cli_abort("padding must have shape [rank, 2]")
+    cli_abort(c(
+      "padding must have shape [rank, 2].",
+      i = "Expected shape [{rank}, 2], got [{nrow(pad)}, {ncol(pad)}]."
+    ))
   }
 
   # (C6)
   if (length(strides) != rank) {
-    cli_abort("window_strides must have length equal to input rank")
+    cli_abort(c(
+      "window_strides must have length equal to input rank.",
+      i = "Expected length {rank}, got {length(strides)}."
+    ))
   }
 
   # (C7)
   if (any(strides < 1L)) {
-    cli_abort("window_strides must be positive")
+    cli_abort(c(
+      "window_strides must be positive.",
+      i = "Got {strides}"
+    ))
   }
 
   # (C8)
   if (length(base_dil) != rank) {
-    cli_abort("base_dilations must have length equal to input rank")
+    cli_abort(c(
+      "base_dilations must have length equal to input rank.",
+      i = "Expected length {rank}, got {length(base_dil)}."
+    ))
   }
   # (C10)
   if (length(window_dil) != rank) {
-    cli_abort("window_dilations must have length equal to input rank")
+    cli_abort(c(
+      "window_dilations must have length equal to input rank.",
+      i = "Expected length {rank}, got {length(window_dil)}."
+    ))
   }
 
   # (C9)
   if (any(base_dil <= 0)) {
-    cli_abort("base_dilations must be positive")
+    cli_abort(c(
+      "base_dilations must be positive.",
+      i = "Got {base_dil}"
+    ))
   }
   # (C11)
   if (any(window_dil < 0)) {
-    cli_abort("window_dilations must be positive")
+    cli_abort(c(
+      "window_dilations must be positive.",
+      i = "Got {window_dil}"
+    ))
   }
 
   dilated_input <- ifelse(ref_shape == 0L, 0L, (ref_shape - 1L) * base_dil + 1L)
@@ -127,13 +181,21 @@ infer_types_reduce_window <- function(
 
   body_out_types <- func_output_types(body)
   if (length(body_out_types) != num_inputs) {
-    cli_abort("Body must return one tensor per input")
+    cli_abort(c(
+      "Body must return one tensor per input.",
+      i = "Expected {num_inputs} output{?s}, got {length(body_out_types)}."
+    ))
   }
 
   out_vts <- lapply(seq_len(num_inputs), function(i) {
     out_elem_vt <- body_out_types[[i]]
     if (length(out_elem_vt$type$shape$dims) != 0L) {
-      cli_abort("body outputs must be 0-D tensors")
+      error_unexpected_type(
+        arg = "body output",
+        index = i - 1L, # 0-based
+        expected = "must be 0-D tensors",
+        actual = paste("shape", shapevec_repr(out_elem_vt$type$shape$dims))
+      )
     }
     ValueType(
       TensorType(

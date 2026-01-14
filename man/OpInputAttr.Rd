@@ -4,11 +4,17 @@
 \alias{OpInputAttr}
 \title{OpInputAttr}
 \usage{
-OpInputAttr(name)
+OpInputAttr(name, value, dtype)
 }
 \arguments{
 \item{name}{(\code{character(1)})\cr
 The name of the attribute.}
+
+\item{value}{(any)\cr
+The value of the attribute.}
+
+\item{dtype}{(\code{\link{TensorDataType}})\cr
+The dtype of the attribute.}
 }
 \value{
 (\code{OpInputAttr})

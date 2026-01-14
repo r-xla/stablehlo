@@ -5,12 +5,12 @@
 \alias{hlo_clamp}
 \title{Clamp Operator}
 \usage{
-infer_types_clamp(Min, operand, Max)
+infer_types_clamp(min, operand, max)
 
-hlo_clamp(Min, operand, Max)
+hlo_clamp(min, operand, max)
 }
 \arguments{
-\item{Min, operand, Max}{(\code{\link{FuncValue}})\cr}
+\item{min, operand, max}{(\code{\link{FuncValue}})\cr}
 }
 \value{
 \code{\link{FuncValue}}\cr

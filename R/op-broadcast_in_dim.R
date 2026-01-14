@@ -8,27 +8,38 @@ OpBroadcastInDim <- new_Op("OpBroadcastInDim", "broadcast_in_dim")
 infer_types_broadcast_in_dim <- function(
   operand,
   broadcast_dimensions,
-  shape_out
+  shape
 ) {
   assert_vt_is_tensor(operand)
+  assert_const(broadcast_dimensions, dtype = "i64", ndims = 1L)
+  assert_shapevec(shape)
 
   operand_dims <- shape(operand)
-  result_dims <- as.integer(shape_out)
+  result_dims <- as.integer(shape)
 
   bdims <- broadcast_dimensions$data
 
-  # (C2) size(broadcast_dimensions) = rank(operand)
+  # (C2)
   if (length(bdims) != length(operand_dims)) {
     cli_abort("Length of broadcast_dimensions must equal rank of operand")
   }
 
+  # (C3)
   if (any(bdims < 0L | bdims >= length(result_dims))) {
-    cli_abort("broadcast_dimensions must be within [0, rank(result))")
+    error_index_out_of_bounds(
+      arg = "broadcast_dimensions",
+      index = bdims,
+      lower = 0L,
+      upper = length(result_dims)
+    )
   }
 
-  # (C4) is_unique(broadcast_dimensions)
+  # (C4)
   if (anyDuplicated(bdims)) {
-    cli_abort("broadcast_dimensions must be unique")
+    error_dimension_uniqueness(
+      arg = "broadcast_dimensions",
+      dimensions = bdims
+    )
   }
 
   # (C5) For all d in axes(operand):
@@ -43,6 +54,7 @@ infer_types_broadcast_in_dim <- function(
     }
   }
 
+  # (C1)
   ValueTypes(list(
     ValueType(
       TensorType(
@@ -64,7 +76,7 @@ hlo_broadcast_in_dim_impl <- hlo_fn(
 hlo_broadcast_in_dim <- function(
   operand,
   broadcast_dimensions,
-  shape_out
+  shape
 ) {
   hlo_broadcast_in_dim_impl(
     values = list(operand = operand),
@@ -73,9 +85,9 @@ hlo_broadcast_in_dim <- function(
         "broadcast_dimensions",
         as.integer(broadcast_dimensions),
         dtype = "i64",
-        shape = c()
+        shape = length(broadcast_dimensions)
       )
     ),
-    custom_attrs = list(shape_out = as.integer(shape_out))
+    custom_attrs = list(shape = as.integer(shape))
   )
 }

@@ -26,3 +26,23 @@
     Output
       [1] "func.func @ () ->  {\n\n}\n"
 
+# checks on input names
+
+    Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
+    i `name` is "_".
+
+---
+
+    Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
+    i `name` is "_1".
+
+---
+
+    Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
+    i `name` is "1a".
+
+---
+
+    Identifiers can only contain {letters, digits, _}; They must start with a letter or be all digits.
+    i `name` is "1_".
+

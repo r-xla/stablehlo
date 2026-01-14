@@ -78,6 +78,14 @@ f
 #> }
 ```
 
+## Main Features
+
+- Implements type inference to easily build up stableHLO programs.
+- Simple, functional API.
+- Clear error messages.
+- Easy installation because the implementation is in R and does not
+  depend on the stableHLO C++ builder, which depends on LLVM and MLIR.
+
 ## Important notes
 
 stableHLO uses 0-based indexing. Wherever operations take dimension

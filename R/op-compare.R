@@ -12,7 +12,50 @@ infer_types_compare <- function(
   compare_type
 ) {
   assert_vts_are_tensors(lhs, rhs)
+
+  # (I3)
+  cds <- c("EQ", "NE", "GE", "GT", "LE", "LT")
+  if (!(comparison_direction %in% cds)) {
+    cli_abort(c(
+      "{.var comparison_direction} must be one of {.val {cds}}.",
+      x = "Got {.val {comparison_direction}}."
+    ))
+  }
+
+  # (I4)
+  cts <- c("FLOAT", "TOTALORDER", "SIGNED", "UNSIGNED")
+  if (!(compare_type %in% cts)) {
+    cli_abort(c(
+      "{.var compare_type} must be one of {.val {cts}}.",
+      x = "Got {.val {compare_type}}."
+    ))
+  }
+
+  # (C1), (C2)
   assert_vt_equal(lhs, rhs)
+
+  # (C3)
+  dtype <- lhs$type$dtype
+  if (inherits(dtype, "IntegerType")) {
+    if (compare_type != "SIGNED") {
+      cli_abort("compare type must be SIGNED for signed integer element types.")
+    }
+  } else if (
+    inherits(dtype, "UnsignedType") || inherits(dtype, "BooleanType")
+  ) {
+    if (compare_type != "UNSIGNED") {
+      cli_abort(
+        "compare type must be UNSIGNED for unsigned integer or boolean element types."
+      )
+    }
+  } else if (inherits(dtype, "FloatType")) {
+    if (!(compare_type %in% c("FLOAT", "TOTALORDER"))) {
+      cli_abort(
+        "compare type must be FLOAT or TOTALORDER for floating-point element types."
+      )
+    }
+  }
+
   ValueTypes(list(
     ValueType(
       TensorType(

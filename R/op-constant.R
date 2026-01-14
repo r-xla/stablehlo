@@ -231,3 +231,5 @@ repr.OpConstant <- function(x, ...) {
     repr(x$signature)
   )
 }
+
+globals[["infer_fn"]][["constant"]] <- infer_types_constant

@@ -14,7 +14,7 @@ infer_types_pad <- function(
 ) {
   assert_vts_are_tensors(operand, padding_value)
 
-  # (C1) element_type(operand) = element_type(padding_value) = element_type(result)
+  # (C1)
   assert_vts_have_same_dtype(operand, padding_value)
 
   operand_shape <- shape(operand)
@@ -27,31 +27,33 @@ infer_types_pad <- function(
   lowhigh <- rbind(low, high)
   lowhigh[lowhigh > 0] <- 0
   if (any(colSums(abs(lowhigh)) > operand_rank)) {
-    cli_abort("negative padding values can't exceed dimension")
+    cli_abort(c(
+      "negative padding values can't exceed dimension",
+      i = "edge_padding_low: {.val {low}}, edge_padding_high: {.val {high}}, operand_rank: {operand_rank}"
+    ))
   }
 
+  # (C3)
   if (any(interior < 0)) {
-    cli_abort("interior_padding must be non-negative")
+    cli_abort(c(
+      "interior_padding must be non-negative",
+      i = "interior_padding: {.val {interior}}"
+    ))
   }
+  # (C2)
+  check <- function(val, name) {
+    if (length(val) != operand_rank) {
+      cli_abort(c(
+        "{name} must have length equal to operand rank",
+        i = "length({name}): {length(val)}, operand_rank: {operand_rank}"
+      ))
+    }
+  }
+  check(low, "edge_padding_low")
+  check(high, "edge_padding_high")
+  check(interior, "interior_padding")
 
-  # (C2) size(edge_padding_low) = size(edge_padding_high) = size(interior_padding) = rank(operand)
-  if (length(low) != operand_rank) {
-    cli_abort("edge_padding_low must have length equal to operand rank")
-  }
-  if (length(high) != operand_rank) {
-    cli_abort("edge_padding_high must have length equal to operand rank")
-  }
-  if (length(interior) != operand_rank) {
-    cli_abort("interior_padding must have length equal to operand rank")
-  }
-
-  # (C3) 0 <= interior_padding
-  if (any(interior < 0)) {
-    cli_abort("interior_padding must be non-negative")
-  }
-
-  # (C4) shape(result) = shape(operand) + edge_padding_low +
-  #      max(shape(operand) - 1, 0) * interior_padding + edge_padding_high
+  # (C4)
   result_shape <- operand_shape +
     low +
     pmax(operand_shape - 1L, 0L) * interior +

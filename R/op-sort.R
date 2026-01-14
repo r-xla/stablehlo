@@ -7,36 +7,50 @@ OpSort <- new_Op("OpSort", "sort")
 #' @export
 infer_types_sort <- function(..., dimension, is_stable, comparator) {
   assert_vts_are_tensors(...)
+  assert_const(dimension, dtype = IntegerType(64L), shape = integer())
+  assert_const(is_stable, dtype = "i1", shape = integer())
+  assert_func(comparator)
+  dimension <- dimension$data
+  is_stable <- is_stable$data
+
   dots <- list(...)
   input_dims <- lapply(dots, \(x) shape(x))
 
-  # (C1) 0 < size(inputs).
+  # (C1)
   if (!length(dots)) {
     cli_abort("provide at least one input")
   }
 
-  # (C3) same(shape(inputs...) + shape(results...)).
+  # (C3)
   if (
     !all(vapply(input_dims[-1], \(x) identical(input_dims[[1]], x), logical(1)))
   ) {
-    cli_abort("each input must have the same shape")
+    # fmt: skip
+    shapes_str <- paste0( # nolint
+      vapply(input_dims, shapevec_repr, character(1)),
+      collapse = ", "
+    )
+    cli_abort(c(
+      "Each input must have the same shape",
+      i = "Got shapes {shapes_str}."
+    ))
   }
 
-  # Convert 0-based dimension to 1-based for R indexing
-  dim_r <- dimension + 1L
-
-  # (C4) 0 <= dimension < R, where R = rank(inputs[0]).
-  if (dim_r > length(input_dims[[1]])) {
-    cli_abort("dimension must be present in inputs")
+  # (C4)
+  num_dims <- length(input_dims[[1]])
+  if ((dimension < -num_dims) || (dimension >= num_dims)) {
+    error_index_out_of_bounds(
+      arg = "dimension",
+      index = dimension,
+      lower = -num_dims,
+      upper = num_dims
+    )
   }
-  if (dim_r < 1) {
-    cli_abort("dimension must be present in inputs")
-  }
 
-  # (C2) type(inputs...) = type(results...).
+  # (C2), (C3)
   ValueTypes(lapply(
     dots,
-    \(x) ValueType(TensorType(dtype = x$type$dtype, shape = Shape(shape(x))))
+    \(x) ValueType(x$type)
   ))
 }
 

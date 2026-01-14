@@ -20,19 +20,6 @@ baseline_element_type <- function(x) {
   }
 }
 
-#' @title Infer types for unary operations
-#' @description
-#' Infer the types for unary operations.
-#' @param operand (`ValueType`)\cr
-#'   The operand.
-#' @return (`ValueType`)\cr
-#'   The inferred type.
-#' @export
-infer_types_generic_uni <- function(operand) {
-  assert_vt_is_tensor(operand)
-  ValueTypes(list(operand))
-}
-
 #' @title Infer types for binary operations
 #' @description
 #' Infer the types for binary operations.
@@ -46,6 +33,23 @@ infer_types_generic_uni <- function(operand) {
 infer_types_generic_biv <- function(lhs, rhs) {
   assert_vts_are_tensors(lhs = lhs, rhs = rhs)
   assert_vt_equal(lhs, rhs)
+  ValueTypes(list(lhs))
+}
+
+#' @title Infer types for float binary operations
+#' @description
+#' Infer the types for float binary operations.
+#' @param lhs (`ValueType`)\cr
+#'   The left-hand side operand.
+#' @param rhs (`ValueType`)\cr
+#'   The right-hand side operand.
+#' @return (`ValueType`)\cr
+#'   The inferred type.
+#' @export
+infer_types_float_biv <- function(lhs, rhs) {
+  assert_vts_are_tensors(lhs = lhs, rhs = rhs)
+  assert_vt_equal(lhs, rhs)
+  assert_vt_has_ttype(lhs, "FloatType")
   ValueTypes(list(lhs))
 }
 
@@ -66,6 +70,20 @@ infer_types_integerish_biv <- function(lhs, rhs) {
   ValueTypes(list(lhs))
 }
 
+#' @title Infer types for unary operations
+#' @description
+#' Infer the types for unary operations.
+#' @param operand (`ValueType`)\cr
+#'   The operand.
+#' @return (`ValueType`)\cr
+#'   The inferred type.
+#' @export
+infer_types_generic_uni <- function(operand) {
+  assert_vt_is_tensor(operand)
+  ValueTypes(list(operand))
+}
+
+
 #' @title Infer types for integerish unary operations
 #' @description
 #' Infer the types for integerish (bool or int) unary operations.
@@ -77,4 +95,58 @@ infer_types_integerish_biv <- function(lhs, rhs) {
 infer_types_integerish_uni <- function(operand) {
   assert_vt_has_ttype(operand, "BooleanType", "IntegerType", "UnsignedType")
   ValueTypes(list(operand))
+}
+
+#' @title Infer types for float unary operations
+#' @description
+#' Infer the types for float unary operations.
+#' @param operand (`ValueType`)\cr
+#'   The operand.
+#' @return (`ValueType`)\cr
+#'   The inferred type.
+#' @export
+infer_types_float_uni <- function(operand) {
+  assert_vt_has_ttype(operand, "FloatType")
+  ValueTypes(list(operand))
+}
+
+#' @title Infer types for integer unary operations
+#' @description
+#' Infer the types for integer unary operations.
+#' @param operand (`ValueType`)\cr
+#'   The operand.
+#' @return (`ValueType`)\cr
+#'   The inferred type.
+#' @export
+infer_types_integer_uni <- function(operand) {
+  assert_vt_has_ttype(operand, "IntegerType", "UnsignedType")
+  ValueTypes(list(operand))
+}
+
+#' @title Infer types for numeric unary operations
+#' @description
+#' Infer the types for numeric unary operations.
+#' @param operand (`ValueType`)\cr
+#'   The operand.
+#' @return (`ValueType`)\cr
+#'   The inferred type.
+#' @export
+infer_types_numeric_uni <- function(operand) {
+  assert_vt_has_ttype(operand, "FloatType", "IntegerType", "UnsignedType")
+  ValueTypes(list(operand))
+}
+
+#' @title Infer types for numeric binary operations
+#' @description
+#' Infer the types for numeric binary operations.
+#' @param lhs (`ValueType`)\cr
+#'   The left-hand side operand.
+#' @param rhs (`ValueType`)\cr
+#'   The right-hand side operand.
+#' @return (`ValueType`)\cr
+#'   The inferred type.
+infer_types_numeric_biv <- function(lhs, rhs) {
+  assert_vt_has_ttype(lhs, "FloatType", "IntegerType", "UnsignedType")
+  assert_vt_equal(lhs, rhs)
+  ValueTypes(list(lhs))
 }

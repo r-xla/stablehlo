@@ -7,34 +7,56 @@ OpConcatenate <- new_Op("OpConcatenate", "concatenate")
 #' @export
 infer_types_concatenate <- function(..., dimension) {
   assert_vts_are_tensors(...)
+  assert_const(dimension, dtype = IntegerType(64L), shape = integer())
+  dimension <- dimension$data
+
   dots <- list(...)
   input_dims <- lapply(dots, \(x) shape(x))
 
-  # (C3) 0 < size(inputs)
+  # (C3)
   if (!length(dots)) {
     cli_abort("must have at least one input")
   }
 
-  # (C1) same(element_type(inputs...))
+  # (C1)
   dtypes <- lapply(dots, \(x) x$type$dtype)
   if (length(unique(dtypes)) != 1) {
-    cli_abort("Each input must have same element type")
+    dtypes_str <- paste0(vapply(dtypes, repr, character(1)), collapse = ", ") # nolint
+    cli_abort(c(
+      "Each input must have same element type",
+      i = "Got {dtypes_str}."
+    ))
   }
 
   # Convert 0-based dimension to 1-based for R indexing
   dim_r <- dimension + 1L
 
-  # (C4) 0 <= dimension < rank(inputs[0])
-  if (length(shape(dots[[1]])) < dim_r) {
-    cli_abort("dimension must exist in inputs")
+  # (C4)
+  num_dims <- length(shape(dots[[1]]))
+  if (dimension >= num_dims) {
+    error_index_out_of_bounds(
+      arg = "dimension",
+      index = dimension,
+      lower = 0L,
+      upper = num_dims
+    )
   }
 
-  # (C2) same(shape(inputs...)) except for dim(inputs..., dimension)
-  dims_ <- lapply(input_dims, \(x) x[-dim_r])
-  if (!all(dims_ == dims_[[1]])) {
-    cli_abort("Each input must have same shape (except dimension)")
+  # (C2)
+  dims <- lapply(input_dims, \(x) x[-dim_r])
+  if (!all(dims == dims[[1]])) {
+    # fmt: skip
+    shapes_str <- paste0( # nolint
+      vapply(dims, shapevec_repr, character(1)),
+      collapse = ", "
+    )
+    cli_abort(c(
+      "Each input must have same shape (except for the concatenated dimension)",
+      i = "Got {shapes_str}."
+    ))
   }
 
+  # (C6)
   result_dims <- input_dims[[1]]
   result_dims[dim_r] <- sum(vapply(
     input_dims,

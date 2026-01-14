@@ -3,7 +3,7 @@ NULL
 
 OpDivide <- new_Op("OpDivide", "divide")
 
-hlo_divide_impl <- hlo_fn(OpDivide, infer_types_generic_biv)
+hlo_divide_impl <- hlo_fn(OpDivide, infer_types_numeric_biv)
 
 #' @templateVar mnemonic divide
 #' @template op

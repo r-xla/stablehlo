@@ -8,21 +8,29 @@ infer_types_cholesky <- function(
   lower
 ) {
   assert_vt_is_tensor(operand)
+  assert_vt_has_ttype(operand, "FloatType")
+  assert_const(lower, dtype = BooleanType(), shape = integer())
 
-  # Extract operand dims and rank
   operand_dims <- shape(operand)
   rank <- length(operand_dims)
 
-  # (C2) 2 <= rank(a)
+  # (C2)
   if (rank < 2) {
-    cli_abort("operand needs to have at least rank = 2")
+    cli_abort(c(
+      "{.arg operand} needs to have at least rank = 2",
+      x = "Got rank = {rank}."
+    ))
   }
 
   # (C3) dim(a, -2) = dim(a, -1)
   if (operand_dims[rank] != operand_dims[rank - 1]) {
-    cli_abort("matrices have to be symetric")
+    cli_abort(c(
+      "The operand must be symmetric in the last two dimensions",
+      x = "Got {shapevec_repr(operand_dims)}."
+    ))
   }
 
+  # (C1)
   ValueTypes(list(
     ValueType(
       TensorType(

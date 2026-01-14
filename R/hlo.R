@@ -7,6 +7,10 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
   # hlo_dot_general for an example.
   # In principle this can be any type
   # You then need to implement repr for the Op class
+  class_name <- deparse(substitute(op_class))
+  class_name_no_prefix <- sub("^Op", "", class_name)
+  opname <- camel_to_snake_case(class_name_no_prefix)
+  globals[["infer_fn"]][[opname]] <- type_inference
   function(
     values,
     funcs = NULL,
@@ -155,7 +159,7 @@ hlo_input <- function(
   func = .current_func(),
   alias = NULL
 ) {
-  assert_valid_name(name)
+  assert_valid_id(name)
   value_id <- ValueId(name)
   value_type <- ValueType(dtype, shape = shape)
   alias <- assert_int(alias, coerce = TRUE, null.ok = TRUE)

@@ -6,19 +6,9 @@ OpShiftRightLogical <- new_Op(
   "shift_right_logical"
 )
 
-#' @rdname hlo_shift_right_logical
-#' @export
-# fmt: skip
-infer_types_shift_right_logical <- function(lhs, rhs) { # nolint
-  assert_vt_has_ttype(lhs, "IntegerType", "UnsignedType", "BooleanType")
-  assert_vt_has_ttype(rhs, "IntegerType", "UnsignedType", "BooleanType")
-  assert_vt_equal(lhs, rhs)
-  ValueTypes(list(lhs))
-}
-
 hlo_shift_right_logical_impl <- hlo_fn(
   OpShiftRightLogical,
-  infer_types_shift_right_logical
+  infer_types_integerish_biv
 )
 
 #' @templateVar mnemonic shift_right_logical

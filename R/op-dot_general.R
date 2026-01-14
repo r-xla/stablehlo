@@ -1,5 +1,45 @@
 OpDotGeneral <- new_Op("OpDotGeneral", "dot_general")
 
+error_dot_general_dim_mismatch <- function(
+  arg,
+  shape_lhs,
+  shape_rhs,
+  type,
+  dims,
+  increment = 1L,
+  call = sys.call(-1)[1L],
+  class = character(),
+  signal = TRUE
+) {
+  error_stablehlo(
+    call = call,
+    class = "ErrorDotGeneralDimMismatch",
+    signal = signal,
+    shape_lhs = shape_lhs,
+    shape_rhs = shape_rhs,
+    dims = dims,
+    increment = increment,
+    arg = arg
+  )
+}
+
+#' @export
+conditionMessage.ErrorDotGeneralDimMismatch <- function(c, ...) {
+  format_error(
+    c(
+      "Can't perform dot general where shape(lhs) = {shapevec_repr(c$shape_lhs)} and shape(rhs) = {shapevec_repr(c$shape_rhs)} because the sizes of the {c$arg} don't match.", # nolint
+      i = "They {c$arg} are {c$dims[[1L]]} for lhs and {c$dims[[2L]]} for rhs"
+    ),
+    .envir = environment()
+  )
+}
+
+#' @export
+to_one_based.ErrorDotGeneralDimMismatch <- function(x, ...) {
+  x$increment <- 0L
+  x
+}
+
 #' @param dot_dimension_numbers (`DotDimensionNumbers`)\cr
 #'   The dot dimension number.
 #' @rdname hlo_dot_general
@@ -9,43 +49,147 @@ infer_types_dot_general <- function(
   rhs,
   dot_dimension_numbers
 ) {
+  assert_class(dot_dimension_numbers, "DotDimensionNumbers")
   assert_vts_are_tensors(lhs, rhs)
+  # (C13)
   assert_vts_have_same_dtype(lhs, rhs)
   dim_lhs <- shape(lhs)
   dim_rhs <- shape(rhs)
+  rank_lhs <- length(dim_lhs)
+  rank_rhs <- length(dim_rhs)
   contracting_dims <- dot_dimension_numbers$contracting_dims
   batching_dims <- dot_dimension_numbers$batching_dims
 
-  # stableHLO uses 0-based indexing
-  dim_merge1 <- dim_lhs[contracting_dims[[1L]] + 1L]
-  dim_merge2 <- dim_rhs[contracting_dims[[2L]] + 1L]
-  dim_batch1 <- dim_lhs[batching_dims[[1L]] + 1L]
-  dim_batch2 <- dim_rhs[batching_dims[[2L]] + 1L]
-  if (!identical(dim_merge1, dim_merge2)) {
+  lhs_contracting <- contracting_dims[[1L]]
+  rhs_contracting <- contracting_dims[[2L]]
+  lhs_batching <- batching_dims[[1L]]
+  rhs_batching <- batching_dims[[2L]]
+
+  # (C1)
+  if (length(lhs_batching) != length(rhs_batching)) {
     cli_abort(c(
-      x = "Contracting dimensions must be the same",
-      i = format_shapes_msg("Got:", lhs = dim_lhs, rhs = dim_rhs)
-    ))
-  }
-  if (!identical(dim_batch1, dim_batch2)) {
-    cli_abort(c(
-      x = "Batching dimensions must be the same",
-      i = format_shapes_msg("Got:", lhs = dim_lhs, rhs = dim_rhs)
+      "{.var batching_dims} must have equal length for lhs and rhs.",
+      x = "Got lhs length {length(lhs_batching)} and rhs length {length(rhs_batching)}."
     ))
   }
 
-  ii1 <- c(contracting_dims[[1L]], batching_dims[[1L]])
+  # (C2)
+  if (length(lhs_contracting) != length(rhs_contracting)) {
+    cli_abort(c(
+      "{.var contracting_dims} must have equal length for lhs and rhs.",
+      x = "Got lhs length {length(lhs_contracting)} and rhs length {length(rhs_contracting)}."
+    ))
+  }
+
+  # (C3)
+  lhs_all_dims <- c(lhs_batching, lhs_contracting)
+  if (anyDuplicated(lhs_all_dims)) {
+    error_dimension_uniqueness(
+      arg = "lhs batching_dims and contracting_dims",
+      dimensions = lhs_all_dims
+    )
+  }
+
+  # (C4)
+  rhs_all_dims <- c(rhs_batching, rhs_contracting)
+  if (anyDuplicated(rhs_all_dims)) {
+    error_dimension_uniqueness(
+      arg = "rhs batching_dims and contracting_dims",
+      dimensions = rhs_all_dims
+    )
+  }
+
+  # (C5)
+  if (
+    length(lhs_batching) > 0 &&
+      (any(lhs_batching < 0L) || any(lhs_batching >= rank_lhs))
+  ) {
+    error_index_out_of_bounds(
+      arg = "lhs_batching_dims",
+      index = lhs_batching,
+      lower = 0L,
+      upper = rank_lhs
+    )
+  }
+
+  # (C6)
+  if (
+    length(lhs_contracting) > 0 &&
+      (any(lhs_contracting < 0L) || any(lhs_contracting >= rank_lhs))
+  ) {
+    error_index_out_of_bounds(
+      arg = "lhs_contracting_dims",
+      index = lhs_contracting,
+      lower = 0L,
+      upper = rank_lhs
+    )
+  }
+
+  # (C7)
+  if (
+    length(rhs_batching) > 0 &&
+      (any(rhs_batching < 0L) || any(rhs_batching >= rank_rhs))
+  ) {
+    error_index_out_of_bounds(
+      arg = "rhs_batching_dims",
+      index = rhs_batching,
+      lower = 0L,
+      upper = rank_rhs
+    )
+  }
+
+  # (C8)
+  if (
+    length(rhs_contracting) > 0 &&
+      (any(rhs_contracting < 0L) || any(rhs_contracting >= rank_rhs))
+  ) {
+    error_index_out_of_bounds(
+      arg = "rhs_contracting_dims",
+      index = rhs_contracting,
+      lower = 0L,
+      upper = rank_rhs
+    )
+  }
+
+  # stableHLO uses 0-based indexing
+  dim_merge1 <- dim_lhs[lhs_contracting + 1L]
+  dim_merge2 <- dim_rhs[rhs_contracting + 1L]
+  dim_batch1 <- dim_lhs[lhs_batching + 1L]
+  dim_batch2 <- dim_rhs[rhs_batching + 1L]
+
+  # (C10)
+  if (!identical(dim_merge1, dim_merge2)) {
+    error_dot_general_dim_mismatch(
+      arg = "contracting_dims",
+      shape_lhs = dim_lhs,
+      shape_rhs = dim_rhs,
+      dims = contracting_dims
+    )
+  }
+
+  # (C9)
+  if (!identical(dim_batch1, dim_batch2)) {
+    error_dot_general_dim_mismatch(
+      arg = "batching_dims",
+      shape_lhs = dim_lhs,
+      shape_rhs = dim_rhs,
+      dims = batching_dims
+    )
+  }
+
+  ii1 <- c(lhs_contracting, lhs_batching)
   dim_lhs_remaining <- if (length(ii1)) {
     dim_lhs[-(ii1 + 1L)]
   } else {
     dim_lhs
   }
-  ii2 <- c(contracting_dims[[2L]], batching_dims[[2L]])
+  ii2 <- c(rhs_contracting, rhs_batching)
   dim_rhs_remaining <- if (length(ii2)) {
     dim_rhs[-(ii2 + 1L)]
   } else {
     dim_rhs
   }
+  # C12
   out_dim <- c(dim_batch1, dim_lhs_remaining, dim_rhs_remaining)
 
   ValueTypes(list(

@@ -6,7 +6,7 @@ test_that("basic tests", {
     init,
     rng_algorithm = "THREE_FRY",
     dtype = "ui64",
-    shape_out = c(2L, 2L)
+    shape = c(2L, 2L)
   )
   f <- hlo_return(res[[1L]], res[[2L]])
   expect_snapshot(repr(f))
@@ -28,7 +28,7 @@ test_that("basic tests", {
     init_d,
     rng_algorithm = "DEFAULT",
     dtype = "ui64",
-    shape_out = c(2L, 2L)
+    shape = c(2L, 2L)
   )
   f_d <- hlo_return(res_d[[1L]], res_d[[2L]])
   expect_snapshot(repr(f_d))
@@ -50,7 +50,7 @@ test_that("basic tests", {
     init_p2,
     rng_algorithm = "PHILOX",
     dtype = "ui64",
-    shape_out = c(2L, 2L)
+    shape = c(2L, 2L)
   )
   f_p2 <- hlo_return(res_p2[[1L]], res_p2[[2L]])
   expect_snapshot(repr(f_p2))
@@ -72,7 +72,7 @@ test_that("basic tests", {
     init_p3,
     rng_algorithm = "PHILOX",
     dtype = "ui64",
-    shape_out = c(2L, 2L)
+    shape = c(2L, 2L)
   )
   f_p3 <- hlo_return(res_p3[[1L]], res_p3[[2L]])
   expect_snapshot(repr(f_p3))
