@@ -3,7 +3,11 @@ NULL
 
 OpAnd <- new_Op("OpAnd", "and")
 
-hlo_and_impl <- hlo_fn(OpAnd, infer_types_integerish_biv)
+#' @rdname hlo_and
+#' @export
+infer_types_and <- infer_types_integerish_biv
+
+hlo_and_impl <- hlo_fn(OpAnd, infer_types_and)
 
 #' @templateVar mnemonic and
 #' @template op

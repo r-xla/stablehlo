@@ -3,7 +3,11 @@ NULL
 
 OpXor <- new_Op("OpXor", "xor")
 
-hlo_xor_impl <- hlo_fn(OpXor, infer_types_integerish_biv)
+#' @rdname hlo_xor
+#' @export
+infer_types_xor <- infer_types_integerish_biv
+
+hlo_xor_impl <- hlo_fn(OpXor, infer_types_xor)
 
 #' @templateVar mnemonic xor
 #' @template op

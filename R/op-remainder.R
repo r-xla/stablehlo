@@ -3,7 +3,11 @@ NULL
 
 OpRemainder <- new_Op("OpRemainder", "remainder")
 
-hlo_remainder_impl <- hlo_fn(OpRemainder, infer_types_numeric_biv)
+#' @rdname hlo_remainder
+#' @export
+infer_types_remainder <- infer_types_numeric_biv
+
+hlo_remainder_impl <- hlo_fn(OpRemainder, infer_types_remainder)
 
 #' @templateVar mnemonic remainder
 #' @template op

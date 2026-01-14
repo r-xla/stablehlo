@@ -3,7 +3,11 @@ NULL
 
 OpOr <- new_Op("OpOr", "or")
 
-hlo_or_impl <- hlo_fn(OpOr, infer_types_integerish_biv)
+#' @rdname hlo_or
+#' @export
+infer_types_or <- infer_types_integerish_biv
+
+hlo_or_impl <- hlo_fn(OpOr, infer_types_or)
 
 #' @templateVar mnemonic or
 #' @template op

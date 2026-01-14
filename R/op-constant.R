@@ -216,6 +216,7 @@ impl_hlo_constant <- function(value, dtype, func, shape) {
 #' @rdname hlo_constant
 #' @export
 infer_types_constant <- function(value) {
+  assert_const(value)
   ValueTypes(list(ValueType(value$type)))
 }
 
@@ -231,5 +232,3 @@ repr.OpConstant <- function(x, ...) {
     repr(x$signature)
   )
 }
-
-globals[["infer_fn"]][["constant"]] <- infer_types_constant

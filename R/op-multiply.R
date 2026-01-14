@@ -3,7 +3,11 @@ NULL
 
 OpMultiply <- new_Op("OpMultiply", "multiply")
 
-hlo_multiply_impl <- hlo_fn(OpMultiply, infer_types_generic_biv)
+#' @rdname hlo_multiply
+#' @export
+infer_types_multiply <- infer_types_generic_biv
+
+hlo_multiply_impl <- hlo_fn(OpMultiply, infer_types_multiply)
 
 #' @templateVar mnemonic multiply
 #' @template op

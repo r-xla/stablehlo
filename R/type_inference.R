@@ -145,6 +145,7 @@ infer_types_numeric_uni <- function(operand) {
 #'   The right-hand side operand.
 #' @return (`ValueType`)\cr
 #'   The inferred type.
+#' @export
 infer_types_numeric_biv <- function(lhs, rhs) {
   assert_vt_has_ttype(lhs, "FloatType", "IntegerType", "UnsignedType")
   assert_vt_equal(lhs, rhs)

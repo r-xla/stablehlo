@@ -3,7 +3,11 @@ NULL
 
 OpLogistic <- new_Op("OpLogistic", "logistic")
 
-hlo_logistic_impl <- hlo_fn(OpLogistic, infer_types_float_uni)
+#' @rdname hlo_logistic
+#' @export
+infer_types_logistic <- infer_types_float_uni
+
+hlo_logistic_impl <- hlo_fn(OpLogistic, infer_types_logistic)
 
 #' @templateVar mnemonic logistic
 #' @template op

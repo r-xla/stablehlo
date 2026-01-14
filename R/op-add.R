@@ -3,7 +3,11 @@ NULL
 
 OpAdd <- new_Op("OpAdd", "add")
 
-hlo_add_impl <- hlo_fn(OpAdd, infer_types_generic_biv)
+#' @rdname hlo_add
+#' @export
+infer_types_add <- infer_types_generic_biv
+
+hlo_add_impl <- hlo_fn(OpAdd, infer_types_add)
 
 #' @templateVar mnemonic add
 #' @template op

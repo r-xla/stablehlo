@@ -106,5 +106,3 @@ hlo_iota <- function(iota_dimension, dtype, shape, func = NULL) {
   func <- func %??% .current_func()
   impl_hlo_iota(iota_dimension, dtype, shape, func)
 }
-
-globals[["infer_fn"]][["iota"]] <- infer_types_iota
