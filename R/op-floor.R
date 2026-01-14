@@ -3,7 +3,11 @@ NULL
 
 OpFloor <- new_Op("OpFloor", "floor")
 
-hlo_floor_impl <- hlo_fn(OpFloor, infer_types_float_uni)
+#' @rdname hlo_floor
+#' @export
+infer_types_floor <- infer_types_float_uni
+
+hlo_floor_impl <- hlo_fn(OpFloor, infer_types_floor)
 
 #' @templateVar mnemonic floor
 #' @template op

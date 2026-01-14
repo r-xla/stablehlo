@@ -1,9 +1,13 @@
-#' @include op.R hlo.R
+#' @include op.R hlo.R type_inference.R
 NULL
 
 OpShiftLeft <- new_Op("OpShiftLeft", "shift_left")
 
-hlo_shift_left_impl <- hlo_fn(OpShiftLeft, infer_types_integerish_biv)
+#' @rdname hlo_shift_left
+#' @export
+infer_types_shift_left <- infer_types_integerish_biv
+
+hlo_shift_left_impl <- hlo_fn(OpShiftLeft, infer_types_shift_left)
 
 #' @templateVar mnemonic shift_left
 #' @template op

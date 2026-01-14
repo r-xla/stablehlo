@@ -3,7 +3,11 @@ NULL
 
 OpAtan2 <- new_Op("OpAtan2", "atan2")
 
-hlo_atan2_impl <- hlo_fn(OpAtan2, infer_types_float_biv)
+#' @rdname hlo_atan2
+#' @export
+infer_types_atan2 <- infer_types_float_biv
+
+hlo_atan2_impl <- hlo_fn(OpAtan2, infer_types_atan2)
 
 #' @templateVar mnemonic atan2
 #' @template op

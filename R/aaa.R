@@ -14,4 +14,3 @@ globals[["dtypes"]] <- c(
   "f32",
   "f64"
 )
-globals[["infer_fn"]] <- hashtab()

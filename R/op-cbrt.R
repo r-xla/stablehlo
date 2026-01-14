@@ -3,7 +3,11 @@ NULL
 
 OpCbrt <- new_Op("OpCbrt", "cbrt")
 
-hlo_cbrt_impl <- hlo_fn(OpCbrt, infer_types_float_uni)
+#' @rdname hlo_cbrt
+#' @export
+infer_types_cbrt <- infer_types_float_uni
+
+hlo_cbrt_impl <- hlo_fn(OpCbrt, infer_types_cbrt)
 
 #' @templateVar mnemonic cbrt
 #' @template op

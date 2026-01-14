@@ -72,9 +72,3 @@ shapevec_repr <- function(shape) {
   shape[is.na(shape)] <- "?"
   sprintf("(%s)", paste(shape, collapse = ","))
 }
-
-camel_to_snake_case <- function(x) {
-  x <- gsub("([a-z0-9])([A-Z])", "\\1_\\2", x)
-  x <- gsub("([A-Z]+)([A-Z][a-z])", "\\1_\\2", x)
-  tolower(x)
-}

@@ -1,4 +1,4 @@
-#' @include op.R hlo.R
+#' @include op.R hlo.R type_inference.R
 NULL
 
 OpShiftRightArithmetic <- new_Op(
@@ -6,10 +6,14 @@ OpShiftRightArithmetic <- new_Op(
   "shift_right_arithmetic"
 )
 
+#' @rdname hlo_shift_right_arithmetic
+#' @export
+infer_types_shift_right_arithmetic <- infer_types_integerish_biv
+
 # fmt: skip
 hlo_shift_right_arithmetic_impl <- hlo_fn( # nolint
   OpShiftRightArithmetic,
-  infer_types_integerish_biv
+  infer_types_shift_right_arithmetic
 )
 
 #' @templateVar mnemonic shift_right_arithmetic

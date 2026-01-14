@@ -3,7 +3,11 @@ NULL
 
 OpMaximum <- new_Op("OpMaximum", "maximum")
 
-hlo_maximum_impl <- hlo_fn(OpMaximum, infer_types_generic_biv)
+#' @rdname hlo_maximum
+#' @export
+infer_types_maximum <- infer_types_generic_biv
+
+hlo_maximum_impl <- hlo_fn(OpMaximum, infer_types_maximum)
 
 #' @templateVar mnemonic maximum
 #' @template op

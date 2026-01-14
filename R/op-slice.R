@@ -108,22 +108,31 @@ hlo_slice <- function(
   limit_indices,
   strides
 ) {
+  start_int <- as.integer(start_indices)
+  limit_int <- as.integer(limit_indices)
+  strides_int <- as.integer(strides)
+
   hlo_slice_impl(
     values = list(operand = operand),
     attrs = list(
       constant_attr(
         "start_indices",
-        as.integer(start_indices),
+        start_int,
         dtype = "i64",
-        shape = c()
+        shape = length(start_int)
       ),
       constant_attr(
         "limit_indices",
-        as.integer(limit_indices),
+        limit_int,
         dtype = "i64",
-        shape = c()
+        shape = length(limit_int)
       ),
-      constant_attr("strides", as.integer(strides), dtype = "i64", shape = c())
+      constant_attr(
+        "strides",
+        strides_int,
+        dtype = "i64",
+        shape = length(strides_int)
+      )
     )
   )
 }

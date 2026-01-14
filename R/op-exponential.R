@@ -3,7 +3,11 @@ NULL
 
 OpExponential <- new_Op("OpExponential", "exponential")
 
-hlo_exponential_impl <- hlo_fn(OpExponential, infer_types_float_uni)
+#' @rdname hlo_exponential
+#' @export
+infer_types_exponential <- infer_types_float_uni
+
+hlo_exponential_impl <- hlo_fn(OpExponential, infer_types_exponential)
 
 #' @templateVar mnemonic exponential
 #' @template op

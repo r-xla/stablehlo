@@ -7,10 +7,6 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
   # hlo_dot_general for an example.
   # In principle this can be any type
   # You then need to implement repr for the Op class
-  class_name <- deparse(substitute(op_class))
-  class_name_no_prefix <- sub("^Op", "", class_name)
-  opname <- camel_to_snake_case(class_name_no_prefix)
-  globals[["infer_fn"]][[opname]] <- type_inference
   function(
     values,
     funcs = NULL,

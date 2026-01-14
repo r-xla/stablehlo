@@ -3,7 +3,11 @@ NULL
 
 OpLog <- new_Op("OpLog", "log")
 
-hlo_log_impl <- hlo_fn(OpLog, infer_types_float_uni)
+#' @rdname hlo_log
+#' @export
+infer_types_log <- infer_types_float_uni
+
+hlo_log_impl <- hlo_fn(OpLog, infer_types_log)
 
 #' @templateVar mnemonic log
 #' @template op
