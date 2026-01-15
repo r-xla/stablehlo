@@ -124,16 +124,8 @@ hlo_reduce_impl <- hlo_fn(
 #' @template op
 #' @export
 hlo_reduce <- function(inputs, init_values, dimensions, body) {
-  if (inherits(inputs, "FuncValue")) {
-    inputs <- list(inputs)
-  } else if (!is.list(inputs)) {
-    inputs <- list(inputs)
-  }
-  if (inherits(init_values, "FuncValue")) {
-    init_values <- list(init_values)
-  } else if (!is.list(init_values)) {
-    init_values <- list(init_values)
-  }
+  inputs <- ensure_func_vals(inputs)
+  init_values <- ensure_func_vals(init_values)
   hlo_reduce_impl(
     values = list(
       inputs = inputs,
