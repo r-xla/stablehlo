@@ -3,30 +3,32 @@ NULL
 
 OpReduce <- new_Op("OpReduce", "reduce")
 
-#' @param ... (Inputs, Init values)
 #' @rdname hlo_reduce
 #' @export
-infer_types_reduce <- function(..., body, dimensions) {
-  assert_vts_are_tensors(...)
+infer_types_reduce <- function(inputs, init_values, body, dimensions) {
+  inputs <- as.list(inputs)
+  init_values <- as.list(init_values)
+
+  lapply(inputs, assert_vt_is_tensor)
+  lapply(init_values, assert_vt_is_tensor)
   assert_const(dimensions, dtype = IntegerType(64L), ndims = 1L)
   assert_func(body)
-  value_types <- list(...)
 
   # (C3)
-  if (length(value_types) %% 2L != 0L) {
+  if (length(inputs) == 0L) {
+    cli_abort("No inputs provided")
+  }
+  if (length(inputs) != length(init_values)) {
     cli_abort(c(
-      "Number of arguments must be divisible by 2",
-      i = "Got {length(value_types)}."
+      "Number of inputs must equal number of init_values",
+      x = "Got {length(inputs)} inputs and {length(init_values)} init_values."
     ))
   }
-  if (length(value_types) == 0L) {
-    cli_abort("No arguments provided")
-  }
 
-  num_inputs <- length(value_types) / 2L
+  num_inputs <- length(inputs)
 
-  input_value_types <- value_types[seq_len(num_inputs)]
-  init_value_types <- value_types[seq_len(num_inputs) + num_inputs]
+  input_value_types <- inputs
+  init_value_types <- init_values
 
   lapply(init_value_types, function(vt) {
     if (length(vt$type$shape$dims) != 0L) {
@@ -112,14 +114,31 @@ infer_types_reduce <- function(..., body, dimensions) {
   ValueTypes(out_vts)
 }
 
-hlo_reduce_impl <- hlo_fn(OpReduce, infer_types_reduce)
+hlo_reduce_impl <- hlo_fn(
+  OpReduce,
+  infer_types_reduce,
+  value_list_names = c("inputs", "init_values")
+)
 
 #' @templateVar mnemonic reduce
 #' @template op
 #' @export
 hlo_reduce <- function(inputs, init_values, dimensions, body) {
+  if (inherits(inputs, "FuncValue")) {
+    inputs <- list(inputs)
+  } else if (!is.list(inputs)) {
+    inputs <- list(inputs)
+  }
+  if (inherits(init_values, "FuncValue")) {
+    init_values <- list(init_values)
+  } else if (!is.list(init_values)) {
+    init_values <- list(init_values)
+  }
   hlo_reduce_impl(
-    values = c(inputs, init_values),
+    values = list(
+      inputs = inputs,
+      init_values = init_values
+    ),
     funcs = list(body = body),
     attrs = list(
       constant_attr(

@@ -2,7 +2,14 @@
 NULL
 
 # return_func is special and only used for hlo_return
-hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
+# value_list_names specifies which value arguments are lists of FuncValues
+# (e.g., c("inputs", "updates") for scatter)
+hlo_fn <- function(
+  op_class,
+  type_inference,
+  return_func = FALSE,
+  value_list_names = character()
+) {
   # custom_attrs are attributes that are formatted in a special way, see e.g.
   # hlo_dot_general for an example.
   # In principle this can be any type
@@ -14,11 +21,37 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     custom_attrs = NULL,
     simplify = TRUE
   ) {
-    lapply(values, function(x) {
-      if (!test_class(x, "FuncValue")) {
-        cli_abort("All arguments must be FuncValues")
+    # Flatten values for OpInputValues, merge_funcs, and signature
+    # but keep structure for infer_args
+    if (length(value_list_names) == 0L) {
+      # Original behavior: all values are single FuncValues
+      lapply(values, function(x) {
+        if (!test_class(x, "FuncValue")) {
+          cli_abort("All arguments must be FuncValues")
+        }
+      })
+      flat_values <- values
+    } else {
+      # Some values may be lists of FuncValues
+      flat_values <- list()
+      for (nm in names(values)) {
+        v <- values[[nm]]
+        if (nm %in% value_list_names) {
+          for (item in v) {
+            if (!test_class(item, "FuncValue")) {
+              cli_abort("All items in '{nm}' must be FuncValues")
+            }
+            flat_values <- c(flat_values, list(item))
+          }
+        } else {
+          if (!test_class(v, "FuncValue")) {
+            cli_abort("'{nm}' must be a FuncValue")
+          }
+          flat_values <- c(flat_values, list(v))
+        }
       }
-    })
+    }
+
     lapply(funcs, function(x) {
       if (!test_class(x, "Func")) {
         cli_abort("All functions must be Func objects")
@@ -46,16 +79,24 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
 
     op_input_attrs <- OpInputAttrs(attrs)
 
-    func <- merge_funcs(lapply(values, function(x) x$func))
+    func <- merge_funcs(lapply(flat_values, function(x) x$func))
 
     inputs <- OpInputs(
-      OpInputValues(lapply(values, function(x) OpInputValue(x$value_id))),
+      OpInputValues(lapply(flat_values, function(x) OpInputValue(x$value_id))),
       funcs = op_input_funcs,
       attrs = op_input_attrs,
       custom_attrs = custom_attrs %??% list()
     )
 
-    infer_args <- lapply(values, function(x) x$value_type)
+    # For infer_args, keep structure: extract value_type from each FuncValue
+    infer_args <- lapply(values, function(v) {
+      if (is.list(v) && !test_class(v, "FuncValue")) {
+        # List of FuncValues
+        lapply(v, function(x) x$value_type)
+      } else {
+        v$value_type
+      }
+    })
 
     if (length(funcs) > 0L) {
       infer_args <- c(infer_args, funcs)
@@ -81,7 +122,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
     outputs <- OpOutputs(lapply(output_value_ids, OpOutput))
 
     signature <- OpSignature(
-      input_types = ValueTypes(lapply(values, function(x) x$value_type)),
+      input_types = ValueTypes(lapply(flat_values, function(x) x$value_type)),
       output_types = output_types
     )
 
@@ -95,7 +136,7 @@ hlo_fn <- function(op_class, type_inference, return_func = FALSE) {
 
     if (return_func) {
       func$outputs <- FuncOutputs(
-        lapply(values, function(x) {
+        lapply(flat_values, function(x) {
           FuncOutput(type = x$value_type)
         })
       )
