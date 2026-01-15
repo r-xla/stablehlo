@@ -21,10 +21,7 @@ hlo_fn <- function(
     custom_attrs = NULL,
     simplify = TRUE
   ) {
-    # Flatten values for OpInputValues, merge_funcs, and signature
-    # but keep structure for infer_args
     if (length(value_list_names) == 0L) {
-      # Original behavior: all values are single FuncValues
       lapply(values, function(x) {
         if (!test_class(x, "FuncValue")) {
           cli_abort("All arguments must be FuncValues")
@@ -32,17 +29,14 @@ hlo_fn <- function(
       })
       flat_values <- values
     } else {
-      # Some values may be lists of FuncValues
       flat_values <- list()
       for (nm in names(values)) {
         v <- values[[nm]]
         if (nm %in% value_list_names) {
-          for (item in v) {
-            if (!test_class(item, "FuncValue")) {
-              cli_abort("All items in '{nm}' must be FuncValues")
-            }
-            flat_values <- c(flat_values, list(item))
+          if (!test_list(v, types = "FuncValue")) {
+            cli_abort("'{nm}' must be a list of FuncValues")
           }
+          flat_values <- c(flat_values, v)
         } else {
           if (!test_class(v, "FuncValue")) {
             cli_abort("'{nm}' must be a FuncValue")
