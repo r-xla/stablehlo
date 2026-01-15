@@ -42,7 +42,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Reduce Operator</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/main/R/op-reduce.R" class="external-link"><code>R/op-reduce.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/refactor-varargs/R/op-reduce.R" class="external-link"><code>R/op-reduce.R</code></a></small>
       <div class="d-none name"><code>hlo_reduce.Rd</code></div>
     </div>
 
@@ -52,7 +52,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">infer_types_reduce</span><span class="op">(</span><span class="va">...</span>, <span class="va">body</span>, <span class="va">dimensions</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">infer_types_reduce</span><span class="op">(</span><span class="va">inputs</span>, <span class="va">init_values</span>, <span class="va">body</span>, <span class="va">dimensions</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">hlo_reduce</span><span class="op">(</span><span class="va">inputs</span>, <span class="va">init_values</span>, <span class="va">dimensions</span>, <span class="va">body</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -61,11 +61,7 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>(Inputs, Init values)</p></dd>
-
-
-<dt id="arg-inputs-init-values-dimensions-body">inputs, init_values, dimensions, body<a class="anchor" aria-label="anchor" href="#arg-inputs-init-values-dimensions-body"></a></dt>
+<dl><dt id="arg-inputs-init-values-dimensions-body">inputs, init_values, dimensions, body<a class="anchor" aria-label="anchor" href="#arg-inputs-init-values-dimensions-body"></a></dt>
 <dd><p>(<code><a href="FuncValue.html">FuncValue</a></code>)<br></p></dd>
 
 </dl></div>
