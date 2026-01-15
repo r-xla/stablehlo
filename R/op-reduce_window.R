@@ -241,13 +241,8 @@ hlo_reduce_window <- function(
   padding,
   body
 ) {
-  # Normalize inputs and init_values to lists
-  if (!is.list(inputs)) {
-    inputs <- list(inputs)
-  }
-  if (!is.list(init_values)) {
-    init_values <- list(init_values)
-  }
+  inputs <- ensure_func_vals(inputs)
+  init_values <- ensure_func_vals(init_values)
 
   attrs <- list(
     constant_attr(

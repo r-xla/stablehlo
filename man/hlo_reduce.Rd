@@ -5,13 +5,11 @@
 \alias{hlo_reduce}
 \title{Reduce Operator}
 \usage{
-infer_types_reduce(..., body, dimensions)
+infer_types_reduce(inputs, init_values, body, dimensions)
 
 hlo_reduce(inputs, init_values, dimensions, body)
 }
 \arguments{
-\item{...}{(Inputs, Init values)}
-
 \item{inputs, init_values, dimensions, body}{(\code{\link{FuncValue}})\cr}
 }
 \value{
