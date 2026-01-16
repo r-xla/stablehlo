@@ -29,13 +29,13 @@ infer_types_reduce_window <- function(
   if (length(value_types) %% 2L != 0L) {
     cli_abort(c(
       "Number of arguments must be divisible by 2 (pairs of inputs and init values).",
-      i = "Got {length(value_types)} argument{?s}."
+      x = "Got {length(value_types)} argument{?s}."
     ))
   }
   if (length(value_types) == 0L) {
     cli_abort(c(
       "At least one input and one init value must be provided.",
-      i = "Got 0 arguments."
+      x = "Got 0 arguments."
     ))
   }
 
@@ -71,7 +71,7 @@ infer_types_reduce_window <- function(
     )
     cli_abort(c(
       "All inputs to reduce_window must have the same shape.",
-      i = "Got shapes: {shape_strs}."
+      x = "Got shapes: {shape_strs}."
     ))
   }
 
@@ -98,7 +98,7 @@ infer_types_reduce_window <- function(
   if (length(window_dims) != rank) {
     cli_abort(c(
       "window_dimensions must have length equal to input rank.",
-      i = "Expected length {rank}, got {length(window_dims)}."
+      x = "Expected length {rank}, got {length(window_dims)}."
     ))
   }
 
@@ -106,7 +106,7 @@ infer_types_reduce_window <- function(
   if (any(window_dims < 1L)) {
     cli_abort(c(
       "window_dimensions must be positive.",
-      i = "Got {window_dims}"
+      x = "Got {window_dims}"
     ))
   }
 
@@ -119,7 +119,7 @@ infer_types_reduce_window <- function(
   if (nrow(pad) != rank || ncol(pad) != 2L) {
     cli_abort(c(
       "padding must have shape [rank, 2].",
-      i = "Expected shape [{rank}, 2], got [{nrow(pad)}, {ncol(pad)}]."
+      x = "Expected shape [{rank}, 2], got [{nrow(pad)}, {ncol(pad)}]."
     ))
   }
 
@@ -127,7 +127,7 @@ infer_types_reduce_window <- function(
   if (length(strides) != rank) {
     cli_abort(c(
       "window_strides must have length equal to input rank.",
-      i = "Expected length {rank}, got {length(strides)}."
+      x = "Expected length {rank}, got {length(strides)}."
     ))
   }
 
@@ -135,7 +135,7 @@ infer_types_reduce_window <- function(
   if (any(strides < 1L)) {
     cli_abort(c(
       "window_strides must be positive.",
-      i = "Got {strides}"
+      x = "Got {strides}"
     ))
   }
 
@@ -143,14 +143,14 @@ infer_types_reduce_window <- function(
   if (length(base_dil) != rank) {
     cli_abort(c(
       "base_dilations must have length equal to input rank.",
-      i = "Expected length {rank}, got {length(base_dil)}."
+      x = "Expected length {rank}, got {length(base_dil)}."
     ))
   }
   # (C10)
   if (length(window_dil) != rank) {
     cli_abort(c(
       "window_dilations must have length equal to input rank.",
-      i = "Expected length {rank}, got {length(window_dil)}."
+      x = "Expected length {rank}, got {length(window_dil)}."
     ))
   }
 
@@ -158,14 +158,14 @@ infer_types_reduce_window <- function(
   if (any(base_dil <= 0)) {
     cli_abort(c(
       "base_dilations must be positive.",
-      i = "Got {base_dil}"
+      x = "Got {base_dil}"
     ))
   }
   # (C11)
   if (any(window_dil < 0)) {
     cli_abort(c(
       "window_dilations must be positive.",
-      i = "Got {window_dil}"
+      x = "Got {window_dil}"
     ))
   }
 
@@ -183,7 +183,7 @@ infer_types_reduce_window <- function(
   if (length(body_out_types) != num_inputs) {
     cli_abort(c(
       "Body must return one tensor per input.",
-      i = "Expected {num_inputs} output{?s}, got {length(body_out_types)}."
+      x = "Expected {num_inputs} output{?s}, got {length(body_out_types)}."
     ))
   }
 
@@ -241,13 +241,8 @@ hlo_reduce_window <- function(
   padding,
   body
 ) {
-  # Normalize inputs and init_values to lists
-  if (!is.list(inputs)) {
-    inputs <- list(inputs)
-  }
-  if (!is.list(init_values)) {
-    init_values <- list(init_values)
-  }
+  inputs <- ensure_func_vals(inputs)
+  init_values <- ensure_func_vals(init_values)
 
   attrs <- list(
     constant_attr(

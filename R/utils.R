@@ -72,3 +72,15 @@ shapevec_repr <- function(shape) {
   shape[is.na(shape)] <- "?"
   sprintf("(%s)", paste(shape, collapse = ","))
 }
+
+ensure_func_vals <- function(x) {
+  if (inherits(x, "FuncValue") || !is.list(x)) list(x) else x
+}
+
+without <- function(x, indices) {
+  if (length(indices)) {
+    x[-indices]
+  } else {
+    x
+  }
+}

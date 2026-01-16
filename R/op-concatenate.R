@@ -24,7 +24,7 @@ infer_types_concatenate <- function(..., dimension) {
     dtypes_str <- paste0(vapply(dtypes, repr, character(1)), collapse = ", ") # nolint
     cli_abort(c(
       "Each input must have same element type",
-      i = "Got {dtypes_str}."
+      x = "Got {dtypes_str}."
     ))
   }
 
@@ -52,7 +52,7 @@ infer_types_concatenate <- function(..., dimension) {
     )
     cli_abort(c(
       "Each input must have same shape (except for the concatenated dimension)",
-      i = "Got {shapes_str}."
+      x = "Got {shapes_str}."
     ))
   }
 

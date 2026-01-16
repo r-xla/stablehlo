@@ -36,7 +36,7 @@ infer_types_dynamic_update_slice <- function( # nolint
   if (length(shape(update)) != operand_rank) {
     cli_abort(c(
       "rank(update) must equal rank(operand).",
-      i = "Got rank(update) = {length(shape(update))} and rank(operand) = {operand_rank}."
+      x = "Got rank(update) = {length(shape(update))} and rank(operand) = {operand_rank}."
     ))
   }
 
@@ -44,7 +44,7 @@ infer_types_dynamic_update_slice <- function( # nolint
   if (length(start_indices) != operand_rank) {
     cli_abort(c(
       "size(start_indices) must equal rank(operand).",
-      i = "Got {length(start_indices)} start_indices and rank {operand_rank}."
+      x = "Got {length(start_indices)} start_indices and rank {operand_rank}."
     ))
   }
 
@@ -52,7 +52,7 @@ infer_types_dynamic_update_slice <- function( # nolint
   if (any(shape(update) > shape(operand))) {
     cli_abort(c(
       "shape(update) must not be greater than shape(operand).",
-      i = "Got shape(update) {shapevec_repr(shape(update))} and shape(operand) {shapevec_repr(shape(operand))}."
+      x = "Got shape(update) {shapevec_repr(shape(update))} and shape(operand) {shapevec_repr(shape(operand))}."
     ))
   }
 

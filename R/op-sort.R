@@ -32,7 +32,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
     )
     cli_abort(c(
       "Each input must have the same shape",
-      i = "Got shapes {shapes_str}."
+      x = "Got shapes {shapes_str}."
     ))
   }
 

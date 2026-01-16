@@ -110,3 +110,54 @@ test_that("ErrorUnexpectedType", {
     )
   )
 })
+
+test_that("ErrorIndicesNotSorted", {
+  expect_snapshot_error(
+    error_indices_not_sorted(
+      arg = "update_window_dims",
+      indices = c(2L, 0L, 1L),
+      call = call("abc")
+    )
+  )
+})
+
+test_that("to_one_based works with ErrorIndicesNotSorted", {
+  err <- error_indices_not_sorted(
+    arg = "update_window_dims",
+    indices = c(2L, 0L, 1L),
+    call = call("abc"),
+    signal = FALSE
+  )
+
+  converted <- to_one_based(err)
+
+  expect_equal(converted$indices, c(3L, 1L, 2L))
+})
+
+test_that("ErrorIndexInSet", {
+  expect_snapshot_error(
+    error_index_in_set(
+      arg1 = "index_vector_dim",
+      arg2 = "scatter_indices_batching_dims",
+      index = 2L,
+      set = c(0L, 1L, 2L),
+      call = call("abc")
+    )
+  )
+})
+
+test_that("to_one_based works with ErrorIndexInSet", {
+  err <- error_index_in_set(
+    arg1 = "index_vector_dim",
+    arg2 = "scatter_indices_batching_dims",
+    index = 2L,
+    set = c(0L, 1L, 2L),
+    call = call("abc"),
+    signal = FALSE
+  )
+
+  converted <- to_one_based(err)
+
+  expect_equal(converted$index, 3L)
+  expect_equal(converted$set, c(1L, 2L, 3L))
+})

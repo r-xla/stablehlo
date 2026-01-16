@@ -22,3 +22,5 @@ SPEC.md
 ^Makefile$
 ^vignettes/articles$
 ^benchmarks/
+^.claude/
+^todo.md
