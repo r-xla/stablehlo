@@ -287,3 +287,94 @@ to_one_based.ErrorUnequalTypes <- function(x, ...) {
   x$index <- x$index + 1L
   x
 }
+
+#' @title ErrorIndicesNotSorted
+#' @description Error when indices are not sorted in ascending order
+#' @param arg (`character(1)`)\cr Name of the argument that caused the error
+#' @param indices (`integer()`)\cr The indices that are not sorted.
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param class (`character()`)\cr Additional classes to prepend
+#' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
+#' @export
+error_indices_not_sorted <- function(
+  arg,
+  indices,
+  call = sys.call(-1)[1L],
+  class = character(),
+  signal = TRUE
+) {
+  error_stablehlo(
+    arg = arg,
+    indices = as.integer(indices),
+    call = call,
+    class = c(class, "ErrorIndicesNotSorted"),
+    signal = signal
+  )
+}
+
+#' @export
+conditionMessage.ErrorIndicesNotSorted <- function(c, ...) {
+  indices_str <- paste0(c$indices, collapse = ", ") # nolint
+  format_error(
+    c(
+      "{.var {c$arg}} must be sorted in ascending order.",
+      i = "Got [{indices_str}]."
+    ),
+    .envir = environment()
+  )
+}
+
+#' @export
+to_one_based.ErrorIndicesNotSorted <- function(x, ...) {
+  x$indices <- x$indices + 1L
+  x
+}
+
+#' @title ErrorIndexInSet
+#' @description Error when an index is found in a forbidden set
+#' @param arg1 (`character(1)`)\cr Name of the argument containing the index
+#' @param arg2 (`character(1)`)\cr Name of the argument containing the set
+#' @param index (`integer(1)`)\cr The index that was found in the set
+#' @param set (`integer()`)\cr The set that should not contain the index
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param class (`character()`)\cr Additional classes to prepend
+#' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
+#' @export
+error_index_in_set <- function(
+  arg1,
+  arg2,
+  index,
+  set,
+  call = sys.call(-1)[1L],
+  class = character(),
+  signal = TRUE
+) {
+  error_stablehlo(
+    arg1 = arg1,
+    arg2 = arg2,
+    index = as.integer(index),
+    set = as.integer(set),
+    call = call,
+    class = c(class, "ErrorIndexInSet"),
+    signal = signal
+  )
+}
+
+#' @export
+conditionMessage.ErrorIndexInSet <- function(c, ...) {
+  set_str <- paste0(c$set, collapse = ", ") # nolint
+  format_error(
+    c(
+      "{.var {c$arg1}} must not be in {.var {c$arg2}}.",
+      x = "{c$arg1} = {c$index} is in {c$arg2} = [{set_str}]."
+    ),
+    .envir = environment()
+  )
+}
+
+#' @export
+to_one_based.ErrorIndexInSet <- function(x, ...) {
+  x$index <- x$index + 1L
+  x$set <- x$set + 1L
+  x
+}

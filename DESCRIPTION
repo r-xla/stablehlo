@@ -107,6 +107,7 @@ Collate:
     'op-round_nearest_afz.R'
     'op-round_nearest_even.R'
     'op-rsqrt.R'
+    'op-scatter.R'
     'op-select.R'
     'op-shift_left.R'
     'op-shift_right_arithmetic.R'

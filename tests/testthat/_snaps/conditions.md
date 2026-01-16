@@ -33,3 +33,13 @@
     `init_values[0]` must be 0-D tensors.
     x Got shape (2, 2).
 
+# ErrorIndicesNotSorted
+
+    `update_window_dims` must be sorted in ascending order.
+    i Got [2, 0, 1].
+
+# ErrorIndexInSet
+
+    `index_vector_dim` must not be in `scatter_indices_batching_dims`.
+    x index_vector_dim = 2 is in scatter_indices_batching_dims = [0, 1, 2].
+
