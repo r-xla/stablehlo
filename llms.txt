@@ -133,6 +133,8 @@ specification. At least initially, it will:
 - [`OpOutputs()`](OpOutputs.md) : OpOutputs
 - [`OpSignature()`](OpSignature.md) : OpSignature
 - [`ScalarAttr()`](ScalarAttr.md) : ScalarAttr
+- [`ScatterDimensionNumbers()`](ScatterDimensionNumbers.md) :
+  ScatterDimensionNumbers
 - [`Shape()`](Shape.md) : Shape
 - [`StringAttr()`](StringAttr.md) : StringAttr
 - [`TensorDataType`](TensorDataType.md) : TensorDataType Base Class
@@ -148,8 +150,11 @@ specification. At least initially, it will:
   created
 - [`error_dimension_uniqueness()`](error_dimension_uniqueness.md) :
   ErrorDimensionUniqueness
+- [`error_index_in_set()`](error_index_in_set.md) : ErrorIndexInSet
 - [`error_index_out_of_bounds()`](error_index_out_of_bounds.md) :
   ErrorIndexOutOfBounds
+- [`error_indices_not_sorted()`](error_indices_not_sorted.md) :
+  ErrorIndicesNotSorted
 - [`error_permute_index()`](error_permute_index.md) : ErrorPermuteIndex
 - [`error_stablehlo()`](error_stablehlo.md) : ErrorStablehlo
 - [`error_unequal_types()`](error_unequal_types.md) : ErrorUnequalTypes
@@ -268,6 +273,8 @@ specification. At least initially, it will:
   RoundNearestEven Operator
 - [`infer_types_rsqrt()`](hlo_rsqrt.md) [`hlo_rsqrt()`](hlo_rsqrt.md) :
   Rsqrt Operator
+- [`infer_types_scatter()`](hlo_scatter.md)
+  [`hlo_scatter()`](hlo_scatter.md) : Scatter Operator
 - [`infer_types_select()`](hlo_select.md)
   [`hlo_select()`](hlo_select.md) : Select Operator
 - [`infer_types_shift_left()`](hlo_shift_left.md)
