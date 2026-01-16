@@ -24,6 +24,7 @@
 <url><loc>/reference/FuncOutput.html</loc></url>
 <url><loc>/reference/FuncOutputs.html</loc></url>
 <url><loc>/reference/FuncValue.html</loc></url>
+<url><loc>/reference/GatherDimensionNumbers.html</loc></url>
 <url><loc>/reference/IntegerType.html</loc></url>
 <url><loc>/reference/Op.html</loc></url>
 <url><loc>/reference/OpInputAttr.html</loc></url>
@@ -87,6 +88,7 @@
 <url><loc>/reference/hlo_exponential_minus_one.html</loc></url>
 <url><loc>/reference/hlo_floor.html</loc></url>
 <url><loc>/reference/hlo_func.html</loc></url>
+<url><loc>/reference/hlo_gather.html</loc></url>
 <url><loc>/reference/hlo_if.html</loc></url>
 <url><loc>/reference/hlo_input.html</loc></url>
 <url><loc>/reference/hlo_iota.html</loc></url>

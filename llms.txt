@@ -119,6 +119,8 @@ specification. At least initially, it will:
 - [`FuncOutput()`](FuncOutput.md) : FuncOutput
 - [`FuncOutputs()`](FuncOutputs.md) : FuncOutputs
 - [`FuncValue()`](FuncValue.md) : FuncValue
+- [`GatherDimensionNumbers()`](GatherDimensionNumbers.md) :
+  GatherDimensionNumbers
 - [`IntegerType()`](IntegerType.md) : IntegerType (signed)
 - [`Op()`](Op.md) : Op
 - [`OpInputAttr()`](OpInputAttr.md) : OpInputAttr
@@ -221,6 +223,8 @@ specification. At least initially, it will:
   Floor Operator
 - [`hlo_func()`](hlo_func.md) [`local_func()`](hlo_func.md) : Create a
   function
+- [`infer_types_gather()`](hlo_gather.md)
+  [`hlo_gather()`](hlo_gather.md) : Gather Operator
 - [`infer_types_if()`](hlo_if.md) [`hlo_if()`](hlo_if.md) : If Operator
 - [`hlo_input()`](hlo_input.md) : Create a input to a function
 - [`infer_types_iota()`](hlo_iota.md) [`hlo_iota()`](hlo_iota.md) : Iota
