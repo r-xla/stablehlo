@@ -339,7 +339,7 @@ infer_types_scatter <- function(
     )
   }
 
-  # (C21) 0 <= scatter_dims_to_operand_dims < rank(inputs[0])
+  # (C21)
   if (any_outside_rank_range(scatter_dims_to_operand_dims, input_rank)) {
     error_index_out_of_bounds(
       arg = "scatter_dims_to_operand_dims",
@@ -384,7 +384,7 @@ infer_types_scatter <- function(
     expected_updates_shape[update_window_dims + 1L] <- update_window_dim_sizes
   }
 
-  # (C4)
+  # (C4) - window dimensions part
   actual_window_sizes <- updates_shape[update_window_dims + 1L]
   if (any(actual_window_sizes > update_window_dim_sizes)) {
     cli_abort(c(
@@ -393,7 +393,7 @@ infer_types_scatter <- function(
     ))
   }
 
-  # Verify the scatter dims match
+  # (C4) - scatter dimensions part
   if (length(update_scatter_dims) > 0L) {
     actual_scatter_sizes <- updates_shape[update_scatter_dims + 1L]
     if (!identical(actual_scatter_sizes, update_scatter_dim_sizes)) {
@@ -404,7 +404,7 @@ infer_types_scatter <- function(
     }
   }
 
-  # (C23) update_computation has correct type
+  # (C23)
   body_out_types <- ValueTypes(func_output_types(update_computation))
   if (length(body_out_types) != num_inputs) {
     cli_abort(c(
@@ -413,7 +413,6 @@ infer_types_scatter <- function(
     ))
   }
 
-  # Verify output types are scalar tensors with correct dtypes
   for (i in seq_len(num_inputs)) {
     out_type <- body_out_types[[i]]
     if (length(shape(out_type)) != 0L) {
@@ -424,9 +423,7 @@ infer_types_scatter <- function(
     }
   }
 
-  # (C24) shape(inputs...) = shape(results...)
-  # (C25) element_type(results[i]) = Ei for all i in [0,N)
-  # The output element types come from the update_computation outputs
+  # (C24), (C25)
   result_types <- lapply(seq_len(num_inputs), function(i) {
     out_dtype <- body_out_types[[i]]$type$dtype
     ValueType(TensorType(dtype = out_dtype, shape = Shape(input_shape)))

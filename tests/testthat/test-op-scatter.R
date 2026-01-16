@@ -144,21 +144,17 @@ describe("scatter", {
   it("works with implicit and explicit index vector dimension", {
     vec <- c(1L, 2L, 3L, 4L)
 
-    # Case 1: index_vector_dim == rank (implicit)
-    # scatter_indices [2] means 2 scatter positions, each with implicit 1-component index
     check(
       input = vec,
       scatter_indices = c(1L, 2L),
       index_vector_dim = 1L, # Equal to rank(scatter_indices), so implicit
       update = c(10L, 10L),
       update_window_dims = integer(),
-      inserted_window_dims = 0L, # Insert at position 0, so index targets original dim 0
+      inserted_window_dims = 0L,
       scatter_dims_to_operand_dims = 0L,
       expected = c(1L, 12L, 13L, 4L)
     )
 
-    # Case 2: index_vector_dim == 0 (first dimension is index vector)
-    # scatter_indices [1, 2] means dim 0 (size 1) is index vector, dim 1 (size 2) is scatter
     check(
       input = vec,
       scatter_indices = matrix(c(1L, 2L), nrow = 1L),
@@ -170,8 +166,6 @@ describe("scatter", {
       expected = c(1L, 12L, 13L, 4L)
     )
 
-    # Case 3: index_vector_dim == 1 (second dimension is index vector)
-    # scatter_indices [2, 1] means dim 0 (size 2) is scatter, dim 1 (size 1) is index vector
     check(
       input = vec,
       scatter_indices = matrix(c(1L, 2L), ncol = 1L),
