@@ -82,6 +82,7 @@ Collate:
     'op-exponential.R'
     'op-exponential_minus_one.R'
     'op-floor.R'
+    'op-gather.R'
     'op-if.R'
     'op-iota.R'
     'op-is_finite.R'
