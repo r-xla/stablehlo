@@ -86,14 +86,6 @@ repr.ScatterDimensionNumbers <- function(x, ...) {
   )
 }
 
-#' @param scatter_dimension_numbers (`ScatterDimensionNumbers`)\cr
-#'   The scatter dimension numbers.
-#' @param indices_are_sorted (`logical(1)`)\cr
-#'   Whether indices are sorted.
-#' @param unique_indices (`logical(1)`)\cr
-#'   Whether indices are unique.
-#' @param update_computation ([`Func`])\cr
-#'   The update computation function.
 #' @rdname hlo_scatter
 #' @export
 infer_types_scatter <- function(
@@ -147,9 +139,10 @@ infer_types_scatter <- function(
   # (C1)
   for (i in seq_along(inputs)[-1L]) {
     if (!identical(shape(inputs[[i]]), input_shape)) {
+      # fmt: skip
       cli_abort(c(
         "All inputs must have the same shape.",
-        x = "inputs[1] has shape {shapevec_repr(input_shape)}, but inputs[{i}] has shape {shapevec_repr(shape(inputs[[i]]))}."
+        x = "inputs[1] has shape {shapevec_repr(input_shape)}, but inputs[{i}] has shape {shapevec_repr(shape(inputs[[i]]))}." # nolint
       ))
     }
   }
@@ -159,16 +152,18 @@ infer_types_scatter <- function(
     length(inserted_window_dims) +
     length(input_batching_dims)
   if (input_rank != expected_rank) {
+    # fmt: skip
     cli_abort(c(
-      "rank(inputs[0]) must equal size(update_window_dims) + size(inserted_window_dims) + size(input_batching_dims).",
-      x = "Got rank = {input_rank}, but expected {expected_rank} (= {length(update_window_dims)} + {length(inserted_window_dims)} + {length(input_batching_dims)})."
+      "rank(inputs[0]) must equal size(update_window_dims) + size(inserted_window_dims) + size(input_batching_dims).", # nolint
+      x = "Got rank = {input_rank}, but expected {expected_rank} (= {length(update_window_dims)} + {length(inserted_window_dims)} + {length(input_batching_dims)})." # nolint
     ))
   }
 
   # (C3)
   for (i in seq_along(updates)[-1L]) {
     if (!identical(shape(updates[[i]]), updates_shape)) {
-      shapes_str <- paste(
+      # fmt: skip
+      shapes_str <- paste( # nolint
         vapply(updates, shapevec_repr, character(1)),
         collapse = ", "
       )
@@ -275,7 +270,7 @@ infer_types_scatter <- function(
     )
   }
 
-  # (C15) 0 <= scatter_indices_batching_dims < rank(scatter_indices)
+  # (C15)
   if (
     any_outside_rank_range(scatter_indices_batching_dims, scatter_indices_rank)
   ) {
@@ -387,9 +382,10 @@ infer_types_scatter <- function(
   # (C4) - window dimensions part
   actual_window_sizes <- updates_shape[update_window_dims + 1L]
   if (any(actual_window_sizes > update_window_dim_sizes)) {
+    # fmt: skip
     cli_abort(c(
       "update_window_dim_sizes must not exceed input dimensions.",
-      x = "Got update window sizes [{paste(actual_window_sizes, collapse = ', ')}], but max allowed is [{paste(update_window_dim_sizes, collapse = ', ')}]."
+      x = "Got update window sizes [{paste(actual_window_sizes, collapse = ', ')}], but max allowed is [{paste(update_window_dim_sizes, collapse = ', ')}]." # nolint
     ))
   }
 
@@ -397,9 +393,10 @@ infer_types_scatter <- function(
   if (length(update_scatter_dims) > 0L) {
     actual_scatter_sizes <- updates_shape[update_scatter_dims + 1L]
     if (!identical(actual_scatter_sizes, update_scatter_dim_sizes)) {
+      # fmt: skip
       cli_abort(c(
         "Update scatter dimension sizes must match scatter_indices shape (excluding index_vector_dim).",
-        x = "Got [{paste(actual_scatter_sizes, collapse = ', ')}], but expected [{paste(update_scatter_dim_sizes, collapse = ', ')}]."
+        x = "Got [{paste(actual_scatter_sizes, collapse = ', ')}], but expected [{paste(update_scatter_dim_sizes, collapse = ', ')}]." # nolint
       ))
     }
   }
@@ -440,6 +437,14 @@ hlo_scatter_impl <- hlo_fn(
 #' @templateVar mnemonic scatter
 #' @templateVar not_func_variables scatter_dimension_numbers,indices_are_sorted,unique_indices,update_computation
 #' @template op
+#' @param scatter_dimension_numbers (`ScatterDimensionNumbers`)\cr
+#'   The scatter dimension numbers.
+#' @param indices_are_sorted (`logical(1)`)\cr
+#'   Whether indices are sorted.
+#' @param unique_indices (`logical(1)`)\cr
+#'   Whether indices are unique.
+#' @param update_computation ([`Func`])\cr
+#'   The update computation function.
 #' @export
 hlo_scatter <- function(
   inputs,
