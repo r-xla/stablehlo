@@ -35,11 +35,6 @@ test_that("scatter looks correct", {
 describe("scatter", {
   skip_if_not_installed("pjrt")
 
-  # Helper to create arrays with explicit row-major structure
-  arr <- function(data, dim) {
-    aperm(array(data, dim = dim), perm = seq_along(dim))
-  }
-
   check <- function(
     input,
     scatter_indices,
@@ -123,7 +118,7 @@ describe("scatter", {
     check(
       input = 1:3,
       scatter_indices = 0L,
-      update = array(-1L, dim = 1L),
+      update = row_major_array(-1L, dim = 1L),
       update_window_dims = integer(),
       inserted_window_dims = 0L,
       scatter_dims_to_operand_dims = 0L,
@@ -134,7 +129,7 @@ describe("scatter", {
     check(
       input = 1:3,
       scatter_indices = 1L,
-      update = array(-1L, dim = 1L),
+      update = row_major_array(-1L, dim = 1L),
       update_window_dims = integer(),
       inserted_window_dims = 0L,
       scatter_dims_to_operand_dims = 0L,
@@ -144,8 +139,8 @@ describe("scatter", {
     # Update with enumeration dimensions - scatter_indices has extra dims
     check(
       input = 1:3,
-      scatter_indices = array(1L, dim = c(1L, 1L)),
-      update = array(-1L, dim = c(1L)),
+      scatter_indices = row_major_array(1L, dim = c(1L, 1L)),
+      update = row_major_array(-1L, dim = c(1L)),
       update_window_dims = integer(),
       inserted_window_dims = 0L,
       scatter_dims_to_operand_dims = 0L,
@@ -215,38 +210,42 @@ describe("scatter", {
   })
   # TODO: These tests require partial window updates which isn't fully supported
   # by current StableHLO validation semantics.
-  # it("can update column(s) in 2D matrix", {
-  #   mat <- matrix(1:9, nrow = 3L, byrow = TRUE)
-  #   check(
-  #     input = mat,
-  #     scatter_indices = matrix(c(0L, 2L), nrow = 1L),
-  #     index_vector_dim = 1L,
-  #     update = array(rep(1L, 3L), dim = c(1L, 3L, 1L)),
-  #     update_window_dims = c(1L, 2L),
-  #     inserted_window_dims = integer(),
-  #     scatter_dims_to_operand_dims = c(0L, 1L),
-  #     expected = matrix(c(1, 2, 4, 4, 5, 7, 7, 8, 10), nrow = 3L, byrow = TRUE)
-  #   )
-  # })
-  # TODO: This test requires partial window updates which isn't fully supported
-  # by current StableHLO validation semantics.
-  # it("different representations of update (parameterized by update_window_dims)", {
-  #   mat <- matrix(1:9, nrow = 3L, byrow = TRUE)
-  #   check2 <- function(update_dims, update_window_dims) {
-  #     check(
-  #       input = mat,
-  #       scatter_indices = matrix(c(0L, 2L), nrow = 1L),
-  #       index_vector_dim = 1L,
-  #       update = array(rep(1L, 3L), dim = update_dims),
-  #       update_window_dims = update_window_dims,
-  #       inserted_window_dims = integer(),
-  #       scatter_dims_to_operand_dims = c(0L, 1L),
-  #       expected = matrix(c(1, 2, 4, 4, 5, 7, 7, 8, 10), nrow = 3L, byrow = TRUE)
-  #     )
-  #   }
-  #   check2(c(1L, 3L, 1L), c(1L, 2L))
-  #   check2(c(3L, 1L, 1L), c(0L, 1L))
-  # })
+  it("can update column(s) in 2D matrix", {
+    mat <- matrix(1:9, nrow = 3L, byrow = TRUE)
+    check(
+      input = mat,
+      scatter_indices = matrix(c(0L, 2L), nrow = 1L),
+      index_vector_dim = 1L,
+      update = row_major_array(rep(1L, 3L), dim = c(1L, 3L, 1L)),
+      update_window_dims = c(1L, 2L),
+      inserted_window_dims = integer(),
+      scatter_dims_to_operand_dims = c(0L, 1L),
+      expected = matrix(c(1, 2, 4, 4, 5, 7, 7, 8, 10), nrow = 3L, byrow = TRUE)
+    )
+  })
+  #TODO: This test requires partial window updates which isn't fully supported
+  #by current StableHLO validation semantics.
+  it("different representations of update (parameterized by update_window_dims)", {
+    mat <- matrix(1:9, nrow = 3L, byrow = TRUE)
+    check2 <- function(update_dims, update_window_dims) {
+      check(
+        input = mat,
+        scatter_indices = matrix(c(0L, 2L), nrow = 1L),
+        index_vector_dim = 1L,
+        update = row_major_array(rep(1L, 3L), dim = update_dims),
+        update_window_dims = update_window_dims,
+        inserted_window_dims = integer(),
+        scatter_dims_to_operand_dims = c(0L, 1L),
+        expected = matrix(
+          c(1, 2, 4, 4, 5, 7, 7, 8, 10),
+          nrow = 3L,
+          byrow = TRUE
+        )
+      )
+    }
+    check2(c(1L, 3L, 1L), c(1L, 2L))
+    check2(c(3L, 1L, 1L), c(0L, 1L))
+  })
   it("works with inserted_window_dims", {
     # Let's say we have a 4D tensor and we want to insert a few scalars.
     # We have 3D scatters, one enumeration dimension, no batch dimension
@@ -257,7 +256,7 @@ describe("scatter", {
     check(
       input = 1:3,
       scatter_indices = 0L,
-      update = array(1L, dim = 1L),
+      update = row_major_array(1L, dim = 1L),
       update_window_dims = integer(),
       inserted_window_dims = 0L,
       scatter_dims_to_operand_dims = 0L,
@@ -284,7 +283,7 @@ describe("scatter", {
     check(
       input = mat,
       scatter_indices = matrix(c(1L, 0L), nrow = 1L),
-      update = array(10L, dim = 1L),
+      update = row_major_array(10L, dim = 1L),
       inserted_window_dims = c(0L, 1L),
       update_window_dims = integer(),
       scatter_dims_to_operand_dims = c(0L, 1L),
@@ -320,14 +319,14 @@ describe("scatter", {
   })
   it("works with batching dimension", {
     mat <- matrix(1:6, nrow = 2L, byrow = TRUE)
-    update <- array(c(1, 3L, 2L, 4L), dim = c(1, 2, 2))
+    update <- row_major_array(c(1, 3L, 2L, 4L), dim = c(1, 2, 2))
     mat <- matrix(
       c(1, 2, 3, 4, 5, 6),
       nrow = 2L,
       byrow = TRUE
     )
     expected <- matrix(
-      c(1L, 2 + 1L, 3 + 2L, 4 + 3L, 5 + 4L, 6L),
+      c(1L, 3L, 6L, 6L, 9L, 6L),
       nrow = 2L,
       byrow = TRUE
     )
@@ -346,8 +345,8 @@ describe("scatter", {
   })
   it("works with example from spec", {
     # fmt: skip
-    input <- arr(c(
-       1,  2,  3,  4,  5,  6,  7,  8,
+    input <- row_major_array(c(
+       1,  2,  3,  4,  5,  6,  7,  8, # nolint
        9, 10, 11, 12, 13, 14, 15, 16,
       17, 18, 19, 20, 21, 22, 23, 24,
       25, 26, 27, 28, 29, 30, 31, 32,
@@ -356,23 +355,23 @@ describe("scatter", {
     ), dim = c(2L, 4L, 3L, 2L))
 
     # fmt: skip
-    scatter_indices <- arr(c(
+    scatter_indices <- row_major_array(c(
       0, 0, 1, 0, 2, 1,
       0, 1, 1, 1, 0, 9,
       0, 0, 2, 1, 2, 2,
       1, 2, 0, 1, 1, 0
     ), dim = c(2L, 3L, 2L, 2L))
 
-    update <- array(1L, dim = c(2L, 2L, 3L, 2L, 2L))
+    update <- row_major_array(1L, dim = c(2L, 2L, 3L, 2L, 2L))
 
     # fmt: skip
-    expected <- arr(c(
-       3,  4,  6,  7,  6,  7,  7,  8,
-       9, 10, 11, 12, 15, 16, 17, 18,
-      17, 18, 19, 20, 22, 23, 24, 25,
-      25, 26, 28, 29, 30, 31, 31, 32,
-      35, 36, 38, 39, 38, 39, 39, 40,
-      41, 42, 44, 45, 46, 47, 47, 48
+    expected <- array(c(
+       3L, 27L, 10L, 34L, 14L, 38L, 19L, 43L, # nolint
+       3L, 27L, 10L, 34L, 16L, 40L, 21L, 45L,
+       5L, 29L, 12L, 36L, 19L, 43L, 24L, 48L,
+       2L, 26L,  8L, 32L, 14L, 38L, 20L, 44L,
+       7L, 31L, 13L, 37L, 16L, 40L, 22L, 46L,
+       6L, 30L, 14L, 38L, 20L, 44L, 24L, 48L
     ), dim = c(2L, 4L, 3L, 2L))
 
     check(
@@ -390,25 +389,28 @@ describe("scatter", {
   })
   it("works with additional examples from spec", {
     # fmt: skip
-    input <- arr(c(
-       1,  2,  3,  4,  5,  6,  7,  8,
-       9, 10, 11, 12, 13, 14, 15, 16,
-      17, 18, 19, 20, 21, 22, 23, 24
-    ), dim = c(2L, 4L, 3L))
+    input <- row_major_array(
+      c(
+        1, 2, 3, 4, 5, 6, 7, 8,
+        9, 10, 11, 12, 13, 14, 15, 16,
+        17, 18, 19, 20, 21, 22, 23, 24
+      ),
+      dim = c(2L, 4L, 3L)
+    )
 
     # fmt: skip
-    scatter_indices <- arr(c(
+    scatter_indices <- row_major_array(c(
       0, 2, 1, 0, 2, 1,
       0, 1, 1, 0, 0, 9
     ), dim = c(2L, 3L, 2L))
 
-    update <- array(1L, dim = c(2L, 2L, 3L, 2L))
+    update <- row_major_array(1L, dim = c(2L, 2L, 3L, 2L))
 
     # fmt: skip
-    expected <- arr(c(
-       1,  2,  5,  6,  7,  8,  7,  8,
-      10, 11, 12, 13, 14, 15, 16, 17,
-      18, 19, 20, 21, 21, 22, 23, 24
+    expected <- array(c(
+       3L, 15L,  6L, 18L,  8L, 20L, 11L, 23L, # nolint
+       2L, 14L,  6L, 18L, 10L, 22L, 12L, 24L,
+       3L, 15L,  6L, 18L,  9L, 21L, 12L, 24L
     ), dim = c(2L, 4L, 3L))
 
     check(

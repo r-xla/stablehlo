@@ -218,7 +218,7 @@ infer_types_gather <- function(
   }
 
   # (C9)
-  if (length(collapsed_slice_dims) > 0L) {
+  if (length(collapsed_slice_dims)) {
     collapsed_sizes <- slice_sizes_vec[collapsed_slice_dims + 1L]
     if (any(collapsed_sizes > 1L)) {
       # fmt: skip
@@ -248,7 +248,7 @@ infer_types_gather <- function(
   }
 
   # (C12)
-  if (length(operand_batching_dims) > 0L) {
+  if (length(operand_batching_dims)) {
     batching_sizes <- slice_sizes_vec[operand_batching_dims + 1L]
     if (any(batching_sizes > 1L)) {
       cli_abort(c(
@@ -295,7 +295,7 @@ infer_types_gather <- function(
   }
 
   # (C17)
-  if (length(operand_batching_dims) > 0L) {
+  if (length(operand_batching_dims)) {
     batch_shape_operand <- operand_shape[operand_batching_dims + 1L]
     batch_shape_start_indices <- start_indices_shape[
       start_indices_batching_dims + 1L
@@ -344,8 +344,7 @@ infer_types_gather <- function(
     ))
   }
 
-  # (C22) - compute result shape
-  # batch_dims = [d for d in axes(result) and d not in offset_dims]
+  # (C22)
   batch_dims <- setdiff(xlamisc::seq_len0(result_rank), offset_dims)
 
   result_shape <- integer(result_rank)
@@ -356,7 +355,7 @@ infer_types_gather <- function(
     result_shape[offset_dims + 1L] <- offset_dim_sizes
   }
 
-  # (C23) - element_type(operand) = element_type(result)
+  # (C23)
   result_dtype <- operand$type$dtype
 
   ValueTypes(list(
