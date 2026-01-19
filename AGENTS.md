@@ -61,3 +61,9 @@ Also, annotate each check in the inference function with the corresponding requi
 
 The error messages should make it clear what went wrong (i.e. what was expected) and what the actual input was.
 Also, error messages referencing 0-based values (like indices) should be wrapped in custom error classes (reusing existing error classes if possible) and implement the `to_one_based()` generic function to convert the 0-based values to 1-based values in the error message.
+
+## Linter
+
+To check for linter errors, you need to install the package first using `devtools::install()`.
+Then, run `lintr::lint_package()`.
+For linter errors where the line is too long, but the line is a string, put `#fmt: skip` before the line and append `# nolint` at the end of the line.

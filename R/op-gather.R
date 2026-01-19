@@ -221,9 +221,10 @@ infer_types_gather <- function(
   if (length(collapsed_slice_dims) > 0L) {
     collapsed_sizes <- slice_sizes_vec[collapsed_slice_dims + 1L]
     if (any(collapsed_sizes > 1L)) {
+      # fmt: skip
       cli_abort(c(
         "slice_sizes[collapsed_slice_dims...] must be <= 1.",
-        x = "Got slice_sizes at collapsed_slice_dims: [{paste(collapsed_sizes, collapse = ', ')}]."
+        x = "Got slice_sizes at collapsed_slice_dims: [{paste(collapsed_sizes, collapse = ', ')}]." # nolint
       ))
     }
   }
@@ -336,9 +337,10 @@ infer_types_gather <- function(
 
   # (C21)
   if (any(slice_sizes_vec < 0L) || any(slice_sizes_vec > operand_shape)) {
+    # fmt: skip
     cli_abort(c(
       "0 <= slice_sizes <= shape(operand).",
-      x = "Got slice_sizes = [{paste(slice_sizes_vec, collapse = ', ')}], but operand shape is {shapevec_repr(operand_shape)}."
+      x = "Got slice_sizes = [{paste(slice_sizes_vec, collapse = ', ')}], but operand shape is {shapevec_repr(operand_shape)}." # nolint
     ))
   }
 

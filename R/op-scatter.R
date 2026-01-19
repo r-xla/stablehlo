@@ -378,10 +378,29 @@ infer_types_scatter <- function(
   if (length(update_window_dims) > 0L) {
     expected_updates_shape[update_window_dims + 1L] <- update_window_dim_sizes
   }
+  # (C4) - rank part
+  #expanded_scatter_indices_rank <- if (
+  #  index_vector_dim == scatter_indices_rank
+  #) {
+  #  scatter_indices_rank + 1L
+  #} else {
+  #  scatter_indices_rank
+  #}
+
+  #expected_updates_rank <- expanded_scatter_indices_rank -
+  #  1L +
+  #  length(update_window_dims)
+
+  #if (updates_rank != expected_updates_rank) {
+  #  cli_abort(c(
+  #    "updates tensor must be of rank {expected_updates_rank} (== rank(scatter_indices) - 1 + size(update_window_dims), where scatter_indices is expanded by a trailing 1 dimension if index_vector_dim == rank(scatter_indices)).", # nolint
+  #    x = "Got rank {updates_rank}."
+  #  ))
+  #}
 
   # (C4) - window dimensions part
   actual_window_sizes <- updates_shape[update_window_dims + 1L]
-  if (any(actual_window_sizes > update_window_dim_sizes)) {
+  if (!identical(actual_window_sizes, update_window_dim_sizes)) {
     # fmt: skip
     cli_abort(c(
       "update_window_dim_sizes must not exceed input dimensions.",

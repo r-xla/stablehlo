@@ -23,20 +23,6 @@ describe("gather", {
   })
   skip_if_not_installed("pjrt")
 
-  # Helper to create arrays with explicit row-major structure
-  arr <- function(data, dim) {
-    aperm(array(data, dim = dim), perm = seq_along(dim))
-  }
-
-  # Helper to create R array from row-major data (StableHLO layout)
-  # StableHLO uses row-major (last dim varies fastest), R uses column-major
-  row_major_array <- function(data, dim) {
-    # Create array with reversed dimensions so R's column-major fill
-    # matches the row-major data order, then transpose back
-    arr <- array(data, dim = rev(dim))
-    aperm(arr, perm = rev(seq_along(dim)))
-  }
-
   check <- function(
     operand,
     start_indices,
@@ -191,21 +177,34 @@ describe("gather", {
       expected = matrix(c(5L, 6L, 8L, 9L), nrow = 2L, byrow = TRUE)
     )
   })
+
   it("works with different offset_dims", {
+    # Gather multiple 1x2 slices and test that offset_dims controls
+    # where the slice dimensions appear in the result
     mat <- matrix(1:9, nrow = 3L, byrow = TRUE)
-    f <- function(offset_dims, expected) {
-      check(
-        operand = mat,
-        start_indices = c(0L, 1L),
-        offset_dims = offset_dims,
-        collapsed_slice_dims = integer(),
-        start_index_map = c(0L, 1L),
-        index_vector_dim = 0L,
-        slice_sizes = c(2L, 2L),
-        expected = expected
-      )
-    }
-    f(c(0L, 1L), matrix(c(2L, 3L, 5L, 6L), nrow = 2L, byrow = TRUE))
+    # Gather two slices at row 0 and row 1, each of size 1x2
+    # offset_dims = 0L means offset dims come first (result shape: [offset, batch])
+    check(
+      operand = mat,
+      start_indices = matrix(c(0L, 0L, 1L, 0L), nrow = 2L, byrow = TRUE),
+      offset_dims = 0L,
+      collapsed_slice_dims = 0L,
+      start_index_map = c(0L, 1L),
+      index_vector_dim = 1L,
+      slice_sizes = c(1L, 2L),
+      expected = matrix(c(1L, 4L, 2L, 5L), nrow = 2L, byrow = TRUE)
+    )
+    # offset_dims = 1L means offset dims come second (result shape: [batch, offset])
+    check(
+      operand = mat,
+      start_indices = matrix(c(0L, 0L, 1L, 0L), nrow = 2L, byrow = TRUE),
+      offset_dims = 1L,
+      collapsed_slice_dims = 0L,
+      start_index_map = c(0L, 1L),
+      index_vector_dim = 1L,
+      slice_sizes = c(1L, 2L),
+      expected = matrix(c(1L, 2L, 4L, 5L), nrow = 2L, byrow = TRUE)
+    )
   })
 
   it("can gather multiple slices", {
@@ -276,7 +275,7 @@ describe("gather", {
   it("works with simple 3D gather", {
     # Simpler 3D example without batching
     # operand: 2x3x4 tensor
-    operand <- arr(1:24, dim = c(2L, 3L, 4L))
+    operand <- row_major_array(1:24, dim = c(2L, 3L, 4L))
 
     # Gather a single 2x2 slice starting at index [0, 1] (axis 0 and 1)
     # with slice_sizes = c(2, 2, 1) and collapsed_slice_dims = 2
@@ -291,47 +290,79 @@ describe("gather", {
       start_index_map = c(0L, 1L),
       index_vector_dim = 0L,
       slice_sizes = c(2L, 2L, 1L),
-      expected = arr(c(3, 4, 5, 6), dim = c(2L, 2L))
+      expected = row_major_array(c(5L, 9L, 17L, 21L), dim = c(2L, 2L))
     )
   })
 
   it("can collapse slice dimensions", {
     # TODO
   })
-  it("works with different slice sizes", {
-
-  })
+  it("works with different slice sizes", {})
 
   # Tests from stablehlo-translate --interpret
-  it("works with gather_op_test from interpreter", {
-    # From stablehlo interpreter tests: gather_op_test
-    # operand: tensor<3x4x2xi64>
-    # start_indices: tensor<2x3x2xi64>
-    # offset_dims = [2, 3], collapsed_slice_dims = [0]
-    # start_index_map = [1, 0], index_vector_dim = 2
-    # slice_sizes = [1, 2, 2]
-    # result: tensor<2x3x2x2xi64>
-
+  it("Works with spec example 1", {
     operand <- row_major_array(
-      c(1, 2, 3, 4, 5, 6, 7, 8,
-        9, 10, 11, 12, 13, 14, 15, 16,
-        17, 18, 19, 20, 21, 22, 23, 24),
+      c(
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ),
       dim = c(3L, 4L, 2L)
     )
 
     start_indices <- row_major_array(
-      c(0, 0, 1, 0, 2, 1,
-        0, 1, 1, 1, 0, 9),
+      c(0, 0, 1, 0, 2, 1, 0, 1, 1, 1, 0, 9),
       dim = c(2L, 3L, 2L)
     )
 
     expected <- row_major_array(
-      c(1, 2, 3, 4,
-        3, 4, 5, 6,
-        13, 14, 15, 16,
-        9, 10, 11, 12,
-        11, 12, 13, 14,
-        17, 18, 19, 20),
+      c(
+        1,
+        2,
+        3,
+        4,
+        3,
+        4,
+        5,
+        6,
+        13,
+        14,
+        15,
+        16,
+        9,
+        10,
+        11,
+        12,
+        11,
+        12,
+        13,
+        14,
+        17,
+        18,
+        19,
+        20
+      ),
       dim = c(2L, 3L, 2L, 2L)
     )
 
@@ -347,108 +378,67 @@ describe("gather", {
     )
   })
 
-  it("works with gather_op_with_batching_dim_test from interpreter", {
-    # From stablehlo interpreter tests: gather_op_with_batching_dim_test
-    # operand: tensor<2x3x4x2xi64>
-    # start_indices: tensor<2x2x3x2xi64>
-    # offset_dims = [3, 4], collapsed_slice_dims = [1]
-    # operand_batching_dims = [0], start_indices_batching_dims = [1]
-    # start_index_map = [2, 1], index_vector_dim = 3
-    # slice_sizes = [1, 1, 2, 2]
-    # result: tensor<2x2x3x2x2xi64>
-
-    operand <- row_major_array(
-      c(1, 2, 3, 4, 5, 6, 7, 8,
-        9, 10, 11, 12, 13, 14, 15, 16,
-        17, 18, 19, 20, 21, 22, 23, 24,
-        25, 26, 27, 28, 29, 30, 31, 32,
-        33, 34, 35, 36, 37, 38, 39, 40,
-        41, 42, 43, 44, 45, 46, 47, 48),
-      dim = c(2L, 3L, 4L, 2L)
-    )
+  it("works with gather_op_with_batching_dim_test from spec", {
+    operand <- row_major_array(1:48, c(2L, 3L, 4L, 2L))
 
     start_indices <- row_major_array(
-      c(0, 0, 1, 0, 2, 1,
-        0, 1, 1, 1, 0, 9,
-        0, 0, 2, 1, 2, 2,
-        1, 2, 0, 1, 1, 0),
+      c(0, 0, 1, 0, 2, 1, 0, 1, 1, 1, 0, 9, 0, 0, 2, 1, 2, 2, 1, 2, 0, 1, 1, 0),
       dim = c(2L, 2L, 3L, 2L)
     )
 
     expected <- row_major_array(
-      c(1, 2, 3, 4,
-        3, 4, 5, 6,
-        13, 14, 15, 16,
-        33, 34, 35, 36,
-        35, 36, 37, 38,
-        41, 42, 43, 44,
-        1, 2, 3, 4,
-        13, 14, 15, 16,
-        21, 22, 23, 24,
-        43, 44, 45, 46,
-        33, 34, 35, 36,
-        27, 28, 29, 30),
+      c(
+        1,
+        2,
+        3,
+        4,
+        3,
+        4,
+        5,
+        6,
+        13,
+        14,
+        15,
+        16,
+        33,
+        34,
+        35,
+        36,
+        35,
+        36,
+        37,
+        38,
+        41,
+        42,
+        43,
+        44,
+        1,
+        2,
+        3,
+        4,
+        13,
+        14,
+        15,
+        16,
+        21,
+        22,
+        23,
+        24,
+        43,
+        44,
+        45,
+        46,
+        33,
+        34,
+        35,
+        36,
+        27,
+        28,
+        29,
+        30
+      ),
       dim = c(2L, 2L, 3L, 2L, 2L)
     )
-
-    check(
-      operand = operand,
-      start_indices = start_indices,
-      offset_dims = c(3L, 4L),
-      collapsed_slice_dims = 1L,
-      operand_batching_dims = 0L,
-      start_indices_batching_dims = 1L,
-      start_index_map = c(2L, 1L),
-      index_vector_dim = 3L,
-      slice_sizes = c(1L, 1L, 2L, 2L),
-      expected = expected
-    )
-  })
-
-  it("works with batching dim test (i32 operand)", {
-    # Same as above but with i32 operand type to test mixed dtypes
-    to_int_arr <- function(x) {
-      y <- as.integer(x)
-      dim(y) <- dim(x)
-      y
-    }
-
-    operand <- row_major_array(
-      c(1, 2, 3, 4, 5, 6, 7, 8,
-        9, 10, 11, 12, 13, 14, 15, 16,
-        17, 18, 19, 20, 21, 22, 23, 24,
-        25, 26, 27, 28, 29, 30, 31, 32,
-        33, 34, 35, 36, 37, 38, 39, 40,
-        41, 42, 43, 44, 45, 46, 47, 48),
-      dim = c(2L, 3L, 4L, 2L)
-    )
-    operand <- pjrt_buffer(to_int_arr(operand), dtype = "i32")
-
-    start_indices <- row_major_array(
-      c(0, 0, 1, 0, 2, 1,
-        0, 1, 1, 1, 0, 9,
-        0, 0, 2, 1, 2, 2,
-        1, 2, 0, 1, 1, 0),
-      dim = c(2L, 2L, 3L, 2L)
-    )
-    start_indices <- pjrt_buffer(to_int_arr(start_indices), dtype = "i64")
-
-    expected <- row_major_array(
-      c(1, 2, 3, 4,
-        3, 4, 5, 6,
-        13, 14, 15, 16,
-        33, 34, 35, 36,
-        35, 36, 37, 38,
-        41, 42, 43, 44,
-        1, 2, 3, 4,
-        13, 14, 15, 16,
-        21, 22, 23, 24,
-        43, 44, 45, 46,
-        33, 34, 35, 36,
-        27, 28, 29, 30),
-      dim = c(2L, 2L, 3L, 2L, 2L)
-    )
-    expected <- pjrt_buffer(to_int_arr(expected), dtype = "i32")
 
     check(
       operand = operand,
