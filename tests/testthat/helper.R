@@ -2,6 +2,11 @@ if (requireNamespace("pjrt", quietly = TRUE)) {
   library("pjrt")
 }
 
+row_major_array <- function(data, dim) {
+  arr <- array(data, dim = rev(dim))
+  aperm(arr, perm = rev(seq_along(dim)))
+}
+
 hlo_test_uni <- function(
   hlo_fn,
   test_func,
