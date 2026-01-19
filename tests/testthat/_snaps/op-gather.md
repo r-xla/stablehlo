@@ -1,4 +1,4 @@
-# gather: looks correct in snapshot
+# gather looks correct
 
     Code
       repr(func)

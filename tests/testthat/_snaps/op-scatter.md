@@ -1,26 +1,4 @@
-# scatter: errors when updates rank is wrong
-
-    Code
-      func <- local_func()
-      input <- hlo_input("input", "i32", c(3L))
-      scatter_indices <- hlo_input("scatter_indices", "i32", c(2L))
-      update <- hlo_input("update", "i32", c(2L))
-      update_func <- local_func("update")
-      a <- hlo_input("a", "i32", integer())
-      b <- hlo_input("b", "i32", integer())
-      sum_result <- hlo_add(a, b)
-      update_func <- hlo_return(sum_result)
-      scatter_dim_numbers <- ScatterDimensionNumbers(update_window_dims = 1L,
-        inserted_window_dims = integer(), scatter_dims_to_operand_dims = 0L,
-        index_vector_dim = 1L)
-      hlo_scatter(inputs = list(input), scatter_indices = scatter_indices, updates = list(
-        update), scatter_dimension_numbers = scatter_dim_numbers, update_computation = update_func)
-    Condition
-      Error:
-      ! `update_window_dims` contains index outside the valid range.
-      x Got 1, but valid range is [0, 1).
-
-# scatter: looks correct in snapshot
+# scatter looks correct
 
     Code
       repr(func)

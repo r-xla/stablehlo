@@ -1,26 +1,28 @@
+test_that("gather looks correct", {
+  # snapshot tests don't work in `it()` blocks for some reason
+  func <- local_func()
+  operand <- hlo_input("operand", "i32", c(3L, 4L))
+  start_indices <- hlo_input("start_indices", "i32", c(2L, 2L))
+
+  gather_dim_numbers <- GatherDimensionNumbers(
+    offset_dims = 1L,
+    collapsed_slice_dims = 0L,
+    start_index_map = c(0L, 1L),
+    index_vector_dim = 1L
+  )
+
+  result <- hlo_gather(
+    operand = operand,
+    start_indices = start_indices,
+    gather_dimension_numbers = gather_dim_numbers,
+    slice_sizes = c(1L, 2L)
+  )
+
+  func <- hlo_return(result)
+  expect_snapshot(repr(func))
+})
+
 describe("gather", {
-  it("looks correct in snapshot", {
-    func <- local_func()
-    operand <- hlo_input("operand", "i32", c(3L, 4L))
-    start_indices <- hlo_input("start_indices", "i32", c(2L, 2L))
-
-    gather_dim_numbers <- GatherDimensionNumbers(
-      offset_dims = 1L,
-      collapsed_slice_dims = 0L,
-      start_index_map = c(0L, 1L),
-      index_vector_dim = 1L
-    )
-
-    result <- hlo_gather(
-      operand = operand,
-      start_indices = start_indices,
-      gather_dimension_numbers = gather_dim_numbers,
-      slice_sizes = c(1L, 2L)
-    )
-
-    func <- hlo_return(result)
-    expect_snapshot(repr(func))
-  })
   skip_if_not_installed("pjrt")
 
   check <- function(
@@ -301,70 +303,25 @@ describe("gather", {
 
   # Tests from stablehlo-translate --interpret
   it("Works with spec example 1", {
-    operand <- row_major_array(
-      c(
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24
-      ),
-      dim = c(3L, 4L, 2L)
-    )
+    # fmt: skip
+    operand <- row_major_array(c(
+       1,  2,  3,  4,  5,  6,  7,  8,
+       9, 10, 11, 12, 13, 14, 15, 16,
+      17, 18, 19, 20, 21, 22, 23, 24
+    ), dim = c(3L, 4L, 2L))
 
-    start_indices <- row_major_array(
-      c(0, 0, 1, 0, 2, 1, 0, 1, 1, 1, 0, 9),
-      dim = c(2L, 3L, 2L)
-    )
+    # fmt: skip
+    start_indices <- row_major_array(c(
+      0, 0, 1, 0, 2, 1,
+      0, 1, 1, 1, 0, 9
+    ), dim = c(2L, 3L, 2L))
 
-    expected <- row_major_array(
-      c(
-        1,
-        2,
-        3,
-        4,
-        3,
-        4,
-        5,
-        6,
-        13,
-        14,
-        15,
-        16,
-        9,
-        10,
-        11,
-        12,
-        11,
-        12,
-        13,
-        14,
-        17,
-        18,
-        19,
-        20
-      ),
-      dim = c(2L, 3L, 2L, 2L)
-    )
+    # fmt: skip
+    expected <- row_major_array(c(
+       1,  2,  3,  4,  3,  4,  5,  6,
+      13, 14, 15, 16,  9, 10, 11, 12,
+      11, 12, 13, 14, 17, 18, 19, 20
+    ), dim = c(2L, 3L, 2L, 2L))
 
     check(
       operand = operand,
@@ -381,64 +338,23 @@ describe("gather", {
   it("works with gather_op_with_batching_dim_test from spec", {
     operand <- row_major_array(1:48, c(2L, 3L, 4L, 2L))
 
-    start_indices <- row_major_array(
-      c(0, 0, 1, 0, 2, 1, 0, 1, 1, 1, 0, 9, 0, 0, 2, 1, 2, 2, 1, 2, 0, 1, 1, 0),
-      dim = c(2L, 2L, 3L, 2L)
-    )
+    # fmt: skip
+    start_indices <- row_major_array(c(
+      0, 0, 1, 0, 2, 1,
+      0, 1, 1, 1, 0, 9,
+      0, 0, 2, 1, 2, 2,
+      1, 2, 0, 1, 1, 0
+    ), dim = c(2L, 2L, 3L, 2L))
 
-    expected <- row_major_array(
-      c(
-        1,
-        2,
-        3,
-        4,
-        3,
-        4,
-        5,
-        6,
-        13,
-        14,
-        15,
-        16,
-        33,
-        34,
-        35,
-        36,
-        35,
-        36,
-        37,
-        38,
-        41,
-        42,
-        43,
-        44,
-        1,
-        2,
-        3,
-        4,
-        13,
-        14,
-        15,
-        16,
-        21,
-        22,
-        23,
-        24,
-        43,
-        44,
-        45,
-        46,
-        33,
-        34,
-        35,
-        36,
-        27,
-        28,
-        29,
-        30
-      ),
-      dim = c(2L, 2L, 3L, 2L, 2L)
-    )
+    # fmt: skip
+    expected <- row_major_array(c(
+       1,  2,  3,  4,  3,  4,  5,  6,
+      13, 14, 15, 16, 33, 34, 35, 36,
+      35, 36, 37, 38, 41, 42, 43, 44,
+       1,  2,  3,  4, 13, 14, 15, 16,
+      21, 22, 23, 24, 43, 44, 45, 46,
+      33, 34, 35, 36, 27, 28, 29, 30
+    ), dim = c(2L, 2L, 3L, 2L, 2L))
 
     check(
       operand = operand,

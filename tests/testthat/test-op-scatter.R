@@ -1,36 +1,38 @@
+test_that("scatter looks correct", {
+  # snapshot tests don't work in `it()` blocks for some reason
+  func <- local_func()
+  input <- hlo_input("input", "i32", c(4L))
+  scatter_indices <- hlo_input("scatter_indices", "i32", c(2L, 1L))
+  # Update shape: [2] for scatter dims (2 scatter positions, each updating 1 element)
+  update <- hlo_input("update", "i32", c(2L))
+
+  # Create update computation: add
+  update_func <- local_func("update")
+  a <- hlo_input("a", "i32", integer())
+  b <- hlo_input("b", "i32", integer())
+  sum_result <- hlo_add(a, b)
+  update_func <- hlo_return(sum_result)
+
+  scatter_dim_numbers <- ScatterDimensionNumbers(
+    update_window_dims = integer(),
+    inserted_window_dims = 0L,
+    scatter_dims_to_operand_dims = 0L,
+    index_vector_dim = 1L
+  )
+
+  result <- hlo_scatter(
+    inputs = list(input),
+    scatter_indices = scatter_indices,
+    updates = list(update),
+    scatter_dimension_numbers = scatter_dim_numbers,
+    update_computation = update_func
+  )
+
+  func <- hlo_return(result)
+  expect_snapshot(repr(func))
+})
+
 describe("scatter", {
-  it("looks correct in snapshot", {
-    func <- local_func()
-    input <- hlo_input("input", "i32", c(4L))
-    scatter_indices <- hlo_input("scatter_indices", "i32", c(2L, 1L))
-    # Update shape: [2] for scatter dims (2 scatter positions, each updating 1 element)
-    update <- hlo_input("update", "i32", c(2L))
-
-    # Create update computation: add
-    update_func <- local_func("update")
-    a <- hlo_input("a", "i32", integer())
-    b <- hlo_input("b", "i32", integer())
-    sum_result <- hlo_add(a, b)
-    update_func <- hlo_return(sum_result)
-
-    scatter_dim_numbers <- ScatterDimensionNumbers(
-      update_window_dims = integer(),
-      inserted_window_dims = 0L,
-      scatter_dims_to_operand_dims = 0L,
-      index_vector_dim = 1L
-    )
-
-    result <- hlo_scatter(
-      inputs = list(input),
-      scatter_indices = scatter_indices,
-      updates = list(update),
-      scatter_dimension_numbers = scatter_dim_numbers,
-      update_computation = update_func
-    )
-
-    func <- hlo_return(result)
-    expect_snapshot(repr(func))
-  })
   skip_if_not_installed("pjrt")
 
   # Helper to create arrays with explicit row-major structure
@@ -290,20 +292,19 @@ describe("scatter", {
       expected = matrix(c(1L, 2L, 13L, 4L), nrow = 2L, byrow = TRUE)
     )
   })
-  # TODO: This test has validation issues with window sizes.
-  # it("works with no iteration dimensions", {
-  #   mat <- matrix(1:4, nrow = 2L, byrow = TRUE)
-  #   check(
-  #     input = mat,
-  #     scatter_indices = c(1L, 0L),
-  #     update = pjrt_buffer(-1L, dtype = "i64"),
-  #     inserted_window_dims = 1L,
-  #     update_window_dims = 0L,
-  #     scatter_dims_to_operand_dims = c(0L, 1L),
-  #     index_vector_dim = 0L,
-  #     expected = matrix(c(1L, 2L, 2L, 4L), nrow = 2L, byrow = TRUE)
-  #   )
-  # })
+  it("works with no iteration dimensions", {
+    mat <- matrix(1:4, nrow = 2L, byrow = TRUE)
+    check(
+      input = mat,
+      scatter_indices = c(1L, 0L),
+      update = pjrt_buffer(-1L, dtype = "i64"),
+      inserted_window_dims = 1L,
+      update_window_dims = 0L,
+      scatter_dims_to_operand_dims = c(0L, 1L),
+      index_vector_dim = 0L,
+      expected = matrix(c(1L, 2L, 2L, 4L), nrow = 2L, byrow = TRUE)
+    )
+  })
   it("works with scalar update", {
     mat <- matrix(1:4, nrow = 2L, byrow = TRUE)
     check(
@@ -317,33 +318,108 @@ describe("scatter", {
       expected = matrix(c(1L, 2L, 2L, 4L), nrow = 2L, byrow = TRUE)
     )
   })
-  # TODO: This test has validation issues with window sizes.
-  # it("works with batching dimension", {
-  #   mat <- matrix(1:6, nrow = 2L, byrow = TRUE)
-  #   update <- array(c(1, 3L, 2L, 4L), dim = c(1, 2, 2))
-  #   mat <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2L, byrow = TRUE)
-  #   expected <- matrix(c(1L, 2 + 1L, 3 + 2L, 4 + 3L, 5 + 4L, 6L), nrow = 2L, byrow = TRUE)
-  #   check(
-  #     input_batching_dims = 0L,
-  #     scatter_indices_batching_dims = 1L,
-  #     input = mat,
-  #     scatter_indices = matrix(c(1L, 0L), nrow = 1L),
-  #     update = update,
-  #     inserted_window_dims = integer(),
-  #     update_window_dims = 2L,
-  #     scatter_dims_to_operand_dims = 1L,
-  #     index_vector_dim = 2L,
-  #     expected = expected
-  #   )
-  # })
-  # TODO: The spec example tests have validation issues with window sizes.
-  # The update window sizes must exactly match the input dimensions after
-  # removing inserted_window_dims and input_batching_dims, but these tests
-  # use partial window sizes which don't match the current validation.
-  # it("works with example from spec", {
-  #   ...
-  # })
-  # it("works with additional examples from spec", {
-  #   ...
-  # })
+  it("works with batching dimension", {
+    mat <- matrix(1:6, nrow = 2L, byrow = TRUE)
+    update <- array(c(1, 3L, 2L, 4L), dim = c(1, 2, 2))
+    mat <- matrix(
+      c(1, 2, 3, 4, 5, 6),
+      nrow = 2L,
+      byrow = TRUE
+    )
+    expected <- matrix(
+      c(1L, 2 + 1L, 3 + 2L, 4 + 3L, 5 + 4L, 6L),
+      nrow = 2L,
+      byrow = TRUE
+    )
+    check(
+      input_batching_dims = 0L,
+      scatter_indices_batching_dims = 1L,
+      input = mat,
+      scatter_indices = matrix(c(1L, 0L), nrow = 1L),
+      update = update,
+      inserted_window_dims = integer(),
+      update_window_dims = 2L,
+      scatter_dims_to_operand_dims = 1L,
+      index_vector_dim = 2L,
+      expected = expected
+    )
+  })
+  it("works with example from spec", {
+    # fmt: skip
+    input <- arr(c(
+       1,  2,  3,  4,  5,  6,  7,  8,
+       9, 10, 11, 12, 13, 14, 15, 16,
+      17, 18, 19, 20, 21, 22, 23, 24,
+      25, 26, 27, 28, 29, 30, 31, 32,
+      33, 34, 35, 36, 37, 38, 39, 40,
+      41, 42, 43, 44, 45, 46, 47, 48
+    ), dim = c(2L, 4L, 3L, 2L))
+
+    # fmt: skip
+    scatter_indices <- arr(c(
+      0, 0, 1, 0, 2, 1,
+      0, 1, 1, 1, 0, 9,
+      0, 0, 2, 1, 2, 2,
+      1, 2, 0, 1, 1, 0
+    ), dim = c(2L, 3L, 2L, 2L))
+
+    update <- array(1L, dim = c(2L, 2L, 3L, 2L, 2L))
+
+    # fmt: skip
+    expected <- arr(c(
+       3,  4,  6,  7,  6,  7,  7,  8,
+       9, 10, 11, 12, 15, 16, 17, 18,
+      17, 18, 19, 20, 22, 23, 24, 25,
+      25, 26, 28, 29, 30, 31, 31, 32,
+      35, 36, 38, 39, 38, 39, 39, 40,
+      41, 42, 44, 45, 46, 47, 47, 48
+    ), dim = c(2L, 4L, 3L, 2L))
+
+    check(
+      input = input,
+      scatter_indices = scatter_indices,
+      update = update,
+      update_window_dims = c(0L, 1L),
+      inserted_window_dims = 2L,
+      scatter_dims_to_operand_dims = c(1L, 2L),
+      index_vector_dim = 0L,
+      input_batching_dims = 3L,
+      scatter_indices_batching_dims = 2L,
+      expected = expected
+    )
+  })
+  it("works with additional examples from spec", {
+    # fmt: skip
+    input <- arr(c(
+       1,  2,  3,  4,  5,  6,  7,  8,
+       9, 10, 11, 12, 13, 14, 15, 16,
+      17, 18, 19, 20, 21, 22, 23, 24
+    ), dim = c(2L, 4L, 3L))
+
+    # fmt: skip
+    scatter_indices <- arr(c(
+      0, 2, 1, 0, 2, 1,
+      0, 1, 1, 0, 0, 9
+    ), dim = c(2L, 3L, 2L))
+
+    update <- array(1L, dim = c(2L, 2L, 3L, 2L))
+
+    # fmt: skip
+    expected <- arr(c(
+       1,  2,  5,  6,  7,  8,  7,  8,
+      10, 11, 12, 13, 14, 15, 16, 17,
+      18, 19, 20, 21, 21, 22, 23, 24
+    ), dim = c(2L, 4L, 3L))
+
+    check(
+      input = input,
+      scatter_indices = scatter_indices,
+      update = update,
+      update_window_dims = c(0L, 1L),
+      inserted_window_dims = 2L,
+      scatter_dims_to_operand_dims = c(1L, 2L),
+      index_vector_dim = 0L,
+      expected = expected
+    )
+  })
 })
