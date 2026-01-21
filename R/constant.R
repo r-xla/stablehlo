@@ -169,7 +169,7 @@ r_to_constant.double <- function(value, dtype = NULL, shape, ...) {
 r_to_constant.integer <- function(value, dtype = NULL, shape, ...) {
   dtype <- dtype %??% "i32"
   if (dtype %in% c("i1", "pred")) {
-    cli_abort("Invalid dtype for integer")
+    value <- as.logical(value)
   }
   if (dtype %in% c("f32", "f64")) {
     value <- as.double(value)
