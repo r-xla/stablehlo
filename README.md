@@ -11,6 +11,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![CRAN
 status](https://www.r-pkg.org/badges/version/stablehlo)](https://CRAN.R-project.org/package=stablehlo)
 [![codecov](https://codecov.io/gh/r-xla/stablehlo/branch/main/graph/badge.svg)](https://codecov.io/gh/r-xla/stablehlo)
+[![r-universe](https://r-xla.r-universe.dev/badges/stablehlo)](https://r-xla.r-universe.dev/stablehlo)
 <!-- badges: end -->
 
 The {stablehlo} R package provides a functional API to create

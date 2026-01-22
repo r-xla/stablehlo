@@ -187,7 +187,20 @@ hlo_empty <- function(dtype, shape, func = NULL) {
 }
 
 impl_hlo_constant <- function(value, dtype, func, shape) {
-  dtype <- as.character(as_dtype(dtype))
+  if (is.null(dtype)) {
+    if (is.integer(value)) {
+      "i32"
+    } else if (is.double(value)) {
+      "f32"
+    } else if (is.logical(value)) {
+      "i1"
+    } else {
+      cli_abort(c(
+        "Exoected value to be of class integer, double or logical",
+        x = "Got {.cls {class(value)[[1L]]}}"
+      ))
+    }
+  }
   if (length(shape) && !test_class(value, "PJRTBuffer") && length(value) > 1) {
     # stablehlo allows e.g. dense<0.0> : tensor<2x2xf32>, so if length(value) == 1
     # we don't need to recycle to keep the program size smaller
