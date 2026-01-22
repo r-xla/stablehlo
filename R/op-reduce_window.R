@@ -106,7 +106,7 @@ infer_types_reduce_window <- function(
   if (any(window_dims < 1L)) {
     cli_abort(c(
       "window_dimensions must be positive.",
-      x = "Got {window_dims}"
+      x = "Got {shapevec_repr(window_dims)}"
     ))
   }
 
@@ -135,7 +135,7 @@ infer_types_reduce_window <- function(
   if (any(strides < 1L)) {
     cli_abort(c(
       "window_strides must be positive.",
-      x = "Got {strides}"
+      x = "Got {shapevec_repr(strides)}"
     ))
   }
 
@@ -158,14 +158,14 @@ infer_types_reduce_window <- function(
   if (any(base_dil <= 0)) {
     cli_abort(c(
       "base_dilations must be positive.",
-      x = "Got {base_dil}"
+      x = "Got {shapevec_repr(base_dil)}"
     ))
   }
   # (C11)
   if (any(window_dil < 0)) {
     cli_abort(c(
       "window_dilations must be positive.",
-      x = "Got {window_dil}"
+      x = "Got {shapevec_repr(window_dil)}"
     ))
   }
 

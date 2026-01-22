@@ -21,7 +21,7 @@ infer_types_clamp <- function(min, operand, max) {
   if (length(min_shape) != 0L && !identical(min_shape, operand_shape)) {
     cli_abort(c(
       "min must have the same shape as operand or be a scalar.",
-      i = "Got min shape {.val {min_shape}} and operand shape {.val {operand_shape}}."
+      i = "Got min shape {shapevec_repr(min_shape)} and operand shape {shapevec_repr(max_shape)}."
     ))
   }
 
@@ -29,7 +29,7 @@ infer_types_clamp <- function(min, operand, max) {
   if (length(max_shape) != 0L && !identical(max_shape, operand_shape)) {
     cli_abort(c(
       "max must have the same shape as operand or be a scalar.",
-      i = "Got max shape {.val {max_shape}} and operand shape {.val {operand_shape}}."
+      i = "Got max shape {shapevec_repr(min_shape)} and operand shape {shapevec_repr(max_shape)}."
     ))
   }
 
