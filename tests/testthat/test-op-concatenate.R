@@ -29,3 +29,18 @@ test_that("basic tests", {
   )
   expect_equal(as_array(output), expected, tolerance = 1e-3)
 })
+
+test_that("works with 3D tensors", {
+  out <- infer_types_concatenate(
+    ValueType(TensorType(dtype = BooleanType(), shape = Shape(c(2, 3, 4)))),
+    ValueType(TensorType(dtype = BooleanType(), shape = Shape(c(2, 1, 4)))),
+    dimension = Constant(
+      1L,
+      TensorType(dtype = IntegerType(64L), shape = Shape(integer()))
+    )
+  )[[1L]]$type
+  expect_equal(
+    out,
+    TensorType(dtype = BooleanType(), shape = Shape(c(2, 4, 4)))
+  )
+})

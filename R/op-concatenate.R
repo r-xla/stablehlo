@@ -43,16 +43,18 @@ infer_types_concatenate <- function(..., dimension) {
   }
 
   # (C2)
-  dims <- lapply(input_dims, \(x) x[-dim_r])
-  if (!all(dims == dims[[1]])) {
+  dims_no_concat <- lapply(input_dims, \(x) x[-dim_r])
+  if (
+    !all(vapply(dims_no_concat, identical, logical(1), dims_no_concat[[1]]))
+  ) {
     # fmt: skip
     shapes_str <- paste0( # nolint
-      vapply(dims, shapevec_repr, character(1)),
+      vapply(input_dims, shapevec_repr, character(1)),
       collapse = ", "
     )
     cli_abort(c(
       "Each input must have same shape (except for the concatenated dimension)",
-      x = "Got {shapes_str}."
+      x = "Got {shapes_str} for dimension {dimension}."
     ))
   }
 
