@@ -3,7 +3,7 @@ NULL
 
 #' @title index_vec
 #' @description Wraps an integer vector marking it as containing 0-based index values.
-#' @param x (`integer()`)\cr Integer vector of 0-based indices.
+#' @param x (`integer()`)\cr Integer vector of indices.
 #' @return An integer vector with additional class `"IndexVector"`.
 #' @export
 index_vec <- function(x) {

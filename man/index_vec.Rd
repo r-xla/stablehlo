@@ -7,7 +7,7 @@
 index_vec(x)
 }
 \arguments{
-\item{x}{(\code{integer()})\cr Integer vector of 0-based indices.}
+\item{x}{(\code{integer()})\cr Integer vector of indices.}
 }
 \value{
 An integer vector with additional class \code{"IndexVector"}.
