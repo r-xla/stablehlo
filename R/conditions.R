@@ -4,24 +4,24 @@ NULL
 #' @title index_vec
 #' @description Wraps an integer vector marking it as containing 0-based index values.
 #' @param x (`integer()`)\cr Integer vector of 0-based indices.
-#' @return An integer vector with additional class `"index_vec"`.
+#' @return An integer vector with additional class `"IndexVector"`.
 #' @export
 index_vec <- function(x) {
-  structure(as.integer(x), class = "index_vec")
+  structure(as.integer(x), class = "IndexVector")
 }
 
 #' @export
-format.index_vec <- function(x, ...) {
+format.IndexVector <- function(x, ...) {
   vals <- unclass(x)
   if (length(vals) == 1L) {
     as.character(vals)
   } else {
-    paste0("(", paste0(vals, collapse = ", "), ")")
+    paste0("c(", paste0(vals, collapse = ", "), ")")
   }
 }
 
 #' @exportS3Method cli::cli_format
-cli_format.index_vec <- function(x, style = NULL, ...) {
+cli_format.IndexVector <- function(x, style = NULL, ...) {
   format(x)
 }
 
@@ -67,7 +67,7 @@ conditionMessage.ErrorStablehlo <- function(c, ...) {
 #' @export
 to_one_based <- function(x, ...) {
   for (nm in names(x)) {
-    if (inherits(x[[nm]], "index_vec")) {
+    if (inherits(x[[nm]], "IndexVector")) {
       x[[nm]] <- index_vec(unclass(x[[nm]]) + 1L)
     }
   }

@@ -10,7 +10,7 @@ index_vec(x)
 \item{x}{(\code{integer()})\cr Integer vector of 0-based indices.}
 }
 \value{
-An integer vector with additional class \code{"index_vec"}.
+An integer vector with additional class \code{"IndexVector"}.
 }
 \description{
 Wraps an integer vector marking it as containing 0-based index values.

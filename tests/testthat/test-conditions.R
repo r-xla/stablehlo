@@ -1,15 +1,15 @@
 test_that("index_vec constructor works", {
   iv <- index_vec(c(0, 1, 2))
-  expect_s3_class(iv, "index_vec")
+  expect_s3_class(iv, "IndexVector")
   expect_equal(unclass(iv), c(0L, 1L, 2L))
 })
 
-test_that("cli_format.index_vec formats scalars", {
+test_that("cli_format.IndexVector formats scalars", {
   expect_equal(cli::cli_format(index_vec(5L)), "5")
 })
 
-test_that("cli_format.index_vec formats vectors", {
-  expect_equal(cli::cli_format(index_vec(c(1L, 2L, 3L))), "(1, 2, 3)")
+test_that("cli_format.IndexVector formats vectors", {
+  expect_equal(cli::cli_format(index_vec(c(1L, 2L, 3L))), "c(1, 2, 3)")
 })
 
 test_that("can handle conditions", {
