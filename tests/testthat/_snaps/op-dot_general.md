@@ -30,12 +30,12 @@
 ---
 
     `lhs batching_dims and contracting_dims` contains duplicate dimension indices.
-    x Got 0 and 0. Each dimension index must appear only once.
+    x Got (0, 0). Each dimension index must appear only once.
 
 ---
 
     `rhs batching_dims and contracting_dims` contains duplicate dimension indices.
-    x Got 0 and 0. Each dimension index must appear only once.
+    x Got (0, 0). Each dimension index must appear only once.
 
 ---
 

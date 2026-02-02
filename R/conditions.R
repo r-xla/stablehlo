@@ -103,7 +103,7 @@ conditionMessage.ErrorDimensionUniqueness <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg}} contains duplicate dimension indices.",
-      x = "Got {c$dimensions}. Each dimension index must appear only once."
+      x = "Got {.val {c$dimensions}}. Each dimension index must appear only once."
     ),
     .envir = environment()
   )
@@ -144,7 +144,7 @@ conditionMessage.ErrorIndexOutOfBounds <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg}} contains index{?es} outside the valid range.",
-      x = "Got {c$index}, but valid range is [{c$lower}, {c$upper})."
+      x = "Got {.val {c$index}}, but valid range is [{.val {c$lower}}, {.val {c$upper}})."
     ),
     .envir = environment()
   )
@@ -181,8 +181,8 @@ error_permute_index <- function(
 conditionMessage.ErrorPermuteIndex <- function(c, ...) {
   format_error(
     c(
-      "{.var {c$arg}} must be a permutation of {c$expected}.",
-      x = "Got {c$permutation}."
+      "{.var {c$arg}} must be a permutation of {.val {c$expected}}.",
+      x = "Got {.val {c$permutation}}."
     ),
     .envir = environment()
   )
@@ -222,7 +222,7 @@ error_unexpected_type <- function(
 conditionMessage.ErrorUnexpectedType <- function(c, ...) {
   format_error(
     c(
-      "{.var {c$arg}[{c$index}]} {c$expected}.",
+      "{.var {c$arg}[{.val {c$index}}]} {c$expected}.",
       x = "Got {c$actual}."
     ),
     .envir = environment()
@@ -269,7 +269,7 @@ error_unequal_types <- function(
 conditionMessage.ErrorUnequalTypes <- function(c, ...) {
   format_error(
     c(
-      "{.var {c$arg1}[{c$index}]} and {.var {c$arg2}[{c$index}]} {c$expected}.",
+      "{.var {c$arg1}[{.val {c$index}}]} and {.var {c$arg2}[{.val {c$index}}]} {c$expected}.",
       x = "Got {c$actual1} and {c$actual2}."
     ),
     .envir = environment()
@@ -305,7 +305,7 @@ conditionMessage.ErrorIndicesNotSorted <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg}} must be sorted in ascending order.",
-      i = "Got {c$indices}."
+      i = "Got {.val {c$indices}}."
     ),
     .envir = environment()
   )
@@ -346,7 +346,7 @@ conditionMessage.ErrorIndexInSet <- function(c, ...) {
   format_error(
     c(
       "{.var {c$arg1}} must not be in {.var {c$arg2}}.",
-      x = "{c$arg1} = {c$index} is in {c$arg2} = {c$set}."
+      x = "{c$arg1} = {.val {c$index}} is in {c$arg2} = {.val {c$set}}."
     ),
     .envir = environment()
   )
