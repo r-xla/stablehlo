@@ -6,7 +6,7 @@
 ---
 
     `dimensions` contains index outside the valid range.
-    x Got 0, 1, 5, but valid range is [0, 3).
+    x Got c(0, 1, 5), but valid range is [0, 3).
 
 ---
 
@@ -16,7 +16,7 @@
 # ErrorDimensionUniqueness
 
     `dimensions` contains duplicate dimension indices.
-    x Got [0, 1, 0, 2]. Each dimension index must appear only once.
+    x Got c(0, 1, 0, 2). Each dimension index must appear only once.
 
 # ErrorPermuteIndex
 
@@ -36,10 +36,10 @@
 # ErrorIndicesNotSorted
 
     `update_window_dims` must be sorted in ascending order.
-    i Got [2, 0, 1].
+    i Got c(2, 0, 1).
 
 # ErrorIndexInSet
 
     `index_vector_dim` must not be in `scatter_indices_batching_dims`.
-    x index_vector_dim = 2 is in scatter_indices_batching_dims = [0, 1, 2].
+    x index_vector_dim = 2 is in scatter_indices_batching_dims = c(0, 1, 2).
 

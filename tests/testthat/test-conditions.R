@@ -1,3 +1,17 @@
+test_that("index_vec constructor works", {
+  iv <- index_vec(c(0, 1, 2))
+  expect_s3_class(iv, "IndexVector")
+  expect_equal(unclass(iv), c(0L, 1L, 2L))
+})
+
+test_that("cli_format.IndexVector formats scalars", {
+  expect_equal(cli::cli_format(index_vec(5L)), "5")
+})
+
+test_that("cli_format.IndexVector formats vectors", {
+  expect_equal(cli::cli_format(index_vec(c(1L, 2L, 3L))), "c(1, 2, 3)")
+})
+
 test_that("can handle conditions", {
   e <- tryCatch(
     error_dimension_uniqueness(
@@ -9,7 +23,7 @@ test_that("can handle conditions", {
       to_one_based(e)
     }
   )
-  expect_equal(e$dimensions, c(1L, 2L, 1L, 3L))
+  expect_equal(e$dimensions, index_vec(c(1L, 2L, 1L, 3L)))
 })
 
 test_that("to_one_based works with ErrorIndexOutOfBounds", {
@@ -24,9 +38,9 @@ test_that("to_one_based works with ErrorIndexOutOfBounds", {
 
   converted <- to_one_based(err)
 
-  expect_equal(converted$index, 6L)
-  expect_equal(converted$lower, 1L)
-  expect_equal(converted$upper, 4L)
+  expect_equal(converted$index, index_vec(6L))
+  expect_equal(converted$lower, index_vec(1L))
+  expect_equal(converted$upper, index_vec(4L))
 })
 
 test_that("ErrorIndexOutOfBounds", {
@@ -131,7 +145,7 @@ test_that("to_one_based works with ErrorIndicesNotSorted", {
 
   converted <- to_one_based(err)
 
-  expect_equal(converted$indices, c(3L, 1L, 2L))
+  expect_equal(converted$indices, index_vec(c(3L, 1L, 2L)))
 })
 
 test_that("ErrorIndexInSet", {
@@ -158,6 +172,6 @@ test_that("to_one_based works with ErrorIndexInSet", {
 
   converted <- to_one_based(err)
 
-  expect_equal(converted$index, 3L)
-  expect_equal(converted$set, c(1L, 2L, 3L))
+  expect_equal(converted$index, index_vec(3L))
+  expect_equal(converted$set, index_vec(c(1L, 2L, 3L)))
 })

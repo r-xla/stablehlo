@@ -38,6 +38,11 @@ print.Shape <- function(x, ...) {
   invisible(x)
 }
 
+#' @exportS3Method cli::cli_format
+cli_format.Shape <- function(x, style = NULL, ...) {
+  repr(x)
+}
+
 #' @export
 #' @method shape Shape
 shape.Shape <- function(x, ...) {

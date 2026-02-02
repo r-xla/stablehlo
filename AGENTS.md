@@ -60,7 +60,7 @@ Also, annotate each check in the inference function with the corresponding requi
 ## Error Messages
 
 The error messages should make it clear what went wrong (i.e. what was expected) and what the actual input was.
-Also, error messages referencing 0-based values (like indices) should be wrapped in custom error classes (reusing existing error classes if possible) and implement the `to_one_based()` generic function to convert the 0-based values to 1-based values in the error message.
+Also, error messages referencing 0-based values (like indices) should use `index_vec()` to wrap the integer fields in the error constructor. The `to_one_based()` function will then automatically find and increment all `IndexVector` fields. The `cli_format.IndexVector()` method handles formatting these values in error messages.
 
 ## Linter
 
