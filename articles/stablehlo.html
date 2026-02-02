@@ -293,19 +293,19 @@ documentation</a>.</p>
 <code class="sourceCode R"><span><span class="va">x_buf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-xla.github.io/pjrt/reference/pjrt_buffer.html" class="external-link">pjrt_buffer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, dtype <span class="op">=</span> <span class="st">"f32"</span><span class="op">)</span></span>
 <span><span class="va">x_buf</span></span>
 <span><span class="co">#&gt; PJRTBuffer </span></span>
-<span><span class="co">#&gt;  1.0000 3.0000</span></span>
-<span><span class="co">#&gt;  2.0000 4.0000</span></span>
+<span><span class="co">#&gt;  1 3</span></span>
+<span><span class="co">#&gt;  2 4</span></span>
 <span><span class="co">#&gt; [ CPUf32{2x2} ]</span></span>
 <span><span class="va">y_buf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-xla.github.io/pjrt/reference/pjrt_buffer.html" class="external-link">pjrt_buffer</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">8</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, dtype <span class="op">=</span> <span class="st">"f32"</span><span class="op">)</span></span>
 <span><span class="va">y_buf</span></span>
 <span><span class="co">#&gt; PJRTBuffer </span></span>
-<span><span class="co">#&gt;  5.0000 7.0000</span></span>
-<span><span class="co">#&gt;  6.0000 8.0000</span></span>
+<span><span class="co">#&gt;  5 7</span></span>
+<span><span class="co">#&gt;  6 8</span></span>
 <span><span class="co">#&gt; [ CPUf32{2x2} ]</span></span>
 <span><span class="va">out_buf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-xla.github.io/pjrt/reference/pjrt_execute.html" class="external-link">pjrt_execute</a></span><span class="op">(</span><span class="va">executable</span>, <span class="va">x_buf</span>, <span class="va">y_buf</span><span class="op">)</span></span>
 <span><span class="va">out_buf</span></span>
 <span><span class="co">#&gt; PJRTBuffer </span></span>
-<span><span class="co">#&gt;  10.0000</span></span>
+<span><span class="co">#&gt;  10</span></span>
 <span><span class="co">#&gt; [ CPUf32{} ]</span></span></code></pre></div>
   </main>
 </div>

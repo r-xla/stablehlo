@@ -1,7 +1,7 @@
 # Convert 0-based indices to 1-based
 
-Generic function to convert 0-based indices in error conditions to
-1-based
+Converts all index_vec fields in a condition object from 0-based to
+1-based.
 
 ## Usage
 
@@ -13,12 +13,12 @@ to_one_based(x, ...)
 
 - x:
 
-  Condition object with indices
+  Condition object with index_vec fields.
 
 - ...:
 
-  Additional arguments (not used)
+  Additional arguments (not used).
 
 ## Value
 
-Condition object with indices converted to 1-based
+Condition object with index_vec fields incremented by 1.

@@ -266,18 +266,18 @@ Next, we create some input values and run the function.
 x_buf <- pjrt_buffer(1:4, shape = c(2, 2), dtype = "f32")
 x_buf
 #> PJRTBuffer 
-#>  1.0000 3.0000
-#>  2.0000 4.0000
+#>  1 3
+#>  2 4
 #> [ CPUf32{2x2} ]
 y_buf <- pjrt_buffer(5:8, shape = c(2, 2), dtype = "f32")
 y_buf
 #> PJRTBuffer 
-#>  5.0000 7.0000
-#>  6.0000 8.0000
+#>  5 7
+#>  6 8
 #> [ CPUf32{2x2} ]
 out_buf <- pjrt_execute(executable, x_buf, y_buf)
 out_buf
 #> PJRTBuffer 
-#>  10.0000
+#>  10
 #> [ CPUf32{} ]
 ```

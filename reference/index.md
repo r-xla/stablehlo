@@ -214,6 +214,7 @@
   While Operator
 - [`infer_types_xor()`](hlo_xor.md) [`hlo_xor()`](hlo_xor.md) : Xor
   Operator
+- [`index_vec()`](index_vec.md) : index_vec
 - [`infer_types_custom_call()`](infer_types_custom_call.md) : Infer
   types for custom call
 - [`infer_types_float_biv()`](infer_types_float_biv.md) : Infer types

@@ -133,6 +133,7 @@
 <url><loc>/reference/hlo_while.html</loc></url>
 <url><loc>/reference/hlo_xor.html</loc></url>
 <url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/index_vec.html</loc></url>
 <url><loc>/reference/infer_types_custom_call.html</loc></url>
 <url><loc>/reference/infer_types_float_biv.html</loc></url>
 <url><loc>/reference/infer_types_float_uni.html</loc></url>

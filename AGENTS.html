@@ -101,7 +101,7 @@
 </div>
 <div class="section level2">
 <h2 id="error-messages">Error Messages<a class="anchor" aria-label="anchor" href="#error-messages"></a></h2>
-<p>The error messages should make it clear what went wrong (i.e. what was expected) and what the actual input was. Also, error messages referencing 0-based values (like indices) should be wrapped in custom error classes (reusing existing error classes if possible) and implement the <code><a href="reference/to_one_based.html">to_one_based()</a></code> generic function to convert the 0-based values to 1-based values in the error message.</p>
+<p>The error messages should make it clear what went wrong (i.e. what was expected) and what the actual input was. Also, error messages referencing 0-based values (like indices) should use <code><a href="reference/index_vec.html">index_vec()</a></code> to wrap the integer fields in the error constructor. The <code><a href="reference/to_one_based.html">to_one_based()</a></code> function will then automatically find and increment all <code>IndexVector</code> fields. The <code>cli_format.IndexVector()</code> method handles formatting these values in error messages.</p>
 </div>
 <div class="section level2">
 <h2 id="linter">Linter<a class="anchor" aria-label="anchor" href="#linter"></a></h2>
