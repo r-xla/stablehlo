@@ -34,12 +34,6 @@ conditionMessage.ErrorDotGeneralDimMismatch <- function(c, ...) {
   )
 }
 
-#' @export
-to_one_based.ErrorDotGeneralDimMismatch <- function(x, ...) {
-  x$increment <- 0L
-  x
-}
-
 #' @param dot_dimension_numbers (`DotDimensionNumbers`)\cr
 #'   The dot dimension number.
 #' @rdname hlo_dot_general

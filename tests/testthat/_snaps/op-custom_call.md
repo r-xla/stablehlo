@@ -11,7 +11,7 @@
       out <- pjrt::pjrt_execute(exec, buf)
     Output
       MyTensor
-       1.0000 3.0000
-       2.0000 4.0000
+       1 3
+       2 4
       [ F32{2,2} ]
 

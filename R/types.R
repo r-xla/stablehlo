@@ -38,6 +38,11 @@ NULL
   identical(e1$value, e2$value)
 }
 
+#' @exportS3Method cli::cli_format
+cli_format.TensorDataType <- function(x, style = NULL, ...) {
+  repr(x)
+}
+
 #' @export
 `!=.TensorDataType` <- function(e1, e2) {
   # If classes don't match, types are not equal
@@ -295,6 +300,11 @@ print.TensorType <- function(x, ...) {
   invisible(x)
 }
 
+#' @exportS3Method cli::cli_format
+cli_format.TensorType <- function(x, style = NULL, ...) {
+  repr(x)
+}
+
 #' @export
 #' @method shape TensorType
 shape.TensorType <- function(x, ...) {
@@ -375,6 +385,11 @@ repr.ValueType <- function(x, ...) {
 print.ValueType <- function(x, ...) {
   cat("<ValueType: ", repr(x), ">\n", sep = "")
   invisible(x)
+}
+
+#' @exportS3Method cli::cli_format
+cli_format.ValueType <- function(x, style = NULL, ...) {
+  repr(x)
 }
 
 make_vt <- function(type, shape) {

@@ -7,13 +7,14 @@
 to_one_based(x, ...)
 }
 \arguments{
-\item{x}{Condition object with indices}
+\item{x}{Condition object with index_vec fields.}
 
-\item{...}{Additional arguments (not used)}
+\item{...}{Additional arguments (not used).}
 }
 \value{
-Condition object with indices converted to 1-based
+Condition object with index_vec fields incremented by 1.
 }
 \description{
-Generic function to convert 0-based indices in error conditions to 1-based
+Converts all index_vec fields in a condition object from
+0-based to 1-based.
 }

@@ -25,7 +25,7 @@
       print(xout)
     Output
       PJRTBuffer 
-       1.0000 3.0000
-       2.0000 4.0000
+       1 3
+       2 4
       [ CPUf32{2x2} ] 
 

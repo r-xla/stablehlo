@@ -1,6 +1,30 @@
 #' @importFrom cli format_error
 NULL
 
+#' @title index_vec
+#' @description Wraps an integer vector marking it as containing 0-based index values.
+#' @param x (`integer()`)\cr Integer vector of 0-based indices.
+#' @return An integer vector with additional class `"index_vec"`.
+#' @export
+index_vec <- function(x) {
+  structure(as.integer(x), class = "index_vec")
+}
+
+#' @export
+format.index_vec <- function(x, ...) {
+  vals <- unclass(x)
+  if (length(vals) == 1L) {
+    as.character(vals)
+  } else {
+    paste0("(", paste0(vals, collapse = ", "), ")")
+  }
+}
+
+#' @exportS3Method cli::cli_format
+cli_format.index_vec <- function(x, style = NULL, ...) {
+  format(x)
+}
+
 #' @title ErrorStablehlo
 #' @description Base error class for all stablehlo errors
 #' @param call (`call` or `NULL`)\cr Call that generated the error
@@ -35,17 +59,18 @@ conditionMessage.ErrorStablehlo <- function(c, ...) {
 }
 
 #' @title Convert 0-based indices to 1-based
-#' @description Generic function to convert 0-based indices in error conditions to 1-based
-#' @param x Condition object with indices
-#' @param ... Additional arguments (not used)
-#' @return Condition object with indices converted to 1-based
+#' @description Converts all index_vec fields in a condition object from
+#'   0-based to 1-based.
+#' @param x Condition object with index_vec fields.
+#' @param ... Additional arguments (not used).
+#' @return Condition object with index_vec fields incremented by 1.
 #' @export
 to_one_based <- function(x, ...) {
-  UseMethod("to_one_based")
-}
-
-#' @export
-to_one_based.default <- function(x, ...) {
+  for (nm in names(x)) {
+    if (inherits(x[[nm]], "index_vec")) {
+      x[[nm]] <- index_vec(unclass(x[[nm]]) + 1L)
+    }
+  }
   x
 }
 
@@ -66,7 +91,7 @@ error_dimension_uniqueness <- function(
 ) {
   error_stablehlo(
     arg = arg,
-    dimensions = as.integer(dimensions),
+    dimensions = index_vec(dimensions),
     call = call,
     class = c(class, "ErrorDimensionUniqueness"),
     signal = signal
@@ -75,20 +100,13 @@ error_dimension_uniqueness <- function(
 
 #' @export
 conditionMessage.ErrorDimensionUniqueness <- function(c, ...) {
-  dims_str <- paste0(c$dimensions, collapse = ", ") # nolint
   format_error(
     c(
       "{.var {c$arg}} contains duplicate dimension indices.",
-      x = "Got [{dims_str}]. Each dimension index must appear only once."
+      x = "Got {c$dimensions}. Each dimension index must appear only once."
     ),
     .envir = environment()
   )
-}
-
-#' @export
-to_one_based.ErrorDimensionUniqueness <- function(x, ...) {
-  x$dimensions <- x$dimensions + 1L
-  x
 }
 
 #' @title ErrorIndexOutOfBounds
@@ -112,9 +130,9 @@ error_index_out_of_bounds <- function(
 ) {
   error_stablehlo(
     arg = arg,
-    index = as.integer(index),
-    lower = as.integer(lower),
-    upper = as.integer(upper),
+    index = index_vec(index),
+    lower = index_vec(lower),
+    upper = index_vec(upper),
     call = call,
     class = c(class, "ErrorIndexOutOfBounds"),
     signal = signal
@@ -123,22 +141,13 @@ error_index_out_of_bounds <- function(
 
 #' @export
 conditionMessage.ErrorIndexOutOfBounds <- function(c, ...) {
-  index_str <- paste0(c$index, collapse = ", ") # nolint
   format_error(
     c(
       "{.var {c$arg}} contains index{?es} outside the valid range.",
-      x = "Got {index_str}, but valid range is [{c$lower}, {c$upper})."
+      x = "Got {c$index}, but valid range is [{c$lower}, {c$upper})."
     ),
     .envir = environment()
   )
-}
-
-#' @export
-to_one_based.ErrorIndexOutOfBounds <- function(x, ...) {
-  x$index <- x$index + 1L
-  x$lower <- x$lower + 1L
-  x$upper <- x$upper + 1L
-  x
 }
 
 #' @title ErrorPermuteIndex
@@ -160,8 +169,8 @@ error_permute_index <- function(
 ) {
   error_stablehlo(
     arg = arg,
-    permutation = as.integer(permutation),
-    expected = as.integer(expected),
+    permutation = index_vec(permutation),
+    expected = index_vec(expected),
     call = call,
     class = c(class, "ErrorPermuteIndex"),
     signal = signal
@@ -170,22 +179,13 @@ error_permute_index <- function(
 
 #' @export
 conditionMessage.ErrorPermuteIndex <- function(c, ...) {
-  perm_str <- paste0(c$permutation, collapse = ", ") # nolint
-  expected_str <- paste0(c$expected, collapse = ", ") # nolint
   format_error(
     c(
-      "{.var {c$arg}} must be a permutation of c({expected_str}).",
-      x = "Got c({perm_str})."
+      "{.var {c$arg}} must be a permutation of {c$expected}.",
+      x = "Got {c$permutation}."
     ),
     .envir = environment()
   )
-}
-
-#' @export
-to_one_based.ErrorPermuteIndex <- function(x, ...) {
-  x$permutation <- x$permutation + 1L
-  x$expected <- x$expected + 1L
-  x
 }
 
 #' @title ErrorUnexpectedType
@@ -209,7 +209,7 @@ error_unexpected_type <- function(
 ) {
   error_stablehlo(
     arg = arg,
-    index = as.integer(index),
+    index = index_vec(index),
     expected = expected,
     actual = as.character(actual),
     call = call,
@@ -227,12 +227,6 @@ conditionMessage.ErrorUnexpectedType <- function(c, ...) {
     ),
     .envir = environment()
   )
-}
-
-#' @export
-to_one_based.ErrorUnexpectedType <- function(x, ...) {
-  x$index <- x$index + 1L
-  x
 }
 
 #' @title ErrorUnequalTypes
@@ -261,7 +255,7 @@ error_unequal_types <- function(
   error_stablehlo(
     arg1 = arg1,
     arg2 = arg2,
-    index = as.integer(index),
+    index = index_vec(index),
     expected = expected,
     actual1 = as.character(actual1),
     actual2 = as.character(actual2),
@@ -282,12 +276,6 @@ conditionMessage.ErrorUnequalTypes <- function(c, ...) {
   )
 }
 
-#' @export
-to_one_based.ErrorUnequalTypes <- function(x, ...) {
-  x$index <- x$index + 1L
-  x
-}
-
 #' @title ErrorIndicesNotSorted
 #' @description Error when indices are not sorted in ascending order
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
@@ -305,7 +293,7 @@ error_indices_not_sorted <- function(
 ) {
   error_stablehlo(
     arg = arg,
-    indices = as.integer(indices),
+    indices = index_vec(indices),
     call = call,
     class = c(class, "ErrorIndicesNotSorted"),
     signal = signal
@@ -314,20 +302,13 @@ error_indices_not_sorted <- function(
 
 #' @export
 conditionMessage.ErrorIndicesNotSorted <- function(c, ...) {
-  indices_str <- paste0(c$indices, collapse = ", ") # nolint
   format_error(
     c(
       "{.var {c$arg}} must be sorted in ascending order.",
-      i = "Got [{indices_str}]."
+      i = "Got {c$indices}."
     ),
     .envir = environment()
   )
-}
-
-#' @export
-to_one_based.ErrorIndicesNotSorted <- function(x, ...) {
-  x$indices <- x$indices + 1L
-  x
 }
 
 #' @title ErrorIndexInSet
@@ -352,8 +333,8 @@ error_index_in_set <- function(
   error_stablehlo(
     arg1 = arg1,
     arg2 = arg2,
-    index = as.integer(index),
-    set = as.integer(set),
+    index = index_vec(index),
+    set = index_vec(set),
     call = call,
     class = c(class, "ErrorIndexInSet"),
     signal = signal
@@ -362,19 +343,11 @@ error_index_in_set <- function(
 
 #' @export
 conditionMessage.ErrorIndexInSet <- function(c, ...) {
-  set_str <- paste0(c$set, collapse = ", ") # nolint
   format_error(
     c(
       "{.var {c$arg1}} must not be in {.var {c$arg2}}.",
-      x = "{c$arg1} = {c$index} is in {c$arg2} = [{set_str}]."
+      x = "{c$arg1} = {c$index} is in {c$arg2} = {c$set}."
     ),
     .envir = environment()
   )
-}
-
-#' @export
-to_one_based.ErrorIndexInSet <- function(x, ...) {
-  x$index <- x$index + 1L
-  x$set <- x$set + 1L
-  x
 }
