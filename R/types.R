@@ -103,12 +103,6 @@ repr.IntegerType <- function(x, ...) {
   paste0("i", x$value)
 }
 
-#' @export
-print.IntegerType <- function(x, ...) {
-  cat(sprintf("<IntegerType: %s>\n", x$value))
-  invisible(x)
-}
-
 #' @title UnsignedType
 #' @description
 #' Represents an unsigned integer type with a given bit width.
@@ -131,12 +125,6 @@ UnsignedType <- function(value) {
 #' @export
 repr.UnsignedType <- function(x, ...) {
   paste0("ui", x$value)
-}
-
-#' @export
-print.UnsignedType <- function(x, ...) {
-  cat(sprintf("<UnsignedType: %s>\n", x$value))
-  invisible(x)
 }
 
 #' @title FloatType

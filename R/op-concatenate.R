@@ -21,10 +21,10 @@ infer_types_concatenate <- function(..., dimension) {
   # (C1)
   dtypes <- lapply(dots, \(x) x$type$dtype)
   if (length(unique(dtypes)) != 1) {
-    dtypes_str <- paste0(vapply(dtypes, repr, character(1)), collapse = ", ") # nolint
+    dtype_reprs <- vapply(dtypes, repr, character(1))
     cli_abort(c(
-      "Each input must have same element type",
-      x = "Got {dtypes_str}."
+      "Each input must have same data type",
+      x = "Got {dtype_reprs}."
     ))
   }
 

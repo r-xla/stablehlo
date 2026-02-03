@@ -20,7 +20,7 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   }
   if (length(inputs) != length(init_values)) {
     cli_abort(c(
-      "Number of inputs must equal number of init_values",
+      "Number of inputs must equal number of {.arg init_values}",
       x = "Got {length(inputs)} inputs and {length(init_values)} init_values."
     ))
   }
@@ -32,7 +32,7 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
 
   lapply(init_value_types, function(vt) {
     if (length(vt$type$shape$dims) != 0L) {
-      cli_abort("init_values must be 0-D tensors")
+      cli_abort("{.arg init_values} must be 0-D tensors")
     }
   })
 
@@ -48,7 +48,7 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   # (C2)
   for (i in seq_len(num_inputs)) {
     if (input_value_types[[i]]$type$dtype != init_value_types[[i]]$type$dtype) {
-      cli_abort("Element types of inputs and init_values must match")
+      cli_abort("Data types of inputs and init_values must match")
     }
   }
 
@@ -73,18 +73,18 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
     }
   }
 
-  # Determine output element types from body outputs (C6, C8)
+  # Determine output data types from body outputs (C6, C8)
   body_out_types <- ValueTypes(func_output_types(body))
   if (length(body_out_types) != num_inputs) {
     cli_abort(c(
-      "Body must return one tensor per input",
-      i = "Body returns {length(body_out_types)} tensors, but {num_inputs} are required."
+      "{.arg body} must return one tensor per input",
+      x = "Body returns {length(body_out_types)} tensors, but {num_inputs} are required."
     ))
   }
   for (i in seq_len(num_inputs)) {
     if (body_out_types[[i]]$type$dtype != input_value_types[[i]]$type$dtype) {
       cli_abort(c(
-        "Body must return tensors with the same element type as the inputs"
+        "{.arg body} must return tensors with the same data type as the inputs"
       ))
     }
   }
@@ -99,9 +99,9 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   # (C8)
   out_vts <- lapply(seq_len(num_inputs), function(i) {
     out_elem_vt <- body_out_types[[i]]
-    # Expect 0-D tensor element type; take dtype from it
+    # Expect 0-D tensor data type; take dtype from it
     if (length(out_elem_vt$type$shape$dims) != 0L) {
-      cli_abort("body outputs must be 0-D tensors")
+      cli_abort("{.arg body} outputs must be 0-D tensors")
     }
     ValueType(
       TensorType(

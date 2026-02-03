@@ -22,7 +22,7 @@
       infer_types_compare(lhs, rhs, comparison_direction, compare_type)
     Condition
       Error in `infer_types_compare()`:
-      ! `compare_type` must be SIGNED for signed integer element types.
+      ! `compare_type` must be SIGNED for signed integer data types.
 
 ---
 

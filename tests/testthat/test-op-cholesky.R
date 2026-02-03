@@ -1,3 +1,16 @@
+test_that("errors", {
+  check <- function(operand) {
+    expect_snapshot(
+      infer_types_cholesky(operand, lower = scnst(TRUE, "pred")),
+      error = TRUE
+    )
+  }
+  # (C2) rank < 2
+  check(vt("f32", 3L))
+  # (C3) last two dimensions not equal
+  check(vt("f32", c(3L, 4L)))
+})
+
 test_that("basic tests", {
   func <- local_func()
   x <- hlo_input("x", "f64", shape = c(3L, 3L))

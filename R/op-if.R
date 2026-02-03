@@ -12,7 +12,7 @@ infer_types_if <- function(pred, true_branch, false_branch) {
   if (length(out_types1) != length(out_types2)) {
     cli_abort(c(
       "{.arg true_branch} and {.arg false_branch} must have the same number of outputs.",
-      i = "Got {length(out_types1)} and {length(out_types2)}."
+      x = "Got {length(out_types1)} and {length(out_types2)}."
     ))
   }
   for (i in seq_along(out_types1)) {

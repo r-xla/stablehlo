@@ -5,7 +5,7 @@
     Condition
       Error in `infer_types_rng_bit_generator()`:
       ! `rng_algorithm` must be one of DEFAULT, THREE_FRY, PHILOX
-      i Got "INVALID".
+      x Got "INVALID".
 
 ---
 
@@ -14,8 +14,8 @@
       shape = c(3L, 2L))
     Condition
       Error in `infer_types_rng_bit_generator()`:
-      ! THREE_FRY requires size(initial_state) = 2
-      i Got 4.
+      ! THREE_FRY requires length(initial_state) = 2
+      x Got 4.
 
 ---
 
@@ -24,8 +24,8 @@
         3L, 2L))
     Condition
       Error in `infer_types_rng_bit_generator()`:
-      ! PHILOX requires size(initial_state) to be 2 or 3
-      i Got 4.
+      ! PHILOX requires length(initial_state) to be 2 or 3
+      x Got 4.
 
 # basic tests
 

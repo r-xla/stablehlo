@@ -119,7 +119,7 @@ test_that("ErrorUnexpectedType", {
       arg = "init_values",
       index = 0L,
       expected = "must be 0-D tensors",
-      actual = Shape(c(2L, 2L)),
+      actual = vt("f32", c(2, 2)),
       call = call("abc")
     )
   )

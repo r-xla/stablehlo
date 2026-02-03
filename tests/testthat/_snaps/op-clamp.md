@@ -6,7 +6,7 @@
     Condition
       Error in `infer_types_clamp()`:
       ! `min` must have the same shape as `operand` or be a scalar.
-      i Got min shape (3,3) and operand shape (2,3).
+      x Got shapes (3,3) and (2,3).
 
 ---
 
@@ -16,7 +16,7 @@
     Condition
       Error in `infer_types_clamp()`:
       ! `max` must have the same shape as `operand` or be a scalar.
-      i Got max shape (3,3) and operand shape (2,3).
+      x Got shapes (3,3) and (2,3).
 
 # basic tests
 

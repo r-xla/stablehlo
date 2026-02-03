@@ -178,7 +178,7 @@ infer_types_scatter <- function(
         arg1 = "inputs",
         arg2 = "updates",
         index = i - 1L,
-        expected = "must have the same element type",
+        expected = "must have the same data type",
         actual1 = inputs[[i]]$type$dtype,
         actual2 = updates[[i]]$type$dtype
       )

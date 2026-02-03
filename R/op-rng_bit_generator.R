@@ -16,8 +16,8 @@ infer_types_rng_bit_generator <- function(
 
   if (!test_choice(rng_algorithm, c("DEFAULT", "THREE_FRY", "PHILOX"))) {
     cli_abort(c(
-      "rng_algorithm must be one of DEFAULT, THREE_FRY, PHILOX",
-      i = "Got {.val {rng_algorithm}}."
+      "{.arg rng_algorithm} must be one of DEFAULT, THREE_FRY, PHILOX",
+      x = "Got {.val {rng_algorithm}}."
     ))
   }
 
@@ -29,14 +29,14 @@ infer_types_rng_bit_generator <- function(
     if (state_size != 2L) {
       cli_abort(c(
         "THREE_FRY requires size(initial_state) = 2",
-        i = "Got {.val {state_size}}."
+        x = "Got {.val {state_size}}."
       ))
     }
   } else if (algo == "PHILOX") {
     if (!(state_size %in% c(2L, 3L))) {
       cli_abort(c(
         "PHILOX requires size(initial_state) to be 2 or 3",
-        i = "Got {.val {state_size}}."
+        x = "Got {.val {state_size}}."
       ))
     }
   }

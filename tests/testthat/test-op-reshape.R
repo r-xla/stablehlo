@@ -1,3 +1,11 @@
+test_that("errors", {
+  # (C2) size mismatch
+  expect_snapshot(
+    infer_types_reshape(vt("f32", c(2L, 3L)), shape = c(4L, 2L)),
+    error = TRUE
+  )
+})
+
 test_that("basic tests", {
   local_func()
   x <- hlo_input("x", "f32", shape = c(2L, 3L, 2L))

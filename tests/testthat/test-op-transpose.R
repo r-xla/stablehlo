@@ -1,3 +1,14 @@
+test_that("errors", {
+  # (C2) invalid permutation
+  expect_snapshot(
+    infer_types_transpose(
+      vt("f32", c(2L, 3L, 4L)),
+      permutation = cnst(c(0L, 2L, 1L, 3L), "i64", 4L)
+    ),
+    error = TRUE
+  )
+})
+
 test_that("basic tests", {
   func <- local_func()
   x <- hlo_input("x", "i32", shape = c(2L, 3L, 4L))

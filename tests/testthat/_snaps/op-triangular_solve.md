@@ -6,7 +6,7 @@
     Condition
       Error in `infer_types_triangular_solve()`:
       ! `a` must have rank >= 2
-      i Got rank 1.
+      x Got rank 1.
 
 ---
 
@@ -16,7 +16,7 @@
     Condition
       Error in `infer_types_triangular_solve()`:
       ! `a` and `b` must have the same rank
-      i Got ranks 2 and 3.
+      x Got ranks 2 and 3.
 
 ---
 
@@ -26,7 +26,7 @@
     Condition
       Error in `infer_types_triangular_solve()`:
       ! `a` must be a square matrix (last two dimensions must be equal)
-      i Got shape (3,4).
+      x Got shape (3,4).
 
 ---
 
@@ -36,7 +36,7 @@
     Condition
       Error in `infer_types_triangular_solve()`:
       ! Batch dimensions of `a` and `b` must match
-      i Got shapes (2) and (4).
+      x Got shapes (2) and (4).
 
 ---
 
@@ -46,7 +46,7 @@
     Condition
       Error in `infer_types_triangular_solve()`:
       ! Dimension mismatch
-      i Got shapes (3,3) and (4,2).
+      x Got shapes (3,3) and (4,2).
 
 ---
 
@@ -56,7 +56,7 @@
     Condition
       Error in `infer_types_triangular_solve()`:
       ! `transpose_a` must be one of: "NO_TRANSPOSE", "TRANSPOSE", and "ADJOINT".
-      i Got INVALID.
+      x Got INVALID.
 
 # basic triangular_solve
 

@@ -15,7 +15,7 @@
         "i64", 1L))
     Condition
       Error in `infer_types_reduce()`:
-      ! Number of inputs must equal number of init_values
+      ! Number of inputs must equal number of `init_values`
       x Got 1 inputs and 2 init_values.
 
 ---
@@ -25,7 +25,7 @@
         "f32", 2L)), body = body, dimensions = cnst(0L, "i64", 1L))
     Condition
       Error in `FUN()`:
-      ! init_values must be 0-D tensors
+      ! `init_values` must be 0-D tensors
 
 ---
 

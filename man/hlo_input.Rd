@@ -11,7 +11,7 @@ hlo_input(name, dtype, shape = integer(), func = .current_func(), alias = NULL)
 The name of the parameter.}
 
 \item{dtype}{(\code{\link{ValueType}})\cr
-The element type of the parameter.
+The data type of the parameter.
 Can contain digits, letters and underscores.
 If it starts with a digit, it can only contain digits.
 Otherwise it must start with a letter.}

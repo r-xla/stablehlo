@@ -19,23 +19,23 @@
 
 # error messages
 
-    `batching_dims` must have equal length for lhs and rhs.
-    x Got lhs length 1 and rhs length 0.
+    `batching_dims` must have equal length for `lhs` and `rhs`.
+    x Got lengths 1 and 0.
 
 ---
 
-    `contracting_dims` must have equal length for lhs and rhs.
-    x Got lhs length 2 and rhs length 1.
+    `contracting_dims` must have equal length for `lhs` and `rhs`.
+    x Got lengths 2 and 1.
 
 ---
 
-    `lhs batching_dims and contracting_dims` contains duplicate dimension indices.
-    x Got c(0, 0). Each dimension index must appear only once.
+    `lhs batching_dims and contracting_dims` must contain unique dimension indices
+    x Got c(0, 0)
 
 ---
 
-    `rhs batching_dims and contracting_dims` contains duplicate dimension indices.
-    x Got c(0, 0). Each dimension index must appear only once.
+    `rhs batching_dims and contracting_dims` must contain unique dimension indices
+    x Got c(0, 0)
 
 ---
 

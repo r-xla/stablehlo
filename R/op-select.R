@@ -18,7 +18,7 @@ infer_types_select <- function(
   if (ndims(pred) != 0 && !identical(shape(pred), shape(on_true))) {
     cli_abort(c(
       "rank of {.arg pred} must be 0 or equal to rank of {.arg on_true}",
-      i = "Got shapes {shapevec_repr(shape(pred))} and {shapevec_repr(shape(on_true))}."
+      x = "Got shapes {shapevec_repr(shape(pred))} and {shapevec_repr(shape(on_true))}."
     ))
   }
 
