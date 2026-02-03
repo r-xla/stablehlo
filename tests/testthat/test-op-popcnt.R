@@ -8,3 +8,5 @@ test_that("basic tests", {
     dtype = "i32"
   )
 })
+
+# Errors are tested in test-type_inference.R (via infer_types_integer_uni)

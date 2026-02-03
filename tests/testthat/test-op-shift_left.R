@@ -13,3 +13,5 @@ test_that("basic tests", {
     dtypes = "i32"
   )
 })
+
+# Errors are tested in test-type_inference.R (via infer_types_integerish_biv)

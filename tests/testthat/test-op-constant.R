@@ -214,3 +214,5 @@ test_that("c() shape is interpreted as scalar", {
   buffer <- pjrt_execute(exec)
   expect_equal(buffer, pjrt_scalar(1L))
 })
+
+# Errors are tested in test-assert.R (via assert_const)

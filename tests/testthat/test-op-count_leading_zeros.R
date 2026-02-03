@@ -15,3 +15,5 @@ test_that("basic tests", {
   output <- pjrt_execute(exec, pjrt_buffer(input))
   expect_equal(output, expected)
 })
+
+# Errors are tested in test-type_inference.R (via infer_types_integer_uni)

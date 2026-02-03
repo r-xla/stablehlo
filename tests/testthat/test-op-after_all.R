@@ -6,3 +6,5 @@ test_that("basic tests", {
   result_func <- hlo_return(x)
   expect_snapshot(repr(result_func))
 })
+
+# infer_types_after_all has no error conditions

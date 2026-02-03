@@ -20,3 +20,5 @@ test_that("double nested return", {
   })()
   expect_equal(.current_func(), a)
 })
+
+# Errors are tested in test-assert.R (via assert_vts_are_tensors)

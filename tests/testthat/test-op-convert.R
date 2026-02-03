@@ -20,3 +20,5 @@ test_that("integer to float conversion", {
     tolerance = 1e-5
   )
 })
+
+# Errors are tested in test-assert.R (via assert_vt_is_tensor)

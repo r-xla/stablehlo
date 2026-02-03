@@ -7,3 +7,5 @@ test_that("XOR works", {
     dtypes = "pred"
   )
 })
+
+# Errors are tested in test-type_inference.R (via infer_types_integerish_biv)

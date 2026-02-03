@@ -28,3 +28,5 @@ test_that("print_tensor with header works on CPU", {
 
   expect_equal(out, buf)
 })
+
+# No type inference errors (output types are user-specified)
