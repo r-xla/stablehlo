@@ -163,10 +163,7 @@ infer_types_scatter <- function(
   for (i in seq_along(updates)[-1L]) {
     if (!identical(shape(updates[[i]]), updates_shape)) {
       # fmt: skip
-      shapes_str <- paste( # nolint
-        vapply(updates, shapevec_repr, character(1)),
-        collapse = ", "
-      )
+      shapes_str <- paste(vapply(updates, function(u) shapevec_repr(shape(u)), character(1)), collapse = ", ") # nolint
       cli_abort(c(
         "All updates must have the same shape.",
         x = "Got shapes: {shapes_str}."
@@ -182,8 +179,8 @@ infer_types_scatter <- function(
         arg2 = "updates",
         index = i - 1L,
         expected = "must have the same element type",
-        actual1 = repr(inputs[[i]]$type$dtype),
-        actual2 = repr(updates[[i]]$type$dtype)
+        actual1 = inputs[[i]]$type$dtype,
+        actual2 = updates[[i]]$type$dtype
       )
     }
   }
@@ -307,7 +304,7 @@ infer_types_scatter <- function(
   ]
   if (!identical(batch_shape_inputs, batch_shape_scatter)) {
     cli_abort(
-      "Shape of batch dimensions of inputs and scatter_indices must match.",
+      "Shape of batch dimensions of {.arg inputs} and {.arg scatter_indices} must match.",
       x = "Got {shapevec_repr(batch_shape_inputs)} and {shapevec_repr(batch_shape_scatter)}."
     )
   }
@@ -424,7 +421,7 @@ infer_types_scatter <- function(
   body_out_types <- ValueTypes(func_output_types(update_computation))
   if (length(body_out_types) != num_inputs) {
     cli_abort(c(
-      "update_computation must return {num_inputs} tensor{?s}.",
+      "{.arg update_computation} must return {num_inputs} tensor{?s}.",
       x = "Got {length(body_out_types)} outputs."
     ))
   }
@@ -433,7 +430,7 @@ infer_types_scatter <- function(
     out_type <- body_out_types[[i]]
     if (length(shape(out_type)) != 0L) {
       cli_abort(c(
-        "update_computation outputs must be 0-D tensors.",
+        "{.arg update_computation} outputs must be 0-D tensors.",
         x = "Output {i} has shape {shapevec_repr(shape(out_type))}."
       ))
     }

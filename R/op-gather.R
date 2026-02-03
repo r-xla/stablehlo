@@ -302,7 +302,7 @@ infer_types_gather <- function(
     ]
     if (!identical(batch_shape_operand, batch_shape_start_indices)) {
       cli_abort(c(
-        "Shape of batch dimensions of operand and start_indices must match.",
+        "Shape of batch dimensions of {.arg operand} and {.arg start_indices} must match.",
         x = "Got {shapevec_repr(batch_shape_operand)} and {shapevec_repr(batch_shape_start_indices)}."
       ))
     }

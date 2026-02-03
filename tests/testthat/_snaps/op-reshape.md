@@ -1,3 +1,11 @@
+# errors
+
+    Code
+      infer_types_reshape(vt("f32", c(2L, 3L)), shape = c(4L, 2L))
+    Condition
+      Error in `infer_types_reshape()`:
+      ! Size of output must equal to size of `operand`
+
 # basic tests
 
     Code

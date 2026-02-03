@@ -1,3 +1,13 @@
+# errors
+
+    Code
+      infer_types_select(vt("pred", c(3L, 3L)), vt("f32", c(2L, 3L)), vt("f32", c(2L,
+        3L)))
+    Condition
+      Error in `infer_types_select()`:
+      ! rank of `pred` must be 0 or equal to rank of `on_true`
+      i Got shapes (3,3) and (2,3).
+
 # basic tests
 
     Code

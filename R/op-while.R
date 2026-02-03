@@ -14,12 +14,12 @@ infer_types_while <- function(..., cond, body) {
 
   # (C1)
   if (length(cond$outputs) != 1L) {
-    cli_abort("cond must have exactly one output")
+    cli_abort("{.arg cond} must have exactly one output")
   }
   if (length(cond$inputs) != length(value_types)) {
     cli_abort(c(
-      "cond must have the same number of inputs as inputs",
-      x = "Got {length(cond$inputs)} inputs and {length(value_types)} inputs."
+      "{.arg cond} must have the same number of inputs as {.arg ...}",
+      x = "Got {length(cond$inputs)} and {length(value_types)}."
     ))
   }
   cond_in_types <- lapply(cond$inputs, function(x) x$type)
@@ -30,8 +30,8 @@ infer_types_while <- function(..., cond, body) {
         arg2 = "input",
         index = i - 1L,
         expected = "must have the same type",
-        actual1 = repr(cond_in_types[[i]]),
-        actual2 = repr(value_types[[i]])
+        actual1 = cond_in_types[[i]],
+        actual2 = value_types[[i]]
       )
     }
   }
@@ -48,7 +48,7 @@ infer_types_while <- function(..., cond, body) {
   body_out_types <- func_output_types(body)
   if (length(body_out_types) != length(value_types)) {
     cli_abort(c(
-      "body must have the same number of outputs as inputs",
+      "{.arg body} must have the same number of outputs as {.arg ...}",
       x = "Got {length(body_out_types)} outputs and {length(value_types)} inputs."
     ))
   }
@@ -59,8 +59,8 @@ infer_types_while <- function(..., cond, body) {
         arg2 = "input",
         index = i - 1L, # 0-based
         expected = "must have the same type",
-        actual1 = repr(body_out_types[[i]]),
-        actual2 = repr(value_types[[i]])
+        actual1 = body_out_types[[i]],
+        actual2 = value_types[[i]]
       )
     }
   }

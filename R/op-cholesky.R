@@ -25,8 +25,8 @@ infer_types_cholesky <- function(
   # (C3) dim(a, -2) = dim(a, -1)
   if (operand_dims[rank] != operand_dims[rank - 1]) {
     cli_abort(c(
-      "The operand must be symmetric in the last two dimensions",
-      x = "Got {shapevec_repr(operand_dims)}."
+      "{.arg operand} must be symmetric in the last two dimensions",
+      x = "Got shape {shapevec_repr(operand_dims)}."
     ))
   }
 

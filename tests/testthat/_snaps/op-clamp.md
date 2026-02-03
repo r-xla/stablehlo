@@ -1,3 +1,23 @@
+# errors
+
+    Code
+      infer_types_clamp(min = vt("f32", c(3L, 3L)), operand = vt("f32", c(2L, 3L)),
+      max = vt("f32", integer()))
+    Condition
+      Error in `infer_types_clamp()`:
+      ! `min` must have the same shape as `operand` or be a scalar.
+      i Got min shape (3,3) and operand shape (2,3).
+
+---
+
+    Code
+      infer_types_clamp(min = vt("f32", integer()), operand = vt("f32", c(2L, 3L)),
+      max = vt("f32", c(3L, 3L)))
+    Condition
+      Error in `infer_types_clamp()`:
+      ! `max` must have the same shape as `operand` or be a scalar.
+      i Got max shape (3,3) and operand shape (2,3).
+
 # basic tests
 
     Code

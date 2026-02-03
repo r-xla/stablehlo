@@ -38,7 +38,7 @@ infer_types_dynamic_slice <- function(
       # fmt: skip
       type_strs <- vapply(start_types, repr, character(1)) # nolint
       cli_abort(c(
-        "All start_indices must have the same type.",
+        "All {.arg start_indices} must have the same type.",
         x = "Got types: {paste0(type_strs, collapse = ', ')}."
       ))
     }
@@ -60,7 +60,7 @@ infer_types_dynamic_slice <- function(
   # (C4)
   if (any(slice_sizes_data > shape(operand))) {
     cli_abort(c(
-      "slice_sizes must not be greater than operand's shape.",
+      "{.arg slice_sizes} must not be greater than {.arg operand}'s shape.",
       x = "Got slice_sizes {shapevec_repr(slice_sizes_data)} and operand shape {shapevec_repr(shape(operand))}."
     ))
   }
