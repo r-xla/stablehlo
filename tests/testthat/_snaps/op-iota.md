@@ -1,3 +1,12 @@
+# errors
+
+    Code
+      infer_types_iota(scnst(5L, "i64"), dtype = "i32", shape = c(3L, 2L))
+    Condition
+      Error in `infer_types_iota()`:
+      ! `iota_dimension` contains index outside the valid range.
+      x Got 5, but valid range is [0, 2).
+
 # basic tests
 
     Code

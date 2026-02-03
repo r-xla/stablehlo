@@ -31,22 +31,22 @@ infer_types_triangular_solve <- function(
   # (C2)
   if (rank_a < 2) {
     cli_abort(c(
-      "{.arg {a}} must have rank >= 2",
-      i = "Got rank = {rank_a}."
+      "{.arg a} must have rank >= 2",
+      i = "Got rank {rank_a}."
     ))
   }
   if (rank_a != rank_b) {
     cli_abort(c(
-      "{.arg {a}} and {.arg {b}} must have the same rank",
-      i = "Got rank = {rank_a} and {rank_b}."
+      "{.arg a} and {.arg b} must have the same rank",
+      i = "Got ranks {rank_a} and {rank_b}."
     ))
   }
 
   # (C3)
   if (a_dims[rank_a] != a_dims[rank_a - 1]) {
     cli_abort(c(
-      "{.arg {a}} must be a square matrix (last two dimensions must be equal)",
-      i = "Got {shapevec_repr(a_dims)}."
+      "{.arg a} must be a square matrix (last two dimensions must be equal)",
+      i = "Got shape {shapevec_repr(a_dims)}."
     ))
   }
 
@@ -55,7 +55,7 @@ infer_types_triangular_solve <- function(
     b_batch <- b_dims[seq_len(rank_b - 2)]
     if (!identical(a_batch, b_batch)) {
       cli_abort(c(
-        "Batch dimensions of {.arg {a}} and {.arg {b}} must match",
+        "Batch dimensions of {.arg a} and {.arg b} must match",
         i = "Got shapes {shapevec_repr(a_batch)} and {shapevec_repr(b_batch)}."
       ))
     }

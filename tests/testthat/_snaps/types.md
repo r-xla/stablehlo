@@ -3,75 +3,75 @@
     Code
       BooleanType()
     Output
-      <BooleanType>
+      <i1>
 
 ---
 
     Code
       IntegerType(8)
     Output
-      <IntegerType: 8>
+      <i8>
     Code
       IntegerType(16)
     Output
-      <IntegerType: 16>
+      <i16>
     Code
       IntegerType(32)
     Output
-      <IntegerType: 32>
+      <i32>
     Code
       IntegerType(64)
     Output
-      <IntegerType: 64>
+      <i64>
 
 ---
 
     Code
       UnsignedType(8)
     Output
-      <UnsignedType: 8>
+      <ui8>
     Code
       UnsignedType(16)
     Output
-      <UnsignedType: 16>
+      <ui16>
     Code
       UnsignedType(32)
     Output
-      <UnsignedType: 32>
+      <ui32>
     Code
       UnsignedType(64)
     Output
-      <UnsignedType: 64>
+      <ui64>
 
 ---
 
     Code
       FloatType(32)
     Output
-      <FloatType: 32>
+      <f32>
     Code
       FloatType(64)
     Output
-      <FloatType: 64>
+      <f64>
 
 # print methods - compound types
 
     Code
       Shape(c())
     Output
-      Shape[]
+      ()
     Code
       Shape(c(5))
     Output
-      Shape[5]
+      (5)
     Code
       Shape(c(2, 3, 4))
     Output
-      Shape[2x3x4]
+      (2x3x4)
     Code
       Shape(c(10, NA, 20))
     Output
-      Shape[10x?x20]
+      (10x?x20)
 
 ---
 

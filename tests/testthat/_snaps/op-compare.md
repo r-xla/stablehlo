@@ -1,3 +1,45 @@
+# errors
+
+    Code
+      infer_types_compare(lhs, rhs, comparison_direction, compare_type)
+    Condition
+      Error in `infer_types_compare()`:
+      ! `comparison_direction` must be one of "EQ", "NE", "GE", "GT", "LE", and "LT".
+      x Got "INVALID".
+
+---
+
+    Code
+      infer_types_compare(lhs, rhs, comparison_direction, compare_type)
+    Condition
+      Error in `infer_types_compare()`:
+      ! `compare_type` must be one of "FLOAT", "TOTALORDER", "SIGNED", and "UNSIGNED".
+      x Got "INVALID".
+
+---
+
+    Code
+      infer_types_compare(lhs, rhs, comparison_direction, compare_type)
+    Condition
+      Error in `infer_types_compare()`:
+      ! `compare_type` must be SIGNED for signed integer element types.
+
+---
+
+    Code
+      infer_types_compare(lhs, rhs, comparison_direction, compare_type)
+    Condition
+      Error in `infer_types_compare()`:
+      ! `compare_type` must be UNSIGNED for unsigned integer or boolean data types.
+
+---
+
+    Code
+      infer_types_compare(lhs, rhs, comparison_direction, compare_type)
+    Condition
+      Error in `infer_types_compare()`:
+      ! `compare_type` must be FLOAT or TOTALORDER for floating-point data types.
+
 # simple test
 
     Code

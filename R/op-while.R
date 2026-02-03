@@ -9,7 +9,7 @@ infer_types_while <- function(..., cond, body) {
   value_types <- list(...)
 
   if (length(value_types) == 0L) {
-    cli_abort("hlo_while must have at least one operand")
+    cli_abort("There must be at least one input")
   }
 
   # (C1)

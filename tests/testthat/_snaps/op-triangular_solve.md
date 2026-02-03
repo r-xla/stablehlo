@@ -1,3 +1,63 @@
+# errors
+
+    Code
+      infer_types_triangular_solve(a, b, left_side = scnst(left_side, "pred"), lower = scnst(
+        TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
+    Condition
+      Error in `infer_types_triangular_solve()`:
+      ! `a` must have rank >= 2
+      i Got rank 1.
+
+---
+
+    Code
+      infer_types_triangular_solve(a, b, left_side = scnst(left_side, "pred"), lower = scnst(
+        TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
+    Condition
+      Error in `infer_types_triangular_solve()`:
+      ! `a` and `b` must have the same rank
+      i Got ranks 2 and 3.
+
+---
+
+    Code
+      infer_types_triangular_solve(a, b, left_side = scnst(left_side, "pred"), lower = scnst(
+        TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
+    Condition
+      Error in `infer_types_triangular_solve()`:
+      ! `a` must be a square matrix (last two dimensions must be equal)
+      i Got shape (3,4).
+
+---
+
+    Code
+      infer_types_triangular_solve(a, b, left_side = scnst(left_side, "pred"), lower = scnst(
+        TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
+    Condition
+      Error in `infer_types_triangular_solve()`:
+      ! Batch dimensions of `a` and `b` must match
+      i Got shapes (2) and (4).
+
+---
+
+    Code
+      infer_types_triangular_solve(a, b, left_side = scnst(left_side, "pred"), lower = scnst(
+        TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
+    Condition
+      Error in `infer_types_triangular_solve()`:
+      ! Dimension mismatch
+      i Got shapes (3,3) and (4,2).
+
+---
+
+    Code
+      infer_types_triangular_solve(a, b, left_side = scnst(left_side, "pred"), lower = scnst(
+        TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
+    Condition
+      Error in `infer_types_triangular_solve()`:
+      ! `transpose_a` must be one of: "NO_TRANSPOSE", "TRANSPOSE", and "ADJOINT".
+      i Got INVALID.
+
 # basic triangular_solve
 
     Code

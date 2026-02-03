@@ -5,7 +5,7 @@
     Condition
       Error:
       ! `y` must have dtype BooleanType.
-      x Got <i32>.
+      x Got i32.
 
 ---
 
@@ -23,7 +23,7 @@
     Condition
       Error:
       ! `y` must have dtype i64.
-      x Got <i32>.
+      x Got i32.
 
 ---
 
@@ -89,7 +89,7 @@
     Code
       assert_vts_are_tensors(x, 1L)
     Condition
-      Error in `assert_vts_are_tensors()`:
+      Error:
       ! `args[[i]]` must be a ValueType.
       x Got <integer>.
 
@@ -98,7 +98,7 @@
     Code
       assert_vts_are_tensors(x = token)
     Condition
-      Error in `assert_vts_are_tensors()`:
+      Error:
       ! `x` must contain a TensorType.
       x Got <TokenType>.
 
@@ -127,7 +127,7 @@
     Condition
       Error:
       ! `x` and `y` must have the same dtype.
-      x Got <i32> and <f32>.
+      x Got i32 and f32.
 
 # assert_valid_id
 

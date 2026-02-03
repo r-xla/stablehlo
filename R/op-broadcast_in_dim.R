@@ -21,7 +21,10 @@ infer_types_broadcast_in_dim <- function(
 
   # (C2)
   if (length(bdims) != length(operand_dims)) {
-    cli_abort("Length of broadcast_dimensions must equal rank of operand")
+    cli_abort(c(
+      "Length of {.arg broadcast_dimensions} must equal rank of {.arg operand}.",
+      x = "Got {length(bdims)} broadcast_dimensions for operand of rank {length(operand_dims)}."
+    ))
   }
 
   # (C3)
@@ -48,8 +51,13 @@ infer_types_broadcast_in_dim <- function(
     op_dim <- operand_dims[d]
     out_dim <- result_dims[bdims[d] + 1L]
     if ((op_dim != out_dim) && op_dim != 1L) {
-      cli_abort(
-        "Operand dimension and result dimension must match unless operand dim is 1"
+      error_dimension_mismatch(
+        arg1 = "operand",
+        arg2 = "result",
+        dim1 = d - 1L,
+        dim2 = bdims[d],
+        size1 = op_dim,
+        size2 = out_dim
       )
     }
   }
