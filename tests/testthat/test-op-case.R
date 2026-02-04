@@ -1,29 +1,3 @@
-test_that("errors", {
-  index <- vt("i32", integer())
-  branch_i32 <- Func(
-    outputs = FuncOutputs(list(FuncOutput(vt("i32", c(2L)))))
-  )
-  branch_f32 <- Func(
-    outputs = FuncOutputs(list(FuncOutput(vt("f32", c(2L)))))
-  )
-  branch_with_input <- Func(
-    inputs = FuncInputs(list(FuncInput(ValueId("x"), vt("i32", c(2L))))),
-    outputs = FuncOutputs(list(FuncOutput(vt("i32", c(2L)))))
-  )
-
-  # branches must be non-empty
-  expect_snapshot(infer_types_case(index), error = TRUE)
-  # branches must be Func objects
-  expect_snapshot(infer_types_case(index, "not a func"), error = TRUE)
-  # branch functions must not have inputs
-  expect_snapshot(infer_types_case(index, branch_with_input), error = TRUE)
-  # all branch functions must have the same output types
-  expect_snapshot(
-    infer_types_case(index, branch_i32, branch_f32),
-    error = TRUE
-  )
-})
-
 test_that("Case operator works", {
   func <- local_func()
   index <- hlo_input("index", "i32", integer())
@@ -68,4 +42,30 @@ test_that("Case operator works", {
     pjrt_buffer(c(1L, 1L), dtype = "i64")
   )
   expect_equal(as_array(out), array(c(1L, 1L), dim = 2L))
+})
+
+test_that("errors", {
+  index <- vt("i32", integer())
+  branch_i32 <- Func(
+    outputs = FuncOutputs(list(FuncOutput(vt("i32", c(2L)))))
+  )
+  branch_f32 <- Func(
+    outputs = FuncOutputs(list(FuncOutput(vt("f32", c(2L)))))
+  )
+  branch_with_input <- Func(
+    inputs = FuncInputs(list(FuncInput(ValueId("x"), vt("i32", c(2L))))),
+    outputs = FuncOutputs(list(FuncOutput(vt("i32", c(2L)))))
+  )
+
+  # branches must be non-empty
+  expect_snapshot(infer_types_case(index), error = TRUE)
+  # branches must be Func objects
+  expect_snapshot(infer_types_case(index, "not a func"), error = TRUE)
+  # branch functions must not have inputs
+  expect_snapshot(infer_types_case(index, branch_with_input), error = TRUE)
+  # all branch functions must have the same output types
+  expect_snapshot(
+    infer_types_case(index, branch_i32, branch_f32),
+    error = TRUE
+  )
 })

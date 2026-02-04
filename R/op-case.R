@@ -42,9 +42,13 @@ infer_types_case <- function(index, ...) {
 
   # (C3)
   if (length(unique(out_types_list)) != 1L) {
-    branch_types <- vapply(out_types_list, function(types) {
-      vapply(types, repr, character(1))
-    }, character(1))
+    branch_types <- vapply(
+      out_types_list,
+      function(types) {
+        vapply(types, repr, character(1))
+      },
+      character(1)
+    )
     cli_abort(c(
       "All branch functions must have the same output types.",
       x = "Got {branch_types}."

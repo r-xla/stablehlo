@@ -14,7 +14,7 @@
     Condition
       Error in `infer_types_cholesky()`:
       ! `operand` must be symmetric in the last two dimensions
-      x Got shape (3,4).
+      x Got shape (3x4).
 
 # basic tests
 

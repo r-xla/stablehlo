@@ -1,73 +1,3 @@
-test_that("errors", {
-  local_func()
-  x <- hlo_input("x", "f32", integer())
-  y <- hlo_input("y", "f32", integer())
-  result <- hlo_add(x, y)
-  body <- hlo_return(result)
-  check <- function(inputs, scatter_indices, updates, sdn) {
-    expect_snapshot(
-      infer_types_scatter(
-        inputs = inputs,
-        scatter_indices = scatter_indices,
-        updates = updates,
-        scatter_dimension_numbers = sdn,
-        indices_are_sorted = scnst(FALSE, "i1"),
-        unique_indices = scnst(FALSE, "i1"),
-        update_computation = body
-      ),
-      error = TRUE
-    )
-  }
-  # (C5) no inputs
-  check(
-    list(),
-    vt("i32", c(2L, 1L)),
-    list(),
-    ScatterDimensionNumbers(
-      update_window_dims = 1L,
-      inserted_window_dims = 0L,
-      scatter_dims_to_operand_dims = 0L,
-      index_vector_dim = 1L
-    )
-  )
-  # inputs/updates count mismatch
-  check(
-    list(vt("f32", c(3L, 4L))),
-    vt("i32", c(2L, 1L)),
-    list(vt("f32", c(2L, 4L)), vt("f32", c(2L, 4L))),
-    ScatterDimensionNumbers(
-      update_window_dims = 1L,
-      inserted_window_dims = 0L,
-      scatter_dims_to_operand_dims = 0L,
-      index_vector_dim = 1L
-    )
-  )
-  # (C2) rank mismatch
-  check(
-    list(vt("f32", c(3L, 4L, 5L))),
-    vt("i32", c(2L, 1L)),
-    list(vt("f32", c(2L, 4L))),
-    ScatterDimensionNumbers(
-      update_window_dims = 1L,
-      inserted_window_dims = 0L,
-      scatter_dims_to_operand_dims = 0L,
-      index_vector_dim = 1L
-    )
-  )
-  # duplicate update_window_dims
-  check(
-    list(vt("f32", c(3L, 4L))),
-    vt("i32", c(2L, 1L)),
-    list(vt("f32", c(2L, 4L))),
-    ScatterDimensionNumbers(
-      update_window_dims = c(1L, 1L),
-      inserted_window_dims = integer(),
-      scatter_dims_to_operand_dims = 0L,
-      index_vector_dim = 1L
-    )
-  )
-})
-
 test_that("scatter looks correct", {
   # snapshot tests don't work in `it()` blocks for some reason
   func <- local_func()
@@ -494,4 +424,74 @@ describe("scatter", {
       expected = expected
     )
   })
+})
+
+test_that("errors", {
+  local_func()
+  x <- hlo_input("x", "f32", integer())
+  y <- hlo_input("y", "f32", integer())
+  result <- hlo_add(x, y)
+  body <- hlo_return(result)
+  check <- function(inputs, scatter_indices, updates, sdn) {
+    expect_snapshot(
+      infer_types_scatter(
+        inputs = inputs,
+        scatter_indices = scatter_indices,
+        updates = updates,
+        scatter_dimension_numbers = sdn,
+        indices_are_sorted = scnst(FALSE, "i1"),
+        unique_indices = scnst(FALSE, "i1"),
+        update_computation = body
+      ),
+      error = TRUE
+    )
+  }
+  # (C5) no inputs
+  check(
+    list(),
+    vt("i32", c(2L, 1L)),
+    list(),
+    ScatterDimensionNumbers(
+      update_window_dims = 1L,
+      inserted_window_dims = 0L,
+      scatter_dims_to_operand_dims = 0L,
+      index_vector_dim = 1L
+    )
+  )
+  # inputs/updates count mismatch
+  check(
+    list(vt("f32", c(3L, 4L))),
+    vt("i32", c(2L, 1L)),
+    list(vt("f32", c(2L, 4L)), vt("f32", c(2L, 4L))),
+    ScatterDimensionNumbers(
+      update_window_dims = 1L,
+      inserted_window_dims = 0L,
+      scatter_dims_to_operand_dims = 0L,
+      index_vector_dim = 1L
+    )
+  )
+  # (C2) rank mismatch
+  check(
+    list(vt("f32", c(3L, 4L, 5L))),
+    vt("i32", c(2L, 1L)),
+    list(vt("f32", c(2L, 4L))),
+    ScatterDimensionNumbers(
+      update_window_dims = 1L,
+      inserted_window_dims = 0L,
+      scatter_dims_to_operand_dims = 0L,
+      index_vector_dim = 1L
+    )
+  )
+  # duplicate update_window_dims
+  check(
+    list(vt("f32", c(3L, 4L))),
+    vt("i32", c(2L, 1L)),
+    list(vt("f32", c(2L, 4L))),
+    ScatterDimensionNumbers(
+      update_window_dims = c(1L, 1L),
+      inserted_window_dims = integer(),
+      scatter_dims_to_operand_dims = 0L,
+      index_vector_dim = 1L
+    )
+  )
 })

@@ -14,7 +14,7 @@
 
 # get nice error messages when shapes don't match
 
-    Can't perform dot general where shape(lhs) = (10,1) and shape(rhs) = (5,3) because the sizes of the contracting_dims don't match.
+    Can't perform dot general where shape(lhs) = (10x1) and shape(rhs) = (5x3) because the sizes of the contracting_dims don't match.
     x They contracting_dims are 0 for lhs and 0 for rhs
 
 # error messages
@@ -59,11 +59,11 @@
 
 ---
 
-    Can't perform dot general where shape(lhs) = (2,3) and shape(rhs) = (1,3) because the sizes of the batching_dims don't match.
+    Can't perform dot general where shape(lhs) = (2x3) and shape(rhs) = (1x3) because the sizes of the batching_dims don't match.
     x They batching_dims are 0 for lhs and 0 for rhs
 
 ---
 
-    Can't perform dot general where shape(lhs) = (2,3) and shape(rhs) = (1,4) because the sizes of the contracting_dims don't match.
+    Can't perform dot general where shape(lhs) = (2x3) and shape(rhs) = (1x4) because the sizes of the contracting_dims don't match.
     x They contracting_dims are 1 for lhs and 1 for rhs
 

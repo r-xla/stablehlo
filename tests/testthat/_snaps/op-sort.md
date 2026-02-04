@@ -15,7 +15,7 @@
     Condition
       Error in `infer_types_sort()`:
       ! Each input must have the same shape
-      x Got shapes (2,3) and (3,3).
+      x Got shapes (2x3) and (3x3).
 
 ---
 

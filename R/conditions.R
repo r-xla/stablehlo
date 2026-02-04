@@ -470,4 +470,3 @@ to_one_based.ErrorDimSizeMismatch <- function(x, ...) {
   x$dim2 <- x$dim2 + 1L
   x
 }
-

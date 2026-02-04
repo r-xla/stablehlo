@@ -1,29 +1,3 @@
-test_that("errors", {
-  pred <- vt("pred", integer())
-  branch_i32 <- Func(
-    outputs = FuncOutputs(list(FuncOutput(vt("i32", 2L))))
-  )
-  branch_f32 <- Func(
-    outputs = FuncOutputs(list(FuncOutput(vt("f32", 2L))))
-  )
-  branch_2out <- Func(
-    outputs = FuncOutputs(list(
-      FuncOutput(vt("i32", 2L)),
-      FuncOutput(vt("i32", 3L))
-    ))
-  )
-  # different number of outputs
-  expect_snapshot(
-    infer_types_if(pred, branch_i32, branch_2out),
-    error = TRUE
-  )
-  # output types don't match
-  expect_snapshot(
-    infer_types_if(pred, branch_i32, branch_f32),
-    error = TRUE
-  )
-})
-
 test_that("If operator works", {
   func <- local_func()
   pred <- hlo_input("pred", "i1", integer())
@@ -65,5 +39,31 @@ test_that("If operator works", {
       pjrt_scalar(2)
     )),
     as_array(pjrt_scalar(2))
+  )
+})
+
+test_that("errors", {
+  pred <- vt("pred", integer())
+  branch_i32 <- Func(
+    outputs = FuncOutputs(list(FuncOutput(vt("i32", 2L))))
+  )
+  branch_f32 <- Func(
+    outputs = FuncOutputs(list(FuncOutput(vt("f32", 2L))))
+  )
+  branch_2out <- Func(
+    outputs = FuncOutputs(list(
+      FuncOutput(vt("i32", 2L)),
+      FuncOutput(vt("i32", 3L))
+    ))
+  )
+  # different number of outputs
+  expect_snapshot(
+    infer_types_if(pred, branch_i32, branch_2out),
+    error = TRUE
+  )
+  # output types don't match
+  expect_snapshot(
+    infer_types_if(pred, branch_i32, branch_f32),
+    error = TRUE
   )
 })

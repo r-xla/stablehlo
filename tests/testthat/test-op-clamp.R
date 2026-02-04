@@ -1,24 +1,3 @@
-test_that("errors", {
-  # (C1) min shape mismatch
-  expect_snapshot(
-    infer_types_clamp(
-      min = vt("f32", c(3L, 3L)),
-      operand = vt("f32", c(2L, 3L)),
-      max = vt("f32", integer())
-    ),
-    error = TRUE
-  )
-  # (C1) max shape mismatch
-  expect_snapshot(
-    infer_types_clamp(
-      min = vt("f32", integer()),
-      operand = vt("f32", c(2L, 3L)),
-      max = vt("f32", c(3L, 3L))
-    ),
-    error = TRUE
-  )
-})
-
 test_that("basic tests", {
   func <- local_func()
   lo <- hlo_input("lo", "f32", shape = c(2L, 2L))
@@ -64,4 +43,25 @@ test_that("scalar min and max", {
   x_buf <- pjrt_buffer(x)
   out_buf <- pjrt_execute(executable, x_buf)
   expect_equal(pjrt_buffer(pmin(pmax(0.0, x), 5.0), shape = c(2, 2)), out_buf)
+})
+
+test_that("errors", {
+  # (C1) min shape mismatch
+  expect_snapshot(
+    infer_types_clamp(
+      min = vt("f32", c(3L, 3L)),
+      operand = vt("f32", c(2L, 3L)),
+      max = vt("f32", integer())
+    ),
+    error = TRUE
+  )
+  # (C1) max shape mismatch
+  expect_snapshot(
+    infer_types_clamp(
+      min = vt("f32", integer()),
+      operand = vt("f32", c(2L, 3L)),
+      max = vt("f32", c(3L, 3L))
+    ),
+    error = TRUE
+  )
 })

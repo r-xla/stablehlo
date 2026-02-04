@@ -36,7 +36,7 @@
     Condition
       Error in `infer_types_broadcast_in_dim()`:
       ! `operand` dimension 0 and `result` dimension 0 must match unless `operand` dim is 1.
-      x Got shapes (2,3) and (4,5).
+      x Got shapes (2x3) and (4x5).
 
 # basic tests
 

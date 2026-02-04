@@ -38,7 +38,9 @@ infer_types_compare <- function(
   dtype <- lhs$type$dtype
   if (inherits(dtype, "IntegerType")) {
     if (compare_type != "SIGNED") {
-      cli_abort("{.arg compare_type} must be SIGNED for signed integer data types.")
+      cli_abort(
+        "{.arg compare_type} must be SIGNED for signed integer data types."
+      )
     }
   } else if (
     inherits(dtype, "UnsignedType") || inherits(dtype, "BooleanType")

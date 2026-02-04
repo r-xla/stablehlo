@@ -26,7 +26,7 @@
     Condition
       Error in `infer_types_triangular_solve()`:
       ! `a` must be a square matrix (last two dimensions must be equal)
-      x Got shape (3,4).
+      x Got shape (3x4).
 
 ---
 
@@ -46,7 +46,7 @@
     Condition
       Error in `infer_types_triangular_solve()`:
       ! Dimension mismatch
-      x Got shapes (3,3) and (4,2).
+      x Got shapes (3x3) and (4x2).
 
 ---
 

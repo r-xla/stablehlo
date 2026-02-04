@@ -1,22 +1,3 @@
-test_that("errors", {
-  check <- function(lhs, rhs, comparison_direction, compare_type) {
-    expect_snapshot(
-      infer_types_compare(lhs, rhs, comparison_direction, compare_type),
-      error = TRUE
-    )
-  }
-  # (I3) invalid comparison_direction
-  check(vt("f32", 2L), vt("f32", 2L), "INVALID", "FLOAT")
-  # (I4) invalid compare_type
-  check(vt("f32", 2L), vt("f32", 2L), "EQ", "INVALID")
-  # (C3) compare type must be SIGNED for IntegerType
-  check(vt("i32", 2L), vt("i32", 2L), "EQ", "UNSIGNED")
-  # (C3) compare type must be UNSIGNED for UnsignedType
-  check(vt("ui32", 2L), vt("ui32", 2L), "EQ", "SIGNED")
-  # (C3) compare type must be FLOAT or TOTALORDER for FloatType
-  check(vt("f32", 2L), vt("f32", 2L), "EQ", "SIGNED")
-})
-
 test_that("simple test", {
   local_func()
   lhs <- hlo_input("lhs", "f32", shape = integer())
@@ -117,4 +98,23 @@ test_that("exhaustive test", {
       snapshot = FALSE
     )
   }
+})
+
+test_that("errors", {
+  check <- function(lhs, rhs, comparison_direction, compare_type) {
+    expect_snapshot(
+      infer_types_compare(lhs, rhs, comparison_direction, compare_type),
+      error = TRUE
+    )
+  }
+  # (I3) invalid comparison_direction
+  check(vt("f32", 2L), vt("f32", 2L), "INVALID", "FLOAT")
+  # (I4) invalid compare_type
+  check(vt("f32", 2L), vt("f32", 2L), "EQ", "INVALID")
+  # (C3) compare type must be SIGNED for IntegerType
+  check(vt("i32", 2L), vt("i32", 2L), "EQ", "UNSIGNED")
+  # (C3) compare type must be UNSIGNED for UnsignedType
+  check(vt("ui32", 2L), vt("ui32", 2L), "EQ", "SIGNED")
+  # (C3) compare type must be FLOAT or TOTALORDER for FloatType
+  check(vt("f32", 2L), vt("f32", 2L), "EQ", "SIGNED")
 })

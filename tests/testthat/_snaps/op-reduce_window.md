@@ -29,7 +29,7 @@
     Condition
       Error in `infer_types_reduce_window()`:
       ! `window_dimensions` must be positive.
-      x Got (0,2)
+      x Got (0x2)
 
 ---
 

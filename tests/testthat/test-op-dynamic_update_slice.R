@@ -1,45 +1,3 @@
-test_that("errors", {
-  # start_indices must be 0-dimensional
-  expect_snapshot(
-    infer_types_dynamic_update_slice(
-      vt("f32", c(4L, 5L)),
-      vt("f32", c(2L, 3L)),
-      vt("i32", 2L),
-      vt("i32", integer())
-    ),
-    error = TRUE
-  )
-  # (C3) rank mismatch
-  expect_snapshot(
-    infer_types_dynamic_update_slice(
-      vt("f32", c(4L, 5L)),
-      vt("f32", c(2L, 3L, 1L)),
-      vt("i32", integer()),
-      vt("i32", integer())
-    ),
-    error = TRUE
-  )
-  # (C4) wrong number of start_indices
-  expect_snapshot(
-    infer_types_dynamic_update_slice(
-      vt("f32", c(4L, 5L)),
-      vt("f32", c(2L, 3L)),
-      vt("i32", integer())
-    ),
-    error = TRUE
-  )
-  # (C6) update shape exceeds operand
-  expect_snapshot(
-    infer_types_dynamic_update_slice(
-      vt("f32", c(4L, 5L)),
-      vt("f32", c(5L, 3L)),
-      vt("i32", integer()),
-      vt("i32", integer())
-    ),
-    error = TRUE
-  )
-})
-
 test_that("basic tests", {
   local_func()
 
@@ -81,4 +39,46 @@ test_that("basic tests", {
     pjrt_buffer(update_input)
   )
   expect_equal(as_array(output), expected)
+})
+
+test_that("errors", {
+  # start_indices must be 0-dimensional
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(2L, 3L)),
+      vt("i32", 2L),
+      vt("i32", integer())
+    ),
+    error = TRUE
+  )
+  # (C3) rank mismatch
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(2L, 3L, 1L)),
+      vt("i32", integer()),
+      vt("i32", integer())
+    ),
+    error = TRUE
+  )
+  # (C4) wrong number of start_indices
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(2L, 3L)),
+      vt("i32", integer())
+    ),
+    error = TRUE
+  )
+  # (C6) update shape exceeds operand
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(5L, 3L)),
+      vt("i32", integer()),
+      vt("i32", integer())
+    ),
+    error = TRUE
+  )
 })

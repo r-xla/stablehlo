@@ -1,28 +1,3 @@
-test_that("errors", {
-  check <- function(operand, broadcast_dimensions, shape) {
-    expect_snapshot(
-      infer_types_broadcast_in_dim(
-        operand,
-        broadcast_dimensions = cnst(
-          broadcast_dimensions,
-          "i64",
-          length(broadcast_dimensions)
-        ),
-        shape = shape
-      ),
-      error = TRUE
-    )
-  }
-  # (C2) broadcast_dimensions length != operand rank
-  check(vt("f32", c(2L, 3L)), c(0L), c(4L, 5L, 6L))
-  # (C3) broadcast_dimensions out of bounds
-  check(vt("f32", c(2L, 3L)), c(0L, 5L), c(4L, 5L, 6L))
-  # (C4) duplicate broadcast_dimensions
-  check(vt("f32", c(2L, 3L)), c(0L, 0L), c(4L, 5L, 6L))
-  # (C5) operand dim != 1 and != result dim
-  check(vt("f32", c(2L, 3L)), c(0L, 1L), c(4L, 5L))
-})
-
 test_that("basic tests", {
   func <- local_func()
   x <- hlo_input("x", "f32", shape = c(1L, 3L))
@@ -97,4 +72,29 @@ test_that("works for scalars", {
     pjrt_execute(exec, x),
     pjrt_buffer(1, shape = c(2, 3))
   )
+})
+
+test_that("errors", {
+  check <- function(operand, broadcast_dimensions, shape) {
+    expect_snapshot(
+      infer_types_broadcast_in_dim(
+        operand,
+        broadcast_dimensions = cnst(
+          broadcast_dimensions,
+          "i64",
+          length(broadcast_dimensions)
+        ),
+        shape = shape
+      ),
+      error = TRUE
+    )
+  }
+  # (C2) broadcast_dimensions length != operand rank
+  check(vt("f32", c(2L, 3L)), c(0L), c(4L, 5L, 6L))
+  # (C3) broadcast_dimensions out of bounds
+  check(vt("f32", c(2L, 3L)), c(0L, 5L), c(4L, 5L, 6L))
+  # (C4) duplicate broadcast_dimensions
+  check(vt("f32", c(2L, 3L)), c(0L, 0L), c(4L, 5L, 6L))
+  # (C5) operand dim != 1 and != result dim
+  check(vt("f32", c(2L, 3L)), c(0L, 1L), c(4L, 5L))
 })
