@@ -45,7 +45,7 @@ infer_types_bitcast_convert <- function(
         "f64"
       ))
   ) {
-    cli_abort("Unsupported dtype: {.val {as_dtype(dtype)}}")
+    cli_abort("Unsupported dtype: {dtype}")
   }
 
   operand_bits <- operand$type$dtype$value

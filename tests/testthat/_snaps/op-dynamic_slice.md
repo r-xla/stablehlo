@@ -5,7 +5,7 @@
       slice_sizes = cnst(c(2L, 3L), "i64", 2L))
     Condition
       Error in `infer_types_dynamic_slice()`:
-      ! size(start_indices) must equal rank(operand).
+      ! length(start_indices) must equal rank(operand).
       x Got 1 start_indices and rank 2.
 
 ---
@@ -15,7 +15,7 @@
         integer()), slice_sizes = cnst(c(2L), "i64", 1L))
     Condition
       Error in `infer_types_dynamic_slice()`:
-      ! size(slice_sizes) must equal rank(operand).
+      ! length(slice_sizes) must equal rank(operand).
       x Got 1 slice_sizes and rank 2.
 
 ---
@@ -36,7 +36,7 @@
     Condition
       Error in `infer_types_dynamic_slice()`:
       ! `slice_sizes` must not be greater than `operand`'s shape.
-      x Got slice_sizes (5,3) and operand shape (4,5).
+      x Got slice_sizes (5x3) and operand shape (4x5).
 
 # basic tests
 

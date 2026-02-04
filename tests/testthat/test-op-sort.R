@@ -1,3 +1,41 @@
+test_that("errors", {
+  comparator <- local_func("comparator")
+  x <- hlo_input("x", "i32")
+  y <- hlo_input("y", "i32")
+  cmp <- hlo_compare(x, y, comparison_direction = "LT", compare_type = "SIGNED")
+  comparator <- hlo_return(cmp)
+  # (C1) no inputs
+  expect_snapshot(
+    infer_types_sort(
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = comparator
+    ),
+    error = TRUE
+  )
+  # (C3) different shapes
+  expect_snapshot(
+    infer_types_sort(
+      vt("i32", c(2L, 3L)),
+      vt("i32", c(3L, 3L)),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = comparator
+    ),
+    error = TRUE
+  )
+  # (C4) dimension out of bounds
+  expect_snapshot(
+    infer_types_sort(
+      vt("i32", c(2L, 3L)),
+      dimension = scnst(5L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = comparator
+    ),
+    error = TRUE
+  )
+})
+
 test_that("basic tests", {
   local_func()
   a1 <- hlo_input("arg1", "i32", shape = integer())

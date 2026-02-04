@@ -1,3 +1,60 @@
+test_that("errors", {
+  body <- local_func("body")
+  x <- hlo_input("x", "f32")
+  y <- hlo_input("y", "f32")
+  body <- hlo_return(hlo_add(x, y))
+  # (C3) no inputs
+  expect_snapshot(
+    infer_types_reduce(
+      inputs = list(),
+      init_values = list(),
+      body = body,
+      dimensions = cnst(0L, "i64", 1L)
+    ),
+    error = TRUE
+  )
+  # (C3) inputs/init_values count mismatch
+  expect_snapshot(
+    infer_types_reduce(
+      inputs = list(vt("f32", c(2L, 3L))),
+      init_values = list(vt("f32", integer()), vt("f32", integer())),
+      body = body,
+      dimensions = cnst(0L, "i64", 1L)
+    ),
+    error = TRUE
+  )
+  # init_values must be 0-D
+  expect_snapshot(
+    infer_types_reduce(
+      inputs = list(vt("f32", c(2L, 3L))),
+      init_values = list(vt("f32", 2L)),
+      body = body,
+      dimensions = cnst(0L, "i64", 1L)
+    ),
+    error = TRUE
+  )
+  # (C4) dimension out of bounds
+  expect_snapshot(
+    infer_types_reduce(
+      inputs = list(vt("f32", c(2L, 3L))),
+      init_values = list(vt("f32", integer())),
+      body = body,
+      dimensions = cnst(5L, "i64", 1L)
+    ),
+    error = TRUE
+  )
+  # (C5) duplicate dimensions
+  expect_snapshot(
+    infer_types_reduce(
+      inputs = list(vt("f32", c(2L, 3L))),
+      init_values = list(vt("f32", integer())),
+      body = body,
+      dimensions = cnst(c(0L, 0L), "i64", 2L)
+    ),
+    error = TRUE
+  )
+})
+
 test_that("basic tests", {
   func <- local_func()
 

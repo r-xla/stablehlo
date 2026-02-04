@@ -1,3 +1,66 @@
+test_that("errors", {
+  check <- function(operand, start_indices, gdn, slice_sizes) {
+    expect_snapshot(
+      infer_types_gather(
+        operand,
+        start_indices,
+        gather_dimension_numbers = gdn,
+        slice_sizes = cnst(slice_sizes, "i64", length(slice_sizes)),
+        indices_are_sorted = scnst(FALSE, "pred")
+      ),
+      error = TRUE
+    )
+  }
+  # (C1) rank mismatch
+  check(
+    vt("f32", c(3L, 4L, 2L)),
+    vt("i32", c(2L, 2L)),
+    GatherDimensionNumbers(
+      offset_dims = 2L,
+      collapsed_slice_dims = 0L,
+      start_index_map = 0L,
+      index_vector_dim = 1L
+    ),
+    c(1L, 4L, 2L)
+  )
+  # (C2) index_vector_dim out of bounds
+  check(
+    vt("f32", c(3L, 4L)),
+    vt("i32", c(2L, 2L)),
+    GatherDimensionNumbers(
+      offset_dims = 1L,
+      collapsed_slice_dims = 0L,
+      start_index_map = 0L,
+      index_vector_dim = 5L
+    ),
+    c(1L, 4L)
+  )
+  # (C4) duplicate offset_dims
+  check(
+    vt("f32", c(3L, 4L)),
+    vt("i32", c(2L, 2L)),
+    GatherDimensionNumbers(
+      offset_dims = c(1L, 1L),
+      collapsed_slice_dims = integer(),
+      start_index_map = c(0L, 1L),
+      index_vector_dim = 1L
+    ),
+    c(3L, 4L)
+  )
+  # slice_sizes length mismatch
+  check(
+    vt("f32", c(3L, 4L)),
+    vt("i32", c(2L, 2L)),
+    GatherDimensionNumbers(
+      offset_dims = 1L,
+      collapsed_slice_dims = 0L,
+      start_index_map = c(0L, 1L),
+      index_vector_dim = 1L
+    ),
+    c(1L, 4L, 1L)
+  )
+})
+
 test_that("gather looks correct", {
   # snapshot tests don't work in `it()` blocks for some reason
   func <- local_func()

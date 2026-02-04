@@ -1,3 +1,38 @@
+# errors
+
+    Code
+      infer_types_case(index)
+    Condition
+      Error in `infer_types_case()`:
+      ! branches must be a non-empty list
+
+---
+
+    Code
+      infer_types_case(index, "not a func")
+    Condition
+      Error in `get_branch_out_types()`:
+      ! `branches[0]` must be a Func.
+      x Got character.
+
+---
+
+    Code
+      infer_types_case(index, branch_with_input)
+    Condition
+      Error:
+      ! `branches[0]` must not have inputs.
+      x Got 1 input.
+
+---
+
+    Code
+      infer_types_case(index, branch_i32, branch_f32)
+    Condition
+      Error in `infer_types_case()`:
+      ! All branch functions must have the same output types.
+      x Got tensor<2xi32> and tensor<2xf32>.
+
 # Case operator works
 
     Code

@@ -30,17 +30,17 @@ infer_types_slice <- function(
   }
 
   if (length(start_idx) != length(stride_vals)) {
-    cli_abort(
+    cli_abort(c(
       "{.arg strides} must have same length as {.arg start_indices} and {.arg limit_indices}",
       x = "Got lengths {length(start_idx)}, {length(limit_idx)} and {length(stride_vals)}."
-    )
+    ))
   }
 
   if (length(start_idx) != operand_rank) {
-    cli_abort(
-      "length of {.arg start_indices}, {.arg limit_indices} and {.arg strides} must be equal to operand's rank",
-      x = "Got lengths {length(start_idx)}, {length(limit_idx)} and {length(stride_vals)}."
-    )
+    cli_abort(c(
+      "length of {.arg start_indices}, {.arg limit_indices} and {.arg strides} must be equal to operand's rank ({operand_rank}).",
+      x = "Got length {length(start_idx)}."
+    ))
   }
 
   # (C3)

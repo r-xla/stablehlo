@@ -1,3 +1,15 @@
+test_that("errors", {
+  # i1 shape mismatch
+  expect_snapshot(
+    infer_types_select(
+      vt("i1", c(3L, 3L)),
+      vt("f32", c(2L, 3L)),
+      vt("f32", c(2L, 3L))
+    ),
+    error = TRUE
+  )
+})
+
 test_that("basic tests", {
   local_func()
   pred <- hlo_input("pred", "i1", shape = c(2L, 3L, 2L))

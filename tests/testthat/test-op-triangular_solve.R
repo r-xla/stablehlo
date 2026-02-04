@@ -1,3 +1,31 @@
+test_that("errors", {
+  check <- function(a, b, left_side = TRUE, transpose_a = "NO_TRANSPOSE") {
+    expect_snapshot(
+      infer_types_triangular_solve(
+        a,
+        b,
+        left_side = scnst(left_side, "pred"),
+        lower = scnst(TRUE, "pred"),
+        unit_diagonal = scnst(FALSE, "pred"),
+        transpose_a = transpose_a
+      ),
+      error = TRUE
+    )
+  }
+  # (C2) rank < 2
+  check(vt("f32", 3L), vt("f32", 3L))
+  # (C2) different rank
+  check(vt("f32", c(3L, 3L)), vt("f32", c(2L, 3L, 3L)))
+  # (C3) not square
+  check(vt("f32", c(3L, 4L)), vt("f32", c(3L, 2L)))
+  # batch dimensions mismatch
+  check(vt("f32", c(2L, 3L, 3L)), vt("f32", c(4L, 3L, 2L)))
+  # dimension mismatch
+  check(vt("f32", c(3L, 3L)), vt("f32", c(4L, 2L)))
+  # invalid transpose_a
+  check(vt("f32", c(3L, 3L)), vt("f32", c(3L, 2L)), transpose_a = "INVALID")
+})
+
 test_that("basic triangular_solve", {
   func <- local_func()
   a <- hlo_input("a", "f32", shape = c(3L, 3L))
