@@ -150,6 +150,10 @@ specification. At least initially, it will:
   values
 - [`.current_func()`](dot-current_func.md) : Get the last function
   created
+- [`error_concatenate_shapes()`](error_concatenate_shapes.md) :
+  ErrorConcatenateShapes
+- [`error_dim_size_mismatch()`](error_dim_size_mismatch.md) :
+  ErrorDimSizeMismatch
 - [`error_dimension_uniqueness()`](error_dimension_uniqueness.md) :
   ErrorDimensionUniqueness
 - [`error_index_in_set()`](error_index_in_set.md) : ErrorIndexInSet
@@ -160,8 +164,8 @@ specification. At least initially, it will:
 - [`error_permute_index()`](error_permute_index.md) : ErrorPermuteIndex
 - [`error_stablehlo()`](error_stablehlo.md) : ErrorStablehlo
 - [`error_unequal_types()`](error_unequal_types.md) : ErrorUnequalTypes
-- [`error_unexpected_type()`](error_unexpected_type.md) :
-  ErrorUnexpectedType
+- [`error_unexpected_list_type()`](error_unexpected_list_type.md) :
+  ErrorUnexpectedListType
 - [`format_double()`](format_double.md) : Format Double Array with
   Scientific Notation
 - [`infer_types_abs()`](hlo_abs.md) [`hlo_abs()`](hlo_abs.md) : Abs

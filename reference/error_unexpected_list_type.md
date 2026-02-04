@@ -1,11 +1,11 @@
-# ErrorUnexpectedType
+# ErrorUnexpectedListType
 
 Error when an element in a list has an unexpected type
 
 ## Usage
 
 ``` r
-error_unexpected_type(
+error_unexpected_list_type(
   arg,
   index,
   expected,

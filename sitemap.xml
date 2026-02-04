@@ -51,6 +51,8 @@
 <url><loc>/reference/as_dtype.html</loc></url>
 <url><loc>/reference/constant_attr.html</loc></url>
 <url><loc>/reference/dot-current_func.html</loc></url>
+<url><loc>/reference/error_concatenate_shapes.html</loc></url>
+<url><loc>/reference/error_dim_size_mismatch.html</loc></url>
 <url><loc>/reference/error_dimension_uniqueness.html</loc></url>
 <url><loc>/reference/error_index_in_set.html</loc></url>
 <url><loc>/reference/error_index_out_of_bounds.html</loc></url>
@@ -58,7 +60,7 @@
 <url><loc>/reference/error_permute_index.html</loc></url>
 <url><loc>/reference/error_stablehlo.html</loc></url>
 <url><loc>/reference/error_unequal_types.html</loc></url>
-<url><loc>/reference/error_unexpected_type.html</loc></url>
+<url><loc>/reference/error_unexpected_list_type.html</loc></url>
 <url><loc>/reference/format_double.html</loc></url>
 <url><loc>/reference/hlo_abs.html</loc></url>
 <url><loc>/reference/hlo_add.html</loc></url>

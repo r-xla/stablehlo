@@ -42,13 +42,11 @@ error_unequal_types(
 
 - actual1:
 
-  (`character(1)`)  
-  Type from the first argument
+  Type from the first argument (any object with a cli_format method)
 
 - actual2:
 
-  (`character(1)`)  
-  Type from the second argument
+  Type from the second argument (any object with a cli_format method)
 
 - call:
 

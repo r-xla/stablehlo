@@ -101,11 +101,75 @@
 </div>
 <div class="section level2">
 <h2 id="error-messages">Error Messages<a class="anchor" aria-label="anchor" href="#error-messages"></a></h2>
-<p>The error messages should make it clear what went wrong (i.e. what was expected) and what the actual input was. Also, error messages referencing 0-based values (like indices) should use <code><a href="reference/index_vec.html">index_vec()</a></code> to wrap the integer fields in the error constructor. The <code><a href="reference/to_one_based.html">to_one_based()</a></code> function will then automatically find and increment all <code>IndexVector</code> fields. The <code>cli_format.IndexVector()</code> method handles formatting these values in error messages.</p>
+<p>Error messages use <code>cli_abort()</code> and should clearly state what was expected and what was received.</p>
+<div class="section level3">
+<h3 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a></h3>
+<p>Use a two-part message: a header stating the constraint, and an <code>x =</code> bullet showing the actual values.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">cli_abort</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"{.arg window_dimensions} must have length equal to input rank."</span>,</span>
+<span>  x <span class="op">=</span> <span class="st">"Expected length {rank}, got {length(window_dims)}."</span></span>
+<span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>Always use <code>x = "..."</code> (not <code>i = "..."</code>) for the bullet showing what went wrong.</p>
+</div>
+<div class="section level3">
+<h3 id="referencing-arguments">Referencing arguments<a class="anchor" aria-label="anchor" href="#referencing-arguments"></a></h3>
+<p>Use <code>{.arg name}</code> for argument names, never bare text or <code>{.var ...}</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Good</span></span>
+<span><span class="st">"{.arg operand} must have rank &gt;= 2"</span></span>
+<span></span>
+<span><span class="co"># Bad</span></span>
+<span><span class="st">"operand must have rank &gt;= 2"</span></span>
+<span><span class="st">"{.var operand} must have rank &gt;= 2"</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="formatting-values">Formatting values<a class="anchor" aria-label="anchor" href="#formatting-values"></a></h3>
+<ul><li>
+<p><strong>Objects with <code>cli_format</code> methods</strong> (types like <code>TensorDataType</code>, <code>Shape</code>, <code>ValueType</code>): pass the object directly via <code>{.val {obj}}</code>, do not wrap in <code><a href="reference/repr.html">repr()</a></code> or <code><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character()</a></code>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Good</span></span>
+<span><span class="st">"Got {.val {tensor_type$dtype}}."</span></span>
+<span><span class="co"># Bad</span></span>
+<span><span class="st">"Got {.cls {repr(tensor_type$dtype)}}."</span></span></code></pre></div>
+</li>
+<li>
+<p><strong>Shape vectors</strong> (dimension sizes): use <code>shapevec_repr()</code> which formats as <code>(2x3x4)</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="st">"Got shapes {shapevec_repr(shape(a))} and {shapevec_repr(shape(b))}."</span></span></code></pre></div>
+</li>
+<li>
+<p><strong>Integer vectors</strong> (sizes, counts, non-index vectors): use <code>vec_repr()</code> which formats as <code>c(1, 2, 3)</code> for length &gt; 1 or a plain number for length 1. Do <strong>not</strong> pass bare integer vectors to <code>{.val {x}}</code> (cli would format them as “1, 2 and 3”) or manually use <code><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste()</a></code>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Good</span></span>
+<span><span class="st">"Got slice_sizes = {vec_repr(slice_sizes_vec)}."</span></span>
+<span><span class="co"># Bad</span></span>
+<span><span class="st">"Got slice_sizes = {.val {slice_sizes_vec}}."</span></span>
+<span><span class="st">"Got slice_sizes = [{paste(slice_sizes_vec, collapse = ', ')}]."</span></span></code></pre></div>
+</li>
+<li>
+<p><strong>Character option vectors</strong> (e.g. valid choices): <code>{.val {options}}</code> is fine since cli’s “a, b and c” formatting suits option lists.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="st">"{.arg rng_algorithm} must be one of {.val {valid_options}}."</span></span></code></pre></div>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="id_0-based-indices">0-based indices<a class="anchor" aria-label="anchor" href="#id_0-based-indices"></a></h3>
+<p>For errors referencing 0-based index values, wrap them with <code><a href="reference/index_vec.html">index_vec()</a></code> and in custom conditions. Also implement <code><a href="reference/to_one_based.html">to_one_based()</a></code> for the condition class. If a fitting condition class is available, use it, otherwise create a new one.</p>
+</div>
+<div class="section level3">
+<h3 id="propagating-call-context">Propagating call context<a class="anchor" aria-label="anchor" href="#propagating-call-context"></a></h3>
+<p>When writing wrapper/assert functions, accept and forward <code>call</code> so the error points at the user’s call site, not the internal helper:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">assert_vts_are_tensors</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span>, <span class="va">call</span> <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">caller_env</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># ... pass call = call to cli_abort or inner asserts</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="linter">Linter<a class="anchor" aria-label="anchor" href="#linter"></a></h2>
-<p>To check for linter errors, you need to install the package first using <code>devtools::install()</code>. Then, run <code><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lintr::lint_package()</a></code>. For linter errors where the line is too long, but the line is a string, put <code>#fmt: skip</code> before the line and append <code># nolint</code> at the end of the line.</p>
+<p>To check for linter errors, you need to install the package first using <code>devtools::install()</code>. Then, run <code><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lintr::lint_package()</a></code>. To suppress a linter warning, put <code># nolint next</code> on the line before.</p>
 </div>
 
 

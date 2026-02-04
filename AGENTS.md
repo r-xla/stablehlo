@@ -68,20 +68,102 @@ C2, C3, etc.).
 
 ## Error Messages
 
-The error messages should make it clear what went wrong (i.e. what was
-expected) and what the actual input was. Also, error messages
-referencing 0-based values (like indices) should use
-[`index_vec()`](reference/index_vec.md) to wrap the integer fields in
-the error constructor. The [`to_one_based()`](reference/to_one_based.md)
-function will then automatically find and increment all `IndexVector`
-fields. The `cli_format.IndexVector()` method handles formatting these
-values in error messages.
+Error messages use `cli_abort()` and should clearly state what was
+expected and what was received.
+
+### Structure
+
+Use a two-part message: a header stating the constraint, and an `x =`
+bullet showing the actual values.
+
+``` r
+cli_abort(c(
+  "{.arg window_dimensions} must have length equal to input rank.",
+  x = "Expected length {rank}, got {length(window_dims)}."
+))
+```
+
+Always use `x = "..."` (not `i = "..."`) for the bullet showing what
+went wrong.
+
+### Referencing arguments
+
+Use `{.arg name}` for argument names, never bare text or `{.var ...}`.
+
+``` r
+# Good
+"{.arg operand} must have rank >= 2"
+
+# Bad
+"operand must have rank >= 2"
+"{.var operand} must have rank >= 2"
+```
+
+### Formatting values
+
+- **Objects with `cli_format` methods** (types like `TensorDataType`,
+  `Shape`, `ValueType`): pass the object directly via `{.val {obj}}`, do
+  not wrap in [`repr()`](reference/repr.md) or
+  [`as.character()`](https://rdrr.io/r/base/character.html).
+
+  ``` r
+  # Good
+  "Got {.val {tensor_type$dtype}}."
+  # Bad
+  "Got {.cls {repr(tensor_type$dtype)}}."
+  ```
+
+- **Shape vectors** (dimension sizes): use `shapevec_repr()` which
+  formats as `(2x3x4)`.
+
+  ``` r
+  "Got shapes {shapevec_repr(shape(a))} and {shapevec_repr(shape(b))}."
+  ```
+
+- **Integer vectors** (sizes, counts, non-index vectors): use
+  `vec_repr()` which formats as `c(1, 2, 3)` for length \> 1 or a plain
+  number for length 1. Do **not** pass bare integer vectors to
+  `{.val {x}}` (cli would format them as “1, 2 and 3”) or manually use
+  [`paste()`](https://rdrr.io/r/base/paste.html).
+
+  ``` r
+  # Good
+  "Got slice_sizes = {vec_repr(slice_sizes_vec)}."
+  # Bad
+  "Got slice_sizes = {.val {slice_sizes_vec}}."
+  "Got slice_sizes = [{paste(slice_sizes_vec, collapse = ', ')}]."
+  ```
+
+- **Character option vectors** (e.g. valid choices): `{.val {options}}`
+  is fine since cli’s “a, b and c” formatting suits option lists.
+
+  ``` r
+
+  "{.arg rng_algorithm} must be one of {.val {valid_options}}."
+  ```
+
+### 0-based indices
+
+For errors referencing 0-based index values, wrap them with
+[`index_vec()`](reference/index_vec.md) and in custom conditions. Also
+implement [`to_one_based()`](reference/to_one_based.md) for the
+condition class. If a fitting condition class is available, use it,
+otherwise create a new one.
+
+### Propagating call context
+
+When writing wrapper/assert functions, accept and forward `call` so the
+error points at the user’s call site, not the internal helper:
+
+``` r
+assert_vts_are_tensors <- function(..., call = rlang::caller_env()) {
+  # ... pass call = call to cli_abort or inner asserts
+}
+```
 
 ## Linter
 
 To check for linter errors, you need to install the package first using
 `devtools::install()`. Then, run
 [`lintr::lint_package()`](https://lintr.r-lib.org/reference/lint.html).
-For linter errors where the line is too long, but the line is a string,
-put `#fmt: skip` before the line and append `# nolint` at the end of the
-line.
+To suppress a linter warning, put `# nolint next` on the line before.

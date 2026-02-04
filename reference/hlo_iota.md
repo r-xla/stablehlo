@@ -21,8 +21,8 @@ hlo_iota(iota_dimension, dtype, shape, func = NULL)
 - dtype:
 
   (`character(1)`)  
-  The element type of the output tensor. One of: pred, i8, i16, i32,
-  i64, ui8, ui16, ui32, ui64, f32, f64 (excluding boolean).
+  The data type of the output tensor. One of: pred, i8, i16, i32, i64,
+  ui8, ui16, ui32, ui64, f32, f64 (excluding boolean).
 
 - shape:
 

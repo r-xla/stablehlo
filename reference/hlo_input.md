@@ -18,7 +18,7 @@ hlo_input(name, dtype, shape = integer(), func = .current_func(), alias = NULL)
 - dtype:
 
   ([`ValueType`](ValueType.md))  
-  The element type of the parameter. Can contain digits, letters and
+  The data type of the parameter. Can contain digits, letters and
   underscores. If it starts with a digit, it can only contain digits.
   Otherwise it must start with a letter.
 
