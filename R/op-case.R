@@ -42,6 +42,7 @@ infer_types_case <- function(index, ...) {
 
   # (C3)
   if (length(unique(out_types_list)) != 1L) {
+    # nolint next
     branch_types <- vapply(
       out_types_list,
       function(types) {

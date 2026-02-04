@@ -38,6 +38,7 @@ infer_types_slice <- function(
 
   if (length(start_idx) != operand_rank) {
     cli_abort(c(
+      # nolint next
       "length of {.arg start_indices}, {.arg limit_indices} and {.arg strides} must be equal to operand's rank ({operand_rank}).",
       x = "Got length {length(start_idx)}."
     ))

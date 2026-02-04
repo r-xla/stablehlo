@@ -400,6 +400,7 @@ infer_types_scatter <- function(
   if (any(actual_window_sizes > update_window_dim_sizes)) {
     cli_abort(c(
       "update_window_dim_sizes must not exceed input dimensions.",
+      # nolint next
       x = "Got update window sizes {vec_repr(actual_window_sizes)}, but max allowed is {vec_repr(update_window_dim_sizes)}."
     ))
   }

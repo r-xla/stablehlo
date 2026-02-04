@@ -84,6 +84,11 @@ to_one_based <- function(x, ...) {
   UseMethod("to_one_based")
 }
 
+#' @export
+to_one_based.default <- function(x, ...) {
+  x
+}
+
 #' @title ErrorDimensionUniqueness
 #' @description Error when dimension indices are not unique
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error
@@ -457,6 +462,7 @@ conditionMessage.ErrorDimSizeMismatch <- function(c, ...) {
   shape2_str <- fmt_shape(c$shape2) # nolint
   format_error(
     c(
+      # nolint next
       "{.arg {c$arg1}} dimension {c$dim1} and {.arg {c$arg2}} dimension {c$dim2} must match unless {.arg {c$arg1}} dim is 1.",
       x = "Got shapes {shapevec_repr(c$shape1)} and {shapevec_repr(c$shape2)}."
     ),

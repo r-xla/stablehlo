@@ -142,4 +142,4 @@ assert_vts_are_tensors <- function(..., call = rlang::caller_env()) {
 
 To check for linter errors, you need to install the package first using `devtools::install()`.
 Then, run `lintr::lint_package()`.
-For linter errors where the line is too long, but the line is a string, put `#fmt: skip` before the line and append `# nolint` at the end of the line.
+To suppress a linter warning, put `# nolint next` on the line before.

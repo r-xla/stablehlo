@@ -25,7 +25,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
   if (
     !all(vapply(input_dims[-1], \(x) identical(input_dims[[1]], x), logical(1)))
   ) {
-    # fmt: skip
+    # nolint next
     shapes_str <- vapply(input_dims, shapevec_repr, character(1))
     cli_abort(c(
       "Each input must have the same shape",

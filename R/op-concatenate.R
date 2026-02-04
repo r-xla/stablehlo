@@ -29,6 +29,7 @@ error_concatenate_shapes <- function(
 
 #' @export
 conditionMessage.ErrorConcatenateShapes <- function(c, ...) {
+  # nolint next
   shapes <- vapply(c$shapes, repr, character(1))
   dims_str <- paste0(c$dimensions, collapse = ", ") # nolint
   format_error(
@@ -64,6 +65,7 @@ infer_types_concatenate <- function(..., dimension) {
   # (C1)
   dtypes <- lapply(dots, \(x) x$type$dtype)
   if (length(unique(dtypes)) != 1) {
+    # nolint next
     dtype_reprs <- vapply(dtypes, repr, character(1))
     cli_abort(c(
       "Each input must have same data type",
