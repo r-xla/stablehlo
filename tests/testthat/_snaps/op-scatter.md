@@ -1,3 +1,46 @@
+# errors
+
+    Code
+      infer_types_scatter(inputs = inputs, scatter_indices = scatter_indices,
+        updates = updates, scatter_dimension_numbers = sdn, indices_are_sorted = scnst(
+          FALSE, "i1"), unique_indices = scnst(FALSE, "i1"), update_computation = body)
+    Condition
+      Error in `infer_types_scatter()`:
+      ! scatter requires at least one input and one update.
+
+---
+
+    Code
+      infer_types_scatter(inputs = inputs, scatter_indices = scatter_indices,
+        updates = updates, scatter_dimension_numbers = sdn, indices_are_sorted = scnst(
+          FALSE, "i1"), unique_indices = scnst(FALSE, "i1"), update_computation = body)
+    Condition
+      Error in `infer_types_scatter()`:
+      ! Number of inputs must equal number of updates.
+      x Got 1 inputs and 2 updates.
+
+---
+
+    Code
+      infer_types_scatter(inputs = inputs, scatter_indices = scatter_indices,
+        updates = updates, scatter_dimension_numbers = sdn, indices_are_sorted = scnst(
+          FALSE, "i1"), unique_indices = scnst(FALSE, "i1"), update_computation = body)
+    Condition
+      Error in `infer_types_scatter()`:
+      ! rank of inputs must equal length(update_window_dims) + length(inserted_window_dims) + length(input_batching_dims).
+      x Got rank = 3, but expected 2 (= 1 + 1 + 0).
+
+---
+
+    Code
+      infer_types_scatter(inputs = inputs, scatter_indices = scatter_indices,
+        updates = updates, scatter_dimension_numbers = sdn, indices_are_sorted = scnst(
+          FALSE, "i1"), unique_indices = scnst(FALSE, "i1"), update_computation = body)
+    Condition
+      Error in `infer_types_scatter()`:
+      ! `update_window_dims` must contain unique dimension indices
+      x Got c(1, 1)
+
 # scatter looks correct
 
     Code

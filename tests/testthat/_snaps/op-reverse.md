@@ -5,7 +5,7 @@
       2L))
     Condition
       Error in `infer_types_reverse()`:
-      ! `dimensions` must contain unique dimenion indices
+      ! `dimensions` must contain unique dimension indices
       x Got c(0, 0)
 
 ---

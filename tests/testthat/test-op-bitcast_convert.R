@@ -8,7 +8,7 @@ test_that("errors", {
   # from boolean not supported
   check(vt("pred", c(2L, 3L)), "i8")
   # to boolean not supported
-  check(vt("i8", c(2L, 3L)), "i8")
+  check(vt("i8", c(2L, 3L)), "i1")
   # unsupported dtype
   check(vt("i8", c(2L, 3L)), "foo")
   # scalar operand cannot upcast

@@ -1,7 +1,50 @@
-#' @include op.R hlo.R
+#' @include op.R hlo.R conditions.R
 NULL
 
 OpConcatenate <- new_Op("OpConcatenate", "concatenate")
+
+#' @title ErrorConcatenateShapes
+#' @description Error when input shapes don't match (except at given dimensions)
+#' @param dimensions (`integer()`)\cr The dimensions where shapes may differ (0-based)
+#' @param shapes (`list()` of `Shape`)\cr The input shapes
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param class (`character()`)\cr Additional classes to prepend
+#' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
+#' @export
+error_concatenate_shapes <- function(
+  dimensions,
+  shapes,
+  call = sys.call(-1)[1L],
+  class = character(),
+  signal = TRUE
+) {
+  error_stablehlo(
+    dimensions = as.integer(dimensions),
+    shapes = shapes,
+    call = call,
+    class = c(class, "ErrorConcatenateShapes"),
+    signal = signal
+  )
+}
+
+#' @export
+conditionMessage.ErrorConcatenateShapes <- function(c, ...) {
+  shapes <- vapply(c$shapes, repr, character(1))
+  dims_str <- paste0(c$dimensions, collapse = ", ") # nolint
+  format_error(
+    c(
+      "All inputs must have the same shape, except in dimension(s) {dims_str}.",
+      x = "Got shapes {shapes}."
+    ),
+    .envir = environment()
+  )
+}
+
+#' @export
+to_one_based.ErrorConcatenateShapes <- function(x, ...) {
+  x$dimensions <- x$dimensions + 1L
+  x
+}
 
 #' @rdname hlo_concatenate
 #' @export
@@ -47,15 +90,10 @@ infer_types_concatenate <- function(..., dimension) {
   if (
     !all(vapply(dims_no_concat, identical, logical(1), dims_no_concat[[1]]))
   ) {
-    # fmt: skip
-    shapes_str <- paste0( # nolint
-      vapply(input_dims, shapevec_repr, character(1)),
-      collapse = ", "
+    error_concatenate_shapes(
+      dimensions = dimension,
+      shapes = lapply(input_dims, Shape)
     )
-    cli_abort(c(
-      "Each input must have same shape (except for the concatenated dimension)",
-      x = "Got {shapes_str} for dimension {dimension}."
-    ))
   }
 
   # (C6)

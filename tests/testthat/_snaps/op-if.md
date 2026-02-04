@@ -5,7 +5,7 @@
     Condition
       Error in `infer_types_if()`:
       ! `true_branch` and `false_branch` must have the same number of outputs.
-      i Got 1 and 2.
+      x Got 1 and 2.
 
 ---
 

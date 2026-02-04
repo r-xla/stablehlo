@@ -51,13 +51,13 @@ infer_types_broadcast_in_dim <- function(
     op_dim <- operand_dims[d]
     out_dim <- result_dims[bdims[d] + 1L]
     if ((op_dim != out_dim) && op_dim != 1L) {
-      error_dimension_mismatch(
+      error_dim_size_mismatch(
         arg1 = "operand",
         arg2 = "result",
         dim1 = d - 1L,
         dim2 = bdims[d],
-        size1 = op_dim,
-        size2 = out_dim
+        shape1 = operand_dims,
+        shape2 = result_dims
       )
     }
   }

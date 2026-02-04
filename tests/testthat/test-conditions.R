@@ -113,9 +113,9 @@ test_that("ErrorUnequalTypes", {
   )
 })
 
-test_that("ErrorUnexpectedType", {
+test_that("ErrorUnexpectedListType", {
   expect_snapshot_error(
-    error_unexpected_type(
+    error_unexpected_list_type(
       arg = "init_values",
       index = 0L,
       expected = "must be 0-D tensors",

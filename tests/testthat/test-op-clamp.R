@@ -1,3 +1,24 @@
+test_that("errors", {
+  # (C1) min shape mismatch
+  expect_snapshot(
+    infer_types_clamp(
+      min = vt("f32", c(3L, 3L)),
+      operand = vt("f32", c(2L, 3L)),
+      max = vt("f32", integer())
+    ),
+    error = TRUE
+  )
+  # (C1) max shape mismatch
+  expect_snapshot(
+    infer_types_clamp(
+      min = vt("f32", integer()),
+      operand = vt("f32", c(2L, 3L)),
+      max = vt("f32", c(3L, 3L))
+    ),
+    error = TRUE
+  )
+})
+
 test_that("basic tests", {
   func <- local_func()
   lo <- hlo_input("lo", "f32", shape = c(2L, 2L))

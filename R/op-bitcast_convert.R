@@ -24,7 +24,7 @@ infer_types_bitcast_convert <- function(
   if (dtype %in% c("i1", "pred")) {
     cli_abort(c(
       "Bitcast conversions from and to i1 are not supported.",
-      x = "{.arg dtype} is {.val {dtype}}."
+      x = "{.arg dtype} is {.val {as_dtype(dtype)}}."
     ))
   }
 
@@ -45,7 +45,7 @@ infer_types_bitcast_convert <- function(
         "f64"
       ))
   ) {
-    cli_abort("Unsupported dtype: {dtype}")
+    cli_abort("Unsupported dtype: {.val {as_dtype(dtype)}}")
   }
 
   operand_bits <- operand$type$dtype$value
@@ -60,7 +60,7 @@ infer_types_bitcast_convert <- function(
     if (identical(operand_dims, integer(0))) {
       cli_abort(c(
         "{.arg operand} must have at least 1 dimension for this bitcast conversion.",
-        x = "{.arg operand} is a scalar ({.val {operand$type$dtype}} -> {dtype})."
+        x = "{.arg operand} is a scalar ({.val {operand$type$dtype}} -> {.val {as_dtype(dtype)}})."
       ))
     } else if (operand_dims[[length(operand_dims)]] != cst_fct) {
       cli_abort(c(

@@ -219,7 +219,7 @@ to_one_based.ErrorPermuteIndex <- function(x, ...) {
   x
 }
 
-#' @title ErrorUnexpectedType
+#' @title ErrorUnexpectedListType
 #' @description Error when an element in a list has an unexpected type
 #' @param arg (`character(1)`)\cr Name of the argument
 #' @param index (`integer(1)`)\cr The index where the type is unexpected (0-based)
@@ -229,7 +229,7 @@ to_one_based.ErrorPermuteIndex <- function(x, ...) {
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
 #' @export
-error_unexpected_type <- function(
+error_unexpected_list_type <- function(
   arg,
   index,
   expected,
@@ -244,13 +244,13 @@ error_unexpected_type <- function(
     expected = expected,
     actual = actual,
     call = call,
-    class = c(class, "ErrorUnexpectedType"),
+    class = c(class, "ErrorUnexpectedListType"),
     signal = signal
   )
 }
 
 #' @export
-conditionMessage.ErrorUnexpectedType <- function(c, ...) {
+conditionMessage.ErrorUnexpectedListType <- function(c, ...) {
   x_line <- if (is.character(c$actual)) {
     "Got {c$actual}."
   } else {
@@ -266,7 +266,7 @@ conditionMessage.ErrorUnexpectedType <- function(c, ...) {
 }
 
 #' @export
-to_one_based.ErrorUnexpectedType <- function(x, ...) {
+to_one_based.ErrorUnexpectedListType <- function(x, ...) {
   x$index <- x$index + 1L
   x
 }
@@ -277,8 +277,8 @@ to_one_based.ErrorUnexpectedType <- function(x, ...) {
 #' @param arg2 (`character(1)`)\cr Name of the second argument
 #' @param index (`integer(1)`)\cr The index where types don't match (0-based)
 #' @param expected (`character(1)`)\cr Description of what was expected
-#' @param actual1 (`character(1)`)\cr Type from the first argument
-#' @param actual2 (`character(1)`)\cr Type from the second argument
+#' @param actual1 Type from the first argument (any object with a cli_format method)
+#' @param actual2 Type from the second argument (any object with a cli_format method)
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
@@ -399,9 +399,75 @@ error_index_in_set <- function(
 conditionMessage.ErrorIndexInSet <- function(c, ...) {
   format_error(
     c(
-      "{.var {c$arg1}} must not be in {.var {c$arg2}}.",
+      "{.arg {c$arg1}} must not be in {.arg {c$arg2}}.",
       x = "{c$arg1} = {.val {c$index}} is in {c$arg2} = {.val {c$set}}."
     ),
     .envir = environment()
   )
 }
+
+
+#' @export
+to_one_based.ErrorIndexInSet <- function(x, ...) {
+  x$index <- x$index + 1L
+  x$set <- x$set + 1L
+  x
+}
+
+#' @title ErrorDimSizeMismatch
+#' @description Error when a dimension size doesn't match the expected size at a given index
+#' @param arg1 (`character(1)`)\cr Name of the first argument (e.g. "operand")
+#' @param arg2 (`character(1)`)\cr Name of the second argument (e.g. "result")
+#' @param dim1 (`integer(1)`)\cr Dimension index in arg1 (0-based)
+#' @param dim2 (`integer(1)`)\cr Dimension index in arg2 (0-based)
+#' @param shape1 (`integer()`)\cr Complete shape of arg1
+#' @param shape2 (`integer()`)\cr Complete shape of arg2
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param class (`character()`)\cr Additional classes to prepend
+#' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
+#' @export
+error_dim_size_mismatch <- function(
+  arg1,
+  arg2,
+  dim1,
+  dim2,
+  shape1,
+  shape2,
+  call = sys.call(-1)[1L],
+  class = character(),
+  signal = TRUE
+) {
+  error_stablehlo(
+    arg1 = arg1,
+    arg2 = arg2,
+    dim1 = as.integer(dim1),
+    dim2 = as.integer(dim2),
+    shape1 = as.integer(shape1),
+    shape2 = as.integer(shape2),
+    call = call,
+    class = c(class, "ErrorDimSizeMismatch"),
+    signal = signal
+  )
+}
+
+#' @export
+conditionMessage.ErrorDimSizeMismatch <- function(c, ...) {
+  fmt_shape <- function(s) paste0("(", paste0(s, collapse = "x"), ")")
+  shape1_str <- fmt_shape(c$shape1) # nolint
+  shape2_str <- fmt_shape(c$shape2) # nolint
+  format_error(
+    c(
+      "{.arg {c$arg1}} dimension {c$dim1} and {.arg {c$arg2}} dimension {c$dim2} must match unless {.arg {c$arg1}} dim is 1.",
+      x = "Got shapes {shapevec_repr(c$shape1)} and {shapevec_repr(c$shape2)}."
+    ),
+    .envir = environment()
+  )
+}
+
+#' @export
+to_one_based.ErrorDimSizeMismatch <- function(x, ...) {
+  x$dim1 <- x$dim1 + 1L
+  x$dim2 <- x$dim2 + 1L
+  x
+}
+

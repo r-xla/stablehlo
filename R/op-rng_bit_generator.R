@@ -28,14 +28,14 @@ infer_types_rng_bit_generator <- function(
   if (algo == "THREE_FRY") {
     if (state_size != 2L) {
       cli_abort(c(
-        "THREE_FRY requires size(initial_state) = 2",
+        "THREE_FRY requires length(initial_state) = 2",
         x = "Got {.val {state_size}}."
       ))
     }
   } else if (algo == "PHILOX") {
     if (!(state_size %in% c(2L, 3L))) {
       cli_abort(c(
-        "PHILOX requires size(initial_state) to be 2 or 3",
+        "PHILOX requires length(initial_state) to be 2 or 3",
         x = "Got {.val {state_size}}."
       ))
     }

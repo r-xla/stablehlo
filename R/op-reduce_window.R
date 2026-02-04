@@ -49,7 +49,7 @@ infer_types_reduce_window <- function(
   lapply(seq_along(init_value_types), function(i) {
     vt <- init_value_types[[i]]
     if (length(vt$type$shape$dims) != 0L) {
-      error_unexpected_type(
+      error_unexpected_list_type(
         arg = "init_values",
         index = i - 1L, # 0-based
         expected = "must be 0-D tensors",
@@ -187,7 +187,7 @@ infer_types_reduce_window <- function(
   out_vts <- lapply(seq_len(num_inputs), function(i) {
     out_elem_vt <- body_out_types[[i]]
     if (length(out_elem_vt$type$shape$dims) != 0L) {
-      error_unexpected_type(
+      error_unexpected_list_type(
         arg = "body output",
         index = i - 1L, # 0-based
         expected = "must be 0-D tensors",

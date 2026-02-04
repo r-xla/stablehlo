@@ -28,7 +28,7 @@
     `output_types(true_branch)[2]` and `output_types(false_branch)[2]` must have the same type.
     x Got tensor<2x2xf32> and tensor<2x2xi32>.
 
-# ErrorUnexpectedType
+# ErrorUnexpectedListType
 
     `init_values[0]` must be 0-D tensors.
     x Got tensor<2x2xf32>.

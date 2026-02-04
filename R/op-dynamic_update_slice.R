@@ -18,7 +18,7 @@ infer_types_dynamic_update_slice <- function( # nolint
   for (i in seq_along(start_indices)) {
     vt <- start_indices[[i]]
     if (length(shape(vt)) != 0) {
-      error_unexpected_type(
+      error_unexpected_list_type(
         arg = "start_indices",
         index = i - 1L, # 0-based
         expected = "must be 0-dimensional tensors",
@@ -43,7 +43,7 @@ infer_types_dynamic_update_slice <- function( # nolint
   # (C4)
   if (length(start_indices) != operand_rank) {
     cli_abort(c(
-      "size(start_indices) must equal rank(operand).",
+      "length(start_indices) must equal rank(operand).",
       x = "Got {length(start_indices)} start_indices and rank {operand_rank}."
     ))
   }

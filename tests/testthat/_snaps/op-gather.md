@@ -1,3 +1,47 @@
+# errors
+
+    Code
+      infer_types_gather(operand, start_indices, gather_dimension_numbers = gdn,
+        slice_sizes = cnst(slice_sizes, "i64", length(slice_sizes)),
+        indices_are_sorted = scnst(FALSE, "pred"))
+    Condition
+      Error in `infer_types_gather()`:
+      ! rank(operand) must equal length(offset_dims) + length(collapsed_slice_dims) + length(operand_batching_dims).
+      x Got rank = 3, but expected 2 (= 1 + 1 + 0).
+
+---
+
+    Code
+      infer_types_gather(operand, start_indices, gather_dimension_numbers = gdn,
+        slice_sizes = cnst(slice_sizes, "i64", length(slice_sizes)),
+        indices_are_sorted = scnst(FALSE, "pred"))
+    Condition
+      Error in `infer_types_gather()`:
+      ! `index_vector_dim` contains index outside the valid range.
+      x Got 5, but valid range is [0, 3).
+
+---
+
+    Code
+      infer_types_gather(operand, start_indices, gather_dimension_numbers = gdn,
+        slice_sizes = cnst(slice_sizes, "i64", length(slice_sizes)),
+        indices_are_sorted = scnst(FALSE, "pred"))
+    Condition
+      Error in `infer_types_gather()`:
+      ! `offset_dims` must contain unique dimension indices
+      x Got c(1, 1)
+
+---
+
+    Code
+      infer_types_gather(operand, start_indices, gather_dimension_numbers = gdn,
+        slice_sizes = cnst(slice_sizes, "i64", length(slice_sizes)),
+        indices_are_sorted = scnst(FALSE, "pred"))
+    Condition
+      Error in `infer_types_gather()`:
+      ! length(slice_sizes) must equal rank(operand).
+      x Got 3, but expected 2.
+
 # gather looks correct
 
     Code

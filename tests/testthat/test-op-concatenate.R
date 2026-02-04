@@ -1,3 +1,37 @@
+test_that("errors", {
+  # (C3) no inputs
+  expect_snapshot(
+    infer_types_concatenate(dimension = scnst(0L, "i64")),
+    error = TRUE
+  )
+  # (C1) different data types
+  expect_snapshot(
+    infer_types_concatenate(
+      vt("f32", c(2L, 3L)),
+      vt("i32", c(2L, 3L)),
+      dimension = scnst(0L, "i64")
+    ),
+    error = TRUE
+  )
+  # (C4) dimension out of bounds
+  expect_snapshot(
+    infer_types_concatenate(
+      vt("f32", c(2L, 3L)),
+      dimension = scnst(2L, "i64")
+    ),
+    error = TRUE
+  )
+  # (C2) non-concat dimension shape mismatch
+  expect_snapshot(
+    infer_types_concatenate(
+      vt("f32", c(2L, 3L)),
+      vt("f32", c(2L, 4L)),
+      dimension = scnst(0L, "i64")
+    ),
+    error = TRUE
+  )
+})
+
 test_that("basic tests", {
   func <- local_func()
   x1 <- hlo_input("x1", "i32", shape = c(3L, 1L))
