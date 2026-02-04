@@ -1,3 +1,13 @@
+# errors
+
+    Code
+      infer_types_transpose(vt("f32", c(2L, 3L, 4L)), permutation = cnst(c(0L, 2L, 1L,
+        3L), "i64", 4L))
+    Condition
+      Error in `infer_types_transpose()`:
+      ! `permutation` must be a permutation of c(0, 1, 2).
+      x Got c(0, 2, 1, 3).
+
 # basic tests
 
     Code

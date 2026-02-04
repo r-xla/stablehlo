@@ -160,7 +160,7 @@ hlo_fn <- function(
 #' @param name (`character(1)`)\cr
 #'   The name of the parameter.
 #' @param dtype ([`ValueType`])\cr
-#'   The element type of the parameter.
+#'   The data type of the parameter.
 #'   Can contain digits, letters and underscores.
 #'   If it starts with a digit, it can only contain digits.
 #'   Otherwise it must start with a letter.

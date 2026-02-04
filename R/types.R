@@ -74,8 +74,8 @@ repr.BooleanType <- function(x, ...) {
 }
 
 #' @export
-print.BooleanType <- function(x, ...) {
-  cat("<BooleanType>\n")
+print.TensorDataType <- function(x, ...) {
+  cat("<", repr(x), ">\n", sep = "")
   invisible(x)
 }
 
@@ -103,12 +103,6 @@ repr.IntegerType <- function(x, ...) {
   paste0("i", x$value)
 }
 
-#' @export
-print.IntegerType <- function(x, ...) {
-  cat(sprintf("<IntegerType: %s>\n", x$value))
-  invisible(x)
-}
-
 #' @title UnsignedType
 #' @description
 #' Represents an unsigned integer type with a given bit width.
@@ -131,12 +125,6 @@ UnsignedType <- function(value) {
 #' @export
 repr.UnsignedType <- function(x, ...) {
   paste0("ui", x$value)
-}
-
-#' @export
-print.UnsignedType <- function(x, ...) {
-  cat(sprintf("<UnsignedType: %s>\n", x$value))
-  invisible(x)
 }
 
 #' @title FloatType
@@ -162,13 +150,6 @@ FloatType <- function(value) {
 repr.FloatType <- function(x, ...) {
   paste0("f", x$value)
 }
-
-#' @export
-print.FloatType <- function(x, ...) {
-  cat(sprintf("<FloatType: %s>\n", x$value))
-  invisible(x)
-}
-
 
 #' @title Is TensorDataType
 #' @description
@@ -285,13 +266,8 @@ TensorType <- function(dtype, shape) {
 
 #' @export
 repr.TensorType <- function(x, ...) {
-  paste0(
-    "tensor<",
-    repr(x$shape),
-    if (length(x$shape$dims) > 0) "x" else "",
-    repr(x$dtype),
-    ">"
-  )
+  shape_repr <- repr(x$shape)
+  paste0("tensor<", shape_repr, if (nzchar(shape_repr)) "x", repr(x$dtype), ">")
 }
 
 #' @export
@@ -459,6 +435,6 @@ check_types_equal <- function(lhs, rhs, ..., msg = NULL) {
 
   cli_abort(c(
     x = msg %||% "Expected types to be equal.",
-    x = "Got lhs={.val {repr(lhs)}}, rhs={.val {repr(rhs)}}."
+    x = "Got lhs={.val {lhs}}, rhs={.val {rhs}}."
   ))
 }

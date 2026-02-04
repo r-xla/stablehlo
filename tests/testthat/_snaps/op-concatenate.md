@@ -1,3 +1,40 @@
+# errors
+
+    Code
+      infer_types_concatenate(dimension = scnst(0L, "i64"))
+    Condition
+      Error in `infer_types_concatenate()`:
+      ! must have at least one input
+
+---
+
+    Code
+      infer_types_concatenate(vt("f32", c(2L, 3L)), vt("i32", c(2L, 3L)), dimension = scnst(
+        0L, "i64"))
+    Condition
+      Error in `infer_types_concatenate()`:
+      ! Each input must have same data type
+      x Got f32 and i32.
+
+---
+
+    Code
+      infer_types_concatenate(vt("f32", c(2L, 3L)), dimension = scnst(2L, "i64"))
+    Condition
+      Error in `infer_types_concatenate()`:
+      ! `dimension` contains index outside the valid range.
+      x Got 2, but valid range is [0, 2).
+
+---
+
+    Code
+      infer_types_concatenate(vt("f32", c(2L, 3L)), vt("f32", c(2L, 4L)), dimension = scnst(
+        0L, "i64"))
+    Condition
+      Error in `infer_types_concatenate()`:
+      ! All inputs must have the same shape, except in dimension(s) 0.
+      x Got shapes 2x3 and 2x4.
+
 # basic tests
 
     Code

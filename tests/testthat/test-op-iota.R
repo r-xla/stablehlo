@@ -15,3 +15,11 @@ test_that("basic tests", {
   ))
   expect_equal(out_buf, pjrt::pjrt_buffer(expected))
 })
+
+test_that("errors", {
+  # (C1) iota_dimension out of bounds
+  expect_snapshot(
+    infer_types_iota(scnst(5L, "i64"), dtype = "i32", shape = c(3L, 2L)),
+    error = TRUE
+  )
+})

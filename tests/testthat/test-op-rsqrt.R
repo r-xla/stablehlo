@@ -6,3 +6,5 @@ test_that("basic tests", {
     tol = 1e-6
   )
 })
+
+# Errors are tested in test-type_inference.R (via infer_types_float_uni)

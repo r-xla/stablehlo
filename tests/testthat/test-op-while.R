@@ -37,3 +37,40 @@ test_that("simple loop", {
   expect_identical(res[[1L]], pjrt_scalar(10L, "i64"))
   expect_identical(res[[2L]], pjrt_scalar(9L, "i64"))
 })
+
+test_that("errors", {
+  cond_ok <- local_func("cond_ok")
+  x <- hlo_input("x", "i32", 2L)
+  pred <- hlo_scalar(TRUE)
+  cond_ok <- hlo_return(pred)
+
+  body_ok <- local_func("body_ok")
+  x <- hlo_input("x", "i32", 2L)
+  body_ok <- hlo_return(x)
+
+  body_wrong <- local_func("body_wrong")
+  x <- hlo_input("x", "i32", 2L)
+  body_wrong <- hlo_return(hlo_convert(x, "f32"))
+
+  cond_2in <- local_func("cond_2in")
+  x <- hlo_input("x", "i32", 2L)
+  y <- hlo_input("y", "i32", 2L)
+  pred <- hlo_scalar(TRUE)
+  cond_2in <- hlo_return(pred)
+
+  # no operands
+  expect_snapshot(
+    infer_types_while(cond = cond_ok, body = body_ok),
+    error = TRUE
+  )
+  # cond has wrong number of inputs
+  expect_snapshot(
+    infer_types_while(vt("i32", 2L), cond = cond_2in, body = body_ok),
+    error = TRUE
+  )
+  # body output types don't match
+  expect_snapshot(
+    infer_types_while(vt("i32", 2L), cond = cond_ok, body = body_wrong),
+    error = TRUE
+  )
+})

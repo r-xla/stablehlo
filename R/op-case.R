@@ -14,23 +14,46 @@ infer_types_case <- function(index, ...) {
   }
 
   # (C2)
-  get_branch_out_types <- function(branch) {
+  get_branch_out_types <- function(branch, index) {
     if (!test_class(branch, "Func")) {
-      cli_abort("branches must be a list of Func objects")
+      error_unexpected_list_type(
+        arg = "branches",
+        index = index,
+        expected = "must be a Func",
+        actual = class(branch)[1]
+      )
     }
     if (length(branch$inputs) != 0L) {
-      cli_abort("branch functions must not have inputs")
+      n <- length(branch$inputs)
+      error_unexpected_list_type(
+        arg = "branches",
+        index = index,
+        expected = "must not have inputs",
+        actual = paste0(n, " input", if (n != 1L) "s"),
+        call = call
+      )
     }
     func_output_types(branch)
   }
 
-  out_types_list <- lapply(branches, get_branch_out_types)
+  out_types_list <- lapply(seq_along(branches), function(i) {
+    get_branch_out_types(branches[[i]], i - 1L)
+  })
 
   # (C3)
-  for (i in seq_along(out_types_list[-1L])) {
-    if (!identical(out_types_list[[i]], out_types_list[[1L]])) {
-      cli_abort("all branch functions must have the same output types")
-    }
+  if (length(unique(out_types_list)) != 1L) {
+    # nolint next
+    branch_types <- vapply(
+      out_types_list,
+      function(types) {
+        vapply(types, repr, character(1))
+      },
+      character(1)
+    )
+    cli_abort(c(
+      "All branch functions must have the same output types.",
+      x = "Got {branch_types}."
+    ))
   }
 
   # (C4)

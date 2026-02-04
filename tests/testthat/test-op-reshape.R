@@ -19,3 +19,11 @@ test_that("basic tests", {
   output <- pjrt_execute(exec, pjrt_buffer(input))
   expect_equal(as_array(output), expected)
 })
+
+test_that("errors", {
+  # (C2) size mismatch
+  expect_snapshot(
+    infer_types_reshape(vt("f32", c(2L, 3L)), shape = c(4L, 2L)),
+    error = TRUE
+  )
+})

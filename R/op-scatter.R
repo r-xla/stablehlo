@@ -137,14 +137,14 @@ infer_types_scatter <- function(
   updates_rank <- length(updates_shape)
 
   # (C1)
-  for (i in seq_along(inputs)[-1L]) {
-    if (!identical(shape(inputs[[i]]), input_shape)) {
-      # fmt: skip
-      cli_abort(c(
-        "All inputs must have the same shape.",
-        x = "inputs[1] has shape {shapevec_repr(input_shape)}, but inputs[{i}] has shape {shapevec_repr(shape(inputs[[i]]))}." # nolint
-      ))
-    }
+  input_shapes <- lapply(inputs, shape)
+  if (length(unique(input_shapes)) != 1L) {
+    # fmt: skip
+    shapes_str <- paste(vapply(inputs, function(x) shapevec_repr(shape(x)), character(1)), collapse = ", ") # nolint
+    cli_abort(c(
+      "All inputs must have the same shape.",
+      x = "Got shapes: {shapes_str}."
+    ))
   }
 
   # (C2)
@@ -154,7 +154,7 @@ infer_types_scatter <- function(
   if (input_rank != expected_rank) {
     # fmt: skip
     cli_abort(c(
-      "rank(inputs[0]) must equal size(update_window_dims) + size(inserted_window_dims) + size(input_batching_dims).", # nolint
+      "rank of inputs must equal length(update_window_dims) + length(inserted_window_dims) + length(input_batching_dims).", # nolint
       x = "Got rank = {input_rank}, but expected {expected_rank} (= {length(update_window_dims)} + {length(inserted_window_dims)} + {length(input_batching_dims)})." # nolint
     ))
   }
@@ -163,10 +163,7 @@ infer_types_scatter <- function(
   for (i in seq_along(updates)[-1L]) {
     if (!identical(shape(updates[[i]]), updates_shape)) {
       # fmt: skip
-      shapes_str <- paste( # nolint
-        vapply(updates, shapevec_repr, character(1)),
-        collapse = ", "
-      )
+      shapes_str <- vapply(updates, function(u) shapevec_repr(shape(u)), character(1))
       cli_abort(c(
         "All updates must have the same shape.",
         x = "Got shapes: {shapes_str}."
@@ -181,9 +178,9 @@ infer_types_scatter <- function(
         arg1 = "inputs",
         arg2 = "updates",
         index = i - 1L,
-        expected = "must have the same element type",
-        actual1 = repr(inputs[[i]]$type$dtype),
-        actual2 = repr(updates[[i]]$type$dtype)
+        expected = "must have the same data type",
+        actual1 = inputs[[i]]$type$dtype,
+        actual2 = updates[[i]]$type$dtype
       )
     }
   }
@@ -228,10 +225,10 @@ infer_types_scatter <- function(
 
   # (C10)
   if (is.unsorted(inserted_window_dims)) {
-    cli_abort(c(
-      "inserted_window_dims must be sorted.",
-      x = "Got [{paste(inserted_window_dims, collapse = ', ')}]."
-    ))
+    error_indices_not_sorted(
+      arg = "inserted_window_dims",
+      indices = inserted_window_dims
+    )
   }
 
   # (C11)
@@ -246,10 +243,10 @@ infer_types_scatter <- function(
 
   # (C12)
   if (is.unsorted(input_batching_dims)) {
-    cli_abort(c(
-      "input_batching_dims must be sorted.",
-      x = "Got [{paste(input_batching_dims, collapse = ', ')}]."
-    ))
+    error_indices_not_sorted(
+      arg = "input_batching_dims",
+      indices = input_batching_dims
+    )
   }
 
   # (C13)
@@ -295,7 +292,7 @@ infer_types_scatter <- function(
   # (C17)
   if (length(input_batching_dims) != length(scatter_indices_batching_dims)) {
     cli_abort(c(
-      "size(input_batching_dims) must equal size(scatter_indices_batching_dims).",
+      "length(input_batching_dims) must equal length(scatter_indices_batching_dims).",
       x = "Got {length(input_batching_dims)} and {length(scatter_indices_batching_dims)}."
     ))
   }
@@ -307,7 +304,7 @@ infer_types_scatter <- function(
   ]
   if (!identical(batch_shape_inputs, batch_shape_scatter)) {
     cli_abort(
-      "Shape of batch dimensions of inputs and scatter_indices must match.",
+      "Shape of batch dimensions of {.arg inputs} and {.arg scatter_indices} must match.",
       x = "Got {shapevec_repr(batch_shape_inputs)} and {shapevec_repr(batch_shape_scatter)}."
     )
   }
@@ -320,7 +317,7 @@ infer_types_scatter <- function(
   }
   if (length(scatter_dims_to_operand_dims) != expected_scatter_dims_size) {
     cli_abort(c(
-      "size(scatter_dims_to_operand_dims) must equal the index vector size.",
+      "length(scatter_dims_to_operand_dims) must equal the index vector size.",
       x = "Got {length(scatter_dims_to_operand_dims)}, but expected {expected_scatter_dims_size}."
     ))
   }
@@ -393,7 +390,7 @@ infer_types_scatter <- function(
 
   if (updates_rank != expected_updates_rank) {
     cli_abort(c(
-      "updates tensor must be of rank {expected_updates_rank} (== rank(scatter_indices) - 1 + size(update_window_dims), where scatter_indices is expanded by a trailing 1 dimension if index_vector_dim == rank(scatter_indices)).", # nolint
+      "updates tensor must be of rank {expected_updates_rank} (== rank(scatter_indices) - 1 + length(update_window_dims), where scatter_indices is expanded by a trailing 1 dimension if index_vector_dim == rank(scatter_indices)).", # nolint
       x = "Got rank {updates_rank}."
     ))
   }
@@ -401,10 +398,10 @@ infer_types_scatter <- function(
   # (C4) - window dimensions part
   actual_window_sizes <- updates_shape[update_window_dims + 1L]
   if (any(actual_window_sizes > update_window_dim_sizes)) {
-    # fmt: skip
     cli_abort(c(
       "update_window_dim_sizes must not exceed input dimensions.",
-      x = "Got update window sizes [{paste(actual_window_sizes, collapse = ', ')}], but max allowed is [{paste(update_window_dim_sizes, collapse = ', ')}]." # nolint
+      # nolint next
+      x = "Got update window sizes {vec_repr(actual_window_sizes)}, but max allowed is {vec_repr(update_window_dim_sizes)}."
     ))
   }
 
@@ -412,10 +409,9 @@ infer_types_scatter <- function(
   if (length(update_scatter_dims) > 0L) {
     actual_scatter_sizes <- updates_shape[update_scatter_dims + 1L]
     if (!identical(actual_scatter_sizes, update_scatter_dim_sizes)) {
-      # fmt: skip
       cli_abort(c(
         "Update scatter dimension sizes must match scatter_indices shape (excluding index_vector_dim).",
-        x = "Got [{paste(actual_scatter_sizes, collapse = ', ')}], but expected [{paste(update_scatter_dim_sizes, collapse = ', ')}]." # nolint
+        x = "Got {vec_repr(actual_scatter_sizes)}, but expected {vec_repr(update_scatter_dim_sizes)}."
       ))
     }
   }
@@ -424,7 +420,7 @@ infer_types_scatter <- function(
   body_out_types <- ValueTypes(func_output_types(update_computation))
   if (length(body_out_types) != num_inputs) {
     cli_abort(c(
-      "update_computation must return {num_inputs} tensor{?s}.",
+      "{.arg update_computation} must return {num_inputs} tensor{?s}.",
       x = "Got {length(body_out_types)} outputs."
     ))
   }
@@ -433,7 +429,7 @@ infer_types_scatter <- function(
     out_type <- body_out_types[[i]]
     if (length(shape(out_type)) != 0L) {
       cli_abort(c(
-        "update_computation outputs must be 0-D tensors.",
+        "{.arg update_computation} outputs must be 0-D tensors.",
         x = "Output {i} has shape {shapevec_repr(shape(out_type))}."
       ))
     }

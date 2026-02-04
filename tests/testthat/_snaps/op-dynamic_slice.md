@@ -1,3 +1,43 @@
+# errors
+
+    Code
+      infer_types_dynamic_slice(vt("f32", c(4L, 5L)), vt("i32", integer()),
+      slice_sizes = cnst(c(2L, 3L), "i64", 2L))
+    Condition
+      Error in `infer_types_dynamic_slice()`:
+      ! length(start_indices) must equal rank(operand).
+      x Got 1 start_indices and rank 2.
+
+---
+
+    Code
+      infer_types_dynamic_slice(vt("f32", c(4L, 5L)), vt("i32", integer()), vt("i32",
+        integer()), slice_sizes = cnst(c(2L), "i64", 1L))
+    Condition
+      Error in `infer_types_dynamic_slice()`:
+      ! length(slice_sizes) must equal rank(operand).
+      x Got 1 slice_sizes and rank 2.
+
+---
+
+    Code
+      infer_types_dynamic_slice(vt("f32", c(4L, 5L)), vt("i32", 2L), vt("i32",
+        integer()), slice_sizes = cnst(c(2L, 3L), "i64", 2L))
+    Condition
+      Error in `infer_types_dynamic_slice()`:
+      ! All `start_indices` must have the same type.
+      x Got types: tensor<2xi32>, tensor<i32>.
+
+---
+
+    Code
+      infer_types_dynamic_slice(vt("f32", c(4L, 5L)), vt("i32", integer()), vt("i32",
+        integer()), slice_sizes = cnst(c(5L, 3L), "i64", 2L))
+    Condition
+      Error in `infer_types_dynamic_slice()`:
+      ! `slice_sizes` must not be greater than `operand`'s shape.
+      x Got slice_sizes (5x3) and operand shape (4x5).
+
 # basic tests
 
     Code

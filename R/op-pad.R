@@ -29,7 +29,7 @@ infer_types_pad <- function(
   if (any(colSums(abs(lowhigh)) > operand_rank)) {
     cli_abort(c(
       "negative padding values can't exceed dimension",
-      i = "edge_padding_low: {.val {low}}, edge_padding_high: {.val {high}}, operand_rank: {operand_rank}"
+      x = "edge_padding_low: {vec_repr(low)}, edge_padding_high: {vec_repr(high)}, operand_rank: {operand_rank}"
     ))
   }
 
@@ -37,7 +37,7 @@ infer_types_pad <- function(
   if (any(interior < 0)) {
     cli_abort(c(
       "interior_padding must be non-negative",
-      i = "interior_padding: {.val {interior}}"
+      x = "interior_padding: {vec_repr(interior)}"
     ))
   }
   # (C2)
@@ -45,7 +45,7 @@ infer_types_pad <- function(
     if (length(val) != operand_rank) {
       cli_abort(c(
         "{name} must have length equal to operand rank",
-        i = "length({name}): {length(val)}, operand_rank: {operand_rank}"
+        x = "length({name}): {length(val)}, operand_rank: {operand_rank}"
       ))
     }
   }

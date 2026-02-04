@@ -1,3 +1,21 @@
+# errors
+
+    Code
+      infer_types_cholesky(operand, lower = scnst(TRUE, "pred"))
+    Condition
+      Error in `infer_types_cholesky()`:
+      ! `operand` needs to have at least rank = 2
+      x Got rank = 1.
+
+---
+
+    Code
+      infer_types_cholesky(operand, lower = scnst(TRUE, "pred"))
+    Condition
+      Error in `infer_types_cholesky()`:
+      ! `operand` must be symmetric in the last two dimensions
+      x Got shape (3x4).
+
 # basic tests
 
     Code

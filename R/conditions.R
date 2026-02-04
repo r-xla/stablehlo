@@ -1,5 +1,20 @@
-#' @importFrom cli format_error
+#' @importFrom cli format_error cli_format
 NULL
+
+#' @exportS3Method cli::cli_format
+cli_format.TensorDataType <- function(x, style = list(), ...) {
+  repr(x)
+}
+
+#' @exportS3Method cli::cli_format
+cli_format.Shape <- function(x, style = list(), ...) {
+  format(x)
+}
+
+#' @exportS3Method cli::cli_format
+cli_format.ValueType <- function(x, style = list(), ...) {
+  repr(x)
+}
 
 #' @title index_vec
 #' @description Wraps an integer vector marking it as containing 0-based index values.
@@ -66,11 +81,11 @@ conditionMessage.ErrorStablehlo <- function(c, ...) {
 #' @return Condition object with index_vec fields incremented by 1.
 #' @export
 to_one_based <- function(x, ...) {
-  for (nm in names(x)) {
-    if (inherits(x[[nm]], "IndexVector")) {
-      x[[nm]] <- index_vec(unclass(x[[nm]]) + 1L)
-    }
-  }
+  UseMethod("to_one_based")
+}
+
+#' @export
+to_one_based.default <- function(x, ...) {
   x
 }
 
@@ -102,11 +117,17 @@ error_dimension_uniqueness <- function(
 conditionMessage.ErrorDimensionUniqueness <- function(c, ...) {
   format_error(
     c(
-      "{.var {c$arg}} contains duplicate dimension indices.",
-      x = "Got {.val {c$dimensions}}. Each dimension index must appear only once."
+      "{.arg {c$arg}} must contain unique dimension indices",
+      x = "Got {.val {c$dimensions}}"
     ),
     .envir = environment()
   )
+}
+
+#' @export
+to_one_based.ErrorDimensionUniqueness <- function(x, ...) {
+  x$dimensions <- x$dimensions + 1L
+  x
 }
 
 #' @title ErrorIndexOutOfBounds
@@ -143,11 +164,19 @@ error_index_out_of_bounds <- function(
 conditionMessage.ErrorIndexOutOfBounds <- function(c, ...) {
   format_error(
     c(
-      "{.var {c$arg}} contains index{?es} outside the valid range.",
+      "{.arg {c$arg}} contains index{?es} outside the valid range.",
       x = "Got {.val {c$index}}, but valid range is [{.val {c$lower}}, {.val {c$upper}})."
     ),
     .envir = environment()
   )
+}
+
+#' @export
+to_one_based.ErrorIndexOutOfBounds <- function(x, ...) {
+  x$index <- x$index + 1L
+  x$lower <- x$lower + 1L
+  x$upper <- x$upper + 1L
+  x
 }
 
 #' @title ErrorPermuteIndex
@@ -181,14 +210,21 @@ error_permute_index <- function(
 conditionMessage.ErrorPermuteIndex <- function(c, ...) {
   format_error(
     c(
-      "{.var {c$arg}} must be a permutation of {.val {c$expected}}.",
+      "{.arg {c$arg}} must be a permutation of {.val {c$expected}}.",
       x = "Got {.val {c$permutation}}."
     ),
     .envir = environment()
   )
 }
 
-#' @title ErrorUnexpectedType
+#' @export
+to_one_based.ErrorPermuteIndex <- function(x, ...) {
+  x$permutation <- x$permutation + 1L
+  x$expected <- x$expected + 1L
+  x
+}
+
+#' @title ErrorUnexpectedListType
 #' @description Error when an element in a list has an unexpected type
 #' @param arg (`character(1)`)\cr Name of the argument
 #' @param index (`integer(1)`)\cr The index where the type is unexpected (0-based)
@@ -198,7 +234,7 @@ conditionMessage.ErrorPermuteIndex <- function(c, ...) {
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
 #' @export
-error_unexpected_type <- function(
+error_unexpected_list_type <- function(
   arg,
   index,
   expected,
@@ -211,22 +247,33 @@ error_unexpected_type <- function(
     arg = arg,
     index = index_vec(index),
     expected = expected,
-    actual = as.character(actual),
+    actual = actual,
     call = call,
-    class = c(class, "ErrorUnexpectedType"),
+    class = c(class, "ErrorUnexpectedListType"),
     signal = signal
   )
 }
 
 #' @export
-conditionMessage.ErrorUnexpectedType <- function(c, ...) {
+conditionMessage.ErrorUnexpectedListType <- function(c, ...) {
+  x_line <- if (is.character(c$actual)) {
+    "Got {c$actual}."
+  } else {
+    "Got {.val {c$actual}}."
+  }
   format_error(
     c(
-      "{.var {c$arg}[{.val {c$index}}]} {c$expected}.",
-      x = "Got {c$actual}."
+      "{.arg {c$arg}[{.val {c$index}}]} {c$expected}.",
+      x = x_line
     ),
     .envir = environment()
   )
+}
+
+#' @export
+to_one_based.ErrorUnexpectedListType <- function(x, ...) {
+  x$index <- x$index + 1L
+  x
 }
 
 #' @title ErrorUnequalTypes
@@ -235,8 +282,8 @@ conditionMessage.ErrorUnexpectedType <- function(c, ...) {
 #' @param arg2 (`character(1)`)\cr Name of the second argument
 #' @param index (`integer(1)`)\cr The index where types don't match (0-based)
 #' @param expected (`character(1)`)\cr Description of what was expected
-#' @param actual1 (`character(1)`)\cr Type from the first argument
-#' @param actual2 (`character(1)`)\cr Type from the second argument
+#' @param actual1 Type from the first argument (any object with a cli_format method)
+#' @param actual2 Type from the second argument (any object with a cli_format method)
 #' @param call (`call` or `NULL`)\cr Call that generated the error
 #' @param class (`character()`)\cr Additional classes to prepend
 #' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
@@ -257,8 +304,8 @@ error_unequal_types <- function(
     arg2 = arg2,
     index = index_vec(index),
     expected = expected,
-    actual1 = as.character(actual1),
-    actual2 = as.character(actual2),
+    actual1 = actual1,
+    actual2 = actual2,
     call = call,
     class = c(class, "ErrorUnequalTypes"),
     signal = signal
@@ -269,11 +316,17 @@ error_unequal_types <- function(
 conditionMessage.ErrorUnequalTypes <- function(c, ...) {
   format_error(
     c(
-      "{.var {c$arg1}[{.val {c$index}}]} and {.var {c$arg2}[{.val {c$index}}]} {c$expected}.",
-      x = "Got {c$actual1} and {c$actual2}."
+      "{.arg {c$arg1}[{.val {c$index}}]} and {.arg {c$arg2}[{.val {c$index}}]} {c$expected}.",
+      x = "Got {.val {c$actual1}} and {.val {c$actual2}}."
     ),
     .envir = environment()
   )
+}
+
+#' @export
+to_one_based.ErrorUnequalTypes <- function(x, ...) {
+  x$index <- x$index + 1L
+  x
 }
 
 #' @title ErrorIndicesNotSorted
@@ -304,11 +357,17 @@ error_indices_not_sorted <- function(
 conditionMessage.ErrorIndicesNotSorted <- function(c, ...) {
   format_error(
     c(
-      "{.var {c$arg}} must be sorted in ascending order.",
-      i = "Got {.val {c$indices}}."
+      "{.arg {c$arg}} must be sorted in ascending order.",
+      x = "Got {.val {c$indices}}."
     ),
     .envir = environment()
   )
+}
+
+#' @export
+to_one_based.ErrorIndicesNotSorted <- function(x, ...) {
+  x$indices <- x$indices + 1L
+  x
 }
 
 #' @title ErrorIndexInSet
@@ -345,9 +404,75 @@ error_index_in_set <- function(
 conditionMessage.ErrorIndexInSet <- function(c, ...) {
   format_error(
     c(
-      "{.var {c$arg1}} must not be in {.var {c$arg2}}.",
+      "{.arg {c$arg1}} must not be in {.arg {c$arg2}}.",
       x = "{c$arg1} = {.val {c$index}} is in {c$arg2} = {.val {c$set}}."
     ),
     .envir = environment()
   )
+}
+
+
+#' @export
+to_one_based.ErrorIndexInSet <- function(x, ...) {
+  x$index <- x$index + 1L
+  x$set <- x$set + 1L
+  x
+}
+
+#' @title ErrorDimSizeMismatch
+#' @description Error when a dimension size doesn't match the expected size at a given index
+#' @param arg1 (`character(1)`)\cr Name of the first argument (e.g. "operand")
+#' @param arg2 (`character(1)`)\cr Name of the second argument (e.g. "result")
+#' @param dim1 (`integer(1)`)\cr Dimension index in arg1 (0-based)
+#' @param dim2 (`integer(1)`)\cr Dimension index in arg2 (0-based)
+#' @param shape1 (`integer()`)\cr Complete shape of arg1
+#' @param shape2 (`integer()`)\cr Complete shape of arg2
+#' @param call (`call` or `NULL`)\cr Call that generated the error
+#' @param class (`character()`)\cr Additional classes to prepend
+#' @param signal (`logical(1)`)\cr Whether to signal the error (default TRUE)
+#' @export
+error_dim_size_mismatch <- function(
+  arg1,
+  arg2,
+  dim1,
+  dim2,
+  shape1,
+  shape2,
+  call = sys.call(-1)[1L],
+  class = character(),
+  signal = TRUE
+) {
+  error_stablehlo(
+    arg1 = arg1,
+    arg2 = arg2,
+    dim1 = as.integer(dim1),
+    dim2 = as.integer(dim2),
+    shape1 = as.integer(shape1),
+    shape2 = as.integer(shape2),
+    call = call,
+    class = c(class, "ErrorDimSizeMismatch"),
+    signal = signal
+  )
+}
+
+#' @export
+conditionMessage.ErrorDimSizeMismatch <- function(c, ...) {
+  fmt_shape <- function(s) paste0("(", paste0(s, collapse = "x"), ")")
+  shape1_str <- fmt_shape(c$shape1) # nolint
+  shape2_str <- fmt_shape(c$shape2) # nolint
+  format_error(
+    c(
+      # nolint next
+      "{.arg {c$arg1}} dimension {c$dim1} and {.arg {c$arg2}} dimension {c$dim2} must match unless {.arg {c$arg1}} dim is 1.",
+      x = "Got shapes {shapevec_repr(c$shape1)} and {shapevec_repr(c$shape2)}."
+    ),
+    .envir = environment()
+  )
+}
+
+#' @export
+to_one_based.ErrorDimSizeMismatch <- function(x, ...) {
+  x$dim1 <- x$dim1 + 1L
+  x$dim2 <- x$dim2 + 1L
+  x
 }

@@ -1,3 +1,47 @@
+# errors
+
+    Code
+      infer_types_bitcast_convert(operand, dtype)
+    Condition
+      Error in `infer_types_bitcast_convert()`:
+      ! Bitcast conversions from and to i1 are not supported.
+      x `operand` has dtype i1.
+
+---
+
+    Code
+      infer_types_bitcast_convert(operand, dtype)
+    Condition
+      Error in `infer_types_bitcast_convert()`:
+      ! Bitcast conversions from and to i1 are not supported.
+      x `dtype` is i1.
+
+---
+
+    Code
+      infer_types_bitcast_convert(operand, dtype)
+    Condition
+      Error in `infer_types_bitcast_convert()`:
+      ! Unsupported dtype: foo
+
+---
+
+    Code
+      infer_types_bitcast_convert(operand, dtype)
+    Condition
+      Error in `infer_types_bitcast_convert()`:
+      ! `operand` must have at least 1 dimension for this bitcast conversion.
+      x `operand` is a scalar (i8 -> i32).
+
+---
+
+    Code
+      infer_types_bitcast_convert(operand, dtype)
+    Condition
+      Error in `infer_types_bitcast_convert()`:
+      ! The last dimension of `operand` must be 4 for this bitcast conversion.
+      x Got 3.
+
 # basic tests
 
     Code

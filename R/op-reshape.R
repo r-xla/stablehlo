@@ -16,9 +16,9 @@ infer_types_reshape <- function(
   # (C2)
   if (prod(shape(operand)) != prod(result_dims)) {
     cli_abort(
-      "Size of output must equal to size of operand",
+      "Size of output must equal to size of {.arg operand}",
       # fmt: skip
-      x = "Got shape(operand) ={.val {shapevec_repr(shape(operand))}} and shape(result) ={.val {shapevec_repr(result_dims)}}." # nolint
+      x = "Got shape(operand) = {shapevec_repr(shape(operand))} and shape(result) = {shapevec_repr(result_dims)}." # nolint
     )
   }
 

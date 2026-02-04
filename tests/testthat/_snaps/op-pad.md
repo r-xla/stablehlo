@@ -1,3 +1,25 @@
+# errors
+
+    Code
+      infer_types_pad(operand, padding_value, edge_padding_low = cnst(low, "i64",
+        length(low)), edge_padding_high = cnst(high, "i64", length(high)),
+      interior_padding = cnst(interior, "i64", length(interior)))
+    Condition
+      Error in `infer_types_pad()`:
+      ! interior_padding must be non-negative
+      x interior_padding: c(-1, 0)
+
+---
+
+    Code
+      infer_types_pad(operand, padding_value, edge_padding_low = cnst(low, "i64",
+        length(low)), edge_padding_high = cnst(high, "i64", length(high)),
+      interior_padding = cnst(interior, "i64", length(interior)))
+    Condition
+      Error in `check()`:
+      ! edge_padding_low must have length equal to operand rank
+      x length(edge_padding_low): 1, operand_rank: 2
+
 # basic edge padding
 
     Code

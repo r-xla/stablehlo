@@ -25,9 +25,9 @@ error_unequal_types(
 
 \item{expected}{(\code{character(1)})\cr Description of what was expected}
 
-\item{actual1}{(\code{character(1)})\cr Type from the first argument}
+\item{actual1}{Type from the first argument (any object with a cli_format method)}
 
-\item{actual2}{(\code{character(1)})\cr Type from the second argument}
+\item{actual2}{Type from the second argument (any object with a cli_format method)}
 
 \item{call}{(\code{call} or \code{NULL})\cr Call that generated the error}
 

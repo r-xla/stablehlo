@@ -1,3 +1,32 @@
+# errors
+
+    Code
+      infer_types_sort(dimension = scnst(0L, "i64"), is_stable = scnst(TRUE, "pred"),
+      comparator = comparator)
+    Condition
+      Error in `infer_types_sort()`:
+      ! provide at least one input
+
+---
+
+    Code
+      infer_types_sort(vt("i32", c(2L, 3L)), vt("i32", c(3L, 3L)), dimension = scnst(
+        0L, "i64"), is_stable = scnst(TRUE, "pred"), comparator = comparator)
+    Condition
+      Error in `infer_types_sort()`:
+      ! Each input must have the same shape
+      x Got shapes (2x3) and (3x3).
+
+---
+
+    Code
+      infer_types_sort(vt("i32", c(2L, 3L)), dimension = scnst(5L, "i64"), is_stable = scnst(
+        TRUE, "pred"), comparator = comparator)
+    Condition
+      Error in `infer_types_sort()`:
+      ! `dimension` contains index outside the valid range.
+      x Got 5, but valid range is [-2, 2).
+
 # basic tests
 
     Code

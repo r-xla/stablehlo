@@ -11,8 +11,8 @@ infer_types_if <- function(pred, true_branch, false_branch) {
   out_types2 <- ValueTypes(func_output_types(false_branch))
   if (length(out_types1) != length(out_types2)) {
     cli_abort(c(
-      "true_branch and false_branch must have the same number of outputs.",
-      i = "Got {length(out_types1)} and {length(out_types2)}."
+      "{.arg true_branch} and {.arg false_branch} must have the same number of outputs.",
+      x = "Got {length(out_types1)} and {length(out_types2)}."
     ))
   }
   for (i in seq_along(out_types1)) {
@@ -22,8 +22,8 @@ infer_types_if <- function(pred, true_branch, false_branch) {
         arg2 = "output_types(false_branch)",
         index = i - 1L,
         expected = "must have the same type",
-        actual1 = repr(out_types1[[i]]),
-        actual2 = repr(out_types2[[i]])
+        actual1 = out_types1[[i]],
+        actual2 = out_types2[[i]]
       )
     }
   }

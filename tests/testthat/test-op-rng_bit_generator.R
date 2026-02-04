@@ -87,3 +87,37 @@ test_that("basic tests", {
   expect_equal(shape(out_buf[[1L]]), 3L)
   expect_equal(shape(out_buf[[2L]]), c(2L, 2L))
 })
+
+test_that("errors", {
+  state <- vt("ui64", 2L)
+  # invalid rng_algorithm
+  expect_snapshot(
+    infer_types_rng_bit_generator(
+      state,
+      "INVALID",
+      dtype = "f32",
+      shape = c(3L, 2L)
+    ),
+    error = TRUE
+  )
+  # THREE_FRY requires state size = 2
+  expect_snapshot(
+    infer_types_rng_bit_generator(
+      vt("ui64", 4L),
+      "THREE_FRY",
+      dtype = "f32",
+      shape = c(3L, 2L)
+    ),
+    error = TRUE
+  )
+  # PHILOX requires state size = 2 or 3
+  expect_snapshot(
+    infer_types_rng_bit_generator(
+      vt("ui64", 4L),
+      "PHILOX",
+      dtype = "f32",
+      shape = c(3L, 2L)
+    ),
+    error = TRUE
+  )
+})

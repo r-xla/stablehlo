@@ -93,7 +93,7 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
 #'   The dimension along which to generate increasing values.
 #'   Must be in range `[0, rank(output))`.
 #' @param dtype (`character(1)`)\cr
-#'   The element type of the output tensor.
+#'   The data type of the output tensor.
 #'   One of: `r roxy_dtypes()` (excluding boolean).
 #' @param shape (`integer()`)\cr
 #'   The shape of the output tensor.

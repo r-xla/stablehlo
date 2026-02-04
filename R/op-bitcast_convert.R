@@ -14,11 +14,18 @@ infer_types_bitcast_convert <- function(
 
   if (
     # https://github.com/openxla/stablehlo/issues/1672
-    dtype %in%
-      c("i1", "pred") ||
-      (test_class(operand$type$dtype, "BooleanType"))
+    test_class(operand$type$dtype, "BooleanType")
   ) {
-    cli_abort("Bitcast conversions from and to bool/i1 are not supported.")
+    cli_abort(c(
+      "Bitcast conversions from and to i1 are not supported.",
+      x = "{.arg operand} has dtype {.val {operand$type$dtype}}."
+    ))
+  }
+  if (dtype %in% c("i1", "pred")) {
+    cli_abort(c(
+      "Bitcast conversions from and to i1 are not supported.",
+      x = "{.arg dtype} is {.val {as_dtype(dtype)}}."
+    ))
   }
 
   if (
@@ -51,14 +58,15 @@ infer_types_bitcast_convert <- function(
     result_dims <- operand_dims
   } else if (cst_fct > 1) {
     if (identical(operand_dims, integer(0))) {
-      cli_abort(
-        "{.var operand} must have at least 1 dimension for this bitcast conversion."
-      )
+      cli_abort(c(
+        "{.arg operand} must have at least 1 dimension for this bitcast conversion.",
+        x = "{.arg operand} is a scalar ({.val {operand$type$dtype}} -> {.val {as_dtype(dtype)}})."
+      ))
     } else if (operand_dims[[length(operand_dims)]] != cst_fct) {
-      cli_abort(
-        "The last dimension of {.var operand} must be {cst_fct} for this bitcast conversion.",
-        i = "Got {operand_dims[[length(operand_dims)]]}."
-      )
+      cli_abort(c(
+        "The last dimension of {.arg operand} must be {cst_fct} for this bitcast conversion.",
+        x = "Got {operand_dims[[length(operand_dims)]]}."
+      ))
     } else {
       result_dims <- operand_dims[seq_len(length(operand_dims) - 1)]
     }

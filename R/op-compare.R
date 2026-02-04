@@ -17,7 +17,7 @@ infer_types_compare <- function(
   cds <- c("EQ", "NE", "GE", "GT", "LE", "LT")
   if (!(comparison_direction %in% cds)) {
     cli_abort(c(
-      "{.var comparison_direction} must be one of {.val {cds}}.",
+      "{.arg comparison_direction} must be one of {.val {cds}}.",
       x = "Got {.val {comparison_direction}}."
     ))
   }
@@ -26,7 +26,7 @@ infer_types_compare <- function(
   cts <- c("FLOAT", "TOTALORDER", "SIGNED", "UNSIGNED")
   if (!(compare_type %in% cts)) {
     cli_abort(c(
-      "{.var compare_type} must be one of {.val {cts}}.",
+      "{.arg compare_type} must be one of {.val {cts}}.",
       x = "Got {.val {compare_type}}."
     ))
   }
@@ -38,20 +38,22 @@ infer_types_compare <- function(
   dtype <- lhs$type$dtype
   if (inherits(dtype, "IntegerType")) {
     if (compare_type != "SIGNED") {
-      cli_abort("compare type must be SIGNED for signed integer element types.")
+      cli_abort(
+        "{.arg compare_type} must be SIGNED for signed integer data types."
+      )
     }
   } else if (
     inherits(dtype, "UnsignedType") || inherits(dtype, "BooleanType")
   ) {
     if (compare_type != "UNSIGNED") {
       cli_abort(
-        "compare type must be UNSIGNED for unsigned integer or boolean element types."
+        "{.arg compare_type} must be UNSIGNED for unsigned integer or boolean data types."
       )
     }
   } else if (inherits(dtype, "FloatType")) {
     if (!(compare_type %in% c("FLOAT", "TOTALORDER"))) {
       cli_abort(
-        "compare type must be FLOAT or TOTALORDER for floating-point element types."
+        "{.arg compare_type} must be FLOAT or TOTALORDER for floating-point data types."
       )
     }
   }

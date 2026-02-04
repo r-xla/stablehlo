@@ -62,16 +62,16 @@ infer_types_dot_general <- function(
   # (C1)
   if (length(lhs_batching) != length(rhs_batching)) {
     cli_abort(c(
-      "{.var batching_dims} must have equal length for lhs and rhs.",
-      x = "Got lhs length {length(lhs_batching)} and rhs length {length(rhs_batching)}."
+      "{.arg batching_dims} must have equal length for {.arg lhs} and {.arg rhs}.",
+      x = "Got lengths {length(lhs_batching)} and {length(rhs_batching)}."
     ))
   }
 
   # (C2)
   if (length(lhs_contracting) != length(rhs_contracting)) {
     cli_abort(c(
-      "{.var contracting_dims} must have equal length for lhs and rhs.",
-      x = "Got lhs length {length(lhs_contracting)} and rhs length {length(rhs_contracting)}."
+      "{.arg contracting_dims} must have equal length for {.arg lhs} and {.arg rhs}.",
+      x = "Got lengths {length(lhs_contracting)} and {length(rhs_contracting)}."
     ))
   }
 

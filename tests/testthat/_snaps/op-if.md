@@ -1,3 +1,21 @@
+# errors
+
+    Code
+      infer_types_if(pred, branch_i32, branch_2out)
+    Condition
+      Error in `infer_types_if()`:
+      ! `true_branch` and `false_branch` must have the same number of outputs.
+      x Got 1 and 2.
+
+---
+
+    Code
+      infer_types_if(pred, branch_i32, branch_f32)
+    Condition
+      Error in `infer_types_if()`:
+      ! `output_types(true_branch)[0]` and `output_types(false_branch)[0]` must have the same type.
+      x Got tensor<2xi32> and tensor<2xf32>.
+
 # If operator works
 
     Code

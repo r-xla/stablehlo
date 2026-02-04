@@ -138,3 +138,22 @@ test_that("basic tests", {
   )
   expect_equal(dim(as_array(output)), c(2, 3, 2))
 })
+
+test_that("errors", {
+  check <- function(operand, dtype) {
+    expect_snapshot(
+      infer_types_bitcast_convert(operand, dtype),
+      error = TRUE
+    )
+  }
+  # from boolean not supported
+  check(vt("pred", c(2L, 3L)), "i8")
+  # to boolean not supported
+  check(vt("i8", c(2L, 3L)), "i1")
+  # unsupported dtype
+  check(vt("i8", c(2L, 3L)), "foo")
+  # scalar operand cannot upcast
+  check(vt("i8", integer()), "i32")
+  # last dimension must match ratio for upcast
+  check(vt("i8", c(2L, 3L)), "i32")
+})

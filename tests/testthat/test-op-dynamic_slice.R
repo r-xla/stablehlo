@@ -33,3 +33,45 @@ test_that("basic tests", {
   )
   expect_equal(as_array(output), expected)
 })
+
+test_that("errors", {
+  # (C2) wrong number of start_indices
+  expect_snapshot(
+    infer_types_dynamic_slice(
+      vt("f32", c(4L, 5L)),
+      vt("i32", integer()),
+      slice_sizes = cnst(c(2L, 3L), "i64", 2L)
+    ),
+    error = TRUE
+  )
+  # (C2) wrong slice_sizes length
+  expect_snapshot(
+    infer_types_dynamic_slice(
+      vt("f32", c(4L, 5L)),
+      vt("i32", integer()),
+      vt("i32", integer()),
+      slice_sizes = cnst(c(2L), "i64", 1L)
+    ),
+    error = TRUE
+  )
+  # start_indices must be 0-dimensional
+  expect_snapshot(
+    infer_types_dynamic_slice(
+      vt("f32", c(4L, 5L)),
+      vt("i32", 2L),
+      vt("i32", integer()),
+      slice_sizes = cnst(c(2L, 3L), "i64", 2L)
+    ),
+    error = TRUE
+  )
+  # (C4) slice_sizes exceeds operand shape
+  expect_snapshot(
+    infer_types_dynamic_slice(
+      vt("f32", c(4L, 5L)),
+      vt("i32", integer()),
+      vt("i32", integer()),
+      slice_sizes = cnst(c(5L, 3L), "i64", 2L)
+    ),
+    error = TRUE
+  )
+})

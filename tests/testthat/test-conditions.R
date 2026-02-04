@@ -106,20 +106,20 @@ test_that("ErrorUnequalTypes", {
       arg2 = "output_types(false_branch)",
       index = 2L,
       expected = "must have the same type",
-      actual1 = "<tensor<2x2xf32>>",
-      actual2 = "<tensor<2x2xi32>>",
+      actual1 = vt("f32", c(2, 2)),
+      actual2 = vt("i32", c(2, 2)),
       call = call("abc")
     )
   )
 })
 
-test_that("ErrorUnexpectedType", {
+test_that("ErrorUnexpectedListType", {
   expect_snapshot_error(
-    error_unexpected_type(
+    error_unexpected_list_type(
       arg = "init_values",
       index = 0L,
       expected = "must be 0-D tensors",
-      actual = "shape (2, 2)",
+      actual = vt("f32", c(2, 2)),
       call = call("abc")
     )
   )
@@ -160,6 +160,19 @@ test_that("ErrorIndexInSet", {
   )
 })
 
+test_that("cli_format.TensorDataType uses repr()", {
+  expect_snapshot_error(cli::cli_abort("Got {.val {FloatType(32)}}"))
+})
+
+test_that("cli_format.Shape uses repr()", {
+  expect_snapshot_error(cli::cli_abort("Got {.val {Shape(c(2, 3))}}"))
+})
+
+test_that("cli_format.ValueType uses repr()", {
+  vt <- ValueType(TensorType(FloatType(32), Shape(c(2, 3))))
+  expect_snapshot_error(cli::cli_abort("Got {.val {vt}}"))
+})
+
 test_that("to_one_based works with ErrorIndexInSet", {
   err <- error_index_in_set(
     arg1 = "index_vector_dim",
@@ -174,4 +187,9 @@ test_that("to_one_based works with ErrorIndexInSet", {
 
   expect_equal(converted$index, index_vec(3L))
   expect_equal(converted$set, index_vec(c(1L, 2L, 3L)))
+})
+
+test_that("incrementing IndexVec maintains class", {
+  x <- index_vec(1L)
+  expect_equal(index_vec(2L), index_vec(x + 1L))
 })

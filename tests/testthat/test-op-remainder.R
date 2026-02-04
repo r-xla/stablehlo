@@ -9,3 +9,5 @@ test_that("basic tests", {
     }
   )
 })
+
+# Errors are tested in test-type_inference.R (via infer_types_numeric_biv)

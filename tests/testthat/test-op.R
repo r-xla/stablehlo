@@ -42,7 +42,7 @@ test_that("CustomOpBackendConfig repr works correctly", {
   })
 })
 
-test_that("CustomOpBackendConfig validates element types", {
+test_that("CustomOpBackendConfig validates data types", {
   expect_error(
     CustomOpBackendConfig(list(1, 2, 3)),
     "May only contain the following types"

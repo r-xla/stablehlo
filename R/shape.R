@@ -27,14 +27,18 @@ Shape <- function(dims = integer()) {
 
 #' @export
 repr.Shape <- function(x, ...) {
-  dims <- x$dims
-  dims[is.na(dims)] <- "?"
-  paste0(dims, collapse = "x")
+  x$dims[is.na(x$dims)] <- "?"
+  if (length(x$dims) > 0) paste0(x$dims, collapse = "x") else ""
+}
+
+#' @export
+format.Shape <- function(x, ...) {
+  paste0("(", repr(x), ")")
 }
 
 #' @export
 print.Shape <- function(x, ...) {
-  cat("Shape[", repr(x), "]\n", sep = "")
+  cat(format(x), "\n", sep = "")
   invisible(x)
 }
 

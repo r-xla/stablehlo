@@ -1,3 +1,52 @@
+# errors
+
+    Code
+      infer_types_reduce(inputs = list(), init_values = list(), body = body,
+      dimensions = cnst(0L, "i64", 1L))
+    Condition
+      Error in `infer_types_reduce()`:
+      ! No inputs provided
+
+---
+
+    Code
+      infer_types_reduce(inputs = list(vt("f32", c(2L, 3L))), init_values = list(vt(
+        "f32", integer()), vt("f32", integer())), body = body, dimensions = cnst(0L,
+        "i64", 1L))
+    Condition
+      Error in `infer_types_reduce()`:
+      ! Number of inputs must equal number of `init_values`
+      x Got 1 inputs and 2 init_values.
+
+---
+
+    Code
+      infer_types_reduce(inputs = list(vt("f32", c(2L, 3L))), init_values = list(vt(
+        "f32", 2L)), body = body, dimensions = cnst(0L, "i64", 1L))
+    Condition
+      Error in `FUN()`:
+      ! `init_values` must be 0-D tensors
+
+---
+
+    Code
+      infer_types_reduce(inputs = list(vt("f32", c(2L, 3L))), init_values = list(vt(
+        "f32", integer())), body = body, dimensions = cnst(5L, "i64", 1L))
+    Condition
+      Error in `infer_types_reduce()`:
+      ! `dimensions` contains index outside the valid range.
+      x Got 5, but valid range is [0, 2).
+
+---
+
+    Code
+      infer_types_reduce(inputs = list(vt("f32", c(2L, 3L))), init_values = list(vt(
+        "f32", integer())), body = body, dimensions = cnst(c(0L, 0L), "i64", 2L))
+    Condition
+      Error in `infer_types_reduce()`:
+      ! `dimensions` must contain unique dimension indices
+      x Got c(0, 0)
+
 # basic tests
 
     Code

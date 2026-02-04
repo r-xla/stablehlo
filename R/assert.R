@@ -52,7 +52,7 @@ assert_vt_equal <- function(
   cli_abort(
     c(
       "{.arg {arg_x}} and {.arg {arg_y}} must have the same tensor type.",
-      x = "Got {repr(x$type)} and {repr(y$type)}."
+      x = "Got {.val {x$type}} and {.val {y$type}}."
     ),
     call = call
   )
@@ -79,16 +79,16 @@ assert_one_of <- function(
   )
 }
 
-assert_vts_are_tensors <- function(...) {
+assert_vts_are_tensors <- function(..., call = rlang::caller_env()) {
   args <- list(...)
   arg_names <- names(args)
   if (is.null(arg_names)) {
     for (i in seq_along(args)) {
-      assert_vt_is_tensor(args[[i]])
+      assert_vt_is_tensor(args[[i]], call = call)
     }
   } else {
     for (i in seq_along(args)) {
-      assert_vt_is_tensor(args[[i]], arg = arg_names[i])
+      assert_vt_is_tensor(args[[i]], arg = arg_names[i], call = call)
     }
   }
 }
@@ -181,7 +181,7 @@ assert_vt_has_ttype <- function(
       cli_abort(
         c(
           "{.arg {arg}} must have dtype {.or {type_names}}.",
-          x = "Got {.cls {repr(tensor_type$dtype)}}."
+          x = "Got {.val {tensor_type$dtype}}."
         ),
         call = call
       )
@@ -189,10 +189,6 @@ assert_vt_has_ttype <- function(
   }
 
   if (!is.null(shape) && !identical(shape(tensor_type), shape)) {
-    # fmt: skip
-    shapevec_repr <- function(s) { # nolint
-      sprintf("(%s)", paste0(s, collapse = ","))
-    }
     cli_abort(
       c(
         "{.arg {arg}} must have shape {shapevec_repr(shape)}.",
@@ -227,7 +223,7 @@ assert_vts_have_same_dtype <- function(
     cli_abort(
       c(
         "{.arg {arg_x}} and {.arg {arg_y}} must have the same dtype.",
-        x = "Got {.cls {repr(dtype_x)}} and {.cls {repr(dtype_y)}}."
+        x = "Got {.val {dtype_x}} and {.val {dtype_y}}."
       ),
       call = call
     )

@@ -126,7 +126,7 @@ infer_types_gather <- function(
   if (operand_rank != expected_rank) {
     # fmt: skip
     cli_abort(c(
-      "rank(operand) must equal size(offset_dims) + size(collapsed_slice_dims) + size(operand_batching_dims).", # nolint
+      "rank(operand) must equal length(offset_dims) + length(collapsed_slice_dims) + length(operand_batching_dims).", # nolint
       x = "Got rank = {operand_rank}, but expected {expected_rank} (= {length(offset_dims)} + {length(collapsed_slice_dims)} + {length(operand_batching_dims)})." # nolint
     ))
   }
@@ -149,7 +149,7 @@ infer_types_gather <- function(
   }
   if (length(start_index_map) != expected_start_index_map_size) {
     cli_abort(c(
-      "size(start_index_map) must equal the index vector size.",
+      "length(start_index_map) must equal the index vector size.",
       x = "Got {length(start_index_map)}, but expected {expected_start_index_map_size}."
     ))
   }
@@ -224,7 +224,7 @@ infer_types_gather <- function(
       # fmt: skip
       cli_abort(c(
         "slice_sizes[collapsed_slice_dims...] must be <= 1.",
-        x = "Got slice_sizes at collapsed_slice_dims: [{paste(collapsed_sizes, collapse = ', ')}]." # nolint
+        x = "Got slice_sizes at collapsed_slice_dims: {vec_repr(collapsed_sizes)}."
       ))
     }
   }
@@ -253,7 +253,7 @@ infer_types_gather <- function(
     if (any(batching_sizes > 1L)) {
       cli_abort(c(
         "slice_sizes[operand_batching_dims...] must be <= 1.",
-        x = "Got slice_sizes at operand_batching_dims: [{paste(batching_sizes, collapse = ', ')}]."
+        x = "Got slice_sizes at operand_batching_dims: {vec_repr(batching_sizes)}."
       ))
     }
   }
@@ -289,7 +289,7 @@ infer_types_gather <- function(
   # (C16)
   if (length(operand_batching_dims) != length(start_indices_batching_dims)) {
     cli_abort(c(
-      "size(operand_batching_dims) must equal size(start_indices_batching_dims).",
+      "length(operand_batching_dims) must equal length(start_indices_batching_dims).",
       x = "Got {length(operand_batching_dims)} and {length(start_indices_batching_dims)}."
     ))
   }
@@ -302,7 +302,7 @@ infer_types_gather <- function(
     ]
     if (!identical(batch_shape_operand, batch_shape_start_indices)) {
       cli_abort(c(
-        "Shape of batch dimensions of operand and start_indices must match.",
+        "Shape of batch dimensions of {.arg operand} and {.arg start_indices} must match.",
         x = "Got {shapevec_repr(batch_shape_operand)} and {shapevec_repr(batch_shape_start_indices)}."
       ))
     }
@@ -330,17 +330,16 @@ infer_types_gather <- function(
   # (C20)
   if (length(slice_sizes_vec) != operand_rank) {
     cli_abort(c(
-      "size(slice_sizes) must equal rank(operand).",
+      "length(slice_sizes) must equal rank(operand).",
       x = "Got {length(slice_sizes_vec)}, but expected {operand_rank}."
     ))
   }
 
   # (C21)
   if (any(slice_sizes_vec < 0L) || any(slice_sizes_vec > operand_shape)) {
-    # fmt: skip
     cli_abort(c(
       "0 <= slice_sizes <= shape(operand).",
-      x = "Got slice_sizes = [{paste(slice_sizes_vec, collapse = ', ')}], but operand shape is {shapevec_repr(operand_shape)}." # nolint
+      x = "Got slice_sizes = {vec_repr(slice_sizes_vec)}, but operand shape is {shapevec_repr(operand_shape)}."
     ))
   }
 

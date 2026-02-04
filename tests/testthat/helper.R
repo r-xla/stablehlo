@@ -2,6 +2,24 @@ if (requireNamespace("pjrt", quietly = TRUE)) {
   library("pjrt")
 }
 
+# Helper to create ValueType inputs for inference function tests
+vt <- function(dtype, shape) {
+  ValueType(dtype, shape = shape)
+}
+
+# Helper to create Constant values for inference function tests
+cnst <- function(value, dtype, shape) {
+  Constant(
+    value,
+    TensorType(dtype = as_dtype(dtype), shape = Shape(shape))
+  )
+}
+
+# Helper to create scalar Constant values for inference function tests
+scnst <- function(value, dtype) {
+  cnst(value, dtype, shape = integer())
+}
+
 row_major_array <- function(data, dim) {
   arr <- array(data, dim = rev(dim))
   aperm(arr, perm = rev(seq_along(dim)))

@@ -61,3 +61,28 @@ test_that("interior padding", {
   )
   expect_equal(as_array(output), expected)
 })
+
+test_that("errors", {
+  check <- function(operand, padding_value, low, high, interior) {
+    expect_snapshot(
+      infer_types_pad(
+        operand,
+        padding_value,
+        edge_padding_low = cnst(low, "i64", length(low)),
+        edge_padding_high = cnst(high, "i64", length(high)),
+        interior_padding = cnst(interior, "i64", length(interior))
+      ),
+      error = TRUE
+    )
+  }
+  # (C3) interior_padding must be non-negative
+  check(
+    vt("f32", c(2L, 3L)),
+    vt("f32", integer()),
+    c(0L, 0L),
+    c(0L, 0L),
+    c(-1L, 0L)
+  )
+  # (C2) wrong length
+  check(vt("f32", c(2L, 3L)), vt("f32", integer()), c(0L), c(0L, 0L), c(0L, 0L))
+})

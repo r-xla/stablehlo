@@ -19,14 +19,14 @@ infer_types_dynamic_slice <- function(
   # (C2)
   if (length(start_indices) != operand_rank) {
     cli_abort(c(
-      "size(start_indices) must equal rank(operand).",
+      "length(start_indices) must equal rank(operand).",
       x = "Got {length(start_indices)} start_indices and rank {operand_rank}."
     ))
   }
 
   if (length(slice_sizes_data) != operand_rank) {
     cli_abort(c(
-      "size(slice_sizes) must equal rank(operand).",
+      "length(slice_sizes) must equal rank(operand).",
       x = "Got {length(slice_sizes_data)} slice_sizes and rank {operand_rank}."
     ))
   }
@@ -38,7 +38,7 @@ infer_types_dynamic_slice <- function(
       # fmt: skip
       type_strs <- vapply(start_types, repr, character(1)) # nolint
       cli_abort(c(
-        "All start_indices must have the same type.",
+        "All {.arg start_indices} must have the same type.",
         x = "Got types: {paste0(type_strs, collapse = ', ')}."
       ))
     }
@@ -47,7 +47,7 @@ infer_types_dynamic_slice <- function(
     for (i in seq_along(start_indices)) {
       assert_vt_is_tensor(start_indices[[i]])
       if (length(shape(start_indices[[i]])) != 0) {
-        error_unexpected_type(
+        error_unexpected_list_type(
           arg = "start_indices",
           index = i - 1L, # 0-based
           expected = "must be 0-dimensional tensors",
@@ -60,7 +60,7 @@ infer_types_dynamic_slice <- function(
   # (C4)
   if (any(slice_sizes_data > shape(operand))) {
     cli_abort(c(
-      "slice_sizes must not be greater than operand's shape.",
+      "{.arg slice_sizes} must not be greater than {.arg operand}'s shape.",
       x = "Got slice_sizes {shapevec_repr(slice_sizes_data)} and operand shape {shapevec_repr(shape(operand))}."
     ))
   }

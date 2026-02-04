@@ -70,7 +70,15 @@ format_shapes_msg <- function(prefix, ...) {
 
 shapevec_repr <- function(shape) {
   shape[is.na(shape)] <- "?"
-  sprintf("(%s)", paste(shape, collapse = ","))
+  sprintf("(%s)", paste(shape, collapse = "x"))
+}
+
+vec_repr <- function(x) {
+  if (length(x) <= 1L) {
+    as.character(x)
+  } else {
+    paste0("c(", paste0(x, collapse = ", "), ")")
+  }
 }
 
 ensure_func_vals <- function(x) {
