@@ -1,1 +1,3 @@
-# stablehlo dev
+# stablehlo 0.1.0
+
+* Initial release
