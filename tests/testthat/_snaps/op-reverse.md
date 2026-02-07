@@ -1,3 +1,10 @@
+# basic tests
+
+    Code
+      repr(f)
+    Output
+      [1] "func.func @main (%x: tensor<2x3x2xf32>) -> tensor<2x3x2xf32> {\n%0 = \"stablehlo.reverse\" (%x) {\ndimensions = array<i64: 1, 0>\n}: (tensor<2x3x2xf32>) -> (tensor<2x3x2xf32>)\n\"func.return\"(%0): (tensor<2x3x2xf32>) -> ()\n}\n"
+
 # errors
 
     Code
@@ -25,11 +32,4 @@
       Error in `infer_types_reverse()`:
       ! `dimensions` contains index outside the valid range.
       x Got 5, but valid range is [0, 2).
-
-# basic tests
-
-    Code
-      repr(f)
-    Output
-      [1] "func.func @main (%x: tensor<2x3x2xf32>) -> tensor<2x3x2xf32> {\n%0 = \"stablehlo.reverse\" (%x) {\ndimensions = array<i64: 1, 0>\n}: (tensor<2x3x2xf32>) -> (tensor<2x3x2xf32>)\n\"func.return\"(%0): (tensor<2x3x2xf32>) -> ()\n}\n"
 

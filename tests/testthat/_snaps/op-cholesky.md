@@ -1,3 +1,10 @@
+# basic tests
+
+    Code
+      repr(f)
+    Output
+      [1] "func.func @main (%x: tensor<3x3xf64>) -> tensor<3x3xf64> {\n%0 = \"stablehlo.cholesky\" (%x) {\nlower = false\n}: (tensor<3x3xf64>) -> (tensor<3x3xf64>)\n\"func.return\"(%0): (tensor<3x3xf64>) -> ()\n}\n"
+
 # errors
 
     Code
@@ -15,11 +22,4 @@
       Error in `infer_types_cholesky()`:
       ! `operand` must be symmetric in the last two dimensions
       x Got shape (3x4).
-
-# basic tests
-
-    Code
-      repr(f)
-    Output
-      [1] "func.func @main (%x: tensor<3x3xf64>) -> tensor<3x3xf64> {\n%0 = \"stablehlo.cholesky\" (%x) {\nlower = false\n}: (tensor<3x3xf64>) -> (tensor<3x3xf64>)\n\"func.return\"(%0): (tensor<3x3xf64>) -> ()\n}\n"
 

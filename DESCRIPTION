@@ -30,7 +30,7 @@ Suggests:
     pjrt (>= 0.1.0),
     testthat (>= 3.0.0)
 Remotes:
-    r-xla/pjrt@*release,
+    r-xla/pjrt,
     r-xla/tengen@*release,
     r-xla/xlamisc@*release
 Additional_repositories:
