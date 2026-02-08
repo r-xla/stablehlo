@@ -50,6 +50,33 @@ test_that("TensorDataType equality", {
   expect_false(BooleanType() == IntegerType(32))
 })
 
+test_that("TensorDataType comparison with character", {
+  expect_true(FloatType(32) == "f32")
+  expect_true("f32" == FloatType(32))
+  expect_false(FloatType(32) != "f32")
+  expect_false("f32" != FloatType(32))
+
+  expect_false(FloatType(32) == "f64")
+  expect_false("f64" == FloatType(32))
+  expect_true(FloatType(32) != "f64")
+  expect_true("f64" != FloatType(32))
+
+  expect_true(IntegerType(32) == "i32")
+  expect_true("i32" == IntegerType(32))
+  expect_false(IntegerType(32) == "i64")
+
+  expect_true(UnsignedType(16) == "ui16")
+  expect_true("ui16" == UnsignedType(16))
+  expect_false(UnsignedType(16) == "ui32")
+
+  expect_true(BooleanType() == "i1")
+  expect_true("i1" == BooleanType())
+  expect_false(BooleanType() == "f32")
+
+  expect_false(FloatType(32) == "i32")
+  expect_false("i32" == FloatType(32))
+})
+
 test_that("TensorType equality", {
   t1 <- TensorType(dtype = FloatType(32), shape = Shape(c(2, 3)))
   t2 <- TensorType(dtype = FloatType(32), shape = Shape(c(2, 3, 1)))
