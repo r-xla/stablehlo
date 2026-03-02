@@ -24,6 +24,13 @@ NULL
 
 #' @export
 `==.TensorDataType` <- function(e1, e2) {
+  if (is.character(e1)) {
+    e1 <- as_dtype(e1)
+  }
+  if (is.character(e2)) {
+    e2 <- as_dtype(e2)
+  }
+
   # If classes don't match, types are not equal
   if (!identical(class(e1)[1], class(e2)[1])) {
     return(FALSE)
@@ -45,18 +52,7 @@ cli_format.TensorDataType <- function(x, style = NULL, ...) {
 
 #' @export
 `!=.TensorDataType` <- function(e1, e2) {
-  # If classes don't match, types are not equal
-  if (!identical(class(e1)[1], class(e2)[1])) {
-    return(TRUE)
-  }
-
-  # BooleanType has no value field
-  if (inherits(e1, "BooleanType")) {
-    return(FALSE)
-  }
-
-  # For IntegerType, UnsignedType, FloatType - compare values
-  !identical(e1$value, e2$value)
+  !(e1 == e2) # nolint
 }
 
 #' @title BooleanType
