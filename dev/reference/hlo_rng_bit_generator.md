@@ -1,0 +1,26 @@
+# RngBitGenerator Operator
+
+See <https://openxla.org/stablehlo/spec#rng_bit_generator> for details.
+
+## Usage
+
+``` r
+infer_types_rng_bit_generator(initial_state, rng_algorithm, dtype, shape)
+
+hlo_rng_bit_generator(
+  initial_state,
+  rng_algorithm = c("DEFAULT", "THREE_FRY", "PHILOX"),
+  dtype,
+  shape
+)
+```
+
+## Arguments
+
+- initial_state, rng_algorithm, dtype, shape:
+
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/dev/reference/FuncValue.md))  
+
+## Value
+
+[`FuncValue`](https://r-xla.github.io/stablehlo/dev/reference/FuncValue.md)  
