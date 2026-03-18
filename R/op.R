@@ -464,6 +464,33 @@ new_Op <- function(classname, mnemonic) {
 
 #' @export
 repr.Op <- function(x, toplevel = TRUE, simplify_dense = TRUE, ...) {
+  if (use_assembly_format(x)) {
+    repr_op_assembly(x, simplify_dense = simplify_dense)
+  } else {
+    repr_op_generic(x, simplify_dense = simplify_dense)
+  }
+}
+
+# Assembly format: `%0 = stablehlo.op %x, %y {attrs}: type`
+# Used when all input and output types are the same.
+repr_op_assembly <- function(x, simplify_dense = TRUE) {
+  values_repr <- repr(x$inputs$values)
+  attrs_repr <- repr(x$inputs$attrs, simplify_dense = simplify_dense)
+  type_repr <- repr(x$signature$output_types[[1L]])
+  paste0(
+    repr(x$outputs),
+    " = stablehlo.",
+    x$name$mnemonic,
+    " ",
+    values_repr,
+    attrs_repr,
+    " : ",
+    type_repr
+  )
+}
+
+# Generic format: `%0 = "stablehlo.op" (%x, %y) {attrs}: (type1, type2) -> (output_type)`
+repr_op_generic <- function(x, simplify_dense = TRUE) {
   paste0(
     repr(x$outputs),
     " = ",
@@ -473,6 +500,28 @@ repr.Op <- function(x, toplevel = TRUE, simplify_dense = TRUE, ...) {
     ": ",
     repr(x$signature)
   )
+}
+
+# Assembly format is used when all input and output types are identical
+# and there are no attributes or function inputs.
+use_assembly_format <- function(op) {
+  inputs <- op$inputs
+  sig <- op$signature
+  if (length(sig$input_types) == 0L) {
+    return(FALSE)
+  }
+  if (length(inputs$funcs) > 0L) {
+    return(FALSE)
+  }
+  if (length(inputs$attrs) > 0L) {
+    return(FALSE)
+  }
+  if (length(inputs$custom_attrs) > 0L) {
+    return(FALSE)
+  }
+  all_types <- c(sig$input_types, sig$output_types)
+  first <- all_types[[1L]]
+  all(vapply(all_types[-1L], function(t) t == first, logical(1)))
 }
 
 #' @export
