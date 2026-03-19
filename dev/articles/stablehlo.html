@@ -160,7 +160,7 @@ updates the <code>main_func</code> from above.</p>
 <span><span class="va">z</span></span>
 <span><span class="co">#&gt; Variable <span style="color: #0000BB;">%0</span> in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">%0</span> = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">%0</span> = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>The identifier of <code>z</code> (its <code>ValueId</code>) is
 automatically generated and you don’t have to specify it explicitly.
@@ -172,7 +172,7 @@ stableHLO).</p>
 <span><span class="va">w</span></span>
 <span><span class="co">#&gt; Variable <span style="color: #0000BB;">%1</span> in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">%1</span> = "stablehlo.concatenate" (%0, %x) {</span></span>
 <span><span class="co">#&gt; dimension = 1 : i64</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
@@ -207,7 +207,7 @@ them to <code>main_func</code>, we would have to explicitly specify
 <span><span class="va">out_reduce</span></span>
 <span><span class="co">#&gt; Variable <span style="color: #0000BB;">%0</span> in:</span></span>
 <span><span class="co">#&gt; func.func @main (%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">%0</span> = "stablehlo.add" (%z1, %z2): (tensor&lt;f32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">%0</span> = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>Now we are done specifying the body of the reduction function, so we
 can return the result via <code><a href="../reference/hlo_return.html">hlo_return()</a></code>. You should only
@@ -215,7 +215,7 @@ call this once you are done building the function.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/hlo_return.html">hlo_return</a></span><span class="op">(</span><span class="va">out_reduce</span><span class="op">)</span></span>
 <span><span class="co">#&gt; func.func @main (%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;) -&gt; tensor&lt;f32&gt; {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%z1, %z2): (tensor&lt;f32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; "func.return"(%0): (tensor&lt;f32&gt;) -&gt; ()</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>The output of <code>hlo_return</code> is the same (identical) object
@@ -230,7 +230,7 @@ tensor we are reducing. We can do this via
 <span><span class="va">init</span></span>
 <span><span class="co">#&gt; Variable <span style="color: #0000BB;">%2</span> in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; %1 = "stablehlo.concatenate" (%0, %x) {</span></span>
 <span><span class="co">#&gt; dimension = 1 : i64</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
@@ -245,7 +245,7 @@ the dimensions to reduce along.</p>
 <span><span class="va">out_main</span></span>
 <span><span class="co">#&gt; Variable <span style="color: #0000BB;">%3</span> in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; %1 = "stablehlo.concatenate" (%0, %x) {</span></span>
 <span><span class="co">#&gt; dimension = 1 : i64</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
@@ -254,7 +254,7 @@ the dimensions to reduce along.</p>
 <span><span class="co">#&gt; }: () -&gt; (tensor&lt;f32&gt;)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">%3</span> = "stablehlo.reduce" (%x, %2)({</span></span>
 <span><span class="co">#&gt;   ^bb0(%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;):</span></span>
-<span><span class="co">#&gt;     %4 = "stablehlo.add" (%z1, %z2): (tensor&lt;f32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
+<span><span class="co">#&gt;     %4 = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt;     "stablehlo.return"(%4): (tensor&lt;f32&gt;) -&gt; ()</span></span>
 <span><span class="co">#&gt; }) {</span></span>
 <span><span class="co">#&gt; dimensions = array&lt;i64: 0, 1&gt;</span></span>
@@ -265,7 +265,7 @@ the dimensions to reduce along.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/hlo_return.html">hlo_return</a></span><span class="op">(</span><span class="va">out_main</span><span class="op">)</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt; tensor&lt;f32&gt; {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; %1 = "stablehlo.concatenate" (%0, %x) {</span></span>
 <span><span class="co">#&gt; dimension = 1 : i64</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
@@ -274,7 +274,7 @@ the dimensions to reduce along.</p>
 <span><span class="co">#&gt; }: () -&gt; (tensor&lt;f32&gt;)</span></span>
 <span><span class="co">#&gt; %3 = "stablehlo.reduce" (%x, %2)({</span></span>
 <span><span class="co">#&gt;   ^bb0(%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;):</span></span>
-<span><span class="co">#&gt;     %4 = "stablehlo.add" (%z1, %z2): (tensor&lt;f32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
+<span><span class="co">#&gt;     %4 = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt;     "stablehlo.return"(%4): (tensor&lt;f32&gt;) -&gt; ()</span></span>
 <span><span class="co">#&gt; }) {</span></span>
 <span><span class="co">#&gt; dimensions = array&lt;i64: 0, 1&gt;</span></span>

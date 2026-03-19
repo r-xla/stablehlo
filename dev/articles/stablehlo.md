@@ -108,7 +108,7 @@ z <- hlo_add(x, y)
 z
 #> Variable %0 in:
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> }
 ```
 
@@ -122,7 +122,7 @@ w <- hlo_concatenate(z, x, dimension = 1L)
 w
 #> Variable %1 in:
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> %1 = "stablehlo.concatenate" (%0, %x) {
 #> dimension = 1 : i64
 #> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
@@ -166,7 +166,7 @@ out_reduce <- hlo_add(z1, z2)
 out_reduce
 #> Variable %0 in:
 #> func.func @main (%z1: tensor<f32>, %z2: tensor<f32>) ->  {
-#> %0 = "stablehlo.add" (%z1, %z2): (tensor<f32>, tensor<f32>) -> (tensor<f32>)
+#> %0 = stablehlo.add %z1, %z2 : tensor<f32>
 #> }
 ```
 
@@ -178,7 +178,7 @@ You should only call this once you are done building the function.
 ``` r
 hlo_return(out_reduce)
 #> func.func @main (%z1: tensor<f32>, %z2: tensor<f32>) -> tensor<f32> {
-#> %0 = "stablehlo.add" (%z1, %z2): (tensor<f32>, tensor<f32>) -> (tensor<f32>)
+#> %0 = stablehlo.add %z1, %z2 : tensor<f32>
 #> "func.return"(%0): (tensor<f32>) -> ()
 #> }
 ```
@@ -196,7 +196,7 @@ init <- hlo_scalar(0, dtype = "f32")
 init
 #> Variable %2 in:
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> %1 = "stablehlo.concatenate" (%0, %x) {
 #> dimension = 1 : i64
 #> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
@@ -214,7 +214,7 @@ out_main <- hlo_reduce(inputs = x, init_values = init, dimensions = c(0, 1L), bo
 out_main
 #> Variable %3 in:
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> %1 = "stablehlo.concatenate" (%0, %x) {
 #> dimension = 1 : i64
 #> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
@@ -223,7 +223,7 @@ out_main
 #> }: () -> (tensor<f32>)
 #> %3 = "stablehlo.reduce" (%x, %2)({
 #>   ^bb0(%z1: tensor<f32>, %z2: tensor<f32>):
-#>     %4 = "stablehlo.add" (%z1, %z2): (tensor<f32>, tensor<f32>) -> (tensor<f32>)
+#>     %4 = stablehlo.add %z1, %z2 : tensor<f32>
 #>     "stablehlo.return"(%4): (tensor<f32>) -> ()
 #> }) {
 #> dimensions = array<i64: 0, 1>
@@ -237,7 +237,7 @@ Finally, we return the result of the main function via
 ``` r
 hlo_return(out_main)
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<f32> {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> %1 = "stablehlo.concatenate" (%0, %x) {
 #> dimension = 1 : i64
 #> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
@@ -246,7 +246,7 @@ hlo_return(out_main)
 #> }: () -> (tensor<f32>)
 #> %3 = "stablehlo.reduce" (%x, %2)({
 #>   ^bb0(%z1: tensor<f32>, %z2: tensor<f32>):
-#>     %4 = "stablehlo.add" (%z1, %z2): (tensor<f32>, tensor<f32>) -> (tensor<f32>)
+#>     %4 = stablehlo.add %z1, %z2 : tensor<f32>
 #>     "stablehlo.return"(%4): (tensor<f32>) -> ()
 #> }) {
 #> dimensions = array<i64: 0, 1>
