@@ -46,6 +46,25 @@ test_that("basic tests", {
   )
 })
 
+test_that("select with all i1 types uses generic format", {
+  skip_if_not_installed("pjrt")
+  local_func()
+  pred <- hlo_input("pred", "i1", shape = 2L)
+  on_true <- hlo_input("on_true", "i1", shape = 2L)
+  on_false <- hlo_input("on_false", "i1", shape = 2L)
+  y <- hlo_select(pred, on_true, on_false)
+  f <- hlo_return(y)
+  program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(program)
+  output <- pjrt_execute(
+    exec,
+    pjrt_buffer(c(TRUE, FALSE)),
+    pjrt_buffer(c(TRUE, TRUE)),
+    pjrt_buffer(c(FALSE, FALSE))
+  )
+  expect_equal(as.vector(as_array(output)), c(TRUE, FALSE))
+})
+
 test_that("errors", {
   # i1 shape mismatch
   expect_snapshot(
