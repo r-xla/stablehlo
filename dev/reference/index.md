@@ -4,8 +4,6 @@
 
 - [`BoolAttr()`](https://r-xla.github.io/stablehlo/dev/reference/BoolAttr.md)
   : BoolAttr
-- [`BooleanType()`](https://r-xla.github.io/stablehlo/dev/reference/BooleanType.md)
-  : BooleanType
 - [`Constant()`](https://r-xla.github.io/stablehlo/dev/reference/Constant.md)
   : Constant
 - [`ConstantAttr()`](https://r-xla.github.io/stablehlo/dev/reference/ConstantAttr.md)
@@ -14,8 +12,6 @@
   : CustomOpBackendConfig
 - [`DotDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/DotDimensionNumbers.md)
   : DotDimensionNumbers
-- [`FloatType()`](https://r-xla.github.io/stablehlo/dev/reference/FloatType.md)
-  : FloatType
 - [`Func()`](https://r-xla.github.io/stablehlo/dev/reference/Func.md) :
   Func
 - [`FuncBody()`](https://r-xla.github.io/stablehlo/dev/reference/FuncBody.md)
@@ -34,8 +30,6 @@
   : FuncValue
 - [`GatherDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/GatherDimensionNumbers.md)
   : GatherDimensionNumbers
-- [`IntegerType()`](https://r-xla.github.io/stablehlo/dev/reference/IntegerType.md)
-  : IntegerType (signed)
 - [`Op()`](https://r-xla.github.io/stablehlo/dev/reference/Op.md) : Op
 - [`OpInputAttr()`](https://r-xla.github.io/stablehlo/dev/reference/OpInputAttr.md)
   : OpInputAttr
@@ -67,20 +61,14 @@
   : Shape
 - [`StringAttr()`](https://r-xla.github.io/stablehlo/dev/reference/StringAttr.md)
   : StringAttr
-- [`TensorDataType`](https://r-xla.github.io/stablehlo/dev/reference/TensorDataType.md)
-  : TensorDataType Base Class
 - [`TensorType()`](https://r-xla.github.io/stablehlo/dev/reference/TensorType.md)
   : TensorType
-- [`UnsignedType()`](https://r-xla.github.io/stablehlo/dev/reference/UnsignedType.md)
-  : UnsignedType
 - [`ValueId()`](https://r-xla.github.io/stablehlo/dev/reference/ValueId.md)
   : ValueId
 - [`ValueType()`](https://r-xla.github.io/stablehlo/dev/reference/ValueType.md)
   : ValueType
 - [`ValueTypes()`](https://r-xla.github.io/stablehlo/dev/reference/ValueTypes.md)
   : ValueTypes
-- [`as_dtype()`](https://r-xla.github.io/stablehlo/dev/reference/as_dtype.md)
-  : Convert to TensorDataType
 - [`constant_attr()`](https://r-xla.github.io/stablehlo/dev/reference/constant_attr.md)
   : Create a ConstantAttr from R values
 - [`.current_func()`](https://r-xla.github.io/stablehlo/dev/reference/dot-current_func.md)
@@ -343,8 +331,6 @@
   : Infer types for numeric binary operations
 - [`infer_types_numeric_uni()`](https://r-xla.github.io/stablehlo/dev/reference/infer_types_numeric_uni.md)
   : Infer types for numeric unary operations
-- [`is_dtype()`](https://r-xla.github.io/stablehlo/dev/reference/is_dtype.md)
-  : Is TensorDataType
 - [`r_to_constant()`](https://r-xla.github.io/stablehlo/dev/reference/r_to_constant.md)
   : Convert R value to Constant
 - [`repr()`](https://r-xla.github.io/stablehlo/dev/reference/repr.md) :
