@@ -32,7 +32,7 @@ Suggests:
 Remotes:
     r-xla/pjrt,
     r-xla/tengen,
-    r-xla/xlamisc@*release
+    r-xla/xlamisc
 Additional_repositories:
     https://r-xla.r-universe.dev
 Config/build/compilation-database: true
