@@ -2,7 +2,7 @@ globals <- new.env()
 globals[["FUNC_STASH"]] <- list()
 globals[["CURRENT_FUNC"]] <- NULL
 globals[["dtypes"]] <- c(
-  "pred",
+  "bool",
   "i8",
   "i16",
   "i32",

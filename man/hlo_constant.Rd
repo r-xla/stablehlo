@@ -24,7 +24,7 @@ Value from which to create a constant.}
 Additional arguments.}
 
 \item{dtype}{(\code{character(1)})\cr
-One of: pred, i8, i16, i32, i64, ui8, ui16, ui32, ui64, f32, f64.}
+One of: bool, i8, i16, i32, i64, ui8, ui16, ui32, ui64, f32, f64.}
 
 \item{func}{(\code{\link{Func}})\cr
 The function to add the constant to.
