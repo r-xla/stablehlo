@@ -1,68 +1,23 @@
 #' @include shape.R
 NULL
 
-#' TensorDataType Base Class
-#'
-#' @description
-#' `TensorDataType` is the parent S3 class for all tensor data types.
-#' All data type classes inherit from `TensorDataType`, enabling cross-type
-#' comparisons with `==` and `!=` operators.
-#'
-#' The specific data type classes are:
-#' - [BooleanType()] - Boolean (i1)
-#' - [IntegerType()] - Signed integers (i8, i16, i32, i64)
-#' - [UnsignedType()] - Unsigned integers (ui8, ui16, ui32, ui64)
-#' - [FloatType()] - Floating point (f32, f64)
-#'
-#' @details
-#' This is a virtual base class - you cannot create instances directly.
-#' Use the specific type constructors instead.
-#'
-#' @seealso [BooleanType()], [IntegerType()], [UnsignedType()], [FloatType()]
-#' @name TensorDataType
-NULL
+#' @export
+tengen::BooleanType
 
 #' @export
-`==.TensorDataType` <- function(e1, e2) {
-  if (is.character(e1)) {
-    e1 <- as_dtype(e1)
-  }
-  if (is.character(e2)) {
-    e2 <- as_dtype(e2)
-  }
-
-  # If classes don't match, types are not equal
-  if (!identical(class(e1)[1], class(e2)[1])) {
-    return(FALSE)
-  }
-
-  # BooleanType has no value field
-  if (inherits(e1, "BooleanType")) {
-    return(TRUE)
-  }
-
-  # For IntegerType, UnsignedType, FloatType - compare values
-  identical(e1$value, e2$value)
-}
-
-#' @exportS3Method cli::cli_format
-cli_format.TensorDataType <- function(x, style = NULL, ...) {
-  repr(x)
-}
+tengen::IntegerType
 
 #' @export
-`!=.TensorDataType` <- function(e1, e2) {
-  !(e1 == e2) # nolint
-}
+tengen::UIntegerType
 
-#' @title BooleanType
-#' @description
-#' Represents the boolean type.
-#' @return `BooleanType`
 #' @export
-BooleanType <- function() {
-  structure(list(), class = c("BooleanType", "TensorDataType"))
-}
+tengen::FloatType
+
+#' @export
+tengen::is_dtype
+
+#' @export
+tengen::as_dtype
 
 #' @export
 repr.BooleanType <- function(x, ...) {
@@ -70,166 +25,22 @@ repr.BooleanType <- function(x, ...) {
 }
 
 #' @export
-print.TensorDataType <- function(x, ...) {
-  cat("<", repr(x), ">\n", sep = "")
-  invisible(x)
-}
-
-#' @title IntegerType (signed)
-#' @description
-#' Represents a signed integer type with a given bit width.
-#' @param value (`integer(1)`)
-#' @return `IntegerType`
-#' @export
-IntegerType <- function(value) {
-  value <- as.integer(value)
-  checkmate::assert_int(value)
-  if (!(value %in% c(8L, 16L, 32L, 64L))) {
-    cli_abort("Unsupported signed integer bit width: {value}")
-  }
-
-  structure(
-    list(value = value),
-    class = c("IntegerType", "TensorDataType")
-  )
-}
-
-#' @export
 repr.IntegerType <- function(x, ...) {
-  paste0("i", x$value)
-}
-
-#' @title UnsignedType
-#' @description
-#' Represents an unsigned integer type with a given bit width.
-#' @param value (`integer(1)`)
-#' @return `UnsignedType`
-#' @export
-UnsignedType <- function(value) {
-  value <- as.integer(value)
-  checkmate::assert_int(value)
-  if (!(value %in% c(8L, 16L, 32L, 64L))) {
-    cli_abort("Unsupported unsigned integer bit width: {value}")
-  }
-
-  structure(
-    list(value = value),
-    class = c("UnsignedType", "TensorDataType")
-  )
+  as.character(x)
 }
 
 #' @export
-repr.UnsignedType <- function(x, ...) {
-  paste0("ui", x$value)
-}
-
-#' @title FloatType
-#' @description
-#' Represents a floating point type with a given bit width.
-#' @param value (`integer(1)`)
-#' @return `FloatType`
-#' @export
-FloatType <- function(value) {
-  value <- as.integer(value)
-  checkmate::assert_int(value)
-  if (!(value %in% c(32L, 64L))) {
-    cli_abort("Unsupported float bit width: {value}")
-  }
-
-  structure(
-    list(value = value),
-    class = c("FloatType", "TensorDataType")
-  )
+repr.UIntegerType <- function(x, ...) {
+  as.character(x)
 }
 
 #' @export
 repr.FloatType <- function(x, ...) {
-  paste0("f", x$value)
+  as.character(x)
 }
 
-#' @title Is TensorDataType
-#' @description
-#' Check if an object is a [`TensorDataType`].
-#' @param x (any)\cr
-#'   Object to check.
-#' @return `logical(1)`
-#' @export
-is_dtype <- function(x) {
-  inherits(x, "TensorDataType")
-}
-
-# Helper to check if something is a valid TensorDataType
-assert_dtype <- function(x, arg = rlang::caller_arg(x)) {
-  if (!is_dtype(x)) {
-    cli_abort(
-      "{.arg {arg}} must be a TensorDataType (BooleanType, IntegerType, UnsignedType, or FloatType)"
-    )
-  }
-}
-
-
-#' @title Convert to TensorDataType
-#' @description
-#' Convert to TensorDataType.
-#' @param x (any)\cr
-#'   Object to convert.
-#'   Can currently be a string (one of `r roxy_dtypes()`) or a [`TensorDataType`] object.
-#' @return `TensorDataType`
-#' @export
-as_dtype <- function(x) {
-  UseMethod("as_dtype")
-}
-
-#' @export
-as_dtype.default <- function(x) {
-  cli_abort("Cannot convert {.cls {class(x)[1]}} to TensorDataType")
-}
-
-
-#' @export
-as_dtype.TensorDataType <- function(x) {
-  x
-}
-
-dtype_map <- list(
-  "pred" = BooleanType(),
-  "i1" = BooleanType(),
-  "i8" = IntegerType(8L),
-  "i16" = IntegerType(16L),
-  "i32" = IntegerType(32L),
-  "i64" = IntegerType(64L),
-  "ui8" = UnsignedType(8L),
-  "ui16" = UnsignedType(16L),
-  "ui32" = UnsignedType(32L),
-  "ui64" = UnsignedType(64L),
-  "f32" = FloatType(32L),
-  "f64" = FloatType(64L)
-)
-
-#' @export
-as_dtype.character <- function(x) {
-  dtype_map[[x]] %??% cli_abort("Unsupported dtype: {x}")
-}
-
-#' @export
-as.character.BooleanType <- function(x, ...) {
-  "i1"
-}
-
-#' @export
-as.character.IntegerType <- function(x, ...) {
-  repr(x)
-}
-
-#' @export
-as.character.UnsignedType <- function(x, ...) {
-  repr(x)
-}
-
-#' @export
-as.character.FloatType <- function(x, ...) {
-  repr(x)
-}
+# Re-export assert_dtype from tengen
+assert_dtype <- tengen::assert_dtype
 
 #' @title TensorType
 #' @description

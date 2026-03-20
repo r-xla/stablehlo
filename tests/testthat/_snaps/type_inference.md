@@ -31,8 +31,8 @@
       infer_types_numeric_biv(lhs, rhs)
     Condition
       Error in `infer_types_numeric_biv()`:
-      ! `lhs` must have dtype FloatType, IntegerType, or UnsignedType.
-      x Got i1.
+      ! `lhs` must have dtype FloatType, IntegerType, or UIntegerType.
+      x Got bool.
 
 ---
 
@@ -67,7 +67,7 @@
       infer_types_integerish_biv(lhs, rhs)
     Condition
       Error in `infer_types_integerish_biv()`:
-      ! `lhs` must have dtype BooleanType, IntegerType, or UnsignedType.
+      ! `lhs` must have dtype BooleanType, IntegerType, or UIntegerType.
       x Got f32.
 
 ---
@@ -76,7 +76,7 @@
       infer_types_integerish_biv(lhs, rhs)
     Condition
       Error in `infer_types_integerish_biv()`:
-      ! `rhs` must have dtype BooleanType, IntegerType, or UnsignedType.
+      ! `rhs` must have dtype BooleanType, IntegerType, or UIntegerType.
       x Got f32.
 
 ---
@@ -112,8 +112,8 @@
       infer_types_numeric_uni(operand)
     Condition
       Error in `infer_types_numeric_uni()`:
-      ! `operand` must have dtype FloatType, IntegerType, or UnsignedType.
-      x Got i1.
+      ! `operand` must have dtype FloatType, IntegerType, or UIntegerType.
+      x Got bool.
 
 # infer_types_float_uni errors
 
@@ -130,7 +130,7 @@
       infer_types_integer_uni(operand)
     Condition
       Error in `infer_types_integer_uni()`:
-      ! `operand` must have dtype IntegerType or UnsignedType.
+      ! `operand` must have dtype IntegerType or UIntegerType.
       x Got f32.
 
 # infer_types_integerish_uni errors
@@ -139,6 +139,6 @@
       infer_types_integerish_uni(operand)
     Condition
       Error in `infer_types_integerish_uni()`:
-      ! `operand` must have dtype BooleanType, IntegerType, or UnsignedType.
+      ! `operand` must have dtype BooleanType, IntegerType, or UIntegerType.
       x Got f32.
 

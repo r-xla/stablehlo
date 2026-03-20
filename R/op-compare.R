@@ -43,7 +43,7 @@ infer_types_compare <- function(
       )
     }
   } else if (
-    inherits(dtype, "UnsignedType") || inherits(dtype, "BooleanType")
+    inherits(dtype, "UIntegerType") || inherits(dtype, "BooleanType")
   ) {
     if (compare_type != "UNSIGNED") {
       cli_abort(

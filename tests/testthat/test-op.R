@@ -19,7 +19,7 @@ test_that("ScalarAttr repr works correctly", {
     repr(ScalarAttr(name = "size", value = 100L, dtype = IntegerType(64L)))
 
     # Unsigned types
-    repr(ScalarAttr(name = "count", value = 255L, dtype = UnsignedType(8L)))
+    repr(ScalarAttr(name = "count", value = 255L, dtype = UIntegerType(8L)))
 
     # Float types
     repr(ScalarAttr(name = "scale", value = 1.5, dtype = FloatType(32L)))

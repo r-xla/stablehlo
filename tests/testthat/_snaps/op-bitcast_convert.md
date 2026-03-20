@@ -40,7 +40,7 @@
     Condition
       Error in `infer_types_bitcast_convert()`:
       ! Bitcast conversions from and to i1 are not supported.
-      x `operand` has dtype i1.
+      x `operand` has dtype bool.
 
 ---
 
@@ -49,7 +49,7 @@
     Condition
       Error in `infer_types_bitcast_convert()`:
       ! Bitcast conversions from and to i1 are not supported.
-      x `dtype` is i1.
+      x `dtype` is bool.
 
 ---
 

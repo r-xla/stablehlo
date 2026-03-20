@@ -31,8 +31,8 @@ Suggests:
     testthat (>= 3.0.0)
 Remotes:
     r-xla/pjrt,
-    r-xla/tengen@*release,
-    r-xla/xlamisc@*release
+    r-xla/tengen,
+    r-xla/xlamisc
 Additional_repositories:
     https://r-xla.r-universe.dev
 Config/build/compilation-database: true

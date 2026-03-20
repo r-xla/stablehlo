@@ -84,7 +84,7 @@ repr.ScalarAttr <- function(x, simplify_dense = TRUE, ...) {
     sprintf("%s : %s", tolower(as.character(data)), type_repr)
   } else if (
     test_class(x$dtype, "IntegerType") ||
-      test_class(x$dtype, "UnsignedType")
+      test_class(x$dtype, "UIntegerType")
   ) {
     sprintf("%d : %s", as.integer(data), type_repr)
   } else {
