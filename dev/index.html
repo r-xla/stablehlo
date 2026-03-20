@@ -109,14 +109,14 @@
 <span><span class="va">z</span></span>
 <span><span class="co">#&gt; Variable %0 in:</span></span>
 <span><span class="co">#&gt; func.func @myfn (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_return.html">hlo_return</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">func</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="va">f</span></span>
 <span><span class="co">#&gt; func.func @myfn (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt; tensor&lt;2x2xf32&gt; {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; "func.return"(%0): (tensor&lt;2x2xf32&gt;) -&gt; ()</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 </div>
@@ -133,7 +133,10 @@
 <div class="section level2">
 <h2 id="important-notes">Important notes<a class="anchor" aria-label="anchor" href="#important-notes"></a>
 </h2>
-<p>stableHLO uses 0-based indexing. Wherever operations take dimension indices (e.g., axes, start indices, permutation dimensions), use 0-based values. This differs from R’s 1-based indexing.</p>
+<ul>
+<li>stableHLO uses 0-based indexing. Wherever operations take dimension indices (e.g., axes, start indices, permutation dimensions), use 0-based values. This differs from R’s 1-based indexing.</li>
+<li>We try to use <code>"bool"</code> for the <code>BooleanType</code>. However, in the generated stableHLO representation this will show up as <code>"i1"</code>. Think of these as interchangeable.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="limitations">Limitations<a class="anchor" aria-label="anchor" href="#limitations"></a>

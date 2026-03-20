@@ -58,14 +58,14 @@ z <- hlo_add(x, y)
 z
 #> Variable %0 in:
 #> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> }
 f <- hlo_return(z)
 identical(f, func)
 #> [1] TRUE
 f
 #> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> "func.return"(%0): (tensor<2x2xf32>) -> ()
 #> }
 ```
@@ -80,9 +80,12 @@ f
 
 ## Important notes
 
-stableHLO uses 0-based indexing. Wherever operations take dimension
-indices (e.g., axes, start indices, permutation dimensions), use 0-based
-values. This differs from R’s 1-based indexing.
+- stableHLO uses 0-based indexing. Wherever operations take dimension
+  indices (e.g., axes, start indices, permutation dimensions), use
+  0-based values. This differs from R’s 1-based indexing.
+- We try to use `"bool"` for the `BooleanType`. However, in the
+  generated stableHLO representation this will show up as `"i1"`. Think
+  of these as interchangeable.
 
 ## Limitations
 
