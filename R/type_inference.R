@@ -64,8 +64,8 @@ infer_types_float_biv <- function(lhs, rhs) {
 #'   The inferred type.
 #' @export
 infer_types_integerish_biv <- function(lhs, rhs) {
-  assert_vt_has_ttype(lhs, "BooleanType", "IntegerType", "UnsignedType")
-  assert_vt_has_ttype(rhs, "BooleanType", "IntegerType", "UnsignedType")
+  assert_vt_has_ttype(lhs, "BooleanType", "IntegerType", "UIntegerType")
+  assert_vt_has_ttype(rhs, "BooleanType", "IntegerType", "UIntegerType")
   assert_vt_equal(lhs, rhs)
   ValueTypes(list(lhs))
 }
@@ -93,7 +93,7 @@ infer_types_generic_uni <- function(operand) {
 #'   The inferred type.
 #' @export
 infer_types_integerish_uni <- function(operand) {
-  assert_vt_has_ttype(operand, "BooleanType", "IntegerType", "UnsignedType")
+  assert_vt_has_ttype(operand, "BooleanType", "IntegerType", "UIntegerType")
   ValueTypes(list(operand))
 }
 
@@ -119,7 +119,7 @@ infer_types_float_uni <- function(operand) {
 #'   The inferred type.
 #' @export
 infer_types_integer_uni <- function(operand) {
-  assert_vt_has_ttype(operand, "IntegerType", "UnsignedType")
+  assert_vt_has_ttype(operand, "IntegerType", "UIntegerType")
   ValueTypes(list(operand))
 }
 
@@ -132,7 +132,7 @@ infer_types_integer_uni <- function(operand) {
 #'   The inferred type.
 #' @export
 infer_types_numeric_uni <- function(operand) {
-  assert_vt_has_ttype(operand, "FloatType", "IntegerType", "UnsignedType")
+  assert_vt_has_ttype(operand, "FloatType", "IntegerType", "UIntegerType")
   ValueTypes(list(operand))
 }
 
@@ -147,7 +147,7 @@ infer_types_numeric_uni <- function(operand) {
 #'   The inferred type.
 #' @export
 infer_types_numeric_biv <- function(lhs, rhs) {
-  assert_vt_has_ttype(lhs, "FloatType", "IntegerType", "UnsignedType")
+  assert_vt_has_ttype(lhs, "FloatType", "IntegerType", "UIntegerType")
   assert_vt_equal(lhs, rhs)
   ValueTypes(list(lhs))
 }

@@ -38,7 +38,7 @@ StableHLO
 Tanh
 TensorDataType
 TensorType
-UnsignedType
+UIntegerType
 ValueId
 ValueType
 ValueTypes

@@ -35,10 +35,10 @@ test_that("TensorDataType equality", {
   expect_false(IntegerType(32) == IntegerType(64))
   expect_true(IntegerType(32) != IntegerType(64))
 
-  expect_true(UnsignedType(32) == UnsignedType(32))
-  expect_false(UnsignedType(32) != UnsignedType(32))
-  expect_false(UnsignedType(32) == UnsignedType(64))
-  expect_true(UnsignedType(32) != UnsignedType(64))
+  expect_true(UIntegerType(32) == UIntegerType(32))
+  expect_false(UIntegerType(32) != UIntegerType(32))
+  expect_false(UIntegerType(32) == UIntegerType(64))
+  expect_true(UIntegerType(32) != UIntegerType(64))
 
   expect_true(FloatType(32) == FloatType(32))
   expect_false(FloatType(32) != FloatType(32))
@@ -65,9 +65,9 @@ test_that("TensorDataType comparison with character", {
   expect_true("i32" == IntegerType(32))
   expect_false(IntegerType(32) == "i64")
 
-  expect_true(UnsignedType(16) == "ui16")
-  expect_true("ui16" == UnsignedType(16))
-  expect_false(UnsignedType(16) == "ui32")
+  expect_true(UIntegerType(16) == "ui16")
+  expect_true("ui16" == UIntegerType(16))
+  expect_false(UIntegerType(16) == "ui32")
 
   expect_true(BooleanType() == "i1")
   expect_true("i1" == BooleanType())
@@ -115,10 +115,10 @@ test_that("print methods - data types", {
   })
 
   expect_snapshot({
-    UnsignedType(8)
-    UnsignedType(16)
-    UnsignedType(32)
-    UnsignedType(64)
+    UIntegerType(8)
+    UIntegerType(16)
+    UIntegerType(32)
+    UIntegerType(64)
   })
 
   expect_snapshot({
@@ -139,7 +139,7 @@ test_that("print methods - compound types", {
     TensorType(BooleanType(), Shape(c()))
     TensorType(IntegerType(32), Shape(c(10)))
     TensorType(FloatType(64), Shape(c(2, 3, 4)))
-    TensorType(UnsignedType(16), Shape(c(5, 6)))
+    TensorType(UIntegerType(16), Shape(c(5, 6)))
   })
 
   expect_snapshot({

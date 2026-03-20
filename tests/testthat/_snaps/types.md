@@ -3,7 +3,7 @@
     Code
       BooleanType()
     Output
-      <i1>
+      <bool>
 
 ---
 
@@ -27,19 +27,19 @@
 ---
 
     Code
-      UnsignedType(8)
+      UIntegerType(8)
     Output
       <ui8>
     Code
-      UnsignedType(16)
+      UIntegerType(16)
     Output
       <ui16>
     Code
-      UnsignedType(32)
+      UIntegerType(32)
     Output
       <ui32>
     Code
-      UnsignedType(64)
+      UIntegerType(64)
     Output
       <ui64>
 
@@ -88,7 +88,7 @@
     Output
       tensor<2x3x4xf64> 
     Code
-      TensorType(UnsignedType(16), Shape(c(5, 6)))
+      TensorType(UIntegerType(16), Shape(c(5, 6)))
     Output
       tensor<5x6xui16> 
 

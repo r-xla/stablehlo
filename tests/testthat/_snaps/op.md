@@ -31,7 +31,7 @@
     Output
       [1] "size = 100 : i64"
     Code
-      repr(ScalarAttr(name = "count", value = 255L, dtype = UnsignedType(8L)))
+      repr(ScalarAttr(name = "count", value = 255L, dtype = UIntegerType(8L)))
     Output
       [1] "count = 255 : ui8"
     Code

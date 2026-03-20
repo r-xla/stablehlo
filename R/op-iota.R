@@ -25,7 +25,7 @@ infer_types_iota <- function(iota_dimension, dtype, shape) {
   dtype <- as_dtype(dtype)
   assert_one_of(
     dtype,
-    c("IntegerType", "UnsignedType", "FloatType")
+    c("IntegerType", "UIntegerType", "FloatType")
   )
 
   ValueTypes(list(

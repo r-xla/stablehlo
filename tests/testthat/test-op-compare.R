@@ -113,7 +113,7 @@ test_that("errors", {
   check(vt("f32", 2L), vt("f32", 2L), "EQ", "INVALID")
   # (C3) compare type must be SIGNED for IntegerType
   check(vt("i32", 2L), vt("i32", 2L), "EQ", "UNSIGNED")
-  # (C3) compare type must be UNSIGNED for UnsignedType
+  # (C3) compare type must be UNSIGNED for UIntegerType
   check(vt("ui32", 2L), vt("ui32", 2L), "EQ", "SIGNED")
   # (C3) compare type must be FLOAT or TOTALORDER for FloatType
   check(vt("f32", 2L), vt("f32", 2L), "EQ", "SIGNED")

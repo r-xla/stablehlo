@@ -2,11 +2,6 @@
 NULL
 
 #' @exportS3Method cli::cli_format
-cli_format.TensorDataType <- function(x, style = list(), ...) {
-  repr(x)
-}
-
-#' @exportS3Method cli::cli_format
 cli_format.Shape <- function(x, style = list(), ...) {
   format(x)
 }

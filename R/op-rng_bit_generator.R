@@ -12,7 +12,7 @@ infer_types_rng_bit_generator <- function(
   shape
 ) {
   assert_vt_is_tensor(initial_state)
-  assert_vt_has_ttype(initial_state, dtype = UnsignedType(64L), ndims = 1L)
+  assert_vt_has_ttype(initial_state, dtype = UIntegerType(64L), ndims = 1L)
 
   if (!test_choice(rng_algorithm, c("DEFAULT", "THREE_FRY", "PHILOX"))) {
     cli_abort(c(
@@ -44,7 +44,7 @@ infer_types_rng_bit_generator <- function(
   out_dtype <- as_dtype(dtype)
   assert_one_of(
     out_dtype,
-    c("IntegerType", "UnsignedType", "FloatType")
+    c("IntegerType", "UIntegerType", "FloatType")
   )
   out_shape <- as.integer(shape)
 
@@ -52,7 +52,7 @@ infer_types_rng_bit_generator <- function(
   ValueTypes(list(
     ValueType(
       TensorType(
-        dtype = UnsignedType(64L),
+        dtype = UIntegerType(64L),
         shape = Shape(init_shape)
       )
     ),

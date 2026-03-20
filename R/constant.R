@@ -35,7 +35,7 @@ repr.Constant <- function(x, simplify_dense = TRUE, ...) {
       )
     } else if (
       test_class(type$dtype, "IntegerType") ||
-        test_class(type$dtype, "UnsignedType")
+        test_class(type$dtype, "UIntegerType")
     ) {
       as.character(data)
     } else if (test_class(type$dtype, "BooleanType")) {
@@ -140,7 +140,7 @@ r_to_constant.default <- function(value, dtype = NULL, shape, ...) {
 
 #' @export
 r_to_constant.logical <- function(value, dtype = NULL, shape, ...) {
-  if (!is.null(dtype) && !(dtype %in% c("i1", "pred"))) {
+  if (!is.null(dtype) && !(dtype %in% c("i1", "pred", "bool"))) {
     cli_abort("Invalid dtype for logical")
   }
   shape <- Shape(shape)
