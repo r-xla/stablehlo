@@ -32,7 +32,7 @@ infer_types_constant(value)
 - dtype:
 
   (`character(1)`)  
-  One of: pred, i8, i16, i32, i64, ui8, ui16, ui32, ui64, f32, f64.
+  One of: bool, i8, i16, i32, i64, ui8, ui16, ui32, ui64, f32, f64.
 
 - func:
 
