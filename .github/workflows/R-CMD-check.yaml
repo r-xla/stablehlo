@@ -70,4 +70,3 @@ jobs:
 
       # Force install pjrt from GitHub to ensure the latest version
       - uses: r-xla/actions/r-check@main
-        with:
