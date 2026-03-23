@@ -6,12 +6,5 @@ on:
 name: Check Code Style
 
 jobs:
-  check-code-style:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: R code
-        uses: rstudio/shiny-workflows/format-r-code@v1
-        with:
-          check: true
+  code-style:
+    uses: r-xla/actions/.github/workflows/code-style.yaml@main
