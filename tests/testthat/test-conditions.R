@@ -160,7 +160,7 @@ test_that("ErrorIndexInSet", {
   )
 })
 
-test_that("cli_format.TensorDataType uses repr()", {
+test_that("cli_format.DataType uses repr()", {
   expect_snapshot_error(cli::cli_abort("Got {.val {FloatType(32)}}"))
 })
 

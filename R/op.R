@@ -40,7 +40,7 @@ repr.OpName <- function(x, ...) {
 #'   The name of the attribute.
 #' @param value (any)\cr
 #'   The value of the attribute.
-#' @param dtype ([`TensorDataType`])\cr
+#' @param dtype ([`DataType`])\cr
 #'   The dtype of the attribute.
 #' @return (`OpInputAttr`)
 #' @export
@@ -60,7 +60,7 @@ OpInputAttr <- function(name, value, dtype) {
 #'   The name of the attribute.
 #' @param value (`numeric(1)` or `logical(1)`)\cr
 #'   The scalar value.
-#' @param dtype ([`TensorDataType`])\cr
+#' @param dtype ([`DataType`])\cr
 #'   The dtype of the scalar (e.g., `IntegerType(32)`, `FloatType(32)`, `BooleanType()`).
 #' @return `ScalarAttr`
 #' @export

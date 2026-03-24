@@ -26,7 +26,7 @@ test_that("is_dtype", {
   expect_false(is_dtype("i32"))
 })
 
-test_that("TensorDataType equality", {
+test_that("DataType equality", {
   expect_true(BooleanType() == BooleanType())
   expect_false(BooleanType() != BooleanType())
 
@@ -50,7 +50,7 @@ test_that("TensorDataType equality", {
   expect_false(BooleanType() == IntegerType(32))
 })
 
-test_that("TensorDataType comparison with character", {
+test_that("DataType comparison with character", {
   expect_true(FloatType(32) == "f32")
   expect_true("f32" == FloatType(32))
   expect_false(FloatType(32) != "f32")
