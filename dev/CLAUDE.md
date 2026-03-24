@@ -101,11 +101,10 @@ Use `{.arg name}` for argument names, never bare text or `{.var ...}`.
 
 ### Formatting values
 
-- **Objects with `cli_format` methods** (types like `TensorDataType`,
-  `Shape`, `ValueType`): pass the object directly via `{.val {obj}}`, do
-  not wrap in
-  [`repr()`](https://r-xla.github.io/stablehlo/dev/reference/repr.md) or
-  [`as.character()`](https://rdrr.io/r/base/character.html).
+- **Objects with `cli_format` methods** (types like `DataType`, `Shape`,
+  `ValueType`): pass the object directly via `{.val {obj}}`, do not wrap
+  in [`repr()`](https://r-xla.github.io/stablehlo/dev/reference/repr.md)
+  or [`as.character()`](https://rdrr.io/r/base/character.html).
 
   ``` r
   # Good

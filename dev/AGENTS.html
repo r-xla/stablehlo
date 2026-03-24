@@ -126,7 +126,7 @@
 <div class="section level3">
 <h3 id="formatting-values">Formatting values<a class="anchor" aria-label="anchor" href="#formatting-values"></a></h3>
 <ul><li>
-<p><strong>Objects with <code>cli_format</code> methods</strong> (types like <code>TensorDataType</code>, <code>Shape</code>, <code>ValueType</code>): pass the object directly via <code>{.val {obj}}</code>, do not wrap in <code><a href="reference/repr.html">repr()</a></code> or <code><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character()</a></code>.</p>
+<p><strong>Objects with <code>cli_format</code> methods</strong> (types like <code>DataType</code>, <code>Shape</code>, <code>ValueType</code>): pass the object directly via <code>{.val {obj}}</code>, do not wrap in <code><a href="reference/repr.html">repr()</a></code> or <code><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character()</a></code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Good</span></span>
 <span><span class="st">"Got {.val {tensor_type$dtype}}."</span></span>
