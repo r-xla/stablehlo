@@ -13,7 +13,7 @@ The name of the attribute.}
 \item{value}{(\code{numeric(1)} or \code{logical(1)})\cr
 The scalar value.}
 
-\item{dtype}{(\code{\link[tengen:TensorDataType]{tengen::TensorDataType}})\cr
+\item{dtype}{(\code{\link[tengen:DataType]{tengen::DataType}})\cr
 The dtype of the scalar (e.g., \code{IntegerType(32)}, \code{FloatType(32)}, \code{BooleanType()}).}
 }
 \value{

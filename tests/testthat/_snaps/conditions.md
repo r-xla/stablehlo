@@ -43,7 +43,7 @@
     `index_vector_dim` must not be in `scatter_indices_batching_dims`.
     x index_vector_dim = 2 is in scatter_indices_batching_dims = c(0, 1, 2).
 
-# cli_format.TensorDataType uses repr()
+# cli_format.DataType uses repr()
 
     Got f32
 

@@ -89,7 +89,7 @@ Use `{.arg name}` for argument names, never bare text or `{.var ...}`.
 
 ### Formatting values
 
-- **Objects with `cli_format` methods** (types like `TensorDataType`, `Shape`, `ValueType`):
+- **Objects with `cli_format` methods** (types like `DataType`, `Shape`, `ValueType`):
   pass the object directly via `{.val {obj}}`, do not wrap in `repr()` or `as.character()`.
 
   ```r

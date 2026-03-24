@@ -45,7 +45,7 @@ assert_dtype <- tengen::assert_dtype
 #' @title TensorType
 #' @description
 #' Represents a tensor type with a specific data type and shape.
-#' @param dtype ([`TensorDataType`])
+#' @param dtype ([`DataType`])
 #' @param shape ([`Shape`])
 #' @return `TensorType`
 #' @export
