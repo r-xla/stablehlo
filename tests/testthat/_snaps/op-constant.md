@@ -143,14 +143,14 @@
     Code
       repr(f)
     Output
-      [1] "func.func @main () -> tensor<0xi64> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<> : tensor<0xi64>\n}: () -> (tensor<0xi64>)\n\"func.return\"(%0): (tensor<0xi64>) -> ()\n}\n"
+      [1] "func.func @main () -> tensor<0xi64> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<> : tensor<0xi64>\n}: () -> (tensor<0xi64>)\nreturn %0 : tensor<0xi64>\n}\n"
 
 # empty array: array<> formatting
 
     Code
       repr(f)
     Output
-      [1] "func.func @main (%x: tensor<i64>) -> tensor<i64> {\n%0 = \"stablehlo.transpose\" (%x) {\npermutation = array<i64>\n}: (tensor<i64>) -> (tensor<i64>)\n\"func.return\"(%0): (tensor<i64>) -> ()\n}\n"
+      [1] "func.func @main (%x: tensor<i64>) -> tensor<i64> {\n%0 = \"stablehlo.transpose\" (%x) {\npermutation = array<i64>\n}: (tensor<i64>) -> (tensor<i64>)\nreturn %0 : tensor<i64>\n}\n"
 
 # scalar constant with hlo_tensor
 
@@ -176,12 +176,12 @@
     Code
       repr(f)
     Output
-      [1] "func.func @main () -> tensor<2x2xf32> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1.00000000e+00> : tensor<2x2xf32>\n}: () -> (tensor<2x2xf32>)\n\"func.return\"(%0): (tensor<2x2xf32>) -> ()\n}\n"
+      [1] "func.func @main () -> tensor<2x2xf32> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1.00000000e+00> : tensor<2x2xf32>\n}: () -> (tensor<2x2xf32>)\nreturn %0 : tensor<2x2xf32>\n}\n"
 
 # c() shape is interpreted as scalar
 
     Code
       repr(f)
     Output
-      [1] "func.func @main () -> tensor<i32> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1> : tensor<i32>\n}: () -> (tensor<i32>)\n\"func.return\"(%0): (tensor<i32>) -> ()\n}\n"
+      [1] "func.func @main () -> tensor<i32> {\n%0 = \"stablehlo.constant\" () {\nvalue = dense<1> : tensor<i32>\n}: () -> (tensor<i32>)\nreturn %0 : tensor<i32>\n}\n"
 

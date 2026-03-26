@@ -24,7 +24,7 @@
       func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> (tensor<2x2xf32>, tensor<2x2xf32>) {
       %0 = stablehlo.add %x, %y : tensor<2x2xf32>
       %1 = stablehlo.add %x, %y : tensor<2x2xf32>
-      "func.return"(%0, %1): (tensor<2x2xf32>, tensor<2x2xf32>) -> ()
+      return %0, %1 : tensor<2x2xf32>, tensor<2x2xf32>
       }
 
 # repr
