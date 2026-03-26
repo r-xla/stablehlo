@@ -73,7 +73,8 @@ hlo_return <- function(..., func = .current_func()) {
 repr.OpReturn <- function(x, toplevel = TRUE, ...) {
   name <- if (toplevel) "return" else "stablehlo.return"
   paste0(
-    name, " ",
+    name,
+    " ",
     repr(x$inputs$values),
     " : ",
     repr(x$signature$input_types)
