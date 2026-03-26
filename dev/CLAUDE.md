@@ -1,5 +1,7 @@
 # NA
 
+@../claude-config/AGENTS.md
+
 ## Package Overview
 
 `stablehlo` is an R package that allows to create StableHLO programs, a
