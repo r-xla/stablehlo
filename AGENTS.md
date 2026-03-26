@@ -1,3 +1,5 @@
+@../claude-config/AGENTS.md
+
 ## Package Overview
 
 `stablehlo` is an R package that allows to create StableHLO programs, a portable computation representation used in machine learning. It allows creating, manipulating, and transforming StableHLO operations in R.
