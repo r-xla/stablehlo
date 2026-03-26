@@ -179,7 +179,7 @@ You should only call this once you are done building the function.
 hlo_return(out_reduce)
 #> func.func @main (%z1: tensor<f32>, %z2: tensor<f32>) -> tensor<f32> {
 #> %0 = stablehlo.add %z1, %z2 : tensor<f32>
-#> "func.return"(%0): (tensor<f32>) -> ()
+#> return %0 : tensor<f32>
 #> }
 ```
 
@@ -224,7 +224,7 @@ out_main
 #> %3 = "stablehlo.reduce" (%x, %2)({
 #>   ^bb0(%z1: tensor<f32>, %z2: tensor<f32>):
 #>     %4 = stablehlo.add %z1, %z2 : tensor<f32>
-#>     "stablehlo.return"(%4): (tensor<f32>) -> ()
+#>     stablehlo.return %4 : tensor<f32>
 #> }) {
 #> dimensions = array<i64: 0, 1>
 #> }: (tensor<2x2xf32>, tensor<f32>) -> (tensor<f32>)
@@ -247,11 +247,11 @@ hlo_return(out_main)
 #> %3 = "stablehlo.reduce" (%x, %2)({
 #>   ^bb0(%z1: tensor<f32>, %z2: tensor<f32>):
 #>     %4 = stablehlo.add %z1, %z2 : tensor<f32>
-#>     "stablehlo.return"(%4): (tensor<f32>) -> ()
+#>     stablehlo.return %4 : tensor<f32>
 #> }) {
 #> dimensions = array<i64: 0, 1>
 #> }: (tensor<2x2xf32>, tensor<f32>) -> (tensor<f32>)
-#> "func.return"(%3): (tensor<f32>) -> ()
+#> return %3 : tensor<f32>
 #> }
 ```
 

@@ -216,7 +216,7 @@ call this once you are done building the function.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/hlo_return.html">hlo_return</a></span><span class="op">(</span><span class="va">out_reduce</span><span class="op">)</span></span>
 <span><span class="co">#&gt; func.func @main (%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;) -&gt; tensor&lt;f32&gt; {</span></span>
 <span><span class="co">#&gt; %0 = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
-<span><span class="co">#&gt; "func.return"(%0): (tensor&lt;f32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt; return %0 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>The output of <code>hlo_return</code> is the same (identical) object
 as the <code>reduce_func</code> (<code>Func</code>s are reference
@@ -255,7 +255,7 @@ the dimensions to reduce along.</p>
 <span><span class="co">#&gt; <span style="color: #0000BB;">%3</span> = "stablehlo.reduce" (%x, %2)({</span></span>
 <span><span class="co">#&gt;   ^bb0(%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;):</span></span>
 <span><span class="co">#&gt;     %4 = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
-<span><span class="co">#&gt;     "stablehlo.return"(%4): (tensor&lt;f32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt;     stablehlo.return %4 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }) {</span></span>
 <span><span class="co">#&gt; dimensions = array&lt;i64: 0, 1&gt;</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
@@ -275,11 +275,11 @@ the dimensions to reduce along.</p>
 <span><span class="co">#&gt; %3 = "stablehlo.reduce" (%x, %2)({</span></span>
 <span><span class="co">#&gt;   ^bb0(%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;):</span></span>
 <span><span class="co">#&gt;     %4 = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
-<span><span class="co">#&gt;     "stablehlo.return"(%4): (tensor&lt;f32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt;     stablehlo.return %4 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }) {</span></span>
 <span><span class="co">#&gt; dimensions = array&lt;i64: 0, 1&gt;</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
-<span><span class="co">#&gt; "func.return"(%3): (tensor&lt;f32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt; return %3 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>If we want to run this function, we need the {pjrt} package. You can
 learn about the package in the <a href="https://r-xla.github.io/pjrt/articles/pjrt.html" class="external-link">pjrt
