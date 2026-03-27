@@ -1,25 +1,3 @@
-baseline_type <- function(x) {
-  if (test_class(x, "TensorType")) {
-    return(x)
-  }
-  cli_abort("Not implemented")
-  # this function is defined in the stablhlo spec and primarily for quantized tensors
-}
-
-# shortcut for element_type(baseline_type(x))
-baseline_element_type <- function(x) {
-  if (!test_class(x, "ValueType")) {
-    cli_abort("x must be a ValueType, but got {.class {class(x)[1]}}.")
-  }
-  if (test_class(x$type, "TensorType")) {
-    return(x$type$dtype)
-  } else if (test_class(x$type, "TokenType")) {
-    cli_abort("Invalid input")
-  } else {
-    cli_abort("Not implemented yet")
-  }
-}
-
 #' @title Infer types for binary operations
 #' @description
 #' Infer the types for binary operations.

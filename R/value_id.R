@@ -30,6 +30,7 @@ ValueId <- function(id = NULL) {
 }
 
 #' @export
+# jarl-ignore comparison_negation: != must delegate to == for S3 consistency
 `!=.ValueId` <- function(e1, e2) {
   !(e1 == e2)
 }
