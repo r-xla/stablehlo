@@ -67,6 +67,7 @@ TensorType <- function(dtype, shape) {
 }
 
 #' @export
+# jarl-ignore comparison_negation: != must delegate to == for S3 consistency
 `!=.TensorType` <- function(e1, e2) {
   !(e1 == e2) # nolint
 }
@@ -170,11 +171,6 @@ print.ValueType <- function(x, ...) {
   invisible(x)
 }
 
-#' @exportS3Method cli::cli_format
-cli_format.ValueType <- function(x, style = NULL, ...) {
-  repr(x)
-}
-
 make_vt <- function(type, shape) {
   if (type == "token") {
     return(ValueType(TokenType()))
@@ -191,13 +187,9 @@ make_vt <- function(type, shape) {
 }
 
 #' @export
+# jarl-ignore comparison_negation: != must delegate to == for S3 consistency
 `!=.ValueType` <- function(e1, e2) {
   !(e1 == e2) # nolint
-}
-
-#' @export
-repr.ValueType <- function(x, ...) {
-  repr(x$type)
 }
 
 #' @title ValueTypes
@@ -231,17 +223,4 @@ print.ValueTypes <- function(x, ...) {
     }
   }
   invisible(x)
-}
-
-check_types_equal <- function(lhs, rhs, ..., msg = NULL) {
-  rlang::check_dots_empty()
-
-  if (lhs == rhs) {
-    return()
-  }
-
-  cli_abort(c(
-    x = msg %||% "Expected types to be equal.",
-    x = "Got lhs={.val {lhs}}, rhs={.val {rhs}}."
-  ))
 }

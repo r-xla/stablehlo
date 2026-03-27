@@ -49,7 +49,7 @@
 
 # cli_format.Shape uses repr()
 
-    Got 2x3
+    Got (2x3)
 
 # cli_format.ValueType uses repr()
 

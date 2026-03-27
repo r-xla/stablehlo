@@ -38,8 +38,8 @@ hlo_test_uni <- function(
   make_fn <- function(dtype, dim = NULL) {
     func <- local_func()
     if (is.null(dim)) {
-      len <- min(rgeom(1, .3) + 1, 4)
-      dim <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
+      len <- min(rgeom(1, 0.3) + 1, 4)
+      dim <- pmin(as.integer(rgeom(len, 0.2) + 1), rep(3, len))
     }
     x <- hlo_input("x", dtype, shape = dim)
     y <- hlo_fn(x)
@@ -96,8 +96,8 @@ hlo_test_biv <- function(
   make_fn <- function(dtype, dim = NULL) {
     local_func()
     if (is.null(dim)) {
-      len <- min(rgeom(1, .3) + 1, 4)
-      dim <- pmin(as.integer(rgeom(len, .2) + 1), rep(3, len))
+      len <- min(rgeom(1, 0.3) + 1, 4)
+      dim <- pmin(as.integer(rgeom(len, 0.2) + 1), rep(3, len))
     }
     x <- hlo_input("x", dtype, shape = dim)
     y <- hlo_input("y", dtype, shape = dim)
@@ -176,9 +176,9 @@ generate_test_data <- function(dimension, dtype = "f64", non_negative = FALSE) {
     # Signed integers
     sample(0:20, size = prod(dimension), replace = TRUE)
   } else if (dtype %in% c("i8", "i16", "i32", "i64")) {
-    test_data <- as.integer(rgeom(prod(dimension), .5))
+    test_data <- as.integer(rgeom(prod(dimension), 0.5))
     if (!non_negative) {
-      test_data <- as.integer((-1)^rbinom(prod(dimension), 1, .5) * test_data)
+      test_data <- as.integer((-1)^rbinom(prod(dimension), 1, 0.5) * test_data)
     }
     test_data
   } else {

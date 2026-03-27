@@ -5,13 +5,6 @@ is_valid_id <- function(name) {
   test_string(name, pattern = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[0-9]+$)")
 }
 
-dtype_repr <- function(dtype) {
-  if (is.character(dtype)) {
-    return(dtype)
-  }
-  # For initialized instances
-  repr(dtype)
-}
 
 assert_valid_id <- function(
   name,
