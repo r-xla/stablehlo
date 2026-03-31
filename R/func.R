@@ -178,6 +178,7 @@ repr.FuncBody <- function(x, ...) {
 hlo_func <- function(id = "main") {
   func <- Func(id = FuncId(id))
   globals[["CURRENT_FUNC"]] <- func
+  register_func_in_module(func)
   return(func)
 }
 
@@ -195,6 +196,7 @@ local_func <- function(id = "main", envir = parent.frame()) {
     )
   }
   globals[["CURRENT_FUNC"]] <- func
+  register_func_in_module(func)
 
   withr::defer(
     envir = envir,

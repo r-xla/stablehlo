@@ -66,6 +66,9 @@ hlo_return <- function(..., func = .current_func()) {
   }
   func <- hlo_return_impl(values = dots)
   maybe_restore_previous_func()
+  if (func$id == FuncId("main")) {
+    finalize_module()
+  }
   return(func)
 }
 
