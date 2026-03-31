@@ -114,6 +114,12 @@ repr.FuncOutputs <- function(x, ...) {
 #' @export
 FuncId <- function(id = "main") {
   checkmate::assert_string(id)
+  if (!grepl("^[a-zA-Z_][a-zA-Z0-9_$.]*$", id)) {
+    cli_abort(c(
+      "{.arg id} must be a valid identifier.",
+      x = "Got {.val {id}}."
+    ))
+  }
 
   structure(
     list(id = id),
