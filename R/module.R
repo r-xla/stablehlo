@@ -19,6 +19,17 @@ Module <- function(funcs = list()) {
     }
   })
 
+  if (length(funcs) > 0L) {
+    ids <- vapply(funcs, function(f) f$id$id, character(1))
+    dupes <- unique(ids[duplicated(ids)])
+    if (length(dupes) > 0L) {
+      cli_abort(c(
+        "Function names within a module must be unique.",
+        x = "Duplicate name{?s}: {.val {dupes}}."
+      ))
+    }
+  }
+
   env <- new.env(parent = emptyenv())
   env$funcs <- funcs
 

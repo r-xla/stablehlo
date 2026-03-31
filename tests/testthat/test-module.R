@@ -78,7 +78,16 @@ test_that("Module with single function", {
   expect_snapshot(repr(mod))
 })
 
-test_that("Module rejects duplicate function names", {
+test_that("Module constructor rejects duplicate function names", {
+  f1 <- Func(FuncId("f1"))
+  f2 <- Func(FuncId("f1"))
+  expect_error(
+    Module(funcs = list(f1, f2)),
+    "Duplicate name"
+  )
+})
+
+test_that("Module rejects duplicate function names during registration", {
   mod <- local_module()
 
   f1 <- local_func("forward")
