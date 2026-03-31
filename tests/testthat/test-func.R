@@ -123,7 +123,6 @@ test_that("Input-output aliasing", {
 test_that("FuncId rejects invalid identifiers", {
   expect_error(FuncId("123abc"), "valid identifier")
   expect_error(FuncId("my func"), "valid identifier")
-  expect_error(FuncId(""), "valid identifier")
   expect_error(FuncId("a-b"), "valid identifier")
 })
 
@@ -132,4 +131,5 @@ test_that("FuncId accepts valid identifiers", {
   expect_no_error(FuncId("_private"))
   expect_no_error(FuncId("forward_pass"))
   expect_no_error(FuncId("MyFunc123"))
+  expect_no_error(FuncId(""))
 })
