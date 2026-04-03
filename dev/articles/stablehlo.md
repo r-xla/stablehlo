@@ -264,6 +264,8 @@ library(pjrt)
 src <- repr(main_func)
 program <- pjrt_program(src)
 executable <- pjrt_compile(program)
+#> Downloading PJRT plugin from
+#> <https://github.com/zml/pjrt-artifacts/releases/download/v14.0.1/pjrt-cpu_linux-amd64.tar.gz>
 ```
 
 Next, we create some input values and run the function.

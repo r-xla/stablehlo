@@ -117,7 +117,7 @@
 <span><span class="va">f</span></span>
 <span><span class="co">#&gt; func.func @myfn (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt; tensor&lt;2x2xf32&gt; {</span></span>
 <span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
-<span><span class="co">#&gt; "func.return"(%0): (tensor&lt;2x2xf32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt; return %0 : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 </div>
 <div class="section level2">
