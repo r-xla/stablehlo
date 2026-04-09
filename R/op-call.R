@@ -4,13 +4,14 @@ NULL
 OpCall <- function(inputs, outputs, signature, callee) {
   checkmate::assert_class(callee, "FuncId")
 
+  inputs$custom_attrs <- list(callee = callee)
+
   base_op <- Op(
     name = OpName("call"),
     inputs = inputs,
     outputs = outputs,
     signature = signature
   )
-  base_op$callee <- callee
   class(base_op) <- c("OpCall", "Op")
   base_op
 }
@@ -123,7 +124,7 @@ repr.OpCall <- function(x, toplevel = TRUE, ...) {
   paste0(
     repr(x$outputs),
     " = func.call ",
-    repr(x$callee),
+    repr(x$inputs$custom_attrs$callee),
     "(",
     repr(x$inputs$values),
     ") : ",

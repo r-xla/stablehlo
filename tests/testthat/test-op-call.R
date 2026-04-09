@@ -59,6 +59,33 @@ test_that("hlo_call wrong argument type", {
   )
 })
 
+test_that("hlo_call compiles and executes with pjrt", {
+  skip_if_not_installed("pjrt")
+
+  mod <- local_module()
+
+  forward <- local_func("forward")
+  a <- hlo_input("a", "f32", shape = c(2L, 2L))
+  b <- hlo_input("b", "f32", shape = c(2L, 2L))
+  hlo_return(hlo_add(a, b))
+
+  main <- local_func("main")
+  x <- hlo_input("x", "f32", shape = c(2L, 2L))
+  y <- hlo_input("y", "f32", shape = c(2L, 2L))
+  result <- hlo_call(forward, x, y)
+  hlo_return(result)
+
+  program <- pjrt::pjrt_program(repr(mod))
+  exec <- pjrt::pjrt_compile(program)
+  x_buf <- pjrt::pjrt_buffer(1:4, shape = c(2, 2), dtype = "f32")
+  y_buf <- pjrt::pjrt_buffer(5:8, shape = c(2, 2), dtype = "f32")
+  out <- pjrt::pjrt_execute(exec, x_buf, y_buf)
+  expect_equal(
+    out,
+    pjrt::pjrt_buffer(c(6L, 8L, 10L, 12L), shape = c(2, 2), dtype = "f32")
+  )
+})
+
 test_that("hlo_call requires finalized callee", {
   mod <- local_module()
 
