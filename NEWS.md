@@ -1,4 +1,4 @@
-# stablehlo (development version)
+# stablehlo 0.2.0
 
 ## Features
 
@@ -7,6 +7,7 @@
 ## Bug fixes
 
 * Constants +-Inf/NaN of dtype f64 are now correctly created.
+* Fixed assembly format for `select` op with all boolean (i1) types.
 
 ## Miscellaneous
 
