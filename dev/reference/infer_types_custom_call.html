@@ -58,7 +58,9 @@
 <span>  <span class="va">api_version</span>,</span>
 <span>  <span class="va">has_side_effect</span>,</span>
 <span>  <span class="va">backend_config</span>,</span>
-<span>  <span class="va">output_types</span></span>
+<span>  <span class="va">output_types</span>,</span>
+<span>  <span class="va">operand_layouts</span>,</span>
+<span>  <span class="va">result_layouts</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -93,6 +95,10 @@ Optional backend configuration as a named list.</p></dd>
 <dt id="arg-output-types">output_types<a class="anchor" aria-label="anchor" href="#arg-output-types"></a></dt>
 <dd><p>(<code>list</code> of <code><a href="ValueType.html">ValueType</a></code> | <code>NULL</code>)<br>
 The output types of the custom call. Default is NULL (no outputs).</p></dd>
+
+
+<dt id="arg-operand-layouts-result-layouts">operand_layouts, result_layouts<a class="anchor" aria-label="anchor" href="#arg-operand-layouts-result-layouts"></a></dt>
+<dd><p>Layouts (not used for type inference).</p></dd>
 
 </dl></div>
     <div class="section level2">

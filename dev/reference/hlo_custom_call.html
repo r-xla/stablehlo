@@ -67,7 +67,9 @@ implemented yet.</p>
 <span>  api_version <span class="op">=</span> <span class="fl">4L</span>,</span>
 <span>  <span class="va">has_side_effect</span>,</span>
 <span>  backend_config <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  output_types <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  output_types <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  operand_layouts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  result_layouts <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -103,6 +105,20 @@ Optional backend configuration.</p></dd>
 <dt id="arg-output-types">output_types<a class="anchor" aria-label="anchor" href="#arg-output-types"></a></dt>
 <dd><p>(<code>list</code> of <code><a href="ValueType.html">ValueType</a></code> | <code>NULL</code>)<br>
 The output types of the custom call. Default is NULL (no outputs).</p></dd>
+
+
+<dt id="arg-operand-layouts">operand_layouts<a class="anchor" aria-label="anchor" href="#arg-operand-layouts"></a></dt>
+<dd><p>(<code>list</code> of <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer()</a></code> | <code>NULL</code>)<br>
+Layouts for each operand in minor-to-major order. Each element is an
+integer vector specifying the dimension order. For example, <code>c(0L, 1L)</code>
+means column-major (dimension 0 varies fastest), while <code>c(1L, 0L)</code> means
+row-major. Default <code>NULL</code> means no layout constraint.</p></dd>
+
+
+<dt id="arg-result-layouts">result_layouts<a class="anchor" aria-label="anchor" href="#arg-result-layouts"></a></dt>
+<dd><p>(<code>list</code> of <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer()</a></code> | <code>NULL</code>)<br>
+Layouts for each result in minor-to-major order. Same format as
+<code>operand_layouts</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

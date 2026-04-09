@@ -11,7 +11,9 @@ infer_types_custom_call(
   api_version,
   has_side_effect,
   backend_config,
-  output_types
+  output_types,
+  operand_layouts,
+  result_layouts
 )
 ```
 
@@ -47,6 +49,10 @@ infer_types_custom_call(
   [`ValueType`](https://r-xla.github.io/stablehlo/dev/reference/ValueType.md)
   \| `NULL`)  
   The output types of the custom call. Default is NULL (no outputs).
+
+- operand_layouts, result_layouts:
+
+  Layouts (not used for type inference).
 
 ## Value
 
