@@ -114,6 +114,12 @@ repr.FuncOutputs <- function(x, ...) {
 #' @export
 FuncId <- function(id = "main") {
   checkmate::assert_string(id)
+  if (nchar(id) > 0L && !grepl("^[a-zA-Z_][a-zA-Z0-9_$.]*$", id)) {
+    cli_abort(c(
+      "{.arg id} must be a valid identifier.",
+      x = "Got {.val {id}}."
+    ))
+  }
 
   structure(
     list(id = id),
@@ -178,6 +184,7 @@ repr.FuncBody <- function(x, ...) {
 hlo_func <- function(id = "main") {
   func <- Func(id = FuncId(id))
   globals[["CURRENT_FUNC"]] <- func
+  register_func_in_module(func)
   return(func)
 }
 
@@ -195,6 +202,7 @@ local_func <- function(id = "main", envir = parent.frame()) {
     )
   }
   globals[["CURRENT_FUNC"]] <- func
+  register_func_in_module(func)
 
   withr::defer(
     envir = envir,

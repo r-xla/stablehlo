@@ -24,3 +24,4 @@ SPEC.md
 ^benchmarks/
 ^.claude/
 ^todo.md
+^jarl.toml$
