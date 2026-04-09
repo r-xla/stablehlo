@@ -30,6 +30,8 @@
   : FuncValue
 - [`GatherDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/GatherDimensionNumbers.md)
   : GatherDimensionNumbers
+- [`Module()`](https://r-xla.github.io/stablehlo/dev/reference/Module.md)
+  : Module
 - [`Op()`](https://r-xla.github.io/stablehlo/dev/reference/Op.md) : Op
 - [`OpInputAttr()`](https://r-xla.github.io/stablehlo/dev/reference/OpInputAttr.md)
   : OpInputAttr
@@ -73,6 +75,8 @@
   : Create a ConstantAttr from R values
 - [`.current_func()`](https://r-xla.github.io/stablehlo/dev/reference/dot-current_func.md)
   : Get the last function created
+- [`.current_module()`](https://r-xla.github.io/stablehlo/dev/reference/dot-current_module.md)
+  : Get the current module
 - [`error_concatenate_shapes()`](https://r-xla.github.io/stablehlo/dev/reference/error_concatenate_shapes.md)
   : ErrorConcatenateShapes
 - [`error_dim_size_mismatch()`](https://r-xla.github.io/stablehlo/dev/reference/error_dim_size_mismatch.md)
@@ -116,6 +120,9 @@
 - [`infer_types_broadcast_in_dim()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_broadcast_in_dim.md)
   [`hlo_broadcast_in_dim()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_broadcast_in_dim.md)
   : BroadcastInDim Operator
+- [`infer_types_call()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_call.md)
+  [`hlo_call()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_call.md)
+  : Call a Function
 - [`infer_types_case()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_case.md)
   [`hlo_case()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_case.md)
   : Case Operator
@@ -207,6 +214,9 @@
 - [`infer_types_minimum()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_minimum.md)
   [`hlo_minimum()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_minimum.md)
   : Minimum Operator
+- [`hlo_module()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_module.md)
+  [`local_module()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_module.md)
+  : Create a module
 - [`infer_types_multiply()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_multiply.md)
   [`hlo_multiply()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_multiply.md)
   : Multiply Operator

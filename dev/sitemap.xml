@@ -23,6 +23,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/FuncOutputs.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/FuncValue.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/GatherDimensionNumbers.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/Module.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/Op.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputAttr.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputAttrs.html</loc></url>
@@ -45,6 +46,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/ValueTypes.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/constant_attr.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/dot-current_func.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/dot-current_module.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/error_concatenate_shapes.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/error_dim_size_mismatch.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/error_dimension_uniqueness.html</loc></url>
@@ -63,6 +65,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_atan2.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_bitcast_convert.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_broadcast_in_dim.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_call.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_case.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_cbrt.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_ceil.html</loc></url>
@@ -94,6 +97,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_logistic.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_maximum.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_minimum.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_module.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_multiply.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_negate.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_not.html</loc></url>
