@@ -10,7 +10,9 @@ infer_types_custom_call(
   api_version,
   has_side_effect,
   backend_config,
-  output_types
+  output_types,
+  operand_layouts,
+  result_layouts
 )
 }
 \arguments{
@@ -30,6 +32,8 @@ Optional backend configuration as a named list.}
 
 \item{output_types}{(\code{list} of \code{\link{ValueType}} | \code{NULL})\cr
 The output types of the custom call. Default is NULL (no outputs).}
+
+\item{operand_layouts, result_layouts}{Layouts (not used for type inference).}
 }
 \value{
 (\code{ValueTypes})\cr

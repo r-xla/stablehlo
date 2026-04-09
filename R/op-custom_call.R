@@ -69,6 +69,7 @@ repr.CustomOpBackendConfig <- function(
 #'   Optional backend configuration as a named list.
 #' @param output_types (`list` of [`ValueType`] | `NULL`)\cr
 #'   The output types of the custom call. Default is NULL (no outputs).
+#' @param operand_layouts,result_layouts Layouts (not used for type inference).
 #' @return (`ValueTypes`)\cr
 #'   The output types (empty for side-effect only calls).
 #' @export
@@ -78,7 +79,9 @@ infer_types_custom_call <- function(
   api_version,
   has_side_effect,
   backend_config,
-  output_types
+  output_types,
+  operand_layouts,
+  result_layouts
 ) {
   if (is.null(output_types)) {
     return(ValueTypes(list()))
@@ -113,6 +116,14 @@ custom_call_impl <- hlo_fn(OpCustomCall, infer_types_custom_call)
 #'   Optional backend configuration.
 #' @param output_types (`list` of [`ValueType`] | `NULL`)\cr
 #'   The output types of the custom call. Default is NULL (no outputs).
+#' @param operand_layouts (`list` of `integer()` | `NULL`)\cr
+#'   Layouts for each operand in minor-to-major order. Each element is an
+#'   integer vector specifying the dimension order. For example, `c(0L, 1L)`
+#'   means column-major (dimension 0 varies fastest), while `c(1L, 0L)` means
+#'   row-major. Default `NULL` means no layout constraint.
+#' @param result_layouts (`list` of `integer()` | `NULL`)\cr
+#'   Layouts for each result in minor-to-major order. Same format as
+#'   `operand_layouts`.
 #' @return ([`FuncValue`] | `list()` | `NULL`)\cr
 #'   The output value(s), or NULL for side-effect only calls.
 #' @export
@@ -122,7 +133,9 @@ hlo_custom_call <- function(
   api_version = 4L,
   has_side_effect,
   backend_config = NULL,
-  output_types = NULL
+  output_types = NULL,
+  operand_layouts = NULL,
+  result_layouts = NULL
 ) {
   values <- list(...)
   custom_call_impl(
@@ -137,11 +150,38 @@ hlo_custom_call <- function(
       BoolAttr(name = "has_side_effect", value = has_side_effect)
     ),
     custom_attrs = if (!is.null(backend_config)) {
-      list(backend_config = backend_config, output_types = output_types)
+      list(
+        backend_config = backend_config,
+        output_types = output_types,
+        operand_layouts = operand_layouts,
+        result_layouts = result_layouts
+      )
     } else {
-      list(output_types = output_types)
+      list(
+        output_types = output_types,
+        operand_layouts = operand_layouts,
+        result_layouts = result_layouts
+      )
     }
   )
+}
+
+# Format a single layout as `dense<[0, 1]> : tensor<2xindex>`
+repr_layout <- function(layout) {
+  layout <- as.integer(layout)
+  paste0(
+    "dense<[",
+    paste(layout, collapse = ", "),
+    "]> : tensor<",
+    length(layout),
+    "xindex>"
+  )
+}
+
+# Format a list of layouts as `[dense<...>, dense<...>]`
+repr_layouts <- function(name, layouts) {
+  items <- vapply(layouts, repr_layout, character(1))
+  paste0(name, " = [", paste(items, collapse = ", "), "]")
 }
 
 #' @export
@@ -169,6 +209,14 @@ repr.OpCustomCall <- function(
   bec <- x$inputs$custom_attrs$backend_config
   if (!is.null(bec)) {
     attr_reprs <- c(attr_reprs, repr(bec))
+  }
+  ol <- x$inputs$custom_attrs$operand_layouts
+  if (!is.null(ol)) {
+    attr_reprs <- c(attr_reprs, repr_layouts("operand_layouts", ol))
+  }
+  rl <- x$inputs$custom_attrs$result_layouts
+  if (!is.null(rl)) {
+    attr_reprs <- c(attr_reprs, repr_layouts("result_layouts", rl))
   }
   attrs_str <- paste0("{\n  ", paste(attr_reprs, collapse = ",\n  "), "\n}")
 

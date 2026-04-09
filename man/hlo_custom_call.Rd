@@ -10,7 +10,9 @@ hlo_custom_call(
   api_version = 4L,
   has_side_effect,
   backend_config = NULL,
-  output_types = NULL
+  output_types = NULL,
+  operand_layouts = NULL,
+  result_layouts = NULL
 )
 }
 \arguments{
@@ -31,6 +33,16 @@ Optional backend configuration.}
 
 \item{output_types}{(\code{list} of \code{\link{ValueType}} | \code{NULL})\cr
 The output types of the custom call. Default is NULL (no outputs).}
+
+\item{operand_layouts}{(\code{list} of \code{integer()} | \code{NULL})\cr
+Layouts for each operand in minor-to-major order. Each element is an
+integer vector specifying the dimension order. For example, \code{c(0L, 1L)}
+means column-major (dimension 0 varies fastest), while \code{c(1L, 0L)} means
+row-major. Default \code{NULL} means no layout constraint.}
+
+\item{result_layouts}{(\code{list} of \code{integer()} | \code{NULL})\cr
+Layouts for each result in minor-to-major order. Same format as
+\code{operand_layouts}.}
 }
 \value{
 (\code{\link{FuncValue}} | \code{list()} | \code{NULL})\cr

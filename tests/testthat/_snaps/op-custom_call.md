@@ -15,3 +15,10 @@
        2 4
       [ f32{2,2} ]
 
+# custom call with operand and result layouts
+
+    Code
+      repr(f)
+    Output
+      [1] "func.func @main (%x: tensor<2x3xf32>) -> tensor<2x3xf32> {\n%0 = stablehlo.custom_call @my_target(%x) {\n  call_target_name = \"my_target\",\n  api_version = 4 : i32,\n  has_side_effect = false,\n  operand_layouts = [dense<[0, 1]> : tensor<2xindex>],\n  result_layouts = [dense<[1, 0]> : tensor<2xindex>]\n} : (tensor<2x3xf32>) -> (tensor<2x3xf32>)\nreturn %0 : tensor<2x3xf32>\n}\n"
+
