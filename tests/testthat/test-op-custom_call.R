@@ -29,4 +29,20 @@ test_that("print_tensor with header works on CPU", {
   expect_equal(out, buf)
 })
 
+test_that("custom call with operand and result layouts", {
+  local_func()
+  x <- hlo_input("x", "f32", shape = c(2, 3))
+  out <- hlo_custom_call(
+    x,
+    call_target_name = "my_target",
+    api_version = 4L,
+    has_side_effect = FALSE,
+    output_types = list(ValueType("f32", shape = c(2, 3))),
+    operand_layouts = list(c(0L, 1L)),
+    result_layouts = list(c(1L, 0L))
+  )
+  f <- hlo_return(out)
+  expect_snapshot(repr(f))
+})
+
 # No type inference errors (output types are user-specified)
