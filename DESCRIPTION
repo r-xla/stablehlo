@@ -21,18 +21,14 @@ Imports:
     cli,
     methods,
     rlang,
-    tengen (>= 0.1.0),
+    tengen (>= 0.2.0),
     withr,
-    xlamisc
+    xlamisc (>= 0.2.0)
 Suggests:
     rmarkdown,
     knitr,
-    pjrt (>= 0.1.0),
+    pjrt (>= 0.2.0),
     testthat (>= 3.0.0)
-Remotes:
-    r-xla/pjrt,
-    r-xla/tengen,
-    r-xla/xlamisc
 Additional_repositories:
     https://r-xla.r-universe.dev
 Config/build/compilation-database: true
