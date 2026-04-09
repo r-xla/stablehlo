@@ -14,8 +14,8 @@ hlo_broadcast_in_dim(operand, broadcast_dimensions, shape)
 
 - operand, broadcast_dimensions, shape:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

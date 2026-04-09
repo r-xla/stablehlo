@@ -27,8 +27,8 @@ hlo_pad(
 - operand, padding_value, edge_padding_low, edge_padding_high,
   interior_padding:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

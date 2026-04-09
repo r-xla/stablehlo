@@ -14,8 +14,8 @@ hlo_convert(operand, dtype)
 
 - operand, dtype:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

@@ -14,8 +14,8 @@ hlo_dynamic_slice(operand, ..., slice_sizes)
 
 - operand, ..., slice_sizes:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

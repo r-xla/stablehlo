@@ -1,5 +1,8 @@
 # stablehlo
 
+Package website: [release](https://r-xla.github.io/stablehlo/) \|
+[dev](https://r-xla.github.io/stablehlo/dev/)
+
 The {stablehlo} R package provides a functional API to create
 [stableHLO](https://openxla.org/stablehlo) programs. These programs can
 be executed using the R package [pjrt](https://github.com/r-xla/pjrt).
@@ -27,9 +30,10 @@ options(repos = c(
 
 Below, we create a function that takes two input arguments `x` and `y`
 of type `f32` and shape `(2, 2)` and adds them. Passing `func` to
-[`hlo_input()`](reference/hlo_input.md) is optional, because it will
-automatically use the last function created with
-[`hlo_func()`](reference/hlo_func.md).
+[`hlo_input()`](https://r-xla.github.io/stablehlo/reference/hlo_input.md)
+is optional, because it will automatically use the last function created
+with
+[`hlo_func()`](https://r-xla.github.io/stablehlo/reference/hlo_func.md).
 
 ``` r
 library(stablehlo)
@@ -54,15 +58,15 @@ z <- hlo_add(x, y)
 z
 #> Variable %0 in:
 #> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> }
 f <- hlo_return(z)
 identical(f, func)
 #> [1] TRUE
 f
 #> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
-#> "func.return"(%0): (tensor<2x2xf32>) -> ()
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
+#> return %0 : tensor<2x2xf32>
 #> }
 ```
 
@@ -76,9 +80,12 @@ f
 
 ## Important notes
 
-stableHLO uses 0-based indexing. Wherever operations take dimension
-indices (e.g., axes, start indices, permutation dimensions), use 0-based
-values. This differs from R’s 1-based indexing.
+- stableHLO uses 0-based indexing. Wherever operations take dimension
+  indices (e.g., axes, start indices, permutation dimensions), use
+  0-based values. This differs from R’s 1-based indexing.
+- We try to use `"bool"` for the `BooleanType`. However, in the
+  generated stableHLO representation this will show up as `"i1"`. Think
+  of these as interchangeable.
 
 ## Limitations
 
@@ -102,251 +109,354 @@ specification. At least initially, it will:
 
 ## All functions
 
-- [`BoolAttr()`](BoolAttr.md) : BoolAttr
-- [`BooleanType()`](BooleanType.md) : BooleanType
-- [`Constant()`](Constant.md) : Constant
-- [`ConstantAttr()`](ConstantAttr.md) : ConstantAttr
-- [`CustomOpBackendConfig()`](CustomOpBackendConfig.md) :
-  CustomOpBackendConfig
-- [`DotDimensionNumbers()`](DotDimensionNumbers.md) :
-  DotDimensionNumbers
-- [`FloatType()`](FloatType.md) : FloatType
-- [`Func()`](Func.md) : Func
-- [`FuncBody()`](FuncBody.md) : FuncBody
-- [`FuncId()`](FuncId.md) : FuncId
-- [`FuncInput()`](FuncInput.md) : FuncInput
-- [`FuncInputs()`](FuncInputs.md) : FuncInputs
-- [`FuncOutput()`](FuncOutput.md) : FuncOutput
-- [`FuncOutputs()`](FuncOutputs.md) : FuncOutputs
-- [`FuncValue()`](FuncValue.md) : FuncValue
-- [`GatherDimensionNumbers()`](GatherDimensionNumbers.md) :
-  GatherDimensionNumbers
-- [`IntegerType()`](IntegerType.md) : IntegerType (signed)
-- [`Op()`](Op.md) : Op
-- [`OpInputAttr()`](OpInputAttr.md) : OpInputAttr
-- [`OpInputAttrs()`](OpInputAttrs.md) : OpInputAttrs
-- [`OpInputFunc()`](OpInputFunc.md) : OpInputFunc
-- [`OpInputFuncs()`](OpInputFuncs.md) : OpInputFuncs
-- [`OpInputValue()`](OpInputValue.md) : OpInputValue
-- [`OpInputValues()`](OpInputValues.md) : OpInputValues
-- [`OpInputs()`](OpInputs.md) : OpInputs
-- [`OpName()`](OpName.md) : OpName
-- [`OpOutput()`](OpOutput.md) : OpOutput
-- [`OpOutputs()`](OpOutputs.md) : OpOutputs
-- [`OpSignature()`](OpSignature.md) : OpSignature
-- [`ScalarAttr()`](ScalarAttr.md) : ScalarAttr
-- [`ScatterDimensionNumbers()`](ScatterDimensionNumbers.md) :
-  ScatterDimensionNumbers
-- [`Shape()`](Shape.md) : Shape
-- [`StringAttr()`](StringAttr.md) : StringAttr
-- [`TensorDataType`](TensorDataType.md) : TensorDataType Base Class
-- [`TensorType()`](TensorType.md) : TensorType
-- [`UnsignedType()`](UnsignedType.md) : UnsignedType
-- [`ValueId()`](ValueId.md) : ValueId
-- [`ValueType()`](ValueType.md) : ValueType
-- [`ValueTypes()`](ValueTypes.md) : ValueTypes
-- [`as_dtype()`](as_dtype.md) : Convert to TensorDataType
-- [`constant_attr()`](constant_attr.md) : Create a ConstantAttr from R
-  values
-- [`.current_func()`](dot-current_func.md) : Get the last function
-  created
-- [`error_concatenate_shapes()`](error_concatenate_shapes.md) :
-  ErrorConcatenateShapes
-- [`error_dim_size_mismatch()`](error_dim_size_mismatch.md) :
-  ErrorDimSizeMismatch
-- [`error_dimension_uniqueness()`](error_dimension_uniqueness.md) :
-  ErrorDimensionUniqueness
-- [`error_index_in_set()`](error_index_in_set.md) : ErrorIndexInSet
-- [`error_index_out_of_bounds()`](error_index_out_of_bounds.md) :
-  ErrorIndexOutOfBounds
-- [`error_indices_not_sorted()`](error_indices_not_sorted.md) :
-  ErrorIndicesNotSorted
-- [`error_permute_index()`](error_permute_index.md) : ErrorPermuteIndex
-- [`error_stablehlo()`](error_stablehlo.md) : ErrorStablehlo
-- [`error_unequal_types()`](error_unequal_types.md) : ErrorUnequalTypes
-- [`error_unexpected_list_type()`](error_unexpected_list_type.md) :
-  ErrorUnexpectedListType
-- [`format_double()`](format_double.md) : Format Double Array with
-  Scientific Notation
-- [`infer_types_abs()`](hlo_abs.md) [`hlo_abs()`](hlo_abs.md) : Abs
-  Operator
-- [`infer_types_add()`](hlo_add.md) [`hlo_add()`](hlo_add.md) : Add
-  Operator
-- [`infer_types_after_all()`](hlo_after_all.md)
-  [`hlo_after_all()`](hlo_after_all.md) : AfterAll Operator
-- [`infer_types_and()`](hlo_and.md) [`hlo_and()`](hlo_and.md) : And
-  Operator
-- [`infer_types_atan2()`](hlo_atan2.md) [`hlo_atan2()`](hlo_atan2.md) :
-  Atan2 Operator
-- [`infer_types_bitcast_convert()`](hlo_bitcast_convert.md)
-  [`hlo_bitcast_convert()`](hlo_bitcast_convert.md) : BitcastConvert
-  Operator
-- [`infer_types_broadcast_in_dim()`](hlo_broadcast_in_dim.md)
-  [`hlo_broadcast_in_dim()`](hlo_broadcast_in_dim.md) : BroadcastInDim
-  Operator
-- [`infer_types_case()`](hlo_case.md) [`hlo_case()`](hlo_case.md) : Case
-  Operator
-- [`infer_types_cbrt()`](hlo_cbrt.md) [`hlo_cbrt()`](hlo_cbrt.md) : Cbrt
-  Operator
-- [`infer_types_ceil()`](hlo_ceil.md) [`hlo_ceil()`](hlo_ceil.md) : Ceil
-  Operator
-- [`hlo_cholesky()`](hlo_cholesky.md) : Cholesky Operator
-- [`infer_types_clamp()`](hlo_clamp.md) [`hlo_clamp()`](hlo_clamp.md) :
-  Clamp Operator
-- [`hlo_closure()`](hlo_closure.md) : Create a Closure
-- [`infer_types_compare()`](hlo_compare.md)
-  [`hlo_compare()`](hlo_compare.md) : Compare Operator
-- [`infer_types_concatenate()`](hlo_concatenate.md)
-  [`hlo_concatenate()`](hlo_concatenate.md) : Concatenate Operator
-- [`hlo_scalar()`](hlo_constant.md) [`hlo_tensor()`](hlo_constant.md)
-  [`hlo_empty()`](hlo_constant.md)
-  [`infer_types_constant()`](hlo_constant.md) : Create a Constant
-- [`infer_types_convert()`](hlo_convert.md)
-  [`hlo_convert()`](hlo_convert.md) : Convert Operator
-- [`infer_types_cosine()`](hlo_cosine.md)
-  [`hlo_cosine()`](hlo_cosine.md) : Cosine Operator
-- [`infer_types_count_leading_zeros()`](hlo_count_leading_zeros.md)
-  [`hlo_count_leading_zeros()`](hlo_count_leading_zeros.md) :
-  CountLeadingZeros Operator
-- [`hlo_custom_call()`](hlo_custom_call.md) : Custom Call Operation
-- [`infer_types_divide()`](hlo_divide.md)
-  [`hlo_divide()`](hlo_divide.md) : Divide Operator
-- [`infer_types_dot_general()`](hlo_dot_general.md)
-  [`hlo_dot_general()`](hlo_dot_general.md) : DotGeneral Operator
-- [`infer_types_dynamic_slice()`](hlo_dynamic_slice.md)
-  [`hlo_dynamic_slice()`](hlo_dynamic_slice.md) : DynamicSlice Operator
-- [`infer_types_dynamic_update_slice()`](hlo_dynamic_update_slice.md)
-  [`hlo_dynamic_update_slice()`](hlo_dynamic_update_slice.md) :
-  DynamicUpdateSlice Operator
-- [`infer_types_exponential()`](hlo_exponential.md)
-  [`hlo_exponential()`](hlo_exponential.md) : Exponential Operator
-- [`infer_types_exponential_minus_one()`](hlo_exponential_minus_one.md)
-  [`hlo_exponential_minus_one()`](hlo_exponential_minus_one.md) :
-  ExponentialMinusOne Operator
-- [`infer_types_floor()`](hlo_floor.md) [`hlo_floor()`](hlo_floor.md) :
-  Floor Operator
-- [`hlo_func()`](hlo_func.md) [`local_func()`](hlo_func.md) : Create a
-  function
-- [`infer_types_gather()`](hlo_gather.md)
-  [`hlo_gather()`](hlo_gather.md) : Gather Operator
-- [`infer_types_if()`](hlo_if.md) [`hlo_if()`](hlo_if.md) : If Operator
-- [`hlo_input()`](hlo_input.md) : Create a input to a function
-- [`infer_types_iota()`](hlo_iota.md) [`hlo_iota()`](hlo_iota.md) : Iota
-  Operator
-- [`infer_types_is_finite()`](hlo_is_finite.md)
-  [`hlo_is_finite()`](hlo_is_finite.md) : IsFinite Operator
-- [`infer_types_log()`](hlo_log.md) [`hlo_log()`](hlo_log.md) : Log
-  Operator
-- [`infer_types_log_plus_one()`](hlo_log_plus_one.md)
-  [`hlo_log_plus_one()`](hlo_log_plus_one.md) : LogPlusOne Operator
-- [`infer_types_logistic()`](hlo_logistic.md)
-  [`hlo_logistic()`](hlo_logistic.md) : Logistic Operator
-- [`infer_types_maximum()`](hlo_maximum.md)
-  [`hlo_maximum()`](hlo_maximum.md) : Maximum Operator
-- [`infer_types_minimum()`](hlo_minimum.md)
-  [`hlo_minimum()`](hlo_minimum.md) : Minimum Operator
-- [`infer_types_multiply()`](hlo_multiply.md)
-  [`hlo_multiply()`](hlo_multiply.md) : Multiply Operator
-- [`infer_types_negate()`](hlo_negate.md)
-  [`hlo_negate()`](hlo_negate.md) : Negate Operator
-- [`infer_types_not()`](hlo_not.md) [`hlo_not()`](hlo_not.md) : Not
-  Operator
-- [`infer_types_or()`](hlo_or.md) [`hlo_or()`](hlo_or.md) : Or Operator
-- [`infer_types_pad()`](hlo_pad.md) [`hlo_pad()`](hlo_pad.md) : Pad
-  Operator
-- [`infer_types_popcnt()`](hlo_popcnt.md)
-  [`hlo_popcnt()`](hlo_popcnt.md) : Popcnt Operator
-- [`infer_types_power()`](hlo_power.md) [`hlo_power()`](hlo_power.md) :
-  Power Operator
-- [`infer_types_reduce()`](hlo_reduce.md)
-  [`hlo_reduce()`](hlo_reduce.md) : Reduce Operator
-- [`infer_types_reduce_window()`](hlo_reduce_window.md)
-  [`hlo_reduce_window()`](hlo_reduce_window.md) : ReduceWindow Operator
-- [`infer_types_remainder()`](hlo_remainder.md)
-  [`hlo_remainder()`](hlo_remainder.md) : Remainder Operator
-- [`infer_types_reshape()`](hlo_reshape.md)
-  [`hlo_reshape()`](hlo_reshape.md) : Reshape Operator
-- [`infer_types_return()`](hlo_return.md)
-  [`hlo_return()`](hlo_return.md) : Return Values
-- [`infer_types_reverse()`](hlo_reverse.md)
-  [`hlo_reverse()`](hlo_reverse.md) : Reverse Operator
-- [`infer_types_rng_bit_generator()`](hlo_rng_bit_generator.md)
-  [`hlo_rng_bit_generator()`](hlo_rng_bit_generator.md) :
-  RngBitGenerator Operator
-- [`infer_types_round_nearest_afz()`](hlo_round_nearest_afz.md)
-  [`hlo_round_nearest_afz()`](hlo_round_nearest_afz.md) :
-  RoundNearestAfz Operator
-- [`infer_types_round_nearest_even()`](hlo_round_nearest_even.md)
-  [`hlo_round_nearest_even()`](hlo_round_nearest_even.md) :
-  RoundNearestEven Operator
-- [`infer_types_rsqrt()`](hlo_rsqrt.md) [`hlo_rsqrt()`](hlo_rsqrt.md) :
-  Rsqrt Operator
-- [`infer_types_scatter()`](hlo_scatter.md)
-  [`hlo_scatter()`](hlo_scatter.md) : Scatter Operator
-- [`infer_types_select()`](hlo_select.md)
-  [`hlo_select()`](hlo_select.md) : Select Operator
-- [`infer_types_shift_left()`](hlo_shift_left.md)
-  [`hlo_shift_left()`](hlo_shift_left.md) : ShiftLeft Operator
-- [`infer_types_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md)
-  [`hlo_shift_right_arithmetic()`](hlo_shift_right_arithmetic.md) :
-  ShiftRightArithmetic Operator
-- [`infer_types_shift_right_logical()`](hlo_shift_right_logical.md)
-  [`hlo_shift_right_logical()`](hlo_shift_right_logical.md) :
-  ShiftRightLogical Operator
-- [`infer_types_sign()`](hlo_sign.md) [`hlo_sign()`](hlo_sign.md) : Sign
-  Operator
-- [`infer_types_sine()`](hlo_sine.md) [`hlo_sine()`](hlo_sine.md) : Sine
-  Operator
-- [`infer_types_slice()`](hlo_slice.md) [`hlo_slice()`](hlo_slice.md) :
-  Slice Operator
-- [`infer_types_sort()`](hlo_sort.md) [`hlo_sort()`](hlo_sort.md) : Sort
-  Operator
-- [`infer_types_sqrt()`](hlo_sqrt.md) [`hlo_sqrt()`](hlo_sqrt.md) : Sqrt
-  Operator
-- [`infer_types_subtract()`](hlo_subtract.md)
-  [`hlo_subtract()`](hlo_subtract.md) : Subtract Operator
-- [`infer_types_tan()`](hlo_tan.md) [`hlo_tan()`](hlo_tan.md) : Tan
-  Operator
-- [`infer_types_tanh()`](hlo_tanh.md) [`hlo_tanh()`](hlo_tanh.md) : Tanh
-  Operator
-- [`infer_types_transpose()`](hlo_transpose.md)
-  [`hlo_transpose()`](hlo_transpose.md) : Transpose Operator
-- [`infer_types_triangular_solve()`](hlo_triangular_solve.md)
-  [`hlo_triangular_solve()`](hlo_triangular_solve.md) : TriangularSolve
-  Operator
-- [`infer_types_while()`](hlo_while.md) [`hlo_while()`](hlo_while.md) :
-  While Operator
-- [`infer_types_xor()`](hlo_xor.md) [`hlo_xor()`](hlo_xor.md) : Xor
-  Operator
-- [`index_vec()`](index_vec.md) : index_vec
-- [`infer_types_custom_call()`](infer_types_custom_call.md) : Infer
-  types for custom call
-- [`infer_types_float_biv()`](infer_types_float_biv.md) : Infer types
-  for float binary operations
-- [`infer_types_float_uni()`](infer_types_float_uni.md) : Infer types
-  for float unary operations
-- [`infer_types_generic_biv()`](infer_types_generic_biv.md) : Infer
-  types for binary operations
-- [`infer_types_generic_uni()`](infer_types_generic_uni.md) : Infer
-  types for unary operations
-- [`infer_types_integer_uni()`](infer_types_integer_uni.md) : Infer
-  types for integer unary operations
-- [`infer_types_integerish_biv()`](infer_types_integerish_biv.md) :
-  Infer types for boolean integerish operations
-- [`infer_types_integerish_uni()`](infer_types_integerish_uni.md) :
-  Infer types for integerish unary operations
-- [`infer_types_numeric_biv()`](infer_types_numeric_biv.md) : Infer
-  types for numeric binary operations
-- [`infer_types_numeric_uni()`](infer_types_numeric_uni.md) : Infer
-  types for numeric unary operations
-- [`is_dtype()`](is_dtype.md) : Is TensorDataType
-- [`r_to_constant()`](r_to_constant.md) : Convert R value to Constant
-- [`repr()`](repr.md) : Generate string representation for object
-- [`to_one_based()`](to_one_based.md) : Convert 0-based indices to
-  1-based
+- [`BoolAttr()`](https://r-xla.github.io/stablehlo/reference/BoolAttr.md)
+  : BoolAttr
+- [`Constant()`](https://r-xla.github.io/stablehlo/reference/Constant.md)
+  : Constant
+- [`ConstantAttr()`](https://r-xla.github.io/stablehlo/reference/ConstantAttr.md)
+  : ConstantAttr
+- [`CustomOpBackendConfig()`](https://r-xla.github.io/stablehlo/reference/CustomOpBackendConfig.md)
+  : CustomOpBackendConfig
+- [`DotDimensionNumbers()`](https://r-xla.github.io/stablehlo/reference/DotDimensionNumbers.md)
+  : DotDimensionNumbers
+- [`Func()`](https://r-xla.github.io/stablehlo/reference/Func.md) : Func
+- [`FuncBody()`](https://r-xla.github.io/stablehlo/reference/FuncBody.md)
+  : FuncBody
+- [`FuncId()`](https://r-xla.github.io/stablehlo/reference/FuncId.md) :
+  FuncId
+- [`FuncInput()`](https://r-xla.github.io/stablehlo/reference/FuncInput.md)
+  : FuncInput
+- [`FuncInputs()`](https://r-xla.github.io/stablehlo/reference/FuncInputs.md)
+  : FuncInputs
+- [`FuncOutput()`](https://r-xla.github.io/stablehlo/reference/FuncOutput.md)
+  : FuncOutput
+- [`FuncOutputs()`](https://r-xla.github.io/stablehlo/reference/FuncOutputs.md)
+  : FuncOutputs
+- [`FuncValue()`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)
+  : FuncValue
+- [`GatherDimensionNumbers()`](https://r-xla.github.io/stablehlo/reference/GatherDimensionNumbers.md)
+  : GatherDimensionNumbers
+- [`Module()`](https://r-xla.github.io/stablehlo/reference/Module.md) :
+  Module
+- [`Op()`](https://r-xla.github.io/stablehlo/reference/Op.md) : Op
+- [`OpInputAttr()`](https://r-xla.github.io/stablehlo/reference/OpInputAttr.md)
+  : OpInputAttr
+- [`OpInputAttrs()`](https://r-xla.github.io/stablehlo/reference/OpInputAttrs.md)
+  : OpInputAttrs
+- [`OpInputFunc()`](https://r-xla.github.io/stablehlo/reference/OpInputFunc.md)
+  : OpInputFunc
+- [`OpInputFuncs()`](https://r-xla.github.io/stablehlo/reference/OpInputFuncs.md)
+  : OpInputFuncs
+- [`OpInputValue()`](https://r-xla.github.io/stablehlo/reference/OpInputValue.md)
+  : OpInputValue
+- [`OpInputValues()`](https://r-xla.github.io/stablehlo/reference/OpInputValues.md)
+  : OpInputValues
+- [`OpInputs()`](https://r-xla.github.io/stablehlo/reference/OpInputs.md)
+  : OpInputs
+- [`OpName()`](https://r-xla.github.io/stablehlo/reference/OpName.md) :
+  OpName
+- [`OpOutput()`](https://r-xla.github.io/stablehlo/reference/OpOutput.md)
+  : OpOutput
+- [`OpOutputs()`](https://r-xla.github.io/stablehlo/reference/OpOutputs.md)
+  : OpOutputs
+- [`OpSignature()`](https://r-xla.github.io/stablehlo/reference/OpSignature.md)
+  : OpSignature
+- [`ScalarAttr()`](https://r-xla.github.io/stablehlo/reference/ScalarAttr.md)
+  : ScalarAttr
+- [`ScatterDimensionNumbers()`](https://r-xla.github.io/stablehlo/reference/ScatterDimensionNumbers.md)
+  : ScatterDimensionNumbers
+- [`Shape()`](https://r-xla.github.io/stablehlo/reference/Shape.md) :
+  Shape
+- [`StringAttr()`](https://r-xla.github.io/stablehlo/reference/StringAttr.md)
+  : StringAttr
+- [`TensorType()`](https://r-xla.github.io/stablehlo/reference/TensorType.md)
+  : TensorType
+- [`ValueId()`](https://r-xla.github.io/stablehlo/reference/ValueId.md)
+  : ValueId
+- [`ValueType()`](https://r-xla.github.io/stablehlo/reference/ValueType.md)
+  : ValueType
+- [`ValueTypes()`](https://r-xla.github.io/stablehlo/reference/ValueTypes.md)
+  : ValueTypes
+- [`constant_attr()`](https://r-xla.github.io/stablehlo/reference/constant_attr.md)
+  : Create a ConstantAttr from R values
+- [`.current_func()`](https://r-xla.github.io/stablehlo/reference/dot-current_func.md)
+  : Get the last function created
+- [`.current_module()`](https://r-xla.github.io/stablehlo/reference/dot-current_module.md)
+  : Get the current module
+- [`error_concatenate_shapes()`](https://r-xla.github.io/stablehlo/reference/error_concatenate_shapes.md)
+  : ErrorConcatenateShapes
+- [`error_dim_size_mismatch()`](https://r-xla.github.io/stablehlo/reference/error_dim_size_mismatch.md)
+  : ErrorDimSizeMismatch
+- [`error_dimension_uniqueness()`](https://r-xla.github.io/stablehlo/reference/error_dimension_uniqueness.md)
+  : ErrorDimensionUniqueness
+- [`error_index_in_set()`](https://r-xla.github.io/stablehlo/reference/error_index_in_set.md)
+  : ErrorIndexInSet
+- [`error_index_out_of_bounds()`](https://r-xla.github.io/stablehlo/reference/error_index_out_of_bounds.md)
+  : ErrorIndexOutOfBounds
+- [`error_indices_not_sorted()`](https://r-xla.github.io/stablehlo/reference/error_indices_not_sorted.md)
+  : ErrorIndicesNotSorted
+- [`error_permute_index()`](https://r-xla.github.io/stablehlo/reference/error_permute_index.md)
+  : ErrorPermuteIndex
+- [`error_stablehlo()`](https://r-xla.github.io/stablehlo/reference/error_stablehlo.md)
+  : ErrorStablehlo
+- [`error_unequal_types()`](https://r-xla.github.io/stablehlo/reference/error_unequal_types.md)
+  : ErrorUnequalTypes
+- [`error_unexpected_list_type()`](https://r-xla.github.io/stablehlo/reference/error_unexpected_list_type.md)
+  : ErrorUnexpectedListType
+- [`format_double()`](https://r-xla.github.io/stablehlo/reference/format_double.md)
+  : Format Double Array with Scientific Notation
+- [`infer_types_abs()`](https://r-xla.github.io/stablehlo/reference/hlo_abs.md)
+  [`hlo_abs()`](https://r-xla.github.io/stablehlo/reference/hlo_abs.md)
+  : Abs Operator
+- [`infer_types_add()`](https://r-xla.github.io/stablehlo/reference/hlo_add.md)
+  [`hlo_add()`](https://r-xla.github.io/stablehlo/reference/hlo_add.md)
+  : Add Operator
+- [`infer_types_after_all()`](https://r-xla.github.io/stablehlo/reference/hlo_after_all.md)
+  [`hlo_after_all()`](https://r-xla.github.io/stablehlo/reference/hlo_after_all.md)
+  : AfterAll Operator
+- [`infer_types_and()`](https://r-xla.github.io/stablehlo/reference/hlo_and.md)
+  [`hlo_and()`](https://r-xla.github.io/stablehlo/reference/hlo_and.md)
+  : And Operator
+- [`infer_types_atan2()`](https://r-xla.github.io/stablehlo/reference/hlo_atan2.md)
+  [`hlo_atan2()`](https://r-xla.github.io/stablehlo/reference/hlo_atan2.md)
+  : Atan2 Operator
+- [`infer_types_bitcast_convert()`](https://r-xla.github.io/stablehlo/reference/hlo_bitcast_convert.md)
+  [`hlo_bitcast_convert()`](https://r-xla.github.io/stablehlo/reference/hlo_bitcast_convert.md)
+  : BitcastConvert Operator
+- [`infer_types_broadcast_in_dim()`](https://r-xla.github.io/stablehlo/reference/hlo_broadcast_in_dim.md)
+  [`hlo_broadcast_in_dim()`](https://r-xla.github.io/stablehlo/reference/hlo_broadcast_in_dim.md)
+  : BroadcastInDim Operator
+- [`infer_types_call()`](https://r-xla.github.io/stablehlo/reference/hlo_call.md)
+  [`hlo_call()`](https://r-xla.github.io/stablehlo/reference/hlo_call.md)
+  : Call a Function
+- [`infer_types_case()`](https://r-xla.github.io/stablehlo/reference/hlo_case.md)
+  [`hlo_case()`](https://r-xla.github.io/stablehlo/reference/hlo_case.md)
+  : Case Operator
+- [`infer_types_cbrt()`](https://r-xla.github.io/stablehlo/reference/hlo_cbrt.md)
+  [`hlo_cbrt()`](https://r-xla.github.io/stablehlo/reference/hlo_cbrt.md)
+  : Cbrt Operator
+- [`infer_types_ceil()`](https://r-xla.github.io/stablehlo/reference/hlo_ceil.md)
+  [`hlo_ceil()`](https://r-xla.github.io/stablehlo/reference/hlo_ceil.md)
+  : Ceil Operator
+- [`hlo_cholesky()`](https://r-xla.github.io/stablehlo/reference/hlo_cholesky.md)
+  : Cholesky Operator
+- [`infer_types_clamp()`](https://r-xla.github.io/stablehlo/reference/hlo_clamp.md)
+  [`hlo_clamp()`](https://r-xla.github.io/stablehlo/reference/hlo_clamp.md)
+  : Clamp Operator
+- [`hlo_closure()`](https://r-xla.github.io/stablehlo/reference/hlo_closure.md)
+  : Create a Closure
+- [`infer_types_compare()`](https://r-xla.github.io/stablehlo/reference/hlo_compare.md)
+  [`hlo_compare()`](https://r-xla.github.io/stablehlo/reference/hlo_compare.md)
+  : Compare Operator
+- [`infer_types_concatenate()`](https://r-xla.github.io/stablehlo/reference/hlo_concatenate.md)
+  [`hlo_concatenate()`](https://r-xla.github.io/stablehlo/reference/hlo_concatenate.md)
+  : Concatenate Operator
+- [`hlo_scalar()`](https://r-xla.github.io/stablehlo/reference/hlo_constant.md)
+  [`hlo_tensor()`](https://r-xla.github.io/stablehlo/reference/hlo_constant.md)
+  [`hlo_empty()`](https://r-xla.github.io/stablehlo/reference/hlo_constant.md)
+  [`infer_types_constant()`](https://r-xla.github.io/stablehlo/reference/hlo_constant.md)
+  : Create a Constant
+- [`infer_types_convert()`](https://r-xla.github.io/stablehlo/reference/hlo_convert.md)
+  [`hlo_convert()`](https://r-xla.github.io/stablehlo/reference/hlo_convert.md)
+  : Convert Operator
+- [`infer_types_cosine()`](https://r-xla.github.io/stablehlo/reference/hlo_cosine.md)
+  [`hlo_cosine()`](https://r-xla.github.io/stablehlo/reference/hlo_cosine.md)
+  : Cosine Operator
+- [`infer_types_count_leading_zeros()`](https://r-xla.github.io/stablehlo/reference/hlo_count_leading_zeros.md)
+  [`hlo_count_leading_zeros()`](https://r-xla.github.io/stablehlo/reference/hlo_count_leading_zeros.md)
+  : CountLeadingZeros Operator
+- [`hlo_custom_call()`](https://r-xla.github.io/stablehlo/reference/hlo_custom_call.md)
+  : Custom Call Operation
+- [`infer_types_divide()`](https://r-xla.github.io/stablehlo/reference/hlo_divide.md)
+  [`hlo_divide()`](https://r-xla.github.io/stablehlo/reference/hlo_divide.md)
+  : Divide Operator
+- [`infer_types_dot_general()`](https://r-xla.github.io/stablehlo/reference/hlo_dot_general.md)
+  [`hlo_dot_general()`](https://r-xla.github.io/stablehlo/reference/hlo_dot_general.md)
+  : DotGeneral Operator
+- [`infer_types_dynamic_slice()`](https://r-xla.github.io/stablehlo/reference/hlo_dynamic_slice.md)
+  [`hlo_dynamic_slice()`](https://r-xla.github.io/stablehlo/reference/hlo_dynamic_slice.md)
+  : DynamicSlice Operator
+- [`infer_types_dynamic_update_slice()`](https://r-xla.github.io/stablehlo/reference/hlo_dynamic_update_slice.md)
+  [`hlo_dynamic_update_slice()`](https://r-xla.github.io/stablehlo/reference/hlo_dynamic_update_slice.md)
+  : DynamicUpdateSlice Operator
+- [`infer_types_exponential()`](https://r-xla.github.io/stablehlo/reference/hlo_exponential.md)
+  [`hlo_exponential()`](https://r-xla.github.io/stablehlo/reference/hlo_exponential.md)
+  : Exponential Operator
+- [`infer_types_exponential_minus_one()`](https://r-xla.github.io/stablehlo/reference/hlo_exponential_minus_one.md)
+  [`hlo_exponential_minus_one()`](https://r-xla.github.io/stablehlo/reference/hlo_exponential_minus_one.md)
+  : ExponentialMinusOne Operator
+- [`infer_types_floor()`](https://r-xla.github.io/stablehlo/reference/hlo_floor.md)
+  [`hlo_floor()`](https://r-xla.github.io/stablehlo/reference/hlo_floor.md)
+  : Floor Operator
+- [`hlo_func()`](https://r-xla.github.io/stablehlo/reference/hlo_func.md)
+  [`local_func()`](https://r-xla.github.io/stablehlo/reference/hlo_func.md)
+  : Create a function
+- [`infer_types_gather()`](https://r-xla.github.io/stablehlo/reference/hlo_gather.md)
+  [`hlo_gather()`](https://r-xla.github.io/stablehlo/reference/hlo_gather.md)
+  : Gather Operator
+- [`infer_types_if()`](https://r-xla.github.io/stablehlo/reference/hlo_if.md)
+  [`hlo_if()`](https://r-xla.github.io/stablehlo/reference/hlo_if.md) :
+  If Operator
+- [`hlo_input()`](https://r-xla.github.io/stablehlo/reference/hlo_input.md)
+  : Create a input to a function
+- [`infer_types_iota()`](https://r-xla.github.io/stablehlo/reference/hlo_iota.md)
+  [`hlo_iota()`](https://r-xla.github.io/stablehlo/reference/hlo_iota.md)
+  : Iota Operator
+- [`infer_types_is_finite()`](https://r-xla.github.io/stablehlo/reference/hlo_is_finite.md)
+  [`hlo_is_finite()`](https://r-xla.github.io/stablehlo/reference/hlo_is_finite.md)
+  : IsFinite Operator
+- [`infer_types_log()`](https://r-xla.github.io/stablehlo/reference/hlo_log.md)
+  [`hlo_log()`](https://r-xla.github.io/stablehlo/reference/hlo_log.md)
+  : Log Operator
+- [`infer_types_log_plus_one()`](https://r-xla.github.io/stablehlo/reference/hlo_log_plus_one.md)
+  [`hlo_log_plus_one()`](https://r-xla.github.io/stablehlo/reference/hlo_log_plus_one.md)
+  : LogPlusOne Operator
+- [`infer_types_logistic()`](https://r-xla.github.io/stablehlo/reference/hlo_logistic.md)
+  [`hlo_logistic()`](https://r-xla.github.io/stablehlo/reference/hlo_logistic.md)
+  : Logistic Operator
+- [`infer_types_maximum()`](https://r-xla.github.io/stablehlo/reference/hlo_maximum.md)
+  [`hlo_maximum()`](https://r-xla.github.io/stablehlo/reference/hlo_maximum.md)
+  : Maximum Operator
+- [`infer_types_minimum()`](https://r-xla.github.io/stablehlo/reference/hlo_minimum.md)
+  [`hlo_minimum()`](https://r-xla.github.io/stablehlo/reference/hlo_minimum.md)
+  : Minimum Operator
+- [`hlo_module()`](https://r-xla.github.io/stablehlo/reference/hlo_module.md)
+  [`local_module()`](https://r-xla.github.io/stablehlo/reference/hlo_module.md)
+  : Create a module
+- [`infer_types_multiply()`](https://r-xla.github.io/stablehlo/reference/hlo_multiply.md)
+  [`hlo_multiply()`](https://r-xla.github.io/stablehlo/reference/hlo_multiply.md)
+  : Multiply Operator
+- [`infer_types_negate()`](https://r-xla.github.io/stablehlo/reference/hlo_negate.md)
+  [`hlo_negate()`](https://r-xla.github.io/stablehlo/reference/hlo_negate.md)
+  : Negate Operator
+- [`infer_types_not()`](https://r-xla.github.io/stablehlo/reference/hlo_not.md)
+  [`hlo_not()`](https://r-xla.github.io/stablehlo/reference/hlo_not.md)
+  : Not Operator
+- [`infer_types_or()`](https://r-xla.github.io/stablehlo/reference/hlo_or.md)
+  [`hlo_or()`](https://r-xla.github.io/stablehlo/reference/hlo_or.md) :
+  Or Operator
+- [`infer_types_pad()`](https://r-xla.github.io/stablehlo/reference/hlo_pad.md)
+  [`hlo_pad()`](https://r-xla.github.io/stablehlo/reference/hlo_pad.md)
+  : Pad Operator
+- [`infer_types_popcnt()`](https://r-xla.github.io/stablehlo/reference/hlo_popcnt.md)
+  [`hlo_popcnt()`](https://r-xla.github.io/stablehlo/reference/hlo_popcnt.md)
+  : Popcnt Operator
+- [`infer_types_power()`](https://r-xla.github.io/stablehlo/reference/hlo_power.md)
+  [`hlo_power()`](https://r-xla.github.io/stablehlo/reference/hlo_power.md)
+  : Power Operator
+- [`infer_types_reduce()`](https://r-xla.github.io/stablehlo/reference/hlo_reduce.md)
+  [`hlo_reduce()`](https://r-xla.github.io/stablehlo/reference/hlo_reduce.md)
+  : Reduce Operator
+- [`infer_types_reduce_window()`](https://r-xla.github.io/stablehlo/reference/hlo_reduce_window.md)
+  [`hlo_reduce_window()`](https://r-xla.github.io/stablehlo/reference/hlo_reduce_window.md)
+  : ReduceWindow Operator
+- [`infer_types_remainder()`](https://r-xla.github.io/stablehlo/reference/hlo_remainder.md)
+  [`hlo_remainder()`](https://r-xla.github.io/stablehlo/reference/hlo_remainder.md)
+  : Remainder Operator
+- [`infer_types_reshape()`](https://r-xla.github.io/stablehlo/reference/hlo_reshape.md)
+  [`hlo_reshape()`](https://r-xla.github.io/stablehlo/reference/hlo_reshape.md)
+  : Reshape Operator
+- [`infer_types_return()`](https://r-xla.github.io/stablehlo/reference/hlo_return.md)
+  [`hlo_return()`](https://r-xla.github.io/stablehlo/reference/hlo_return.md)
+  : Return Values
+- [`infer_types_reverse()`](https://r-xla.github.io/stablehlo/reference/hlo_reverse.md)
+  [`hlo_reverse()`](https://r-xla.github.io/stablehlo/reference/hlo_reverse.md)
+  : Reverse Operator
+- [`infer_types_rng_bit_generator()`](https://r-xla.github.io/stablehlo/reference/hlo_rng_bit_generator.md)
+  [`hlo_rng_bit_generator()`](https://r-xla.github.io/stablehlo/reference/hlo_rng_bit_generator.md)
+  : RngBitGenerator Operator
+- [`infer_types_round_nearest_afz()`](https://r-xla.github.io/stablehlo/reference/hlo_round_nearest_afz.md)
+  [`hlo_round_nearest_afz()`](https://r-xla.github.io/stablehlo/reference/hlo_round_nearest_afz.md)
+  : RoundNearestAfz Operator
+- [`infer_types_round_nearest_even()`](https://r-xla.github.io/stablehlo/reference/hlo_round_nearest_even.md)
+  [`hlo_round_nearest_even()`](https://r-xla.github.io/stablehlo/reference/hlo_round_nearest_even.md)
+  : RoundNearestEven Operator
+- [`infer_types_rsqrt()`](https://r-xla.github.io/stablehlo/reference/hlo_rsqrt.md)
+  [`hlo_rsqrt()`](https://r-xla.github.io/stablehlo/reference/hlo_rsqrt.md)
+  : Rsqrt Operator
+- [`infer_types_scatter()`](https://r-xla.github.io/stablehlo/reference/hlo_scatter.md)
+  [`hlo_scatter()`](https://r-xla.github.io/stablehlo/reference/hlo_scatter.md)
+  : Scatter Operator
+- [`infer_types_select()`](https://r-xla.github.io/stablehlo/reference/hlo_select.md)
+  [`hlo_select()`](https://r-xla.github.io/stablehlo/reference/hlo_select.md)
+  : Select Operator
+- [`infer_types_shift_left()`](https://r-xla.github.io/stablehlo/reference/hlo_shift_left.md)
+  [`hlo_shift_left()`](https://r-xla.github.io/stablehlo/reference/hlo_shift_left.md)
+  : ShiftLeft Operator
+- [`infer_types_shift_right_arithmetic()`](https://r-xla.github.io/stablehlo/reference/hlo_shift_right_arithmetic.md)
+  [`hlo_shift_right_arithmetic()`](https://r-xla.github.io/stablehlo/reference/hlo_shift_right_arithmetic.md)
+  : ShiftRightArithmetic Operator
+- [`infer_types_shift_right_logical()`](https://r-xla.github.io/stablehlo/reference/hlo_shift_right_logical.md)
+  [`hlo_shift_right_logical()`](https://r-xla.github.io/stablehlo/reference/hlo_shift_right_logical.md)
+  : ShiftRightLogical Operator
+- [`infer_types_sign()`](https://r-xla.github.io/stablehlo/reference/hlo_sign.md)
+  [`hlo_sign()`](https://r-xla.github.io/stablehlo/reference/hlo_sign.md)
+  : Sign Operator
+- [`infer_types_sine()`](https://r-xla.github.io/stablehlo/reference/hlo_sine.md)
+  [`hlo_sine()`](https://r-xla.github.io/stablehlo/reference/hlo_sine.md)
+  : Sine Operator
+- [`infer_types_slice()`](https://r-xla.github.io/stablehlo/reference/hlo_slice.md)
+  [`hlo_slice()`](https://r-xla.github.io/stablehlo/reference/hlo_slice.md)
+  : Slice Operator
+- [`infer_types_sort()`](https://r-xla.github.io/stablehlo/reference/hlo_sort.md)
+  [`hlo_sort()`](https://r-xla.github.io/stablehlo/reference/hlo_sort.md)
+  : Sort Operator
+- [`infer_types_sqrt()`](https://r-xla.github.io/stablehlo/reference/hlo_sqrt.md)
+  [`hlo_sqrt()`](https://r-xla.github.io/stablehlo/reference/hlo_sqrt.md)
+  : Sqrt Operator
+- [`infer_types_subtract()`](https://r-xla.github.io/stablehlo/reference/hlo_subtract.md)
+  [`hlo_subtract()`](https://r-xla.github.io/stablehlo/reference/hlo_subtract.md)
+  : Subtract Operator
+- [`infer_types_tan()`](https://r-xla.github.io/stablehlo/reference/hlo_tan.md)
+  [`hlo_tan()`](https://r-xla.github.io/stablehlo/reference/hlo_tan.md)
+  : Tan Operator
+- [`infer_types_tanh()`](https://r-xla.github.io/stablehlo/reference/hlo_tanh.md)
+  [`hlo_tanh()`](https://r-xla.github.io/stablehlo/reference/hlo_tanh.md)
+  : Tanh Operator
+- [`infer_types_transpose()`](https://r-xla.github.io/stablehlo/reference/hlo_transpose.md)
+  [`hlo_transpose()`](https://r-xla.github.io/stablehlo/reference/hlo_transpose.md)
+  : Transpose Operator
+- [`infer_types_triangular_solve()`](https://r-xla.github.io/stablehlo/reference/hlo_triangular_solve.md)
+  [`hlo_triangular_solve()`](https://r-xla.github.io/stablehlo/reference/hlo_triangular_solve.md)
+  : TriangularSolve Operator
+- [`infer_types_while()`](https://r-xla.github.io/stablehlo/reference/hlo_while.md)
+  [`hlo_while()`](https://r-xla.github.io/stablehlo/reference/hlo_while.md)
+  : While Operator
+- [`infer_types_xor()`](https://r-xla.github.io/stablehlo/reference/hlo_xor.md)
+  [`hlo_xor()`](https://r-xla.github.io/stablehlo/reference/hlo_xor.md)
+  : Xor Operator
+- [`index_vec()`](https://r-xla.github.io/stablehlo/reference/index_vec.md)
+  : index_vec
+- [`infer_types_custom_call()`](https://r-xla.github.io/stablehlo/reference/infer_types_custom_call.md)
+  : Infer types for custom call
+- [`infer_types_float_biv()`](https://r-xla.github.io/stablehlo/reference/infer_types_float_biv.md)
+  : Infer types for float binary operations
+- [`infer_types_float_uni()`](https://r-xla.github.io/stablehlo/reference/infer_types_float_uni.md)
+  : Infer types for float unary operations
+- [`infer_types_generic_biv()`](https://r-xla.github.io/stablehlo/reference/infer_types_generic_biv.md)
+  : Infer types for binary operations
+- [`infer_types_generic_uni()`](https://r-xla.github.io/stablehlo/reference/infer_types_generic_uni.md)
+  : Infer types for unary operations
+- [`infer_types_integer_uni()`](https://r-xla.github.io/stablehlo/reference/infer_types_integer_uni.md)
+  : Infer types for integer unary operations
+- [`infer_types_integerish_biv()`](https://r-xla.github.io/stablehlo/reference/infer_types_integerish_biv.md)
+  : Infer types for boolean integerish operations
+- [`infer_types_integerish_uni()`](https://r-xla.github.io/stablehlo/reference/infer_types_integerish_uni.md)
+  : Infer types for integerish unary operations
+- [`infer_types_numeric_biv()`](https://r-xla.github.io/stablehlo/reference/infer_types_numeric_biv.md)
+  : Infer types for numeric binary operations
+- [`infer_types_numeric_uni()`](https://r-xla.github.io/stablehlo/reference/infer_types_numeric_uni.md)
+  : Infer types for numeric unary operations
+- [`r_to_constant()`](https://r-xla.github.io/stablehlo/reference/r_to_constant.md)
+  : Convert R value to Constant
+- [`repr()`](https://r-xla.github.io/stablehlo/reference/repr.md) :
+  Generate string representation for object
+- [`to_one_based()`](https://r-xla.github.io/stablehlo/reference/to_one_based.md)
+  : Convert 0-based indices to 1-based
 
 # Articles
 
 ### All vignettes
 
-- [Get Started](stablehlo.md):
+- [Get
+  Started](https://r-xla.github.io/stablehlo/articles/stablehlo.md):

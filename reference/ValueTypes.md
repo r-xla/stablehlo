@@ -1,6 +1,7 @@
 # ValueTypes
 
-List of [`ValueType`](ValueType.md)s.
+List of
+[`ValueType`](https://r-xla.github.io/stablehlo/reference/ValueType.md)s.
 
 ## Usage
 
@@ -13,7 +14,7 @@ ValueTypes(items = list())
 - items:
 
   ([`list()`](https://rdrr.io/r/base/list.html) of
-  [`ValueType`](ValueType.md))  
+  [`ValueType`](https://r-xla.github.io/stablehlo/reference/ValueType.md))  
   The types of the values.
 
 ## Value

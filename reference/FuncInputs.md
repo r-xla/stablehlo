@@ -1,6 +1,7 @@
 # FuncInputs
 
-List of [`FuncInput`](FuncInput.md)s.
+List of
+[`FuncInput`](https://r-xla.github.io/stablehlo/reference/FuncInput.md)s.
 
 ## Usage
 
@@ -13,7 +14,7 @@ FuncInputs(items = list())
 - items:
 
   ([`list()`](https://rdrr.io/r/base/list.html) of
-  [`FuncInput`](FuncInput.md))  
+  [`FuncInput`](https://r-xla.github.io/stablehlo/reference/FuncInput.md))  
   The inputs of the function.
 
 ## Value

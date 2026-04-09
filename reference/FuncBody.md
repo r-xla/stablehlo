@@ -1,6 +1,8 @@
 # FuncBody
 
-The body of a [`Func`](Func.md), containing a list of operations.
+The body of a
+[`Func`](https://r-xla.github.io/stablehlo/reference/Func.md),
+containing a list of operations.
 
 ## Usage
 
@@ -12,7 +14,8 @@ FuncBody(items = list())
 
 - items:
 
-  ([`list()`](https://rdrr.io/r/base/list.html) of [`Op`](Op.md))  
+  ([`list()`](https://rdrr.io/r/base/list.html) of
+  [`Op`](https://r-xla.github.io/stablehlo/reference/Op.md))  
   The operations in the function body.
 
 ## Value

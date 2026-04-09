@@ -14,8 +14,8 @@ hlo_sort(..., dimension, is_stable, comparator)
 
 - ..., dimension, is_stable, comparator:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

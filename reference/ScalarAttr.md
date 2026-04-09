@@ -22,9 +22,9 @@ ScalarAttr(name, value, dtype)
 
 - dtype:
 
-  ([`TensorDataType`](TensorDataType.md))  
+  ([`tengen::DataType`](https://r-xla.github.io/tengen/reference/DataType.html))  
   The dtype of the scalar (e.g., `IntegerType(32)`, `FloatType(32)`,
-  [`BooleanType()`](BooleanType.md)).
+  [`BooleanType()`](https://r-xla.github.io/tengen/reference/BooleanType.html)).
 
 ## Value
 

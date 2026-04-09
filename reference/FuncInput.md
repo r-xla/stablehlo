@@ -1,6 +1,7 @@
 # FuncInput
 
-This represents an input of a [`Func`](Func.md).
+This represents an input of a
+[`Func`](https://r-xla.github.io/stablehlo/reference/Func.md).
 
 ## Usage
 
@@ -12,12 +13,12 @@ FuncInput(id, type, alias = NULL)
 
 - id:
 
-  ([`ValueId`](ValueId.md))  
+  ([`ValueId`](https://r-xla.github.io/stablehlo/reference/ValueId.md))  
   The id of the input.
 
 - type:
 
-  ([`ValueType`](ValueType.md))  
+  ([`ValueType`](https://r-xla.github.io/stablehlo/reference/ValueType.md))  
   The type of the input.
 
 - alias:

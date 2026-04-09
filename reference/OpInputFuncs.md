@@ -1,6 +1,7 @@
 # OpInputFuncs
 
-List of [`OpInputFunc`](OpInputFunc.md)s.
+List of
+[`OpInputFunc`](https://r-xla.github.io/stablehlo/reference/OpInputFunc.md)s.
 
 ## Usage
 
@@ -13,7 +14,7 @@ OpInputFuncs(items = list())
 - items:
 
   ([`list()`](https://rdrr.io/r/base/list.html) of
-  [`OpInputFunc`](OpInputFunc.md))  
+  [`OpInputFunc`](https://r-xla.github.io/stablehlo/reference/OpInputFunc.md))  
   The functions that can be used as inputs to operations.
 
 ## Value

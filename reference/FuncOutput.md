@@ -1,6 +1,7 @@
 # FuncOutput
 
-This represents an output of a [`Func`](Func.md).
+This represents an output of a
+[`Func`](https://r-xla.github.io/stablehlo/reference/Func.md).
 
 ## Usage
 

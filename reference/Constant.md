@@ -17,7 +17,7 @@ Constant(data, type)
 
 - type:
 
-  ([`TensorType`](TensorType.md))  
+  ([`TensorType`](https://r-xla.github.io/stablehlo/reference/TensorType.md))  
   The type of the constant.
 
 ## Value

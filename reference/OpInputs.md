@@ -18,17 +18,17 @@ OpInputs(
 
 - values:
 
-  ([`OpInputValues`](OpInputValues.md))  
+  ([`OpInputValues`](https://r-xla.github.io/stablehlo/reference/OpInputValues.md))  
   The values used as inputs.
 
 - funcs:
 
-  ([`OpInputFuncs`](OpInputFuncs.md))  
+  ([`OpInputFuncs`](https://r-xla.github.io/stablehlo/reference/OpInputFuncs.md))  
   The functions used as inputs.
 
 - attrs:
 
-  ([`OpInputAttrs`](OpInputAttrs.md))  
+  ([`OpInputAttrs`](https://r-xla.github.io/stablehlo/reference/OpInputAttrs.md))  
   The attributes used as inputs.
 
 - custom_attrs:

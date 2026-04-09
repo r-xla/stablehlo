@@ -30,7 +30,7 @@ hlo_scatter(
 
 - inputs, scatter_indices, updates:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 - scatter_dimension_numbers:
 
@@ -49,9 +49,9 @@ hlo_scatter(
 
 - update_computation:
 
-  ([`Func`](Func.md))  
+  ([`Func`](https://r-xla.github.io/stablehlo/reference/Func.md))  
   The update computation function.
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

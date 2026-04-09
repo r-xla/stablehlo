@@ -14,7 +14,7 @@ hlo_while(..., cond, body, simplify = TRUE)
 
 - ..., cond, body:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 - simplify:
 
@@ -24,4 +24,4 @@ hlo_while(..., cond, body, simplify = TRUE)
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

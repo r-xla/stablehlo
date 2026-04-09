@@ -14,7 +14,7 @@ We start by creating a `Func` object that represents a StableHLO
 function. Such a `Func` object has an ID (`FuncId`), inputs
 (`FuncInputs`), outputs (`FuncOutputs`) and a body (`FuncBody`). Below,
 we are calling our function `"main"` and create an empty function via
-[`local_func()`](../reference/hlo_func.md).
+[`local_func()`](https://r-xla.github.io/stablehlo/reference/hlo_func.md).
 
 ``` r
 library(stablehlo)
@@ -26,7 +26,7 @@ main_func
 ```
 
 This `Func` object is now accessible via
-[`.current_func()`](../reference/dot-current_func.md).
+[`.current_func()`](https://r-xla.github.io/stablehlo/reference/dot-current_func.md).
 
 ``` r
 .current_func()
@@ -36,11 +36,13 @@ This `Func` object is now accessible via
 ```
 
 When we exit the scope where `func` was created and we haven’t finished
-building the function (via [`hlo_return()`](../reference/hlo_return.md),
+building the function (via
+[`hlo_return()`](https://r-xla.github.io/stablehlo/reference/hlo_return.md),
 see later), this global state will be cleaned up. If you don’t want
-this, use [`hlo_func()`](../reference/hlo_func.md), but unless you have
-a good reason to do so, you should use
-[`local_func()`](../reference/hlo_func.md).
+this, use
+[`hlo_func()`](https://r-xla.github.io/stablehlo/reference/hlo_func.md),
+but unless you have a good reason to do so, you should use
+[`local_func()`](https://r-xla.github.io/stablehlo/reference/hlo_func.md).
 
 To convert this (unfinished) function into its stableHLO string
 representation, we can use the `repr` method, which is also called when
@@ -53,15 +55,17 @@ repr(main_func)
 
 We can now add inputs to the function, which will populate the
 `FuncInputs` of the `Func`. We create two inputs, `x` and `y`, and add
-them to the function via [`hlo_input()`](../reference/hlo_input.md). We
-start by adding an argument `x`, which is a `2x2xf32` tensor.
+them to the function via
+[`hlo_input()`](https://r-xla.github.io/stablehlo/reference/hlo_input.md).
+We start by adding an argument `x`, which is a `2x2xf32` tensor.
 
 ``` r
 x <- hlo_input("x", "f32", shape = c(2, 2), func = main_func)
 ```
 
 We don’t have to specify the `func` argument explicitly, because the
-default is to use [`.current_func()`](../reference/dot-current_func.md).
+default is to use
+[`.current_func()`](https://r-xla.github.io/stablehlo/reference/dot-current_func.md).
 
 ``` r
 y <- hlo_input("y", "f32", shape = c(2, 2))
@@ -104,7 +108,7 @@ z <- hlo_add(x, y)
 z
 #> Variable %0 in:
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> }
 ```
 
@@ -118,7 +122,7 @@ w <- hlo_concatenate(z, x, dimension = 1L)
 w
 #> Variable %1 in:
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> %1 = "stablehlo.concatenate" (%0, %x) {
 #> dimension = 1 : i64
 #> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
@@ -130,7 +134,7 @@ also other, “static” inputs. Inputs are static when they can’t be
 changed during execution. Static inputs are either tensors (scalars are
 0-dimensional tensors), or functions. To demonstrate using a function,
 we create another (unnamed) function via
-[`local_func()`](../reference/hlo_func.md).
+[`local_func()`](https://r-xla.github.io/stablehlo/reference/hlo_func.md).
 
 ``` r
 reduce_func <- local_func()
@@ -138,10 +142,11 @@ z1 <- hlo_input("z1", "f32", shape = integer())
 z2 <- hlo_input("z2", "f32", shape = integer())
 ```
 
-Because our [`.current_func()`](../reference/dot-current_func.md) is now
-`reduce_func`, the inputs are added to `reduce_func` and not `func`. If
-we wanted to add them to `main_func`, we would have to explicitly
-specify `func = main_func`.
+Because our
+[`.current_func()`](https://r-xla.github.io/stablehlo/reference/dot-current_func.md)
+is now `reduce_func`, the inputs are added to `reduce_func` and not
+`func`. If we wanted to add them to `main_func`, we would have to
+explicitly specify `func = main_func`.
 
 ``` r
 .current_func()
@@ -161,19 +166,20 @@ out_reduce <- hlo_add(z1, z2)
 out_reduce
 #> Variable %0 in:
 #> func.func @main (%z1: tensor<f32>, %z2: tensor<f32>) ->  {
-#> %0 = "stablehlo.add" (%z1, %z2): (tensor<f32>, tensor<f32>) -> (tensor<f32>)
+#> %0 = stablehlo.add %z1, %z2 : tensor<f32>
 #> }
 ```
 
 Now we are done specifying the body of the reduction function, so we can
-return the result via [`hlo_return()`](../reference/hlo_return.md). You
-should only call this once you are done building the function.
+return the result via
+[`hlo_return()`](https://r-xla.github.io/stablehlo/reference/hlo_return.md).
+You should only call this once you are done building the function.
 
 ``` r
 hlo_return(out_reduce)
 #> func.func @main (%z1: tensor<f32>, %z2: tensor<f32>) -> tensor<f32> {
-#> %0 = "stablehlo.add" (%z1, %z2): (tensor<f32>, tensor<f32>) -> (tensor<f32>)
-#> "func.return"(%0): (tensor<f32>) -> ()
+#> %0 = stablehlo.add %z1, %z2 : tensor<f32>
+#> return %0 : tensor<f32>
 #> }
 ```
 
@@ -183,14 +189,14 @@ The output of `hlo_return` is the same (identical) object as the
 In order to specify the reduce operation in our main body, we now only
 need to define an initial scalar value of the same type as the tensor we
 are reducing. We can do this via
-[`hlo_scalar()`](../reference/hlo_constant.md).
+[`hlo_scalar()`](https://r-xla.github.io/stablehlo/reference/hlo_constant.md).
 
 ``` r
 init <- hlo_scalar(0, dtype = "f32")
 init
 #> Variable %2 in:
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> %1 = "stablehlo.concatenate" (%0, %x) {
 #> dimension = 1 : i64
 #> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
@@ -208,7 +214,7 @@ out_main <- hlo_reduce(inputs = x, init_values = init, dimensions = c(0, 1L), bo
 out_main
 #> Variable %3 in:
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> %1 = "stablehlo.concatenate" (%0, %x) {
 #> dimension = 1 : i64
 #> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
@@ -217,8 +223,8 @@ out_main
 #> }: () -> (tensor<f32>)
 #> %3 = "stablehlo.reduce" (%x, %2)({
 #>   ^bb0(%z1: tensor<f32>, %z2: tensor<f32>):
-#>     %4 = "stablehlo.add" (%z1, %z2): (tensor<f32>, tensor<f32>) -> (tensor<f32>)
-#>     "stablehlo.return"(%4): (tensor<f32>) -> ()
+#>     %4 = stablehlo.add %z1, %z2 : tensor<f32>
+#>     stablehlo.return %4 : tensor<f32>
 #> }) {
 #> dimensions = array<i64: 0, 1>
 #> }: (tensor<2x2xf32>, tensor<f32>) -> (tensor<f32>)
@@ -226,12 +232,12 @@ out_main
 ```
 
 Finally, we return the result of the main function via
-[`hlo_return()`](../reference/hlo_return.md).
+[`hlo_return()`](https://r-xla.github.io/stablehlo/reference/hlo_return.md).
 
 ``` r
 hlo_return(out_main)
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<f32> {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> %1 = "stablehlo.concatenate" (%0, %x) {
 #> dimension = 1 : i64
 #> }: (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x4xf32>)
@@ -240,12 +246,12 @@ hlo_return(out_main)
 #> }: () -> (tensor<f32>)
 #> %3 = "stablehlo.reduce" (%x, %2)({
 #>   ^bb0(%z1: tensor<f32>, %z2: tensor<f32>):
-#>     %4 = "stablehlo.add" (%z1, %z2): (tensor<f32>, tensor<f32>) -> (tensor<f32>)
-#>     "stablehlo.return"(%4): (tensor<f32>) -> ()
+#>     %4 = stablehlo.add %z1, %z2 : tensor<f32>
+#>     stablehlo.return %4 : tensor<f32>
 #> }) {
 #> dimensions = array<i64: 0, 1>
 #> }: (tensor<2x2xf32>, tensor<f32>) -> (tensor<f32>)
-#> "func.return"(%3): (tensor<f32>) -> ()
+#> return %3 : tensor<f32>
 #> }
 ```
 
@@ -258,6 +264,8 @@ library(pjrt)
 src <- repr(main_func)
 program <- pjrt_program(src)
 executable <- pjrt_compile(program)
+#> Downloading PJRT plugin from
+#> <https://github.com/zml/pjrt-artifacts/releases/download/v14.0.1/pjrt-cpu_linux-amd64.tar.gz>
 ```
 
 Next, we create some input values and run the function.

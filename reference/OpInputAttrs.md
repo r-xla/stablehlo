@@ -1,6 +1,7 @@
 # OpInputAttrs
 
-List of [`OpInputAttr`](OpInputAttr.md)s.
+List of
+[`OpInputAttr`](https://r-xla.github.io/stablehlo/reference/OpInputAttr.md)s.
 
 ## Usage
 
@@ -13,7 +14,7 @@ OpInputAttrs(items = list())
 - items:
 
   ([`list()`](https://rdrr.io/r/base/list.html) of
-  [`OpInputAttr`](OpInputAttr.md))  
+  [`OpInputAttr`](https://r-xla.github.io/stablehlo/reference/OpInputAttr.md))  
   The attributes that can be used as inputs to operations.
 
 ## Value

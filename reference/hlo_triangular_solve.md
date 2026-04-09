@@ -21,7 +21,7 @@ hlo_triangular_solve(a, b, left_side, lower, unit_diagonal, transpose_a)
 
 - a, b:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 - left_side:
 
@@ -45,4 +45,4 @@ hlo_triangular_solve(a, b, left_side, lower, unit_diagonal, transpose_a)
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

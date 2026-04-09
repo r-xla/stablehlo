@@ -17,7 +17,7 @@ hlo_input(name, dtype, shape = integer(), func = .current_func(), alias = NULL)
 
 - dtype:
 
-  ([`ValueType`](ValueType.md))  
+  ([`ValueType`](https://r-xla.github.io/stablehlo/reference/ValueType.md))  
   The data type of the parameter. Can contain digits, letters and
   underscores. If it starts with a digit, it can only contain digits.
   Otherwise it must start with a letter.
@@ -30,9 +30,10 @@ hlo_input(name, dtype, shape = integer(), func = .current_func(), alias = NULL)
 
 - func:
 
-  ([`Func`](Func.md))  
+  ([`Func`](https://r-xla.github.io/stablehlo/reference/Func.md))  
   The function id of the parameter. Per default, uses the last function
-  created with [`hlo_func`](hlo_func.md).
+  created with
+  [`hlo_func`](https://r-xla.github.io/stablehlo/reference/hlo_func.md).
 
 - alias:
 

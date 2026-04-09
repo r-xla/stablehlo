@@ -43,7 +43,9 @@ infer_types_custom_call(
 
 - output_types:
 
-  (`list` of [`ValueType`](ValueType.md) \| `NULL`)  
+  (`list` of
+  [`ValueType`](https://r-xla.github.io/stablehlo/reference/ValueType.md)
+  \| `NULL`)  
   The output types of the custom call. Default is NULL (no outputs).
 
 ## Value

@@ -26,7 +26,7 @@ hlo_gather(
 
 - operand, start_indices:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 - gather_dimension_numbers:
 
@@ -45,4 +45,4 @@ hlo_gather(
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

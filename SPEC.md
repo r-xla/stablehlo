@@ -2395,7 +2395,8 @@ For hybrid quantized types, performs
 //          ]]
 ```
 
- [More Examples](../stablehlo/tests/interpret/convolution.mlir)
+ [More
+Examples](https://r-xla.github.io/stablehlo/tests/interpret/convolution.mlir)
 
 ### cosine
 

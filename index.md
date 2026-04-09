@@ -1,5 +1,8 @@
 # stablehlo
 
+Package website: [release](https://r-xla.github.io/stablehlo/) \|
+[dev](https://r-xla.github.io/stablehlo/dev/)
+
 The {stablehlo} R package provides a functional API to create
 [stableHLO](https://openxla.org/stablehlo) programs. These programs can
 be executed using the R package [pjrt](https://github.com/r-xla/pjrt).
@@ -27,9 +30,10 @@ options(repos = c(
 
 Below, we create a function that takes two input arguments `x` and `y`
 of type `f32` and shape `(2, 2)` and adds them. Passing `func` to
-[`hlo_input()`](reference/hlo_input.md) is optional, because it will
-automatically use the last function created with
-[`hlo_func()`](reference/hlo_func.md).
+[`hlo_input()`](https://r-xla.github.io/stablehlo/reference/hlo_input.md)
+is optional, because it will automatically use the last function created
+with
+[`hlo_func()`](https://r-xla.github.io/stablehlo/reference/hlo_func.md).
 
 ``` r
 library(stablehlo)
@@ -54,15 +58,15 @@ z <- hlo_add(x, y)
 z
 #> Variable %0 in:
 #> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> }
 f <- hlo_return(z)
 identical(f, func)
 #> [1] TRUE
 f
 #> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
-#> %0 = "stablehlo.add" (%x, %y): (tensor<2x2xf32>, tensor<2x2xf32>) -> (tensor<2x2xf32>)
-#> "func.return"(%0): (tensor<2x2xf32>) -> ()
+#> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
+#> return %0 : tensor<2x2xf32>
 #> }
 ```
 
@@ -76,9 +80,12 @@ f
 
 ## Important notes
 
-stableHLO uses 0-based indexing. Wherever operations take dimension
-indices (e.g., axes, start indices, permutation dimensions), use 0-based
-values. This differs from R’s 1-based indexing.
+- stableHLO uses 0-based indexing. Wherever operations take dimension
+  indices (e.g., axes, start indices, permutation dimensions), use
+  0-based values. This differs from R’s 1-based indexing.
+- We try to use `"bool"` for the `BooleanType`. However, in the
+  generated stableHLO representation this will show up as `"i1"`. Think
+  of these as interchangeable.
 
 ## Limitations
 

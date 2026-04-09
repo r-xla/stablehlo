@@ -1,7 +1,9 @@
 # Get the last function created
 
-Get the last function created (either via [`hlo_func`](hlo_func.md) or
-[`local_func`](hlo_func.md)), which is not returned yet.
+Get the last function created (either via
+[`hlo_func`](https://r-xla.github.io/stablehlo/reference/hlo_func.md) or
+[`local_func`](https://r-xla.github.io/stablehlo/reference/hlo_func.md)),
+which is not returned yet.
 
 ## Usage
 
@@ -11,4 +13,4 @@ Get the last function created (either via [`hlo_func`](hlo_func.md) or
 
 ## Value
 
-A [`Func`](Func.md) object.
+A [`Func`](https://r-xla.github.io/stablehlo/reference/Func.md) object.

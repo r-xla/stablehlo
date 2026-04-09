@@ -14,8 +14,8 @@ hlo_slice(operand, start_indices, limit_indices, strides)
 
 - operand, start_indices, limit_indices, strides:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

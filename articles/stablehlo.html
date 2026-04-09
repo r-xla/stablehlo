@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">stablehlo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,7 @@ StableHLO function. Such a <code>Func</code> object has an ID
 are calling our function <code>"main"</code> and create an empty
 function via <code><a href="../reference/hlo_func.html">local_func()</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-xla.github.io/stablehlo/" class="external-link">stablehlo</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-xla.github.io/stablehlo/">stablehlo</a></span><span class="op">)</span></span>
 <span><span class="va">main_func</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hlo_func.html">local_func</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">main_func</span></span>
 <span><span class="co">#&gt; func.func @main () -&gt;  {</span></span>
@@ -159,7 +159,7 @@ updates the <code>main_func</code> from above.</p>
 <span><span class="va">z</span></span>
 <span><span class="co">#&gt; Variable <span style="color: #0000BB;">%0</span> in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">%0</span> = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">%0</span> = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>The identifier of <code>z</code> (its <code>ValueId</code>) is
 automatically generated and you don’t have to specify it explicitly.
@@ -171,7 +171,7 @@ stableHLO).</p>
 <span><span class="va">w</span></span>
 <span><span class="co">#&gt; Variable <span style="color: #0000BB;">%1</span> in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">%1</span> = "stablehlo.concatenate" (%0, %x) {</span></span>
 <span><span class="co">#&gt; dimension = 1 : i64</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
@@ -206,7 +206,7 @@ them to <code>main_func</code>, we would have to explicitly specify
 <span><span class="va">out_reduce</span></span>
 <span><span class="co">#&gt; Variable <span style="color: #0000BB;">%0</span> in:</span></span>
 <span><span class="co">#&gt; func.func @main (%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">%0</span> = "stablehlo.add" (%z1, %z2): (tensor&lt;f32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">%0</span> = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>Now we are done specifying the body of the reduction function, so we
 can return the result via <code><a href="../reference/hlo_return.html">hlo_return()</a></code>. You should only
@@ -214,8 +214,8 @@ call this once you are done building the function.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/hlo_return.html">hlo_return</a></span><span class="op">(</span><span class="va">out_reduce</span><span class="op">)</span></span>
 <span><span class="co">#&gt; func.func @main (%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;) -&gt; tensor&lt;f32&gt; {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%z1, %z2): (tensor&lt;f32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
-<span><span class="co">#&gt; "func.return"(%0): (tensor&lt;f32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
+<span><span class="co">#&gt; return %0 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>The output of <code>hlo_return</code> is the same (identical) object
 as the <code>reduce_func</code> (<code>Func</code>s are reference
@@ -229,7 +229,7 @@ tensor we are reducing. We can do this via
 <span><span class="va">init</span></span>
 <span><span class="co">#&gt; Variable <span style="color: #0000BB;">%2</span> in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; %1 = "stablehlo.concatenate" (%0, %x) {</span></span>
 <span><span class="co">#&gt; dimension = 1 : i64</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
@@ -244,7 +244,7 @@ the dimensions to reduce along.</p>
 <span><span class="va">out_main</span></span>
 <span><span class="co">#&gt; Variable <span style="color: #0000BB;">%3</span> in:</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; %1 = "stablehlo.concatenate" (%0, %x) {</span></span>
 <span><span class="co">#&gt; dimension = 1 : i64</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
@@ -253,8 +253,8 @@ the dimensions to reduce along.</p>
 <span><span class="co">#&gt; }: () -&gt; (tensor&lt;f32&gt;)</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">%3</span> = "stablehlo.reduce" (%x, %2)({</span></span>
 <span><span class="co">#&gt;   ^bb0(%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;):</span></span>
-<span><span class="co">#&gt;     %4 = "stablehlo.add" (%z1, %z2): (tensor&lt;f32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
-<span><span class="co">#&gt;     "stablehlo.return"(%4): (tensor&lt;f32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt;     %4 = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
+<span><span class="co">#&gt;     stablehlo.return %4 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }) {</span></span>
 <span><span class="co">#&gt; dimensions = array&lt;i64: 0, 1&gt;</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
@@ -264,7 +264,7 @@ the dimensions to reduce along.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/hlo_return.html">hlo_return</a></span><span class="op">(</span><span class="va">out_main</span><span class="op">)</span></span>
 <span><span class="co">#&gt; func.func @main (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt; tensor&lt;f32&gt; {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; %1 = "stablehlo.concatenate" (%0, %x) {</span></span>
 <span><span class="co">#&gt; dimension = 1 : i64</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x4xf32&gt;)</span></span>
@@ -273,12 +273,12 @@ the dimensions to reduce along.</p>
 <span><span class="co">#&gt; }: () -&gt; (tensor&lt;f32&gt;)</span></span>
 <span><span class="co">#&gt; %3 = "stablehlo.reduce" (%x, %2)({</span></span>
 <span><span class="co">#&gt;   ^bb0(%z1: tensor&lt;f32&gt;, %z2: tensor&lt;f32&gt;):</span></span>
-<span><span class="co">#&gt;     %4 = "stablehlo.add" (%z1, %z2): (tensor&lt;f32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
-<span><span class="co">#&gt;     "stablehlo.return"(%4): (tensor&lt;f32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt;     %4 = stablehlo.add %z1, %z2 : tensor&lt;f32&gt;</span></span>
+<span><span class="co">#&gt;     stablehlo.return %4 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }) {</span></span>
 <span><span class="co">#&gt; dimensions = array&lt;i64: 0, 1&gt;</span></span>
 <span><span class="co">#&gt; }: (tensor&lt;2x2xf32&gt;, tensor&lt;f32&gt;) -&gt; (tensor&lt;f32&gt;)</span></span>
-<span><span class="co">#&gt; "func.return"(%3): (tensor&lt;f32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt; return %3 : tensor&lt;f32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 <p>If we want to run this function, we need the {pjrt} package. You can
 learn about the package in the <a href="https://r-xla.github.io/pjrt/articles/pjrt.html" class="external-link">pjrt
@@ -287,7 +287,9 @@ documentation</a>.</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-xla.github.io/pjrt/" class="external-link">pjrt</a></span><span class="op">)</span></span>
 <span><span class="va">src</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/repr.html">repr</a></span><span class="op">(</span><span class="va">main_func</span><span class="op">)</span></span>
 <span><span class="va">program</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-xla.github.io/pjrt/reference/pjrt_program.html" class="external-link">pjrt_program</a></span><span class="op">(</span><span class="va">src</span><span class="op">)</span></span>
-<span><span class="va">executable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-xla.github.io/pjrt/reference/pjrt_compile.html" class="external-link">pjrt_compile</a></span><span class="op">(</span><span class="va">program</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">executable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-xla.github.io/pjrt/reference/pjrt_compile.html" class="external-link">pjrt_compile</a></span><span class="op">(</span><span class="va">program</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Downloading PJRT plugin from</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/zml/pjrt-artifacts/releases/download/v14.0.1/pjrt-cpu_linux-amd64.tar.gz&gt;</span></span></span></code></pre></div>
 <p>Next, we create some input values and run the function.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x_buf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-xla.github.io/pjrt/reference/pjrt_buffer.html" class="external-link">pjrt_buffer</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, shape <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, dtype <span class="op">=</span> <span class="st">"f32"</span><span class="op">)</span></span>

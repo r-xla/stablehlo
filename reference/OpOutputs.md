@@ -1,6 +1,7 @@
 # OpOutputs
 
-List of [`OpOutput`](OpOutput.md)s.
+List of
+[`OpOutput`](https://r-xla.github.io/stablehlo/reference/OpOutput.md)s.
 
 ## Usage
 
@@ -13,7 +14,7 @@ OpOutputs(items = list())
 - items:
 
   ([`list()`](https://rdrr.io/r/base/list.html) of
-  [`OpOutput`](OpOutput.md))  
+  [`OpOutput`](https://r-xla.github.io/stablehlo/reference/OpOutput.md))  
   The outputs of an operation.
 
 ## Value

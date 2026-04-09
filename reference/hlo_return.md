@@ -1,6 +1,8 @@
 # Return Values
 
-Specifies the return values of a [`Func`](Func.md) and finalize it.
+Specifies the return values of a
+[`Func`](https://r-xla.github.io/stablehlo/reference/Func.md) and
+finalize it.
 
 ## Usage
 
@@ -14,15 +16,15 @@ hlo_return(..., func = .current_func())
 
 - ...:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
   Return values. There must be at least one.
 
 - func:
 
-  ([`Func`](Func.md))  
+  ([`Func`](https://r-xla.github.io/stablehlo/reference/Func.md))  
   The function. Default is to use
-  [`.current_func()`](dot-current_func.md).
+  [`.current_func()`](https://r-xla.github.io/stablehlo/reference/dot-current_func.md).
 
 ## Value
 
-([`Func`](Func.md))
+([`Func`](https://r-xla.github.io/stablehlo/reference/Func.md))

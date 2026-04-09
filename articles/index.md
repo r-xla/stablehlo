@@ -2,4 +2,5 @@
 
 ### All vignettes
 
-- [Get Started](stablehlo.md):
+- [Get
+  Started](https://r-xla.github.io/stablehlo/articles/stablehlo.md):

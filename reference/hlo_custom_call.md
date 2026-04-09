@@ -23,7 +23,7 @@ hlo_custom_call(
 
 - ...:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
   Input values to pass to the custom call.
 
 - call_target_name:
@@ -43,16 +43,19 @@ hlo_custom_call(
 
 - backend_config:
 
-  ([`CustomOpBackendConfig`](CustomOpBackendConfig.md) \| `NULL`)  
+  ([`CustomOpBackendConfig`](https://r-xla.github.io/stablehlo/reference/CustomOpBackendConfig.md)
+  \| `NULL`)  
   Optional backend configuration.
 
 - output_types:
 
-  (`list` of [`ValueType`](ValueType.md) \| `NULL`)  
+  (`list` of
+  [`ValueType`](https://r-xla.github.io/stablehlo/reference/ValueType.md)
+  \| `NULL`)  
   The output types of the custom call. Default is NULL (no outputs).
 
 ## Value
 
-([`FuncValue`](FuncValue.md) \|
-[`list()`](https://rdrr.io/r/base/list.html) \| `NULL`)  
+([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)
+\| [`list()`](https://rdrr.io/r/base/list.html) \| `NULL`)  
 The output value(s), or NULL for side-effect only calls.

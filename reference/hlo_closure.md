@@ -13,13 +13,13 @@ hlo_closure(...)
 
 - ...:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
   The variables to capture.
 
 ## Value
 
 ([`list()`](https://rdrr.io/r/base/list.html) of
-[`FuncValue`](FuncValue.md))
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))
 
 ## Examples
 

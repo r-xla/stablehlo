@@ -12,7 +12,7 @@ OpOutput(id = ValueId())
 
 - id:
 
-  ([`ValueId`](ValueId.md))  
+  ([`ValueId`](https://r-xla.github.io/stablehlo/reference/ValueId.md))  
   The id of the output.
 
 ## Value

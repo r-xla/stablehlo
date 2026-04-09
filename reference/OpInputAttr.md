@@ -22,7 +22,7 @@ OpInputAttr(name, value, dtype)
 
 - dtype:
 
-  ([`TensorDataType`](TensorDataType.md))  
+  ([`tengen::DataType`](https://r-xla.github.io/tengen/reference/DataType.html))  
   The dtype of the attribute.
 
 ## Value

@@ -1,6 +1,7 @@
 # OpInputValues
 
-List of [`OpInputValue`](OpInputValue.md)s.
+List of
+[`OpInputValue`](https://r-xla.github.io/stablehlo/reference/OpInputValue.md)s.
 
 ## Usage
 
@@ -13,7 +14,7 @@ OpInputValues(items = list())
 - items:
 
   ([`list()`](https://rdrr.io/r/base/list.html) of
-  [`OpInputValue`](OpInputValue.md))  
+  [`OpInputValue`](https://r-xla.github.io/stablehlo/reference/OpInputValue.md))  
   The values that can be used as inputs to operations.
 
 ## Value

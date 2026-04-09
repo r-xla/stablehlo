@@ -14,7 +14,7 @@ hlo_if(pred, true_branch, false_branch, simplify = TRUE)
 
 - pred, true_branch, false_branch:
 
-  ([`FuncValue`](FuncValue.md))  
+  ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
 
 - simplify:
 
@@ -24,4 +24,4 @@ hlo_if(pred, true_branch, false_branch, simplify = TRUE)
 
 ## Value
 
-[`FuncValue`](FuncValue.md)  
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)  

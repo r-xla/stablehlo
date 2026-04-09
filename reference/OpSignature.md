@@ -13,12 +13,12 @@ OpSignature(input_types, output_types)
 
 - input_types:
 
-  ([`ValueTypes`](ValueTypes.md))  
+  ([`ValueTypes`](https://r-xla.github.io/stablehlo/reference/ValueTypes.md))  
   The types of the inputs.
 
 - output_types:
 
-  ([`ValueTypes`](ValueTypes.md))  
+  ([`ValueTypes`](https://r-xla.github.io/stablehlo/reference/ValueTypes.md))  
   The types of the outputs.
 
 ## Value

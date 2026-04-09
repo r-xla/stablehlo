@@ -32,14 +32,16 @@ infer_types_constant(value)
 - dtype:
 
   (`character(1)`)  
-  One of: pred, i8, i16, i32, i64, ui8, ui16, ui32, ui64, f32, f64.
+  One of: bool, i8, i16, i32, i64, ui8, ui16, ui32, ui64, f32, f64.
 
 - func:
 
-  ([`Func`](Func.md))  
+  ([`Func`](https://r-xla.github.io/stablehlo/reference/Func.md))  
   The function to add the constant to. Per default, uses the last
-  function created with [`hlo_func`](hlo_func.md) or
-  [`local_func`](hlo_func.md).
+  function created with
+  [`hlo_func`](https://r-xla.github.io/stablehlo/reference/hlo_func.md)
+  or
+  [`local_func`](https://r-xla.github.io/stablehlo/reference/hlo_func.md).
 
 - shape:
 

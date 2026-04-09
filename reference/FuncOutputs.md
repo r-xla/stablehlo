@@ -1,6 +1,7 @@
 # FuncOutputs
 
-List of [`FuncOutput`](FuncOutput.md)s.
+List of
+[`FuncOutput`](https://r-xla.github.io/stablehlo/reference/FuncOutput.md)s.
 
 ## Usage
 
@@ -13,7 +14,7 @@ FuncOutputs(items = list())
 - items:
 
   ([`list()`](https://rdrr.io/r/base/list.html) of
-  [`FuncOutput`](FuncOutput.md))  
+  [`FuncOutput`](https://r-xla.github.io/stablehlo/reference/FuncOutput.md))  
   The outputs of the function.
 
 ## Value

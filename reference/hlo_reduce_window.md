@@ -67,11 +67,11 @@ hlo_reduce_window(
 - inputs:
 
   ([`list()`](https://rdrr.io/r/base/list.html) of
-  [`FuncValue`](FuncValue.md))  
+  [`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
   The input tensor(s) to apply the reduction to.
 
 - init_values:
 
   ([`list()`](https://rdrr.io/r/base/list.html) of
-  [`FuncValue`](FuncValue.md))  
+  [`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
   The initial value(s) for the reduction. Must be 0-D tensors.

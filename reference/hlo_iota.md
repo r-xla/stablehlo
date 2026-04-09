@@ -21,7 +21,7 @@ hlo_iota(iota_dimension, dtype, shape, func = NULL)
 - dtype:
 
   (`character(1)`)  
-  The data type of the output tensor. One of: pred, i8, i16, i32, i64,
+  The data type of the output tensor. One of: bool, i8, i16, i32, i64,
   ui8, ui16, ui32, ui64, f32, f64 (excluding boolean).
 
 - shape:
@@ -31,11 +31,13 @@ hlo_iota(iota_dimension, dtype, shape, func = NULL)
 
 - func:
 
-  ([`Func`](Func.md))  
+  ([`Func`](https://r-xla.github.io/stablehlo/reference/Func.md))  
   The function to add the operation to. Per default, uses the last
-  function created with [`hlo_func`](hlo_func.md) or
-  [`local_func`](hlo_func.md).
+  function created with
+  [`hlo_func`](https://r-xla.github.io/stablehlo/reference/hlo_func.md)
+  or
+  [`local_func`](https://r-xla.github.io/stablehlo/reference/hlo_func.md).
 
 ## Value
 
-[`FuncValue`](FuncValue.md)
+[`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md)

@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">stablehlo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,6 +64,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="stablehlo">stablehlo<a class="anchor" aria-label="anchor" href="#stablehlo"></a>
 </h1></div>
+<p>Package website: <a href="https://r-xla.github.io/stablehlo/">release</a> | <a href="https://r-xla.github.io/stablehlo/dev/">dev</a></p>
 <!-- badges: start -->
 
 <p>The {stablehlo} R package provides a functional API to create <a href="https://openxla.org/stablehlo" class="external-link">stableHLO</a> programs. These programs can be executed using the R package <a href="https://github.com/r-xla/pjrt" class="external-link">pjrt</a>.</p>
@@ -85,7 +86,7 @@
 </h2>
 <p>Below, we create a function that takes two input arguments <code>x</code> and <code>y</code> of type <code>f32</code> and shape <code>(2, 2)</code> and adds them. Passing <code>func</code> to <code><a href="reference/hlo_input.html">hlo_input()</a></code> is optional, because it will automatically use the last function created with <code><a href="reference/hlo_func.html">hlo_func()</a></code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-xla.github.io/stablehlo/" class="external-link">stablehlo</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-xla.github.io/stablehlo/">stablehlo</a></span><span class="op">)</span></span>
 <span><span class="va">func</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_func.html">hlo_func</a></span><span class="op">(</span><span class="st">"myfn"</span><span class="op">)</span></span>
 <span><span class="va">func</span></span>
 <span><span class="co">#&gt; func.func @myfn () -&gt;  {</span></span>
@@ -107,15 +108,15 @@
 <span><span class="va">z</span></span>
 <span><span class="co">#&gt; Variable %0 in:</span></span>
 <span><span class="co">#&gt; func.func @myfn (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt;  {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/hlo_return.html">hlo_return</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">f</span>, <span class="va">func</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span><span class="va">f</span></span>
 <span><span class="co">#&gt; func.func @myfn (%x: tensor&lt;2x2xf32&gt;, %y: tensor&lt;2x2xf32&gt;) -&gt; tensor&lt;2x2xf32&gt; {</span></span>
-<span><span class="co">#&gt; %0 = "stablehlo.add" (%x, %y): (tensor&lt;2x2xf32&gt;, tensor&lt;2x2xf32&gt;) -&gt; (tensor&lt;2x2xf32&gt;)</span></span>
-<span><span class="co">#&gt; "func.return"(%0): (tensor&lt;2x2xf32&gt;) -&gt; ()</span></span>
+<span><span class="co">#&gt; %0 = stablehlo.add %x, %y : tensor&lt;2x2xf32&gt;</span></span>
+<span><span class="co">#&gt; return %0 : tensor&lt;2x2xf32&gt;</span></span>
 <span><span class="co">#&gt; }</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -131,7 +132,10 @@
 <div class="section level2">
 <h2 id="important-notes">Important notes<a class="anchor" aria-label="anchor" href="#important-notes"></a>
 </h2>
-<p>stableHLO uses 0-based indexing. Wherever operations take dimension indices (e.g., axes, start indices, permutation dimensions), use 0-based values. This differs from R’s 1-based indexing.</p>
+<ul>
+<li>stableHLO uses 0-based indexing. Wherever operations take dimension indices (e.g., axes, start indices, permutation dimensions), use 0-based values. This differs from R’s 1-based indexing.</li>
+<li>We try to use <code>"bool"</code> for the <code>BooleanType</code>. However, in the generated stableHLO representation this will show up as <code>"i1"</code>. Think of these as interchangeable.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="limitations">Limitations<a class="anchor" aria-label="anchor" href="#limitations"></a>
@@ -185,15 +189,7 @@
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://CRAN.R-project.org/package=stablehlo" class="external-link"><img src="https://www.r-pkg.org/badges/version/stablehlo" alt="CRAN status"></a></li>
-<li><a href="https://codecov.io/gh/r-xla/stablehlo" class="external-link"><img src="https://codecov.io/gh/r-xla/stablehlo/branch/main/graph/badge.svg" alt="codecov"></a></li>
-<li><a href="https://r-xla.r-universe.dev/stablehlo" class="external-link"><img src="https://r-xla.r-universe.dev/badges/stablehlo" alt="r-universe"></a></li>
-</ul>
-</div>
+
 
   </aside>
 </div>
