@@ -11,8 +11,6 @@
 
 ## Miscellaneous
 
-* Simplify the generated stablehlo lines for ops without
-  attributes where all input and output value types are identical.
 * Use a simpler StableHLO string format for improved readability
 
 # stablehlo 0.1.0
