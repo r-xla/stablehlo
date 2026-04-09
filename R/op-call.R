@@ -1,11 +1,7 @@
 #' @include op.R hlo.R
 NULL
 
-OpCall <- function(inputs, outputs, signature, callee) {
-  checkmate::assert_class(callee, "FuncId")
-
-  inputs$custom_attrs <- list(callee = callee)
-
+OpCall <- function(inputs, outputs, signature) {
   base_op <- Op(
     name = OpName("call"),
     inputs = inputs,
@@ -89,14 +85,14 @@ hlo_call <- function(callee, ..., simplify = TRUE) {
   )
 
   inputs <- OpInputs(
-    values = OpInputValues(input_value_ids)
+    values = OpInputValues(input_value_ids),
+    custom_attrs = list(callee = callee$id)
   )
 
   op <- OpCall(
     inputs = inputs,
     outputs = outputs,
-    signature = signature,
-    callee = callee$id
+    signature = signature
   )
 
   func$body <- FuncBody(c(func$body, list(op)))
