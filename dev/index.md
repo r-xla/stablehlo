@@ -29,7 +29,7 @@ options(repos = c(
 ## Quickstart
 
 Below, we create a function that takes two input arguments `x` and `y`
-of type `f32` and shape `(2, 2)` and adds them. Passing `func` to
+of type `f32` and shape `2x2` and adds them. Passing `func` to
 [`hlo_input()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_input.md)
 is optional, because it will automatically use the last function created
 with
@@ -37,34 +37,34 @@ with
 
 ``` r
 library(stablehlo)
-func <- hlo_func("myfn")
+func <- hlo_func("main")
 func
-#> func.func @myfn () ->  {
+#> func.func @main () ->  {
 #> 
 #> }
 x <- hlo_input("x", "f32", shape = c(2, 2), func = func)
 x
 #> Variable %x in:
-#> func.func @myfn (%x: tensor<2x2xf32>) ->  {
+#> func.func @main (%x: tensor<2x2xf32>) ->  {
 #> 
 #> }
 y <- hlo_input("y", "f32", shape = c(2, 2), func = func)
 y
 #> Variable %y in:
-#> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
+#> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #> 
 #> }
 z <- hlo_add(x, y)
 z
 #> Variable %0 in:
-#> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
+#> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> }
 f <- hlo_return(z)
 identical(f, func)
 #> [1] TRUE
 f
-#> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
+#> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
 #> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> return %0 : tensor<2x2xf32>
 #> }
