@@ -50,12 +50,12 @@ options(repos = c(
 
 ## Quickstart
 
-Below, we create a function that takes two input arguments `x` and `y` of type `f32` and shape `(2, 2)` and adds them.
+Below, we create a function that takes two input arguments `x` and `y` of type `f32` and shape `2x2` and adds them.
 Passing `func` to `hlo_input()` is optional, because it will automatically use the last function created with `hlo_func()`.
 
 ```{r}
 library(stablehlo)
-func <- hlo_func("myfn")
+func <- hlo_func("main")
 func
 x <- hlo_input("x", "f32", shape = c(2, 2), func = func)
 x
