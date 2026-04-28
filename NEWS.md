@@ -13,12 +13,7 @@
 
 ## Bug fixes
 
-* `hlo_reduce_window()` now works on rank-1 inputs. The wrapper was passing
-  `shape = c()` for the four window-attribute constants, which caused
-  length-1 vectors to be encoded as 0-D scalars and violated the StableHLO
-  spec (which requires 1-D `si64` tensors per (I3)–(I6)). The shape is now
-  set explicitly from the value length.
-
+`hlo_reduce_window()` now works on rank-1 inputs.
 # stablehlo 0.2.0
 
 ## Features
