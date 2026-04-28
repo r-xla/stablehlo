@@ -61,6 +61,42 @@ test_that("basic reduce_window (sum pooling)", {
   expect_equal(out, expected, tolerance = 1e-5)
 })
 
+test_that("rank-1 reduce_window (sum pooling)", {
+  func <- local_func()
+
+  x <- hlo_input("x", "f32", shape = 6L)
+  init <- hlo_scalar(0, dtype = "f32")
+
+  red <- local_func("reducer")
+  a <- hlo_input("a", "f32")
+  b <- hlo_input("b", "f32")
+  red <- hlo_return(hlo_add(a, b))
+
+  r <- hlo_reduce_window(
+    inputs = x,
+    init_values = init,
+    window_dimensions = 2L,
+    window_strides = 2L,
+    base_dilations = 1L,
+    window_dilations = 1L,
+    padding = matrix(0L, nrow = 1L, ncol = 2L),
+    body = red
+  )
+  func <- hlo_return(r)
+
+  skip_if_not_installed("pjrt")
+
+  program <- pjrt_program(repr(func))
+  executable <- pjrt_compile(program)
+
+  data <- as.numeric(1:6)
+  x_buf <- pjrt_buffer(data, dtype = "f32")
+  out_buf <- pjrt_execute(executable, x_buf)
+  out <- as_array(out_buf)
+
+  expect_equal(out, array(c(3, 7, 11), dim = 3L), tolerance = 1e-5)
+})
+
 test_that("errors", {
   body <- local_func("body")
   x <- hlo_input("x", "f32")
