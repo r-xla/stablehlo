@@ -26,7 +26,10 @@
   gain a `dialect` argument (default `"stablehlo"`) to support ops from
   other MLIR dialects.
 
-## stablehlo 0.2.0
+### Bug fixes
+
+[`hlo_reduce_window()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce_window.md)
+now works on rank-1 inputs. \# stablehlo 0.2.0
 
 ### Features
 
