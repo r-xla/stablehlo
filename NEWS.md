@@ -10,8 +10,15 @@
   * Gamma family: `hlo_lgamma()`, `hlo_digamma()`, `hlo_polygamma()`.
   * Error / Bessel / misc: `hlo_erf()`, `hlo_erfc()`, `hlo_erf_inv()`,
     `hlo_bessel_i1e()`, `hlo_square()`.
+  * Float predicates: `hlo_is_inf()`, `hlo_is_pos_inf()`, `hlo_is_neg_inf()`.
 * `OpName()` and `new_Op()` gain a `dialect` argument (default `"stablehlo"`)
   to support ops from other MLIR dialects.
+
+## Bug fixes
+
+* `hlo_reduce_window()` now works on rank-1 inputs. Length-1 attribute
+  vectors were being mis-serialized as rank-0 scalars; the wrapper now
+  transparently lifts rank-1 inputs to rank-2 around the call.
 
 # stablehlo 0.2.0
 

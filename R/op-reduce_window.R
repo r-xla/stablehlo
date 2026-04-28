@@ -241,6 +241,23 @@ hlo_reduce_window <- function(
   inputs <- ensure_func_vals(inputs)
   init_values <- ensure_func_vals(init_values)
 
+  # Length-1 attribute vectors are mis-serialized as rank-0 scalars rather
+  # than 1-D length-1 tensors, which makes rank-1 reduce_window invalid.
+  # Workaround: lift rank-1 inputs to rank-2 with a trailing size-1 dim,
+  # extend the attribute vectors and padding matrix accordingly, and
+  # reshape the output back to rank-1.
+  rank1 <- length(shape(inputs[[1L]])) == 1L
+  if (rank1) {
+    inputs <- lapply(inputs, function(v) {
+      hlo_reshape(v, shape = c(shape(v), 1L))
+    })
+    window_dimensions <- c(as.integer(window_dimensions), 1L)
+    window_strides <- c(as.integer(window_strides), 1L)
+    base_dilations <- c(as.integer(base_dilations), 1L)
+    window_dilations <- c(as.integer(window_dilations), 1L)
+    padding <- rbind(padding, c(0L, 0L))
+  }
+
   attrs <- list(
     constant_attr(
       "window_dimensions",
@@ -275,9 +292,20 @@ hlo_reduce_window <- function(
     )
   )
 
-  hlo_reduce_window_impl(
+  out <- hlo_reduce_window_impl(
     values = c(inputs, init_values),
     funcs = list(body = body),
     attrs = attrs
   )
+
+  if (rank1) {
+    drop_last <- function(v) hlo_reshape(v, shape = head(shape(v), -1L))
+    if (inherits(out, "FuncValue")) {
+      out <- drop_last(out)
+    } else {
+      out <- lapply(out, drop_last)
+    }
+  }
+
+  out
 }
