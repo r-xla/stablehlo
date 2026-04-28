@@ -20,6 +20,16 @@
     [`hlo_lgamma()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_lgamma.md),
     [`hlo_digamma()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_digamma.md),
     [`hlo_polygamma()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_polygamma.md).
+  - Error / Bessel / misc:
+    [`hlo_erf()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_erf.md),
+    [`hlo_erfc()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_erfc.md),
+    [`hlo_erf_inv()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_erf_inv.md),
+    [`hlo_bessel_i1e()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_bessel_i1e.md),
+    [`hlo_square()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_square.md).
+  - Float predicates:
+    [`hlo_is_inf()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_is_inf.md),
+    [`hlo_is_pos_inf()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_is_pos_inf.md),
+    [`hlo_is_neg_inf()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_is_neg_inf.md).
 - [`OpName()`](https://r-xla.github.io/stablehlo/dev/reference/OpName.md)
   and
   [`new_Op()`](https://r-xla.github.io/stablehlo/dev/reference/new_Op.md)

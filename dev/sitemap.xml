@@ -69,6 +69,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_atan.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_atan2.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_atanh.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_bessel_i1e.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_bitcast_convert.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_broadcast_in_dim.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_call.html</loc></url>
@@ -91,6 +92,9 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_dot_general.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_dynamic_slice.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_dynamic_update_slice.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_erf.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_erf_inv.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_erfc.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_exponential.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_exponential_minus_one.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_floor.html</loc></url>
@@ -100,6 +104,9 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_input.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_iota.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_is_finite.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_is_inf.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_is_neg_inf.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_is_pos_inf.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_lgamma.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_log.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_log_plus_one.html</loc></url>
@@ -136,6 +143,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_slice.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_sort.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_sqrt.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_square.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_subtract.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_tan.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_tanh.html</loc></url>
