@@ -68,7 +68,8 @@
 <p>Package website: <a href="https://r-xla.github.io/stablehlo/">release</a> | <a href="https://r-xla.github.io/stablehlo/dev/">dev</a></p>
 <!-- badges: start -->
 
-<p>The {stablehlo} R package provides a functional API to create <a href="https://openxla.org/stablehlo" class="external-link">stableHLO</a> programs. These programs can be executed using the R package <a href="https://github.com/r-xla/pjrt" class="external-link">pjrt</a>.</p>
+<p>The {stablehlo} R package provides a functional API to create <a href="https://openxla.org/stablehlo" class="external-link">stableHLO</a> programs. It also supports selected ops from the <a href="https://openxla.org/stablehlo/generated/chlo" class="external-link">CHLO</a> dialect, a higher-level companion to stableHLO that is lowered to stableHLO during compilation. These programs can be executed using the R package <a href="https://github.com/r-xla/pjrt" class="external-link">pjrt</a>.</p>
+<p>{stablehlo} is the IR layer of the <a href="https://github.com/r-xla" class="external-link">r-xla</a> ecosystem. The main user-facing package is <a href="https://github.com/r-xla/anvl" class="external-link">{anvl}</a>, a code transformation framework for R that builds on {stablehlo} and {pjrt} to provide JIT compilation and automatic differentiation. Most users should reach for {anvl} directly; {stablehlo} is intended for those who want to construct or manipulate stableHLO programs at the IR level.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -128,6 +129,7 @@
 <li>Simple, functional API.</li>
 <li>Clear error messages.</li>
 <li>Easy installation because the implementation is in R and does not depend on the stableHLO C++ builder, which depends on LLVM and MLIR.</li>
+<li>Supports a subset of <a href="https://openxla.org/stablehlo/generated/chlo" class="external-link">CHLO</a> ops (e.g. inverse trig, hyperbolic, gamma family) that are not StableHLO primitives and would otherwise have to be hand-composed.</li>
 </ul>
 </div>
 <div class="section level2">

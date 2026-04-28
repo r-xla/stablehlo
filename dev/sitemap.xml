@@ -59,10 +59,16 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/error_unexpected_list_type.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/format_double.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_abs.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_acos.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_acosh.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_add.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_after_all.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_and.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_asin.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_asinh.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_atan.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_atan2.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_atanh.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_bitcast_convert.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_broadcast_in_dim.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_call.html</loc></url>
@@ -76,9 +82,11 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_concatenate.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_constant.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_convert.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_cosh.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_cosine.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_count_leading_zeros.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_custom_call.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_digamma.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_divide.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_dot_general.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_dynamic_slice.html</loc></url>
@@ -92,6 +100,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_input.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_iota.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_is_finite.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_lgamma.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_log.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_log_plus_one.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_logistic.html</loc></url>
@@ -103,6 +112,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_not.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_or.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_pad.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_polygamma.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_popcnt.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_power.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce.html</loc></url>
@@ -122,6 +132,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_shift_right_logical.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_sign.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_sine.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_sinh.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_slice.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_sort.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_sqrt.html</loc></url>

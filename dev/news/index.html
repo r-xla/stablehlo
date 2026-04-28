@@ -47,6 +47,16 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="stablehlo-development-version">stablehlo (development version)<a class="anchor" aria-label="anchor" href="#stablehlo-development-version"></a></h2>
+<div class="section level3">
+<h3 id="features-development-version">Features<a class="anchor" aria-label="anchor" href="#features-development-version"></a></h3>
+<ul><li>Added support for CHLO ops, a higher-level companion dialect to stableHLO that is lowered to stableHLO during compilation. New ops:
+<ul><li>Inverse trig: <code><a href="../reference/hlo_acos.html">hlo_acos()</a></code>, <code><a href="../reference/hlo_asin.html">hlo_asin()</a></code>, <code><a href="../reference/hlo_atan.html">hlo_atan()</a></code>.</li>
+<li>Hyperbolic: <code><a href="../reference/hlo_cosh.html">hlo_cosh()</a></code>, <code><a href="../reference/hlo_sinh.html">hlo_sinh()</a></code>, <code><a href="../reference/hlo_acosh.html">hlo_acosh()</a></code>, <code><a href="../reference/hlo_asinh.html">hlo_asinh()</a></code>, <code><a href="../reference/hlo_atanh.html">hlo_atanh()</a></code>.</li>
+<li>Gamma family: <code><a href="../reference/hlo_lgamma.html">hlo_lgamma()</a></code>, <code><a href="../reference/hlo_digamma.html">hlo_digamma()</a></code>, <code><a href="../reference/hlo_polygamma.html">hlo_polygamma()</a></code>.</li>
+</ul></li>
+<li>
+<code><a href="../reference/OpName.html">OpName()</a></code> and <code><a href="../reference/new_Op.html">new_Op()</a></code> gain a <code>dialect</code> argument (default <code>"stablehlo"</code>) to support ops from other MLIR dialects.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="stablehlo-020">stablehlo 0.2.0<a class="anchor" aria-label="anchor" href="#stablehlo-020"></a></h2>

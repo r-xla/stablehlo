@@ -2,6 +2,30 @@
 
 ## stablehlo (development version)
 
+### Features
+
+- Added support for CHLO ops, a higher-level companion dialect to
+  stableHLO that is lowered to stableHLO during compilation. New ops:
+  - Inverse trig:
+    [`hlo_acos()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_acos.md),
+    [`hlo_asin()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_asin.md),
+    [`hlo_atan()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_atan.md).
+  - Hyperbolic:
+    [`hlo_cosh()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_cosh.md),
+    [`hlo_sinh()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_sinh.md),
+    [`hlo_acosh()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_acosh.md),
+    [`hlo_asinh()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_asinh.md),
+    [`hlo_atanh()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_atanh.md).
+  - Gamma family:
+    [`hlo_lgamma()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_lgamma.md),
+    [`hlo_digamma()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_digamma.md),
+    [`hlo_polygamma()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_polygamma.md).
+- [`OpName()`](https://r-xla.github.io/stablehlo/dev/reference/OpName.md)
+  and
+  [`new_Op()`](https://r-xla.github.io/stablehlo/dev/reference/new_Op.md)
+  gain a `dialect` argument (default `"stablehlo"`) to support ops from
+  other MLIR dialects.
+
 ## stablehlo 0.2.0
 
 ### Features
