@@ -68,6 +68,7 @@ hlo_sort <- function(..., dimension, is_stable, comparator) {
         dtype = IntegerType(64L)
       ),
       BoolAttr(name = "is_stable", value = as.logical(is_stable))
-    )
+    ),
+    simplify = FALSE
   )
 }
