@@ -91,6 +91,7 @@ Collate:
     'op-erfc.R'
     'op-exponential.R'
     'op-exponential_minus_one.R'
+    'op-fft.R'
     'op-floor.R'
     'op-gather.R'
     'op-if.R'

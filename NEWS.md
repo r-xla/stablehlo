@@ -2,6 +2,10 @@
 
 ## Features
 
+* Added `hlo_fft()` for forward and inverse Fourier transforms (`FFT`, `IFFT`,
+  `RFFT`, `IRFFT`).
+* Re-export `ComplexType()` from tengen for representing `complex<f32>` /
+  `complex<f64>` (a.k.a. `c64` / `c128`) tensors.
 * Added support for CHLO ops, a higher-level companion dialect to stableHLO
   that is lowered to stableHLO during compilation. New ops:
   * Inverse trig: `hlo_acos()`, `hlo_asin()`, `hlo_atan()`.

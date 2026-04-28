@@ -14,6 +14,9 @@ tengen::UIntegerType
 tengen::FloatType
 
 #' @export
+tengen::ComplexType
+
+#' @export
 tengen::is_dtype
 
 #' @export
@@ -37,6 +40,11 @@ repr.UIntegerType <- function(x, ...) {
 #' @export
 repr.FloatType <- function(x, ...) {
   as.character(x)
+}
+
+#' @export
+repr.ComplexType <- function(x, ...) {
+  paste0("complex<f", x$value, ">")
 }
 
 # Re-export assert_dtype from tengen
