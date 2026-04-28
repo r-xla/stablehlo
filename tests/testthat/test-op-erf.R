@@ -1,0 +1,10 @@
+test_that("basic tests", {
+  hlo_test_uni(
+    hlo_erf,
+    function(x) 2 * pnorm(x * sqrt(2)) - 1,
+    dimension = c(3L, 3L),
+    test_data = seq(-2, 2, length.out = 9)
+  )
+})
+
+# Errors are tested in test-type_inference.R (via infer_types_float_uni)

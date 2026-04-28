@@ -8,6 +8,8 @@
   * Hyperbolic: `hlo_cosh()`, `hlo_sinh()`, `hlo_acosh()`, `hlo_asinh()`,
     `hlo_atanh()`.
   * Gamma family: `hlo_lgamma()`, `hlo_digamma()`, `hlo_polygamma()`.
+  * Error / Bessel / misc: `hlo_erf()`, `hlo_erfc()`, `hlo_erf_inv()`,
+    `hlo_bessel_i1e()`, `hlo_square()`.
 * `OpName()` and `new_Op()` gain a `dialect` argument (default `"stablehlo"`)
   to support ops from other MLIR dialects.
 
