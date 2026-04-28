@@ -18,5 +18,6 @@ hlo_polygamma(n, x)
 \description{
 This op is from the CHLO dialect, a higher-level companion to stableHLO
 that is lowered to stableHLO during compilation. See
-\url{https://openxla.org/stablehlo/generated/chlo} for the full spec.
+\url{https://openxla.org/stablehlo/generated/chlo#chlopolygamma_chlopolygammaop}
+for details.
 }

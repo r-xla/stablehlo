@@ -6,6 +6,7 @@
 #' @description
 #' This op is from the CHLO dialect, a higher-level companion to stableHLO
 #' that is lowered to stableHLO during compilation. See
-#' \url{https://openxla.org/stablehlo/generated/chlo} for the full spec.
+#' \url{https://openxla.org/stablehlo/generated/chlo#chlo<%= mnemonic %>_chlo<%= mnemonic %>op}
+#' for details.
 #' @param <%= paste(setdiff(formalArgs(f), not_func_variables), collapse = ",") %> ([`FuncValue`])\cr
 #' @return [`FuncValue`]\cr
