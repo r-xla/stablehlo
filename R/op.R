@@ -7,28 +7,32 @@ NULL
 
 #' @title OpName
 #' @description
-#' This represents the name of an operation, containing a mnemonic.
+#' This represents the name of an operation, containing a mnemonic and a dialect.
 #' @param mnemonic (`character(1)`)\cr
 #'   The mnemonic of the operation.
+#' @param dialect (`character(1)`)\cr
+#'   The MLIR dialect this op belongs to. Defaults to `"stablehlo"`.
+#'   Use `"chlo"` for CHLO ops (which lower to StableHLO during compilation).
 #' @return (`OpName`)
 #' @export
-OpName <- function(mnemonic) {
+OpName <- function(mnemonic, dialect = "stablehlo") {
   checkmate::assert_string(mnemonic)
+  checkmate::assert_string(dialect)
 
   structure(
-    list(mnemonic = mnemonic),
+    list(mnemonic = mnemonic, dialect = dialect),
     class = "OpName"
   )
 }
 
 #' @export
 `==.OpName` <- function(e1, e2) {
-  e1$mnemonic == e2$mnemonic
+  e1$mnemonic == e2$mnemonic && e1$dialect == e2$dialect
 }
 
 #' @export
 repr.OpName <- function(x, ...) {
-  paste0("\"stablehlo.", x$mnemonic, "\"")
+  paste0("\"", x$dialect, ".", x$mnemonic, "\"")
 }
 
 # Attribute Types ----------------------------------------------------------
@@ -446,13 +450,14 @@ Op <- function(name, inputs, outputs, signature) {
 #' Create a new Op subclass
 #' @param classname Name of the new Op class
 #' @param mnemonic The operation mnemonic
+#' @param dialect The MLIR dialect (`"stablehlo"` or `"chlo"`). Defaults to `"stablehlo"`.
 #' @return Constructor function for the Op subclass
 #' @keywords internal
-new_Op <- function(classname, mnemonic) {
+new_Op <- function(classname, mnemonic, dialect = "stablehlo") {
   # Return a constructor function
   function(inputs, outputs, signature) {
     base_op <- Op(
-      name = OpName(mnemonic),
+      name = OpName(mnemonic, dialect = dialect),
       inputs = inputs,
       outputs = outputs,
       signature = signature
@@ -479,7 +484,9 @@ repr_op_assembly <- function(x, simplify_dense = TRUE) {
   type_repr <- repr(x$signature$output_types[[1L]])
   paste0(
     repr(x$outputs),
-    " = stablehlo.",
+    " = ",
+    x$name$dialect,
+    ".",
     x$name$mnemonic,
     " ",
     values_repr,
@@ -504,7 +511,12 @@ repr_op_generic <- function(x, simplify_dense = TRUE) {
 
 # Assembly format is used when all input and output types are identical
 # and there are no attributes or function inputs.
+# CHLO ops use a different custom assembly syntax (with `-> tensor<...>`
+# suffix), so we always emit them in generic format.
 use_assembly_format <- function(op) {
+  if (!identical(op$name$dialect, "stablehlo")) {
+    return(FALSE)
+  }
   inputs <- op$inputs
   sig <- op$signature
   if (length(sig$input_types) == 0L) {

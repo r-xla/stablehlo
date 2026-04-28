@@ -52,13 +52,13 @@ hlo_test_uni <- function(
 
   if (snapshot) {
     withr::with_seed(1, {
-      f <- make_fn(sample(dtype, 1))$func
+      f <- make_fn(sample(dtype, 1), dim = dimension)$func
       testthat::expect_snapshot(repr(f))
     })
   }
 
   dtype <- sample(dtype, 1)
-  res <- make_fn(dtype)
+  res <- make_fn(dtype, dim = dimension)
   func <- res$func
   dimension <- res$dimension
 
@@ -111,7 +111,7 @@ hlo_test_biv <- function(
 
   if (snapshot) {
     withr::with_seed(1, {
-      f <- make_fn(sample(dtypes, 1))$func
+      f <- make_fn(sample(dtypes, 1), dim = dimension)$func
       testthat::expect_snapshot(repr(f))
     })
   }
