@@ -4,12 +4,14 @@
 \alias{new_Op}
 \title{Create a new Op subclass}
 \usage{
-new_Op(classname, mnemonic)
+new_Op(classname, mnemonic, dialect = "stablehlo")
 }
 \arguments{
 \item{classname}{Name of the new Op class}
 
 \item{mnemonic}{The operation mnemonic}
+
+\item{dialect}{The MLIR dialect (\code{"stablehlo"} or \code{"chlo"}). Defaults to \code{"stablehlo"}.}
 }
 \value{
 Constructor function for the Op subclass

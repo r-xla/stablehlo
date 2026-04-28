@@ -4,15 +4,19 @@
 \alias{OpName}
 \title{OpName}
 \usage{
-OpName(mnemonic)
+OpName(mnemonic, dialect = "stablehlo")
 }
 \arguments{
 \item{mnemonic}{(\code{character(1)})\cr
 The mnemonic of the operation.}
+
+\item{dialect}{(\code{character(1)})\cr
+The MLIR dialect this op belongs to. Defaults to \code{"stablehlo"}.
+Use \code{"chlo"} for CHLO ops (which lower to StableHLO during compilation).}
 }
 \value{
 (\code{OpName})
 }
 \description{
-This represents the name of an operation, containing a mnemonic.
+This represents the name of an operation, containing a mnemonic and a dialect.
 }

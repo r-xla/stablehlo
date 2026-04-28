@@ -54,6 +54,7 @@ Collate:
     'utils.R'
     'op.R'
     'op-abs.R'
+    'op-acos.R'
     'op-add.R'
     'op-after_all.R'
     'op-and.R'

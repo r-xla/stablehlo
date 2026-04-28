@@ -18,8 +18,12 @@ status](https://www.r-pkg.org/badges/version/stablehlo)](https://CRAN.R-project.
 <!-- badges: end -->
 
 The {stablehlo} R package provides a functional API to create
-[stableHLO](https://openxla.org/stablehlo) programs. These programs can
-be executed using the R package [pjrt](https://github.com/r-xla/pjrt).
+[stableHLO](https://openxla.org/stablehlo) programs. It also supports
+selected ops from the
+[CHLO](https://openxla.org/stablehlo/generated/chlo) dialect, a
+higher-level companion to stableHLO that is lowered to stableHLO during
+compilation. These programs can be executed using the R package
+[pjrt](https://github.com/r-xla/pjrt).
 
 ## Installation
 
@@ -89,6 +93,10 @@ f
 - Clear error messages.
 - Easy installation because the implementation is in R and does not
   depend on the stableHLO C++ builder, which depends on LLVM and MLIR.
+- Supports a subset of
+  [CHLO](https://openxla.org/stablehlo/generated/chlo) ops (e.g. inverse
+  trig, hyperbolic, gamma family) that are not StableHLO primitives and
+  would otherwise have to be hand-composed.
 
 ## Important notes
 
