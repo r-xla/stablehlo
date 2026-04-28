@@ -111,7 +111,7 @@ hlo_test_biv <- function(
 
   if (snapshot) {
     withr::with_seed(1, {
-      f <- make_fn(sample(dtypes, 1))$func
+      f <- make_fn(sample(dtypes, 1), dim = dimension)$func
       testthat::expect_snapshot(repr(f))
     })
   }

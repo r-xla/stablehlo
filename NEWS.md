@@ -1,5 +1,16 @@
 # stablehlo (development version)
 
+## Features
+
+* Added support for CHLO ops, a higher-level companion dialect to stableHLO
+  that is lowered to stableHLO during compilation. New ops:
+  * Inverse trig: `hlo_acos()`, `hlo_asin()`, `hlo_atan()`.
+  * Hyperbolic: `hlo_cosh()`, `hlo_sinh()`, `hlo_acosh()`, `hlo_asinh()`,
+    `hlo_atanh()`.
+  * Gamma family: `hlo_lgamma()`, `hlo_digamma()`, `hlo_polygamma()`.
+* `OpName()` and `new_Op()` gain a `dialect` argument (default `"stablehlo"`)
+  to support ops from other MLIR dialects.
+
 # stablehlo 0.2.0
 
 ## Features
