@@ -11,6 +11,9 @@
 * `OpName()` and `new_Op()` gain a `dialect` argument (default `"stablehlo"`)
   to support ops from other MLIR dialects.
 
+## Bug fixes
+
+`hlo_reduce_window()` now works on rank-1 inputs.
 # stablehlo 0.2.0
 
 ## Features

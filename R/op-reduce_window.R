@@ -241,31 +241,20 @@ hlo_reduce_window <- function(
   inputs <- ensure_func_vals(inputs)
   init_values <- ensure_func_vals(init_values)
 
+  # Per spec, window_dimensions / window_strides / base_dilations /
+  # window_dilations are 1-D si64 tensors. Pass `shape = length(value)`
+  # explicitly so length-1 inputs (rank-1 reduce_window) become 1-D
+  # length-1 instead of falling through `constant_attr`'s default that
+  # treats single-element vectors as 0-D scalars.
+  one_d <- function(name, value) {
+    value <- as.integer(value)
+    constant_attr(name, value, dtype = "i64", shape = length(value))
+  }
   attrs <- list(
-    constant_attr(
-      "window_dimensions",
-      as.integer(window_dimensions),
-      dtype = "i64",
-      shape = c()
-    ),
-    constant_attr(
-      "window_strides",
-      as.integer(window_strides),
-      dtype = "i64",
-      shape = c()
-    ),
-    constant_attr(
-      "base_dilations",
-      as.integer(base_dilations),
-      dtype = "i64",
-      shape = c()
-    ),
-    constant_attr(
-      "window_dilations",
-      as.integer(window_dilations),
-      dtype = "i64",
-      shape = c()
-    ),
+    one_d("window_dimensions", window_dimensions),
+    one_d("window_strides", window_strides),
+    one_d("base_dilations", base_dilations),
+    one_d("window_dilations", window_dilations),
     constant_attr(
       "padding",
       `storage.mode<-`(padding, "integer"),
