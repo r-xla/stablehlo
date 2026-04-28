@@ -3,7 +3,7 @@
 \name{infer_types_sinh}
 \alias{infer_types_sinh}
 \alias{hlo_sinh}
-\title{Sinh Operator}
+\title{Sinh Operator (CHLO)}
 \usage{
 infer_types_sinh(operand)
 
@@ -16,5 +16,7 @@ hlo_sinh(operand)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#sinh} for details.
+This op is from the CHLO dialect, a higher-level companion to stableHLO
+that is lowered to stableHLO during compilation. See
+\url{https://openxla.org/stablehlo/generated/chlo} for the full spec.
 }

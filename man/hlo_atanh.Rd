@@ -3,7 +3,7 @@
 \name{infer_types_atanh}
 \alias{infer_types_atanh}
 \alias{hlo_atanh}
-\title{Atanh Operator}
+\title{Atanh Operator (CHLO)}
 \usage{
 infer_types_atanh(operand)
 
@@ -16,5 +16,7 @@ hlo_atanh(operand)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#atanh} for details.
+This op is from the CHLO dialect, a higher-level companion to stableHLO
+that is lowered to stableHLO during compilation. See
+\url{https://openxla.org/stablehlo/generated/chlo} for the full spec.
 }

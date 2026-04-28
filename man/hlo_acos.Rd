@@ -3,7 +3,7 @@
 \name{infer_types_acos}
 \alias{infer_types_acos}
 \alias{hlo_acos}
-\title{Acos Operator}
+\title{Acos Operator (CHLO)}
 \usage{
 infer_types_acos(operand)
 
@@ -16,5 +16,7 @@ hlo_acos(operand)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#acos} for details.
+This op is from the CHLO dialect, a higher-level companion to stableHLO
+that is lowered to stableHLO during compilation. See
+\url{https://openxla.org/stablehlo/generated/chlo} for the full spec.
 }

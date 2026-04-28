@@ -10,7 +10,7 @@ infer_types_acosh <- infer_types_float_uni
 hlo_acosh_impl <- hlo_fn(OpAcosh, infer_types_acosh)
 
 #' @templateVar mnemonic acosh
-#' @template op
+#' @template op_chlo
 #' @export
 hlo_acosh <- function(operand) {
   hlo_acosh_impl(values = list(operand = operand))

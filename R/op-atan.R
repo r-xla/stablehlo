@@ -10,7 +10,7 @@ infer_types_atan <- infer_types_float_uni
 hlo_atan_impl <- hlo_fn(OpAtan, infer_types_atan)
 
 #' @templateVar mnemonic atan
-#' @template op
+#' @template op_chlo
 #' @export
 hlo_atan <- function(operand) {
   hlo_atan_impl(values = list(operand = operand))

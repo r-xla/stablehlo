@@ -3,7 +3,7 @@
 \name{infer_types_asinh}
 \alias{infer_types_asinh}
 \alias{hlo_asinh}
-\title{Asinh Operator}
+\title{Asinh Operator (CHLO)}
 \usage{
 infer_types_asinh(operand)
 
@@ -16,5 +16,7 @@ hlo_asinh(operand)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#asinh} for details.
+This op is from the CHLO dialect, a higher-level companion to stableHLO
+that is lowered to stableHLO during compilation. See
+\url{https://openxla.org/stablehlo/generated/chlo} for the full spec.
 }

@@ -3,7 +3,7 @@
 \name{infer_types_cosh}
 \alias{infer_types_cosh}
 \alias{hlo_cosh}
-\title{Cosh Operator}
+\title{Cosh Operator (CHLO)}
 \usage{
 infer_types_cosh(operand)
 
@@ -16,5 +16,7 @@ hlo_cosh(operand)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#cosh} for details.
+This op is from the CHLO dialect, a higher-level companion to stableHLO
+that is lowered to stableHLO during compilation. See
+\url{https://openxla.org/stablehlo/generated/chlo} for the full spec.
 }

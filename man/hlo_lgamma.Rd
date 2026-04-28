@@ -3,7 +3,7 @@
 \name{infer_types_lgamma}
 \alias{infer_types_lgamma}
 \alias{hlo_lgamma}
-\title{Lgamma Operator}
+\title{Lgamma Operator (CHLO)}
 \usage{
 infer_types_lgamma(operand)
 
@@ -16,5 +16,7 @@ hlo_lgamma(operand)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#lgamma} for details.
+This op is from the CHLO dialect, a higher-level companion to stableHLO
+that is lowered to stableHLO during compilation. See
+\url{https://openxla.org/stablehlo/generated/chlo} for the full spec.
 }
