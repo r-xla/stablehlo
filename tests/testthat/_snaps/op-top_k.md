@@ -12,6 +12,13 @@
     Output
       [1] "func.func @main (%x: tensor<2x5xf32>) -> tensor<2x3xi32> {\n%0, %1 = \"chlo.top_k\" (%x) {\nk = 3 : i64\n}: (tensor<2x5xf32>) -> (tensor<2x3xf32>, tensor<2x3xi32>)\nreturn %1 : tensor<2x3xi32>\n}\n"
 
+# works on rank-1 input
+
+    Code
+      repr(fv1)
+    Output
+      [1] "func.func @main (%x: tensor<5xf32>) -> tensor<3xf32> {\n%0, %1 = \"chlo.top_k\" (%x) {\nk = 3 : i64\n}: (tensor<5xf32>) -> (tensor<3xf32>, tensor<3xi32>)\nreturn %0 : tensor<3xf32>\n}\n"
+
 # errors
 
     Code

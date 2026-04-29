@@ -32,6 +32,34 @@ test_that("basic tests", {
   )
 })
 
+test_that("works on rank-1 input", {
+  func1 <- local_func()
+  x1 <- hlo_input("x", "f32", shape = 5L)
+  res1 <- hlo_top_k(x1, k = 3L)
+  fv1 <- hlo_return(res1[[1L]], func = func1)
+
+  func2 <- local_func()
+  x2 <- hlo_input("x", "f32", shape = 5L)
+  res2 <- hlo_top_k(x2, k = 3L)
+  fi1 <- hlo_return(res2[[2L]], func = func2)
+
+  expect_snapshot(repr(fv1))
+
+  skip_if_not_installed("pjrt")
+  exec_v <- pjrt::pjrt_compile(pjrt::pjrt_program(repr(fv1)))
+  exec_i <- pjrt::pjrt_compile(pjrt::pjrt_program(repr(fi1)))
+  buf <- pjrt::pjrt_buffer(c(5, 1, 3, 2, 4), dtype = "f32")
+
+  expect_equal(
+    pjrt::as_array(pjrt::pjrt_execute(exec_v, buf)),
+    array(c(5, 4, 3), dim = 3L)
+  )
+  expect_equal(
+    pjrt::as_array(pjrt::pjrt_execute(exec_i, buf)),
+    array(c(0L, 4L, 2L), dim = 3L)
+  )
+})
+
 test_that("output types and shapes", {
   # 1-D input
   vt_out <- infer_types_top_k(vt("f32", 8L), k = scnst(3L, "i64"))
