@@ -11,6 +11,8 @@
   * Error / Bessel / misc: `hlo_erf()`, `hlo_erfc()`, `hlo_erf_inv()`,
     `hlo_bessel_i1e()`, `hlo_square()`.
   * Float predicates: `hlo_is_inf()`, `hlo_is_pos_inf()`, `hlo_is_neg_inf()`.
+  * Selection: `hlo_top_k()` returning the top-k values and their indices
+    along the last dimension.
 * `OpName()` and `new_Op()` gain a `dialect` argument (default `"stablehlo"`)
   to support ops from other MLIR dialects.
 
