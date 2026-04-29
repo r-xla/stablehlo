@@ -147,6 +147,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_subtract.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_tan.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_tanh.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_top_k.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_transpose.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_triangular_solve.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_while.html</loc></url>

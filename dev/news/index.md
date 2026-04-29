@@ -30,6 +30,10 @@
     [`hlo_is_inf()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_is_inf.md),
     [`hlo_is_pos_inf()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_is_pos_inf.md),
     [`hlo_is_neg_inf()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_is_neg_inf.md).
+  - Selection:
+    [`hlo_top_k()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_top_k.md)
+    returning the top-k values and their indices along the last
+    dimension.
 - [`OpName()`](https://r-xla.github.io/stablehlo/dev/reference/OpName.md)
   and
   [`new_Op()`](https://r-xla.github.io/stablehlo/dev/reference/new_Op.md)

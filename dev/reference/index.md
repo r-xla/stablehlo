@@ -364,6 +364,9 @@
 - [`infer_types_tanh()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_tanh.md)
   [`hlo_tanh()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_tanh.md)
   : Tanh Operator
+- [`infer_types_top_k()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_top_k.md)
+  [`hlo_top_k()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_top_k.md)
+  : TopK Operator (CHLO)
 - [`infer_types_transpose()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_transpose.md)
   [`hlo_transpose()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_transpose.md)
   : Transpose Operator
