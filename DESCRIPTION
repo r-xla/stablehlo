@@ -138,6 +138,7 @@ Collate:
     'op-subtract.R'
     'op-tan.R'
     'op-tanh.R'
+    'op-top_k.R'
     'op-transpose.R'
     'op-triangular_solve.R'
     'op-while.R'
