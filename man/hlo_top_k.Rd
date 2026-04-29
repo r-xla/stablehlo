@@ -15,7 +15,7 @@ Tensor of integer, unsigned integer, or floating-point type with rank >= 1.}
 
 \item{k}{(\code{integer(1)})\cr
 Number of top elements to return along the last dimension. Must satisfy
-\verb{0 <= k <= dim(operand, -1)}.}
+\verb{1 <= k <= dim(operand, -1)}.}
 }
 \value{
 \code{\link{FuncValue}}\cr

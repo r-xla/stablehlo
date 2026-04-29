@@ -19,16 +19,19 @@ test_that("basic tests", {
   data <- matrix(c(5, 1, 3, 2, 4, 9, 7, 8, 6, 10), nrow = 2L, byrow = TRUE)
   buf <- pjrt::pjrt_buffer(data, dtype = "f32")
 
-  out_v <- pjrt::pjrt_execute(exec_v, buf)
   expect_equal(
-    pjrt::as_array(out_v),
-    matrix(c(5, 4, 3, 10, 9, 8), nrow = 2L, byrow = TRUE)
+    pjrt::pjrt_execute(exec_v, buf),
+    pjrt::pjrt_buffer(
+      matrix(c(5, 4, 3, 10, 9, 8), nrow = 2L, byrow = TRUE),
+      dtype = "f32"
+    )
   )
-
-  out_i <- pjrt::pjrt_execute(exec_i, buf)
   expect_equal(
-    pjrt::as_array(out_i),
-    matrix(c(0L, 4L, 2L, 4L, 0L, 2L), nrow = 2L, byrow = TRUE)
+    pjrt::pjrt_execute(exec_i, buf),
+    pjrt::pjrt_buffer(
+      matrix(c(0L, 4L, 2L, 4L, 0L, 2L), nrow = 2L, byrow = TRUE),
+      dtype = "i32"
+    )
   )
 })
 
@@ -51,12 +54,12 @@ test_that("works on rank-1 input", {
   buf <- pjrt::pjrt_buffer(c(5, 1, 3, 2, 4), dtype = "f32")
 
   expect_equal(
-    pjrt::as_array(pjrt::pjrt_execute(exec_v, buf)),
-    array(c(5, 4, 3), dim = 3L)
+    pjrt::pjrt_execute(exec_v, buf),
+    pjrt::pjrt_buffer(c(5, 4, 3), dtype = "f32")
   )
   expect_equal(
-    pjrt::as_array(pjrt::pjrt_execute(exec_i, buf)),
-    array(c(0L, 4L, 2L), dim = 3L)
+    pjrt::pjrt_execute(exec_i, buf),
+    pjrt::pjrt_buffer(c(0L, 4L, 2L), dtype = "i32")
   )
 })
 
@@ -75,10 +78,6 @@ test_that("output types and shapes", {
   expect_equal(shape(vt_out[[2L]]), c(2L, 3L, 2L))
   expect_equal(vt_out[[1L]]$type$dtype, IntegerType(64L))
   expect_equal(vt_out[[2L]]$type$dtype, IntegerType(32L))
-
-  # k = 0 is allowed
-  vt_out <- infer_types_top_k(vt("f64", 5L), k = scnst(0L, "i64"))
-  expect_equal(shape(vt_out[[1L]]), 0L)
 })
 
 test_that("errors", {
@@ -94,9 +93,9 @@ test_that("errors", {
     error = TRUE
   )
 
-  # negative k
+  # k = 0
   expect_snapshot(
-    infer_types_top_k(vt("f32", c(2L, 3L)), k = scnst(-1L, "i64")),
+    infer_types_top_k(vt("f32", c(2L, 3L)), k = scnst(0L, "i64")),
     error = TRUE
   )
 

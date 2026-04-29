@@ -25,9 +25,9 @@ infer_types_top_k <- function(operand, k) {
       x = "Got rank {.val {rank}}."
     ))
   }
-  if (k < 0L) {
+  if (k < 1L) {
     cli_abort(c(
-      "{.arg k} must be non-negative.",
+      "{.arg k} must be a positive integer.",
       x = "Got {.val {k}}."
     ))
   }
@@ -61,7 +61,7 @@ hlo_top_k_impl <- hlo_fn(OpTopK, infer_types_top_k)
 #'   Tensor of integer, unsigned integer, or floating-point type with rank >= 1.
 #' @param k (`integer(1)`)\cr
 #'   Number of top elements to return along the last dimension. Must satisfy
-#'   `0 <= k <= dim(operand, -1)`.
+#'   `1 <= k <= dim(operand, -1)`.
 #' @return A `list()` of two [`FuncValue`]s: the top-k values (same dtype as
 #'   `operand`) and their indices into the last dimension (dtype `i32`). Ties
 #'   are broken by lower index first.

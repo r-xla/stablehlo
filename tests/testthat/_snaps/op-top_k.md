@@ -40,11 +40,11 @@
 ---
 
     Code
-      infer_types_top_k(vt("f32", c(2L, 3L)), k = scnst(-1L, "i64"))
+      infer_types_top_k(vt("f32", c(2L, 3L)), k = scnst(0L, "i64"))
     Condition
       Error in `infer_types_top_k()`:
-      ! `k` must be non-negative.
-      x Got -1.
+      ! `k` must be a positive integer.
+      x Got 0.
 
 ---
 
