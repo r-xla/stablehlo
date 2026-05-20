@@ -14,6 +14,14 @@ infer_types_pad <- function(
 ) {
   assert_vts_are_tensors(operand, padding_value)
 
+  # (I2): padding_value must be a 0-dimensional tensor.
+  if (length(shape(padding_value)) != 0L) {
+    cli_abort(c(
+      "{.arg padding_value} must be a 0-dimensional tensor.",
+      x = "Got shape {shapevec_repr(shape(padding_value))}."
+    ))
+  }
+
   # (C1)
   assert_vts_have_same_dtype(operand, padding_value)
 

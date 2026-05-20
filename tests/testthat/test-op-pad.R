@@ -85,4 +85,12 @@ test_that("errors", {
   )
   # (C2) wrong length
   check(vt("f32", c(2L, 3L)), vt("f32", integer()), c(0L), c(0L, 0L), c(0L, 0L))
+  # (I2) padding_value must be a 0-dimensional tensor
+  check(
+    vt("f32", c(2L, 3L)),
+    vt("f32", 2L),
+    c(0L, 0L),
+    c(0L, 0L),
+    c(0L, 0L)
+  )
 })
