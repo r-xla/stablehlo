@@ -33,6 +33,7 @@ Use a two-part message: a header stating the constraint, and an `x =`
 bullet showing the actual values.
 
 ``` r
+
 cli_abort(c(
   "{.arg window_dimensions} must have length equal to input rank.",
   x = "Expected length {rank}, got {length(window_dims)}."
@@ -47,6 +48,7 @@ went wrong.
 Use `{.arg name}` for argument names, never bare text or `{.var ...}`.
 
 ``` r
+
 # Good
 "{.arg operand} must have rank >= 2"
 
@@ -63,6 +65,7 @@ Use `{.arg name}` for argument names, never bare text or `{.var ...}`.
   or [`as.character()`](https://rdrr.io/r/base/character.html).
 
   ``` r
+
   # Good
   "Got {.val {tensor_type$dtype}}."
   # Bad
@@ -73,6 +76,7 @@ Use `{.arg name}` for argument names, never bare text or `{.var ...}`.
   formats as `(2x3x4)`.
 
   ``` r
+
   "Got shapes {shapevec_repr(shape(a))} and {shapevec_repr(shape(b))}."
   ```
 
@@ -83,6 +87,7 @@ Use `{.arg name}` for argument names, never bare text or `{.var ...}`.
   [`paste()`](https://rdrr.io/r/base/paste.html).
 
   ``` r
+
   # Good
   "Got slice_sizes = {vec_repr(slice_sizes_vec)}."
   # Bad
@@ -94,6 +99,7 @@ Use `{.arg name}` for argument names, never bare text or `{.var ...}`.
   is fine since cli’s “a, b and c” formatting suits option lists.
 
   ``` r
+
 
   "{.arg rng_algorithm} must be one of {.val {valid_options}}."
   ```
@@ -113,6 +119,7 @@ When writing wrapper/assert functions, accept and forward `call` so the
 error points at the user’s call site, not the internal helper:
 
 ``` r
+
 assert_vts_are_tensors <- function(..., call = rlang::caller_env()) {
   # ... pass call = call to cli_abort or inner asserts
 }

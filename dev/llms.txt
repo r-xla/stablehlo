@@ -24,6 +24,7 @@ manipulate stableHLO programs at the IR level.
 From GitHub:
 
 ``` r
+
 pak::pak("r-xla/stablehlo")
 ```
 
@@ -32,6 +33,7 @@ You can also install from
 below to your `.Rprofile`.
 
 ``` r
+
 options(repos = c(
   rxla = "https://r-xla.r-universe.dev",
   CRAN = "https://cloud.r-project.org/"
@@ -48,6 +50,7 @@ with
 [`hlo_func()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_func.md).
 
 ``` r
+
 library(stablehlo)
 func <- hlo_func("main")
 func

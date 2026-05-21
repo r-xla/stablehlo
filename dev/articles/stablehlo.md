@@ -17,6 +17,7 @@ we are calling our function `"main"` and create an empty function via
 [`local_func()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_func.md).
 
 ``` r
+
 library(stablehlo)
 main_func <- local_func()
 main_func
@@ -29,6 +30,7 @@ This `Func` object is now accessible via
 [`.current_func()`](https://r-xla.github.io/stablehlo/dev/reference/dot-current_func.md).
 
 ``` r
+
 .current_func()
 #> func.func @main () ->  {
 #> 
@@ -49,6 +51,7 @@ representation, we can use the `repr` method, which is also called when
 printing the `Func`.
 
 ``` r
+
 repr(main_func)
 #> [1] "func.func @main () ->  {\n\n}\n"
 ```
@@ -60,6 +63,7 @@ them to the function via
 We start by adding an argument `x`, which is a `2x2xf32` tensor.
 
 ``` r
+
 x <- hlo_input("x", "f32", shape = c(2, 2), func = main_func)
 ```
 
@@ -68,6 +72,7 @@ default is to use
 [`.current_func()`](https://r-xla.github.io/stablehlo/dev/reference/dot-current_func.md).
 
 ``` r
+
 y <- hlo_input("y", "f32", shape = c(2, 2))
 ```
 
@@ -80,6 +85,7 @@ contains:
 3.  The `Func` object that the value belongs to.
 
 ``` r
+
 x
 #> Variable %x in:
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
@@ -104,6 +110,7 @@ start by adding the values of `x` and `y` together. Because `Func` is a
 reference object, this also updates the `main_func` from above.
 
 ``` r
+
 z <- hlo_add(x, y)
 z
 #> Variable %0 in:
@@ -118,6 +125,7 @@ together along the second dimension (note that the dimension is 0-based
 in stableHLO).
 
 ``` r
+
 w <- hlo_concatenate(z, x, dimension = 1L)
 w
 #> Variable %1 in:
@@ -137,6 +145,7 @@ we create another (unnamed) function via
 [`local_func()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_func.md).
 
 ``` r
+
 reduce_func <- local_func()
 z1 <- hlo_input("z1", "f32", shape = integer())
 z2 <- hlo_input("z2", "f32", shape = integer())
@@ -149,6 +158,7 @@ is now `reduce_func`, the inputs are added to `reduce_func` and not
 explicitly specify `func = main_func`.
 
 ``` r
+
 .current_func()
 #> func.func @main (%z1: tensor<f32>, %z2: tensor<f32>) ->  {
 #> 
@@ -162,6 +172,7 @@ reduce_func
 Our reduction operation will just add `z1` and `z2` together.
 
 ``` r
+
 out_reduce <- hlo_add(z1, z2)
 out_reduce
 #> Variable %0 in:
@@ -176,6 +187,7 @@ return the result via
 You should only call this once you are done building the function.
 
 ``` r
+
 hlo_return(out_reduce)
 #> func.func @main (%z1: tensor<f32>, %z2: tensor<f32>) -> tensor<f32> {
 #> %0 = stablehlo.add %z1, %z2 : tensor<f32>
@@ -192,6 +204,7 @@ are reducing. We can do this via
 [`hlo_scalar()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_constant.md).
 
 ``` r
+
 init <- hlo_scalar(0, dtype = "f32")
 init
 #> Variable %2 in:
@@ -210,6 +223,7 @@ Next, we add the reduce operation to our main function and specify the
 dimensions to reduce along.
 
 ``` r
+
 out_main <- hlo_reduce(inputs = x, init_values = init, dimensions = c(0, 1L), body = reduce_func)
 out_main
 #> Variable %3 in:
@@ -235,6 +249,7 @@ Finally, we return the result of the main function via
 [`hlo_return()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_return.md).
 
 ``` r
+
 hlo_return(out_main)
 #> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<f32> {
 #> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
@@ -260,6 +275,7 @@ learn about the package in the [pjrt
 documentation](https://r-xla.github.io/pjrt/articles/pjrt.html).
 
 ``` r
+
 library(pjrt)
 src <- repr(main_func)
 program <- pjrt_program(src)
@@ -271,6 +287,7 @@ executable <- pjrt_compile(program)
 Next, we create some input values and run the function.
 
 ``` r
+
 x_buf <- pjrt_buffer(1:4, shape = c(2, 2), dtype = "f32")
 x_buf
 #> PJRTBuffer 
