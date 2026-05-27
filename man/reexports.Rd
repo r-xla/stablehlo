@@ -7,6 +7,7 @@
 \alias{IntegerType}
 \alias{UIntegerType}
 \alias{FloatType}
+\alias{ComplexType}
 \alias{is_dtype}
 \alias{as_dtype}
 \alias{shape}
@@ -18,6 +19,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{tengen}{\code{\link[tengen]{as_dtype}}, \code{\link[tengen]{BooleanType}}, \code{\link[tengen]{dtype}}, \code{\link[tengen]{FloatType}}, \code{\link[tengen]{IntegerType}}, \code{\link[tengen]{is_dtype}}, \code{\link[tengen]{shape}}, \code{\link[tengen]{UIntegerType}}}
+  \item{tengen}{\code{\link[tengen]{as_dtype}}, \code{\link[tengen]{BooleanType}}, \code{\link[tengen]{ComplexType}}, \code{\link[tengen]{dtype}}, \code{\link[tengen]{FloatType}}, \code{\link[tengen]{IntegerType}}, \code{\link[tengen]{is_dtype}}, \code{\link[tengen]{shape}}, \code{\link[tengen]{UIntegerType}}}
 }}
 
