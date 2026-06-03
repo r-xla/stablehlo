@@ -101,6 +101,12 @@
 - [`infer_types_abs()`](https://r-xla.github.io/stablehlo/reference/hlo_abs.md)
   [`hlo_abs()`](https://r-xla.github.io/stablehlo/reference/hlo_abs.md)
   : Abs Operator
+- [`infer_types_acos()`](https://r-xla.github.io/stablehlo/reference/hlo_acos.md)
+  [`hlo_acos()`](https://r-xla.github.io/stablehlo/reference/hlo_acos.md)
+  : Acos Operator (CHLO)
+- [`infer_types_acosh()`](https://r-xla.github.io/stablehlo/reference/hlo_acosh.md)
+  [`hlo_acosh()`](https://r-xla.github.io/stablehlo/reference/hlo_acosh.md)
+  : Acosh Operator (CHLO)
 - [`infer_types_add()`](https://r-xla.github.io/stablehlo/reference/hlo_add.md)
   [`hlo_add()`](https://r-xla.github.io/stablehlo/reference/hlo_add.md)
   : Add Operator
@@ -110,9 +116,24 @@
 - [`infer_types_and()`](https://r-xla.github.io/stablehlo/reference/hlo_and.md)
   [`hlo_and()`](https://r-xla.github.io/stablehlo/reference/hlo_and.md)
   : And Operator
+- [`infer_types_asin()`](https://r-xla.github.io/stablehlo/reference/hlo_asin.md)
+  [`hlo_asin()`](https://r-xla.github.io/stablehlo/reference/hlo_asin.md)
+  : Asin Operator (CHLO)
+- [`infer_types_asinh()`](https://r-xla.github.io/stablehlo/reference/hlo_asinh.md)
+  [`hlo_asinh()`](https://r-xla.github.io/stablehlo/reference/hlo_asinh.md)
+  : Asinh Operator (CHLO)
+- [`infer_types_atan()`](https://r-xla.github.io/stablehlo/reference/hlo_atan.md)
+  [`hlo_atan()`](https://r-xla.github.io/stablehlo/reference/hlo_atan.md)
+  : Atan Operator (CHLO)
 - [`infer_types_atan2()`](https://r-xla.github.io/stablehlo/reference/hlo_atan2.md)
   [`hlo_atan2()`](https://r-xla.github.io/stablehlo/reference/hlo_atan2.md)
   : Atan2 Operator
+- [`infer_types_atanh()`](https://r-xla.github.io/stablehlo/reference/hlo_atanh.md)
+  [`hlo_atanh()`](https://r-xla.github.io/stablehlo/reference/hlo_atanh.md)
+  : Atanh Operator (CHLO)
+- [`infer_types_bessel_i1e()`](https://r-xla.github.io/stablehlo/reference/hlo_bessel_i1e.md)
+  [`hlo_bessel_i1e()`](https://r-xla.github.io/stablehlo/reference/hlo_bessel_i1e.md)
+  : BesselI1e Operator (CHLO)
 - [`infer_types_bitcast_convert()`](https://r-xla.github.io/stablehlo/reference/hlo_bitcast_convert.md)
   [`hlo_bitcast_convert()`](https://r-xla.github.io/stablehlo/reference/hlo_bitcast_convert.md)
   : BitcastConvert Operator
@@ -152,6 +173,9 @@
 - [`infer_types_convert()`](https://r-xla.github.io/stablehlo/reference/hlo_convert.md)
   [`hlo_convert()`](https://r-xla.github.io/stablehlo/reference/hlo_convert.md)
   : Convert Operator
+- [`infer_types_cosh()`](https://r-xla.github.io/stablehlo/reference/hlo_cosh.md)
+  [`hlo_cosh()`](https://r-xla.github.io/stablehlo/reference/hlo_cosh.md)
+  : Cosh Operator (CHLO)
 - [`infer_types_cosine()`](https://r-xla.github.io/stablehlo/reference/hlo_cosine.md)
   [`hlo_cosine()`](https://r-xla.github.io/stablehlo/reference/hlo_cosine.md)
   : Cosine Operator
@@ -160,6 +184,9 @@
   : CountLeadingZeros Operator
 - [`hlo_custom_call()`](https://r-xla.github.io/stablehlo/reference/hlo_custom_call.md)
   : Custom Call Operation
+- [`infer_types_digamma()`](https://r-xla.github.io/stablehlo/reference/hlo_digamma.md)
+  [`hlo_digamma()`](https://r-xla.github.io/stablehlo/reference/hlo_digamma.md)
+  : Digamma Operator (CHLO)
 - [`infer_types_divide()`](https://r-xla.github.io/stablehlo/reference/hlo_divide.md)
   [`hlo_divide()`](https://r-xla.github.io/stablehlo/reference/hlo_divide.md)
   : Divide Operator
@@ -172,6 +199,15 @@
 - [`infer_types_dynamic_update_slice()`](https://r-xla.github.io/stablehlo/reference/hlo_dynamic_update_slice.md)
   [`hlo_dynamic_update_slice()`](https://r-xla.github.io/stablehlo/reference/hlo_dynamic_update_slice.md)
   : DynamicUpdateSlice Operator
+- [`infer_types_erf()`](https://r-xla.github.io/stablehlo/reference/hlo_erf.md)
+  [`hlo_erf()`](https://r-xla.github.io/stablehlo/reference/hlo_erf.md)
+  : Erf Operator (CHLO)
+- [`infer_types_erf_inv()`](https://r-xla.github.io/stablehlo/reference/hlo_erf_inv.md)
+  [`hlo_erf_inv()`](https://r-xla.github.io/stablehlo/reference/hlo_erf_inv.md)
+  : ErfInv Operator (CHLO)
+- [`infer_types_erfc()`](https://r-xla.github.io/stablehlo/reference/hlo_erfc.md)
+  [`hlo_erfc()`](https://r-xla.github.io/stablehlo/reference/hlo_erfc.md)
+  : Erfc Operator (CHLO)
 - [`infer_types_exponential()`](https://r-xla.github.io/stablehlo/reference/hlo_exponential.md)
   [`hlo_exponential()`](https://r-xla.github.io/stablehlo/reference/hlo_exponential.md)
   : Exponential Operator
@@ -198,6 +234,18 @@
 - [`infer_types_is_finite()`](https://r-xla.github.io/stablehlo/reference/hlo_is_finite.md)
   [`hlo_is_finite()`](https://r-xla.github.io/stablehlo/reference/hlo_is_finite.md)
   : IsFinite Operator
+- [`infer_types_is_inf()`](https://r-xla.github.io/stablehlo/reference/hlo_is_inf.md)
+  [`hlo_is_inf()`](https://r-xla.github.io/stablehlo/reference/hlo_is_inf.md)
+  : IsInf Operator (CHLO)
+- [`infer_types_is_neg_inf()`](https://r-xla.github.io/stablehlo/reference/hlo_is_neg_inf.md)
+  [`hlo_is_neg_inf()`](https://r-xla.github.io/stablehlo/reference/hlo_is_neg_inf.md)
+  : IsNegInf Operator (CHLO)
+- [`infer_types_is_pos_inf()`](https://r-xla.github.io/stablehlo/reference/hlo_is_pos_inf.md)
+  [`hlo_is_pos_inf()`](https://r-xla.github.io/stablehlo/reference/hlo_is_pos_inf.md)
+  : IsPosInf Operator (CHLO)
+- [`infer_types_lgamma()`](https://r-xla.github.io/stablehlo/reference/hlo_lgamma.md)
+  [`hlo_lgamma()`](https://r-xla.github.io/stablehlo/reference/hlo_lgamma.md)
+  : Lgamma Operator (CHLO)
 - [`infer_types_log()`](https://r-xla.github.io/stablehlo/reference/hlo_log.md)
   [`hlo_log()`](https://r-xla.github.io/stablehlo/reference/hlo_log.md)
   : Log Operator
@@ -231,6 +279,9 @@
 - [`infer_types_pad()`](https://r-xla.github.io/stablehlo/reference/hlo_pad.md)
   [`hlo_pad()`](https://r-xla.github.io/stablehlo/reference/hlo_pad.md)
   : Pad Operator
+- [`infer_types_polygamma()`](https://r-xla.github.io/stablehlo/reference/hlo_polygamma.md)
+  [`hlo_polygamma()`](https://r-xla.github.io/stablehlo/reference/hlo_polygamma.md)
+  : Polygamma Operator (CHLO)
 - [`infer_types_popcnt()`](https://r-xla.github.io/stablehlo/reference/hlo_popcnt.md)
   [`hlo_popcnt()`](https://r-xla.github.io/stablehlo/reference/hlo_popcnt.md)
   : Popcnt Operator
@@ -288,6 +339,9 @@
 - [`infer_types_sine()`](https://r-xla.github.io/stablehlo/reference/hlo_sine.md)
   [`hlo_sine()`](https://r-xla.github.io/stablehlo/reference/hlo_sine.md)
   : Sine Operator
+- [`infer_types_sinh()`](https://r-xla.github.io/stablehlo/reference/hlo_sinh.md)
+  [`hlo_sinh()`](https://r-xla.github.io/stablehlo/reference/hlo_sinh.md)
+  : Sinh Operator (CHLO)
 - [`infer_types_slice()`](https://r-xla.github.io/stablehlo/reference/hlo_slice.md)
   [`hlo_slice()`](https://r-xla.github.io/stablehlo/reference/hlo_slice.md)
   : Slice Operator
@@ -297,6 +351,9 @@
 - [`infer_types_sqrt()`](https://r-xla.github.io/stablehlo/reference/hlo_sqrt.md)
   [`hlo_sqrt()`](https://r-xla.github.io/stablehlo/reference/hlo_sqrt.md)
   : Sqrt Operator
+- [`infer_types_square()`](https://r-xla.github.io/stablehlo/reference/hlo_square.md)
+  [`hlo_square()`](https://r-xla.github.io/stablehlo/reference/hlo_square.md)
+  : Square Operator (CHLO)
 - [`infer_types_subtract()`](https://r-xla.github.io/stablehlo/reference/hlo_subtract.md)
   [`hlo_subtract()`](https://r-xla.github.io/stablehlo/reference/hlo_subtract.md)
   : Subtract Operator
@@ -306,6 +363,9 @@
 - [`infer_types_tanh()`](https://r-xla.github.io/stablehlo/reference/hlo_tanh.md)
   [`hlo_tanh()`](https://r-xla.github.io/stablehlo/reference/hlo_tanh.md)
   : Tanh Operator
+- [`infer_types_top_k()`](https://r-xla.github.io/stablehlo/reference/hlo_top_k.md)
+  [`hlo_top_k()`](https://r-xla.github.io/stablehlo/reference/hlo_top_k.md)
+  : TopK Operator (CHLO)
 - [`infer_types_transpose()`](https://r-xla.github.io/stablehlo/reference/hlo_transpose.md)
   [`hlo_transpose()`](https://r-xla.github.io/stablehlo/reference/hlo_transpose.md)
   : Transpose Operator

@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Changelog"></head><body>
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Changelog"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">stablehlo</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,9 +42,30 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/r-xla/stablehlo/blob/v0.2.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/r-xla/stablehlo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="stablehlo-030">stablehlo 0.3.0<a class="anchor" aria-label="anchor" href="#stablehlo-030"></a></h2>
+<div class="section level3">
+<h3 id="features-0-3-0">Features<a class="anchor" aria-label="anchor" href="#features-0-3-0"></a></h3>
+<ul><li>Added support for CHLO ops, a higher-level companion dialect to stableHLO that is lowered to stableHLO during compilation. New ops:
+<ul><li>Inverse trig: <code><a href="../reference/hlo_acos.html">hlo_acos()</a></code>, <code><a href="../reference/hlo_asin.html">hlo_asin()</a></code>, <code><a href="../reference/hlo_atan.html">hlo_atan()</a></code>.</li>
+<li>Hyperbolic: <code><a href="../reference/hlo_cosh.html">hlo_cosh()</a></code>, <code><a href="../reference/hlo_sinh.html">hlo_sinh()</a></code>, <code><a href="../reference/hlo_acosh.html">hlo_acosh()</a></code>, <code><a href="../reference/hlo_asinh.html">hlo_asinh()</a></code>, <code><a href="../reference/hlo_atanh.html">hlo_atanh()</a></code>.</li>
+<li>Gamma family: <code><a href="../reference/hlo_lgamma.html">hlo_lgamma()</a></code>, <code><a href="../reference/hlo_digamma.html">hlo_digamma()</a></code>, <code><a href="../reference/hlo_polygamma.html">hlo_polygamma()</a></code>.</li>
+<li>Error / Bessel / misc: <code><a href="../reference/hlo_erf.html">hlo_erf()</a></code>, <code><a href="../reference/hlo_erfc.html">hlo_erfc()</a></code>, <code><a href="../reference/hlo_erf_inv.html">hlo_erf_inv()</a></code>, <code><a href="../reference/hlo_bessel_i1e.html">hlo_bessel_i1e()</a></code>, <code><a href="../reference/hlo_square.html">hlo_square()</a></code>.</li>
+<li>Float predicates: <code><a href="../reference/hlo_is_inf.html">hlo_is_inf()</a></code>, <code><a href="../reference/hlo_is_pos_inf.html">hlo_is_pos_inf()</a></code>, <code><a href="../reference/hlo_is_neg_inf.html">hlo_is_neg_inf()</a></code>.</li>
+<li>Selection: <code><a href="../reference/hlo_top_k.html">hlo_top_k()</a></code> returning the top-k values and their indices along the last dimension.</li>
+</ul></li>
+<li>
+<code><a href="../reference/OpName.html">OpName()</a></code> and <code><a href="../reference/new_Op.html">new_Op()</a></code> gain a <code>dialect</code> argument (default <code>"stablehlo"</code>) to support ops from other MLIR dialects.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-3-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h3>
+<ul><li>
+<code><a href="../reference/hlo_reduce_window.html">hlo_reduce_window()</a></code> now works on rank-1 inputs.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="stablehlo-020">stablehlo 0.2.0<a class="anchor" aria-label="anchor" href="#stablehlo-020"></a></h2>
 <div class="section level3">

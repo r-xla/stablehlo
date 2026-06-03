@@ -5,7 +5,7 @@ Create a new Op subclass
 ## Usage
 
 ``` r
-new_Op(classname, mnemonic)
+new_Op(classname, mnemonic, dialect = "stablehlo")
 ```
 
 ## Arguments
@@ -17,6 +17,11 @@ new_Op(classname, mnemonic)
 - mnemonic:
 
   The operation mnemonic
+
+- dialect:
+
+  The MLIR dialect (`"stablehlo"` or `"chlo"`). Defaults to
+  `"stablehlo"`.
 
 ## Value
 

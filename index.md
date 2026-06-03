@@ -4,67 +4,70 @@ Package website: [release](https://r-xla.github.io/stablehlo/) \|
 [dev](https://r-xla.github.io/stablehlo/dev/)
 
 The {stablehlo} R package provides a functional API to create
-[stableHLO](https://openxla.org/stablehlo) programs. These programs can
-be executed using the R package [pjrt](https://github.com/r-xla/pjrt).
+[stableHLO](https://openxla.org/stablehlo) programs. It also supports
+selected ops from the
+[CHLO](https://openxla.org/stablehlo/generated/chlo) dialect, a
+higher-level companion to stableHLO that is lowered to stableHLO during
+compilation. These programs can be executed using the R package
+[pjrt](https://github.com/r-xla/pjrt).
+
+{stablehlo} is the IR layer of the [r-xla](https://github.com/r-xla)
+ecosystem. The main user-facing package is
+[{anvl}](https://github.com/r-xla/anvl), a code transformation framework
+for R that builds on {stablehlo} and {pjrt} to provide JIT compilation
+and automatic differentiation. Most users should reach for {anvl}
+directly; {stablehlo} is intended for those who want to construct or
+manipulate stableHLO programs at the IR level.
 
 ## Installation
 
-From GitHub:
+From r-universe:
 
 ``` r
-pak::pak("r-xla/stablehlo")
-```
 
-You can also install from
-[r-universe](https://r-xla.r-universe.dev/builds), by adding the code
-below to your `.Rprofile`.
-
-``` r
-options(repos = c(
-  rxla = "https://r-xla.r-universe.dev",
-  CRAN = "https://cloud.r-project.org/"
-))
+install.packages("stablehlo", repos = c("https://r-xla.r-universe.dev", getOption("repos")))
 ```
 
 ## Quickstart
 
 Below, we create a function that takes two input arguments `x` and `y`
-of type `f32` and shape `(2, 2)` and adds them. Passing `func` to
+of type `f32` and shape `2x2` and adds them. Passing `func` to
 [`hlo_input()`](https://r-xla.github.io/stablehlo/reference/hlo_input.md)
 is optional, because it will automatically use the last function created
 with
 [`hlo_func()`](https://r-xla.github.io/stablehlo/reference/hlo_func.md).
 
 ``` r
+
 library(stablehlo)
-func <- hlo_func("myfn")
+func <- hlo_func("main")
 func
-#> func.func @myfn () ->  {
+#> func.func @main () ->  {
 #> 
 #> }
 x <- hlo_input("x", "f32", shape = c(2, 2), func = func)
 x
 #> Variable %x in:
-#> func.func @myfn (%x: tensor<2x2xf32>) ->  {
+#> func.func @main (%x: tensor<2x2xf32>) ->  {
 #> 
 #> }
 y <- hlo_input("y", "f32", shape = c(2, 2), func = func)
 y
 #> Variable %y in:
-#> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
+#> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #> 
 #> }
 z <- hlo_add(x, y)
 z
 #> Variable %0 in:
-#> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
+#> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) ->  {
 #> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> }
 f <- hlo_return(z)
 identical(f, func)
 #> [1] TRUE
 f
-#> func.func @myfn (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
+#> func.func @main (%x: tensor<2x2xf32>, %y: tensor<2x2xf32>) -> tensor<2x2xf32> {
 #> %0 = stablehlo.add %x, %y : tensor<2x2xf32>
 #> return %0 : tensor<2x2xf32>
 #> }
@@ -77,6 +80,10 @@ f
 - Clear error messages.
 - Easy installation because the implementation is in R and does not
   depend on the stableHLO C++ builder, which depends on LLVM and MLIR.
+- Supports a subset of
+  [CHLO](https://openxla.org/stablehlo/generated/chlo) ops (e.g. inverse
+  trig, hyperbolic, gamma family) that are not StableHLO primitives and
+  would otherwise have to be hand-composed.
 
 ## Important notes
 
