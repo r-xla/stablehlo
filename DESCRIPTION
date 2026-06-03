@@ -1,6 +1,6 @@
 Package: stablehlo
 Title: Write stableHLO programs
-Version: 0.2.0.9000
+Version: 0.3.0
 Authors@R: c(
     person("Daniel", "Falbel", , "daniel@posit.co", role = "aut",
            comment = c(ORCID = "https://orcid.org/0009-0006-0143-2392")),
@@ -27,7 +27,7 @@ Imports:
 Suggests:
     rmarkdown,
     knitr,
-    pjrt (>= 0.2.0),
+    pjrt (>= 0.4.0),
     testthat (>= 3.0.0)
 Additional_repositories:
     https://r-xla.r-universe.dev

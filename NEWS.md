@@ -1,4 +1,4 @@
-# stablehlo (development version)
+# stablehlo 0.3.0
 
 ## Features
 
@@ -18,7 +18,8 @@
 
 ## Bug fixes
 
-`hlo_reduce_window()` now works on rank-1 inputs.
+* `hlo_reduce_window()` now works on rank-1 inputs.
+
 # stablehlo 0.2.0
 
 ## Features
