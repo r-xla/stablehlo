@@ -2,6 +2,8 @@
 
 ## stablehlo (development version)
 
+## stablehlo 0.3.0
+
 ### Features
 
 - Added support for CHLO ops, a higher-level companion dialect to
@@ -42,8 +44,10 @@
 
 ### Bug fixes
 
-[`hlo_reduce_window()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce_window.md)
-now works on rank-1 inputs. \# stablehlo 0.2.0
+- [`hlo_reduce_window()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce_window.md)
+  now works on rank-1 inputs.
+
+## stablehlo 0.2.0
 
 ### Features
 

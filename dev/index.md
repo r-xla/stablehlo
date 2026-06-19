@@ -21,23 +21,11 @@ manipulate stableHLO programs at the IR level.
 
 ## Installation
 
-From GitHub:
+From r-universe:
 
 ``` r
 
-pak::pak("r-xla/stablehlo")
-```
-
-You can also install from
-[r-universe](https://r-xla.r-universe.dev/builds), by adding the code
-below to your `.Rprofile`.
-
-``` r
-
-options(repos = c(
-  rxla = "https://r-xla.r-universe.dev",
-  CRAN = "https://cloud.r-project.org/"
-))
+install.packages("stablehlo", repos = c("https://r-xla.r-universe.dev", getOption("repos")))
 ```
 
 ## Quickstart
