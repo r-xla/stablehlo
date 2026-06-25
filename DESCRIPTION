@@ -1,6 +1,6 @@
 Package: stablehlo
 Title: Write stableHLO programs
-Version: 0.3.0.900
+Version: 0.3.0.901
 Authors@R: c(
     person("Daniel", "Falbel", , "daniel@posit.co", role = "aut",
            comment = c(ORCID = "https://orcid.org/0009-0006-0143-2392")),
@@ -35,7 +35,6 @@ Config/build/compilation-database: true
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Collate:
     'aaa.R'
     'assert.R'
@@ -147,3 +146,4 @@ Collate:
     'roxygen.R'
     'zzz.R'
 Config/Needs/website: rmarkdown
+Config/roxygen2/version: 8.0.0

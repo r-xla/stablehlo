@@ -28,6 +28,71 @@ test_that("matmul", {
   )
 })
 
+test_that("precision config", {
+  func <- local_func()
+  lhs <- hlo_input("lhs", "f32", shape = c(5, 4))
+  rhs <- hlo_input("rhs", "f32", shape = c(4, 3))
+  z <- hlo_dot_general(
+    lhs,
+    rhs,
+    contracting_dims = list(1L, 0L),
+    precision_config = c("HIGH", "HIGHEST")
+  )
+  f <- hlo_return(z)
+  expect_snapshot(repr(f))
+
+  # a single precision is recycled to both operands
+  func2 <- local_func("other")
+  lhs2 <- hlo_input("lhs", "f32", shape = c(5, 4))
+  rhs2 <- hlo_input("rhs", "f32", shape = c(4, 3))
+  z2 <- hlo_dot_general(
+    lhs2,
+    rhs2,
+    contracting_dims = list(1L, 0L),
+    precision_config = "HIGHEST"
+  )
+  expect_match(repr(z2$func), "precision = [HIGHEST, HIGHEST]", fixed = TRUE)
+
+  skip_if_not_installed("pjrt")
+
+  pjrt_program <- pjrt_program(repr(f))
+  exec <- pjrt_compile(pjrt_program)
+
+  expect_equal(
+    pjrt_execute(
+      exec,
+      pjrt_buffer(array(as.double(1:20), dim = c(5, 4))),
+      pjrt_buffer(array(as.double(1:12), dim = c(4, 3)))
+    ),
+    pjrt_buffer(
+      array(as.double(1:20), dim = c(5, 4)) %*%
+        array(as.double(1:12), dim = c(4, 3))
+    )
+  )
+})
+
+test_that("invalid precision config raises", {
+  local_func()
+  lhs <- hlo_input("lhs", "f32", shape = c(5, 4))
+  rhs <- hlo_input("rhs", "f32", shape = c(4, 3))
+  expect_snapshot_error(
+    hlo_dot_general(
+      lhs,
+      rhs,
+      contracting_dims = list(1L, 0L),
+      precision_config = "BOGUS"
+    )
+  )
+  expect_snapshot_error(
+    hlo_dot_general(
+      lhs,
+      rhs,
+      contracting_dims = list(1L, 0L),
+      precision_config = c("HIGH", "HIGH", "HIGH")
+    )
+  )
+})
+
 test_that("batching_dims", {
   skip_if_not_installed("pjrt")
   func <- local_func()

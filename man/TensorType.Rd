@@ -7,7 +7,7 @@
 TensorType(dtype, shape)
 }
 \arguments{
-\item{dtype}{(\code{\link[tengen:DataType]{tengen::DataType}})}
+\item{dtype}{(\code{\link[tengen:DataType]{DataType}})}
 
 \item{shape}{(\code{\link{Shape}})}
 }

@@ -1,5 +1,39 @@
 OpDotGeneral <- new_Op("OpDotGeneral", "dot_general")
 
+precision_values <- c("DEFAULT", "HIGH", "HIGHEST")
+
+# Normalize a user-supplied precision config to a length-2 character vector
+# (recycling a single value to both operands) or NULL.
+normalize_precision_config <- function(precision_config) {
+  if (is.null(precision_config)) {
+    return(NULL)
+  }
+  if (length(precision_config) == 1L) {
+    precision_config <- rep(precision_config, 2L)
+  }
+  precision_config
+}
+
+assert_precision_config <- function(precision_config) {
+  if (is.null(precision_config)) {
+    return(invisible(NULL))
+  }
+  # (C24) size(precision_config) = 2
+  if (!is.character(precision_config) || length(precision_config) != 2L) {
+    cli_abort(c(
+      "{.arg precision_config} must be {.code NULL} or a character vector of length 2.",
+      x = "Got an object of class {.cls {class(precision_config)}} with length {length(precision_config)}." # nolint
+    ))
+  }
+  if (!all(precision_config %in% precision_values)) {
+    cli_abort(c(
+      "{.arg precision_config} entries must each be one of {.val {precision_values}}.", # nolint
+      x = "Got {.val {precision_config}}."
+    ))
+  }
+  invisible(NULL)
+}
+
 error_dot_general_dim_mismatch <- function(
   arg,
   shape_lhs,
@@ -36,14 +70,21 @@ conditionMessage.ErrorDotGeneralDimMismatch <- function(c, ...) {
 
 #' @param dot_dimension_numbers (`DotDimensionNumbers`)\cr
 #'   The dot dimension number.
+#' @param precision_config (`character()` | `NULL`)\cr
+#'   The precision configuration, a character vector of length 2 giving the
+#'   precision used for `lhs` and `rhs`. Each entry must be one of `"DEFAULT"`,
+#'   `"HIGH"` or `"HIGHEST"`. If `NULL` (default), no precision configuration is
+#'   emitted, which is equivalent to `"DEFAULT"` for both operands.
 #' @rdname hlo_dot_general
 #' @export
 infer_types_dot_general <- function(
   lhs,
   rhs,
-  dot_dimension_numbers
+  dot_dimension_numbers,
+  precision_config = NULL
 ) {
   assert_class(dot_dimension_numbers, "DotDimensionNumbers")
+  assert_precision_config(precision_config)
   assert_vts_are_tensors(lhs, rhs)
   # (C13)
   assert_vts_have_same_dtype(lhs, rhs)
@@ -209,14 +250,17 @@ DotDimensionNumbers <- function(contracting_dims, batching_dims = NULL) {
 dot_general_impl <- hlo_fn(OpDotGeneral, infer_types_dot_general)
 
 #' @templateVar mnemonic dot_general
+#' @templateVar not_func_variables precision_config
 #' @template op
 #' @export
 hlo_dot_general <- function(
   lhs,
   rhs,
   contracting_dims,
-  batching_dims = NULL
+  batching_dims = NULL,
+  precision_config = NULL
 ) {
+  precision_config <- normalize_precision_config(precision_config)
   dot_general_impl(
     values = list(
       lhs = lhs,
@@ -226,7 +270,8 @@ hlo_dot_general <- function(
       dot_dimension_numbers = DotDimensionNumbers(
         contracting_dims = contracting_dims,
         batching_dims = batching_dims
-      )
+      ),
+      precision_config = precision_config
     )
   )
 }
@@ -251,6 +296,12 @@ repr.DotDimensionNumbers <- function(x, ...) {
 
 #' @export
 repr.OpDotGeneral <- function(x, ...) {
+  precision_config <- x$inputs$custom_attrs$precision_config
+  precision_repr <- if (is.null(precision_config)) {
+    ""
+  } else {
+    sprintf(", precision = [%s]", paste0(precision_config, collapse = ", "))
+  }
   paste0(
     repr(x$outputs),
     " = ",
@@ -258,6 +309,7 @@ repr.OpDotGeneral <- function(x, ...) {
     repr(x$inputs$values),
     ", ",
     repr(x$inputs$custom_attrs$dot_dimension_numbers),
+    precision_repr,
     ": ",
     repr(x$signature)
   )

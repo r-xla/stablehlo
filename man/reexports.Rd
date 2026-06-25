@@ -18,6 +18,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{tengen}{\code{\link[tengen]{as_dtype}}, \code{\link[tengen]{BooleanType}}, \code{\link[tengen]{dtype}}, \code{\link[tengen]{FloatType}}, \code{\link[tengen]{IntegerType}}, \code{\link[tengen]{is_dtype}}, \code{\link[tengen]{shape}}, \code{\link[tengen]{UIntegerType}}}
+  \item{tengen}{\code{\link[tengen:as_dtype]{as_dtype()}}, \code{\link[tengen:BooleanType]{BooleanType()}}, \code{\link[tengen:dtype]{dtype()}}, \code{\link[tengen:FloatType]{FloatType()}}, \code{\link[tengen:IntegerType]{IntegerType()}}, \code{\link[tengen:is_dtype]{is_dtype()}}, \code{\link[tengen:shape]{shape()}}, \code{\link[tengen:UIntegerType]{UIntegerType()}}}
 }}
 

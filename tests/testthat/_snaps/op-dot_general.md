@@ -5,6 +5,23 @@
     Output
       [1] "func.func @main (%lhs: tensor<5x4xf32>, %rhs: tensor<4x3xf32>) -> tensor<5x3xf32> {\n%0 = stablehlo.dot_general %lhs, %rhs, contracting_dims = [1] x [0]: (tensor<5x4xf32>, tensor<4x3xf32>) -> (tensor<5x3xf32>)\nreturn %0 : tensor<5x3xf32>\n}\n"
 
+# precision config
+
+    Code
+      repr(f)
+    Output
+      [1] "func.func @main (%lhs: tensor<5x4xf32>, %rhs: tensor<4x3xf32>) -> tensor<5x3xf32> {\n%0 = stablehlo.dot_general %lhs, %rhs, contracting_dims = [1] x [0], precision = [HIGH, HIGHEST]: (tensor<5x4xf32>, tensor<4x3xf32>) -> (tensor<5x3xf32>)\nreturn %0 : tensor<5x3xf32>\n}\n"
+
+# invalid precision config raises
+
+    `precision_config` entries must each be one of "DEFAULT", "HIGH", and "HIGHEST".
+    x Got "BOGUS" and "BOGUS".
+
+---
+
+    `precision_config` must be `NULL` or a character vector of length 2.
+    x Got an object of class <character> with length 3.
+
 # batching_dims
 
     Code

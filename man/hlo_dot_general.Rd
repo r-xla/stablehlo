@@ -5,15 +5,32 @@
 \alias{hlo_dot_general}
 \title{DotGeneral Operator}
 \usage{
-infer_types_dot_general(lhs, rhs, dot_dimension_numbers)
+infer_types_dot_general(
+  lhs,
+  rhs,
+  dot_dimension_numbers,
+  precision_config = NULL
+)
 
-hlo_dot_general(lhs, rhs, contracting_dims, batching_dims = NULL)
+hlo_dot_general(
+  lhs,
+  rhs,
+  contracting_dims,
+  batching_dims = NULL,
+  precision_config = NULL
+)
 }
 \arguments{
 \item{lhs, rhs, contracting_dims, batching_dims}{(\code{\link{FuncValue}})\cr}
 
 \item{dot_dimension_numbers}{(\code{DotDimensionNumbers})\cr
 The dot dimension number.}
+
+\item{precision_config}{(\code{character()} | \code{NULL})\cr
+The precision configuration, a character vector of length 2 giving the
+precision used for \code{lhs} and \code{rhs}. Each entry must be one of \code{"DEFAULT"},
+\code{"HIGH"} or \code{"HIGHEST"}. If \code{NULL} (default), no precision configuration is
+emitted, which is equivalent to \code{"DEFAULT"} for both operands.}
 }
 \value{
 \code{\link{FuncValue}}\cr
