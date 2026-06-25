@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">stablehlo</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.0.900</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.0.901</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,9 +52,20 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">infer_types_dot_general</span><span class="op">(</span><span class="va">lhs</span>, <span class="va">rhs</span>, <span class="va">dot_dimension_numbers</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">infer_types_dot_general</span><span class="op">(</span></span>
+<span>  <span class="va">lhs</span>,</span>
+<span>  <span class="va">rhs</span>,</span>
+<span>  <span class="va">dot_dimension_numbers</span>,</span>
+<span>  precision_config <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">hlo_dot_general</span><span class="op">(</span><span class="va">lhs</span>, <span class="va">rhs</span>, <span class="va">contracting_dims</span>, batching_dims <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">hlo_dot_general</span><span class="op">(</span></span>
+<span>  <span class="va">lhs</span>,</span>
+<span>  <span class="va">rhs</span>,</span>
+<span>  <span class="va">contracting_dims</span>,</span>
+<span>  batching_dims <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  precision_config <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -68,6 +79,14 @@
 <dt id="arg-dot-dimension-numbers">dot_dimension_numbers<a class="anchor" aria-label="anchor" href="#arg-dot-dimension-numbers"></a></dt>
 <dd><p>(<code>DotDimensionNumbers</code>)<br>
 The dot dimension number.</p></dd>
+
+
+<dt id="arg-precision-config">precision_config<a class="anchor" aria-label="anchor" href="#arg-precision-config"></a></dt>
+<dd><p>(<code><a href="https://rdrr.io/r/base/character.html" class="external-link">character()</a></code> | <code>NULL</code>)<br>
+The precision configuration, a character vector of length 2 giving the
+precision used for <code>lhs</code> and <code>rhs</code>. Each entry must be one of <code>"DEFAULT"</code>,
+<code>"HIGH"</code> or <code>"HIGHEST"</code>. If <code>NULL</code> (default), no precision configuration is
+emitted, which is equivalent to <code>"DEFAULT"</code> for both operands.</p></dd>
 
 </dl></div>
     <div class="section level2">
