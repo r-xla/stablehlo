@@ -18,6 +18,9 @@ test_that("format_double keeps non-finite positions in a mixed vector", {
   expect_match(out32[1], "^1")
 
   out64 <- format_double(c(1, NaN, Inf, -Inf), 64)
-  expect_equal(out64[2:4], c("0x7FF8000000000000", "0x7FF0000000000000", "0xFFF0000000000000"))
+  expect_equal(
+    out64[2:4],
+    c("0x7FF8000000000000", "0x7FF0000000000000", "0xFFF0000000000000")
+  )
   expect_match(out64[1], "^1")
 })
