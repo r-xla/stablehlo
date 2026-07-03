@@ -177,18 +177,35 @@ test_that("can use dtype with constant", {
   expect_snapshot(hlo_scalar(FALSE, BooleanType()))
 })
 
-test_that("nan, inf, -inf", {
+test_that("nan, inf, -inf scalars execute correctly for f32 and f64", {
+  skip_if_not_installed("pjrt")
+  # f64 previously reused the 32-bit hex bit-patterns, so the constants were
+  # parsed as tiny denormals (~1e-314) instead of Inf/-Inf/NaN at runtime.
+  for (dt in c("f32", "f64")) {
+    local_func()
+    x1 <- hlo_scalar(Inf, dtype = dt)
+    x2 <- hlo_scalar(-Inf, dtype = dt)
+    x3 <- hlo_scalar(NaN, dtype = dt)
+    f <- hlo_return(x1, x2, x3)
+    exec <- pjrt_compile(pjrt_program(repr(f)))
+    outs <- lapply(pjrt_execute(exec), as_array)
+    expect_equal(outs[[1]], Inf, info = dt)
+    expect_equal(outs[[2]], -Inf, info = dt)
+    expect_true(is.nan(outs[[3]]), info = dt)
+  }
+})
+
+test_that("nan, inf, -inf in an f64 tensor execute correctly", {
   skip_if_not_installed("pjrt")
   local_func()
-  x1 <- hlo_scalar(Inf, dtype = "f32")
-  x2 <- hlo_scalar(-Inf, dtype = "f32")
-  x3 <- hlo_scalar(NaN, dtype = "f32")
-  f <- hlo_return(x1, x2, x3)
+  x <- hlo_tensor(c(1, NaN, Inf, -Inf), dtype = "f64")
+  f <- hlo_return(x)
   exec <- pjrt_compile(pjrt_program(repr(f)))
-  outs <- lapply(pjrt_execute(exec), as_array)
-  expect_equal(outs[[1]], Inf)
-  expect_equal(outs[[2]], -Inf)
-  expect_equal(outs[[3]], NaN)
+  out <- as_array(pjrt_execute(exec))
+  expect_equal(out[1], 1)
+  expect_true(is.nan(out[2]))
+  expect_equal(out[3], Inf)
+  expect_equal(out[4], -Inf)
 })
 
 test_that("Efficient representation of constants with single value", {
