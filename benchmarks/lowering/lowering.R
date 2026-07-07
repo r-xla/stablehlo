@@ -41,7 +41,11 @@ SIZES <- c(200L, 1000L, 5000L)
 
 # Returns a data.frame with one row per (graph, size, phase), reporting the
 # median time in milliseconds and allocations in MB.
-bench_lowering <- function(builders = BUILDERS, sizes = SIZES, iterations = 20L) {
+bench_lowering <- function(
+  builders = BUILDERS,
+  sizes = SIZES,
+  iterations = 20L
+) {
   rows <- list()
   for (bname in names(builders)) {
     builder <- builders[[bname]]
