@@ -46,13 +46,10 @@ test_that("Func repr", {
     )
   ))
 
-  body <- FuncBody(list())
-
   func <- Func(
     id = FuncId("my_func"),
     inputs = inputs,
-    outputs = outputs,
-    body = body
+    outputs = outputs
   )
 
   expect_snapshot(repr(func))
@@ -75,7 +72,7 @@ test_that("hlo_func", {
     hlo_func("abc")
   })()
   expect_false(is.null(globals[["CURRENT_FUNC"]]))
-  expect_true(test_class(f, "Func"))
+  expect_true(inherits(f, "Func"))
   expect_equal(f$id$id, "abc")
 })
 

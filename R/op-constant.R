@@ -1,28 +1,17 @@
-OpConstant <- function(value, output = NULL) {
-  checkmate::assert_class(value, "Constant")
-
-  base_op <- Op(
-    name = OpName("constant"),
-    inputs = OpInputs(
-      values = OpInputValues(list()),
-      funcs = OpInputFuncs(),
-      attrs = OpInputAttrs(
-        list(
-          ConstantAttr(
-            name = "value",
-            value = value
-          )
-        )
-      )
-    ),
-    outputs = output %||% OpOutputs(),
-    signature = OpSignature(
-      input_types = ValueTypes(list()),
-      output_types = ValueTypes(list(ValueType(value$type)))
-    )
+# Renders a constant op line: `%0 = "stablehlo.constant" () {\nvalue = dense<...>\n}: () -> (type)`
+render_constant <- function(value_id, const_value) {
+  attr_str <- render_attrs(
+    list(ConstantAttr(name = "value", value = const_value)),
+    simplify_dense = FALSE
   )
-  class(base_op) <- c("OpConstant", "Op")
-  base_op
+  paste0(
+    repr(value_id),
+    " = \"stablehlo.constant\" ()",
+    attr_str,
+    ": () -> (",
+    const_value$type$str,
+    ")"
+  )
 }
 
 #' @title Create a Constant
@@ -203,24 +192,20 @@ impl_hlo_constant <- function(value, dtype, func, shape) {
   } else {
     as.character(as_dtype(dtype))
   }
-  if (length(shape) && !test_class(value, "PJRTBuffer") && length(value) > 1) {
+  if (length(shape) && !inherits(value, "PJRTBuffer") && length(value) > 1) {
     # stablehlo allows e.g. dense<0.0> : tensor<2x2xf32>, so if length(value) == 1
     # we don't need to recycle to keep the program size smaller
     value <- array(value, dim = shape)
   }
   const_value <- r_to_constant(value, dtype = dtype, shape = shape)
   value_id <- ValueId()
-  op <- OpConstant(
-    const_value,
-    OpOutputs(
-      items = list(
-        OpOutput(
-          value_id
-        )
-      )
+  func_emit(
+    func,
+    list(
+      function(p) render_constant(p$value_id, p$const_value),
+      list(value_id = value_id, const_value = const_value)
     )
   )
-  func$body <- FuncBody(c(func$body, list(op)))
 
   FuncValue(
     value_id = value_id,
@@ -234,17 +219,4 @@ impl_hlo_constant <- function(value, dtype, func, shape) {
 infer_types_constant <- function(value) {
   assert_const(value)
   ValueTypes(list(ValueType(value$type)))
-}
-
-#' @export
-repr.OpConstant <- function(x, ...) {
-  paste0(
-    repr(x$outputs),
-    " = ",
-    repr(x$name),
-    " ",
-    repr(x$inputs, simplify_dense = FALSE),
-    ": ",
-    repr(x$signature)
-  )
 }

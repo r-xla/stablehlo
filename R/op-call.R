@@ -1,16 +1,6 @@
 #' @include op.R hlo.R
 NULL
 
-OpCall <- function(inputs, outputs, signature) {
-  base_op <- Op(
-    name = OpName("call"),
-    inputs = inputs,
-    outputs = outputs,
-    signature = signature
-  )
-  class(base_op) <- c("OpCall", "Op")
-  base_op
-}
 
 #' @rdname hlo_call
 #' @export
@@ -54,7 +44,7 @@ infer_types_call <- function(callee, ...) {
 #' @return [`FuncValue`] or `list()` of [`FuncValue`]s.
 #' @export
 hlo_call <- function(callee, ..., simplify = TRUE) {
-  if (!test_class(callee, "Func")) {
+  if (!inherits(callee, "Func")) {
     cli_abort("{.arg callee} must be a {.cls Func} object.")
   }
   if (length(callee$outputs) == 0L) {
@@ -63,39 +53,52 @@ hlo_call <- function(callee, ..., simplify = TRUE) {
 
   dots <- list(...)
   lapply(dots, function(x) {
-    if (!test_class(x, "FuncValue")) {
+    if (!inherits(x, "FuncValue")) {
       cli_abort("All arguments must be {.cls FuncValue}s.")
     }
   })
 
   func <- merge_funcs(lapply(dots, function(x) x$func))
 
-  input_value_ids <- lapply(dots, function(x) OpInputValue(x$value_id))
   input_types <- lapply(dots, function(x) x$value_type)
 
-  output_types <- rlang::exec(infer_types_call, callee, !!!input_types)
+  output_types <- do.call(infer_types_call, c(list(callee), input_types))
 
   nout <- length(output_types)
-  output_value_ids <- replicate(nout, ValueId(), simplify = FALSE)
-  outputs <- OpOutputs(lapply(output_value_ids, OpOutput))
+  output_value_ids <- lapply(seq_len(nout), function(i) ValueId())
 
-  signature <- OpSignature(
-    input_types = ValueTypes(input_types),
-    output_types = output_types
+  func_emit(
+    func,
+    list(
+      function(p) {
+        paste0(
+          ids_str(p$output_ids),
+          " = func.call ",
+          p$callee_id,
+          "(",
+          ids_str(p$value_ids),
+          ") : (",
+          p$in_types,
+          ") -> (",
+          p$out_types,
+          ")"
+        )
+      },
+      list(
+        output_ids = output_value_ids,
+        value_ids = lapply(dots, function(x) x$value_id),
+        callee_id = repr(callee$id),
+        in_types = paste0(
+          vapply(input_types, type_str, character(1)),
+          collapse = ", "
+        ),
+        out_types = paste0(
+          vapply(output_types, type_str, character(1)),
+          collapse = ", "
+        )
+      )
+    )
   )
-
-  inputs <- OpInputs(
-    values = OpInputValues(input_value_ids),
-    custom_attrs = list(callee = callee$id)
-  )
-
-  op <- OpCall(
-    inputs = inputs,
-    outputs = outputs,
-    signature = signature
-  )
-
-  func$body <- FuncBody(c(func$body, list(op)))
 
   if (nout == 1L && simplify) {
     return(
@@ -113,17 +116,4 @@ hlo_call <- function(callee, ..., simplify = TRUE) {
       func = func
     )
   })
-}
-
-#' @export
-repr.OpCall <- function(x, toplevel = TRUE, ...) {
-  paste0(
-    repr(x$outputs),
-    " = func.call ",
-    repr(x$inputs$custom_attrs$callee),
-    "(",
-    repr(x$inputs$values),
-    ") : ",
-    repr(x$signature)
-  )
 }

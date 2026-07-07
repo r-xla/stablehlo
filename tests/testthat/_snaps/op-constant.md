@@ -1,86 +1,110 @@
 # scalars
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<3.14000000e+00> : tensor<f32>\n}: () -> (tensor<f32>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<3.14000000e+00> : tensor<f32>
+      }: () -> (tensor<f32>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<3.1400000000000001e+00> : tensor<f64>\n}: () -> (tensor<f64>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<3.1400000000000001e+00> : tensor<f64>
+      }: () -> (tensor<f64>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<3> : tensor<i32>\n}: () -> (tensor<i32>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<3> : tensor<i32>
+      }: () -> (tensor<i32>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<3> : tensor<i64>\n}: () -> (tensor<i64>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<3> : tensor<i64>
+      }: () -> (tensor<i64>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<3> : tensor<i16>\n}: () -> (tensor<i16>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<3> : tensor<i16>
+      }: () -> (tensor<i16>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<3> : tensor<ui32>\n}: () -> (tensor<ui32>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<3> : tensor<ui32>
+      }: () -> (tensor<ui32>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<3> : tensor<ui64>\n}: () -> (tensor<ui64>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<3> : tensor<ui64>
+      }: () -> (tensor<ui64>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<3> : tensor<ui16>\n}: () -> (tensor<ui16>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<3> : tensor<ui16>
+      }: () -> (tensor<ui16>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<-3> : tensor<i32>\n}: () -> (tensor<i32>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<-3> : tensor<i32>
+      }: () -> (tensor<i32>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<-100> : tensor<i32>\n}: () -> (tensor<i32>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<-100> : tensor<i32>
+      }: () -> (tensor<i32>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<true> : tensor<i1>\n}: () -> (tensor<i1>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<true> : tensor<i1>
+      }: () -> (tensor<i1>)
 
 ---
 
     Code
-      repr(f$func$body[[1]])
+      cat(func_lines(f$func)[[1L]])
     Output
-      [1] "%0 = \"stablehlo.constant\" () {\nvalue = dense<false> : tensor<i1>\n}: () -> (tensor<i1>)"
+      %0 = "stablehlo.constant" () {
+      value = dense<false> : tensor<i1>
+      }: () -> (tensor<i1>)
 
 # arrays
 

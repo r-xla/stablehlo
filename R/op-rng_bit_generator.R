@@ -1,7 +1,26 @@
 #' @include op.R hlo.R
 NULL
 
-OpRngBitGenerator <- new_Op("OpRngBitGenerator", "rng_bit_generator")
+render_rng_bit_generator <- function(ctx) {
+  paste0(
+    ctx$outputs_str,
+    " = \"stablehlo.rng_bit_generator\" ",
+    "(",
+    ctx$values_str,
+    ") {\n",
+    "rng_algorithm = #stablehlo<rng_algorithm ",
+    ctx$custom_attrs$rng_algorithm,
+    ">\n}",
+    ": ",
+    ctx$sig_str
+  )
+}
+
+OpRngBitGenerator <- new_Op(
+  "OpRngBitGenerator",
+  "rng_bit_generator",
+  render = render_rng_bit_generator
+)
 
 #' @rdname hlo_rng_bit_generator
 #' @export
@@ -87,21 +106,5 @@ hlo_rng_bit_generator <- function(
       dtype = dtype,
       shape = as.integer(shape)
     )
-  )
-}
-
-#' @export
-repr.OpRngBitGenerator <- function(x, ...) {
-  paste0(
-    repr(x$outputs),
-    " = \"stablehlo.rng_bit_generator\" ",
-    "(",
-    repr(x$inputs$values),
-    ") {\n",
-    "rng_algorithm = #stablehlo<rng_algorithm ",
-    x$inputs$custom_attrs$rng_algorithm,
-    ">\n}",
-    ": ",
-    repr(x$signature)
   )
 }

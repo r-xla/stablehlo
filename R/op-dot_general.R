@@ -1,4 +1,45 @@
-OpDotGeneral <- new_Op("OpDotGeneral", "dot_general")
+render_dot_general <- function(ctx) {
+  precision_config <- ctx$custom_attrs$precision_config
+  precision_repr <- if (is.null(precision_config)) {
+    ""
+  } else {
+    paste0(", precision = [", paste0(precision_config, collapse = ", "), "]")
+  }
+  ddn <- ctx$custom_attrs$dot_dimension_numbers
+  batching_repr <- if (is.null(ddn$batching_dims)) {
+    ""
+  } else {
+    paste0(
+      "batching_dims = [",
+      paste0(ddn$batching_dims[[1L]], collapse = ", "),
+      "] x [",
+      paste0(ddn$batching_dims[[2L]], collapse = ", "),
+      "], "
+    )
+  }
+  paste0(
+    ctx$outputs_str,
+    " = ",
+    "stablehlo.dot_general ",
+    ctx$values_str,
+    ", ",
+    batching_repr,
+    "contracting_dims = [",
+    paste0(ddn$contracting_dims[[1L]], collapse = ", "),
+    "] x [",
+    paste0(ddn$contracting_dims[[2L]], collapse = ", "),
+    "]",
+    precision_repr,
+    ": ",
+    ctx$sig_str
+  )
+}
+
+OpDotGeneral <- new_Op(
+  "OpDotGeneral",
+  "dot_general",
+  render = render_dot_general
+)
 
 precision_values <- c("DEFAULT", "HIGH", "HIGHEST")
 
@@ -83,7 +124,12 @@ infer_types_dot_general <- function(
   dot_dimension_numbers,
   precision_config = NULL
 ) {
-  assert_class(dot_dimension_numbers, "DotDimensionNumbers")
+  if (!inherits(dot_dimension_numbers, "DotDimensionNumbers")) {
+    cli_abort(c(
+      "{.arg dot_dimension_numbers} must be a {.cls DotDimensionNumbers}.",
+      x = "Got {.cls {class(dot_dimension_numbers)[1L]}}."
+    ))
+  }
   assert_precision_config(precision_config)
   assert_vts_are_tensors(lhs, rhs)
   # (C13)
@@ -278,39 +324,22 @@ hlo_dot_general <- function(
 
 #' @export
 repr.DotDimensionNumbers <- function(x, ...) {
-  str <- sprintf(
-    "contracting_dims = [%s] x [%s]",
+  contracting <- paste0(
+    "contracting_dims = [",
     paste0(x$contracting_dims[[1L]], collapse = ", "),
-    paste0(x$contracting_dims[[2L]], collapse = ", ")
+    "] x [",
+    paste0(x$contracting_dims[[2L]], collapse = ", "),
+    "]"
   )
   if (is.null(x$batching_dims)) {
-    return(str)
-  }
-  sprintf(
-    "batching_dims = [%s] x [%s], %s",
-    paste0(x$batching_dims[[1L]], collapse = ", "),
-    paste0(x$batching_dims[[2L]], collapse = ", "),
-    str
-  )
-}
-
-#' @export
-repr.OpDotGeneral <- function(x, ...) {
-  precision_config <- x$inputs$custom_attrs$precision_config
-  precision_repr <- if (is.null(precision_config)) {
-    ""
-  } else {
-    sprintf(", precision = [%s]", paste0(precision_config, collapse = ", "))
+    return(contracting)
   }
   paste0(
-    repr(x$outputs),
-    " = ",
-    "stablehlo.dot_general ",
-    repr(x$inputs$values),
-    ", ",
-    repr(x$inputs$custom_attrs$dot_dimension_numbers),
-    precision_repr,
-    ": ",
-    repr(x$signature)
+    "batching_dims = [",
+    paste0(x$batching_dims[[1L]], collapse = ", "),
+    "] x [",
+    paste0(x$batching_dims[[2L]], collapse = ", "),
+    "], ",
+    contracting
   )
 }

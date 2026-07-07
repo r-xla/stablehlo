@@ -5,6 +5,41 @@
 `stablehlo` is an R package that allows to create StableHLO programs, a portable computation representation used in machine learning. It allows creating, manipulating, and transforming StableHLO operations in R.
 The Func object uses reference semantic, while other objects use value semantics.
 
+## Design
+
+The builder is optimized for low per-op overhead (lowering a graph should stay
+in the same order of magnitude as `pjrt_compile()`):
+
+* **Lazy rendering**: each op is stored on its func as a deferred
+  `list(render, ctx)` pair via `func_emit()` (a cons list, so appending is
+  O(1) per op and never touches earlier ops). The MLIR text line is produced
+  by `render(ctx)` at `repr()` time, in `func_lines()`, front-to-back. There
+  is no op-record tree to walk; a single `repr()` per program means deferring
+  the render costs nothing over rendering eagerly.
+* **Repr-time value ids**: an auto SSA id (`ValueId()`) carries a mutable cell
+  and gets its number when first rendered — in appearance order (`%0`, `%1`,
+  ...), sharing one counter per program installed by `repr.Func`. Numbering
+  skips integers already claimed by named ids (`collect_named_numeric()`), so
+  an input named `"2"` does not collide with `%2` and a large name like
+  `%1000000` does not inflate the counter. Region funcs rendered within the
+  program share the scope, so ids stay unique across embedded regions.
+* **Ops are descriptors, not objects**: `new_Op()` returns a lightweight
+  descriptor (mnemonic, dialect, optional `render` function). `hlo_fn()` runs
+  type inference, draws output ids, precomputes the id-independent strings
+  (type strings, `sig_str`, `attrs_str`) and stores the `ValueId` objects and
+  region funcs in a `ctx` list. At repr, `finalize_render()` fills the
+  id-dependent strings (`outputs_str`, `values_str`, `funcs_str`) and calls
+  the op's `render` function (default: `render_op_default()`, assembly or
+  generic format). Ops with a custom MLIR syntax (e.g. `dot_general`,
+  `custom_call`) define their own render function next to their `new_Op()`
+  call.
+* **Cached type strings**: `TensorType` renders `tensor<...>` once at creation
+  and stores it in `$str`; equality and all rendering reuse it.
+* Constructors on the hot path (`FuncValue`, `FuncInput`, `TensorType`, ...)
+  do not validate their inputs; validation happens in `hlo_fn()` and the
+  `infer_types_*` functions. Prefer `inherits()` over `checkmate` helpers in
+  per-op code paths.
+
 ## Testing
 
 You can compare PJRTBuffers using `expect_equal()`, so you don't need to use `as_array()`.

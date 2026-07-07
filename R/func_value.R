@@ -11,10 +11,6 @@ NULL
 #' @param func The function the variable belongs to.
 #' @export
 FuncValue <- function(value_id, value_type, func) {
-  checkmate::assert_class(value_id, "ValueId")
-  checkmate::assert_class(value_type, "ValueType")
-  checkmate::assert_class(func, "Func")
-
   structure(
     list(value_id = value_id, value_type = value_type, func = func),
     class = "FuncValue"
@@ -23,10 +19,14 @@ FuncValue <- function(value_id, value_type, func) {
 
 #' @export
 print.FuncValue <- function(x, ...) {
-  local_vars()
+  # Render the func first (numbering all ids in one shared scope), then read
+  # this value's number so the label matches how it appears in the body.
+  prev <- push_repr_ids(collect_named_numeric(x$func))
+  on.exit(pop_repr_ids(prev), add = TRUE)
   str <- repr(x$func)
-  cat(sprintf("Variable %s in:\n", cli::col_blue(repr(x$value_id))))
-  cat(sub(repr(x$value_id), cli::col_blue(repr(x$value_id)), str, fixed = TRUE))
+  id <- repr(x$value_id)
+  cat(sprintf("Variable %s in:\n", cli::col_blue(id)))
+  cat(sub(id, cli::col_blue(id), str, fixed = TRUE))
 }
 
 merge_funcs <- function(funcs) {

@@ -67,7 +67,7 @@ test_that("Module without module context still works for Func", {
   f <- local_func("test")
   x <- hlo_input("x", "f32")
   hlo_return(x)
-  expect_true(test_class(f, "Func"))
+  expect_true(inherits(f, "Func"))
 })
 
 test_that("Module with single function", {

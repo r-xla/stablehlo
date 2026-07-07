@@ -15,7 +15,7 @@ infer_types_case <- function(index, ...) {
 
   # (C2)
   get_branch_out_types <- function(branch, index) {
-    if (!test_class(branch, "Func")) {
+    if (!inherits(branch, "Func")) {
       error_unexpected_list_type(
         arg = "branches",
         index = index,

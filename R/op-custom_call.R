@@ -1,7 +1,55 @@
 #' @include op.R hlo.R type_inference.R
 NULL
 
-OpCustomCall <- new_Op("OpCustomCall", "custom_call")
+render_custom_call <- function(ctx) {
+  target_name <- NULL
+  for (attr in ctx$attrs) {
+    if (attr$name == "call_target_name") {
+      target_name <- attr$value
+      break
+    }
+  }
+
+  attr_reprs <- vapply(ctx$attrs, repr, character(1))
+  bec <- ctx$custom_attrs$backend_config
+  if (!is.null(bec)) {
+    attr_reprs <- c(attr_reprs, repr(bec))
+  }
+  ol <- ctx$custom_attrs$operand_layouts
+  if (!is.null(ol)) {
+    attr_reprs <- c(attr_reprs, repr_layouts("operand_layouts", ol))
+  }
+  rl <- ctx$custom_attrs$result_layouts
+  if (!is.null(rl)) {
+    attr_reprs <- c(attr_reprs, repr_layouts("result_layouts", rl))
+  }
+  attrs_str <- paste0("{\n  ", paste(attr_reprs, collapse = ",\n  "), "\n}")
+
+  # Build output part
+  outputs_repr <- if (!nzchar(ctx$outputs_str)) {
+    ""
+  } else {
+    paste0(ctx$outputs_str, " = ")
+  }
+
+  paste0(
+    outputs_repr,
+    "stablehlo.custom_call @",
+    target_name,
+    "(",
+    ctx$values_str,
+    ") ",
+    attrs_str,
+    " : ",
+    ctx$sig_str
+  )
+}
+
+OpCustomCall <- new_Op(
+  "OpCustomCall",
+  "custom_call",
+  render = render_custom_call
+)
 
 #' @title CustomOpBackendConfig
 #' @description
@@ -87,7 +135,7 @@ infer_types_custom_call <- function(
     return(ValueTypes(list()))
   }
 
-  if (!test_class(output_types, "ValueTypes")) {
+  if (!inherits(output_types, "ValueTypes")) {
     output_types <- ValueTypes(output_types)
   }
 
@@ -182,60 +230,4 @@ repr_layout <- function(layout) {
 repr_layouts <- function(name, layouts) {
   items <- vapply(layouts, repr_layout, character(1))
   paste0(name, " = [", paste(items, collapse = ", "), "]")
-}
-
-#' @export
-repr.OpCustomCall <- function(
-  x,
-  toplevel = TRUE,
-  simplify_dense = TRUE,
-  ...
-) {
-  attrs <- x$inputs$attrs
-  target_name <- NULL
-  for (attr in attrs) {
-    if (attr$name == "call_target_name") {
-      target_name <- attr$value
-      break
-    }
-  }
-
-  attr_reprs <- vapply(
-    attrs,
-    repr,
-    character(1),
-    simplify_dense = simplify_dense
-  )
-  bec <- x$inputs$custom_attrs$backend_config
-  if (!is.null(bec)) {
-    attr_reprs <- c(attr_reprs, repr(bec))
-  }
-  ol <- x$inputs$custom_attrs$operand_layouts
-  if (!is.null(ol)) {
-    attr_reprs <- c(attr_reprs, repr_layouts("operand_layouts", ol))
-  }
-  rl <- x$inputs$custom_attrs$result_layouts
-  if (!is.null(rl)) {
-    attr_reprs <- c(attr_reprs, repr_layouts("result_layouts", rl))
-  }
-  attrs_str <- paste0("{\n  ", paste(attr_reprs, collapse = ",\n  "), "\n}")
-
-  # Build output part
-  outputs_repr <- if (!length(x$outputs)) {
-    ""
-  } else {
-    paste0(repr(x$outputs), " = ")
-  }
-
-  paste0(
-    outputs_repr,
-    "stablehlo.custom_call @",
-    target_name,
-    "(",
-    repr(x$inputs$values),
-    ") ",
-    attrs_str,
-    " : ",
-    repr(x$signature)
-  )
 }

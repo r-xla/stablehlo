@@ -58,7 +58,7 @@ assert_one_of <- function(
   call = rlang::caller_env()
 ) {
   for (type in types) {
-    if (test_class(x, type)) {
+    if (inherits(x, type)) {
       return(invisible(NULL))
     }
   }
@@ -74,6 +74,16 @@ assert_one_of <- function(
 
 assert_vts_are_tensors <- function(..., call = rlang::caller_env()) {
   args <- list(...)
+  all_ok <- TRUE
+  for (x in args) {
+    if (!inherits(x, "ValueType") || !inherits(x$type, "TensorType")) {
+      all_ok <- FALSE
+      break
+    }
+  }
+  if (all_ok) {
+    return(invisible(NULL))
+  }
   arg_names <- names(args)
   if (is.null(arg_names)) {
     for (i in seq_along(args)) {
@@ -91,7 +101,7 @@ assert_vt_is_tensor <- function(
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
-  if (!test_class(x, "ValueType")) {
+  if (!inherits(x, "ValueType")) {
     cli_abort(
       c(
         "{.arg {arg}} must be a ValueType.",
@@ -101,7 +111,7 @@ assert_vt_is_tensor <- function(
     )
   }
   tensor_type <- x$type
-  if (!test_class(tensor_type, "TensorType")) {
+  if (!inherits(tensor_type, "TensorType")) {
     cli_abort(
       c(
         "{.arg {arg}} must contain a TensorType.",
@@ -122,7 +132,26 @@ assert_vt_has_ttype <- function(
 ) {
   dtypes <- list(...)
 
-  if (!test_class(x, "ValueType")) {
+  # Fast path for the common success case: class-name dtypes, no
+  # shape/ndims constraint.
+  if (
+    is.null(shape) &&
+      is.null(ndims) &&
+      inherits(x, "ValueType") &&
+      inherits(x$type, "TensorType")
+  ) {
+    if (length(dtypes) == 0L) {
+      return(invisible(NULL))
+    }
+    dt <- x$type$dtype
+    for (dtype in dtypes) {
+      if (is.character(dtype) && inherits(dt, dtype)) {
+        return(invisible(NULL))
+      }
+    }
+  }
+
+  if (!inherits(x, "ValueType")) {
     cli_abort(
       c(
         "{.arg {arg}} must be a ValueType.",
@@ -133,7 +162,7 @@ assert_vt_has_ttype <- function(
   }
 
   tensor_type <- x$type
-  if (!test_class(tensor_type, "TensorType")) {
+  if (!inherits(tensor_type, "TensorType")) {
     cli_abort(
       c(
         "{.arg {arg}} must contain a TensorType.",
@@ -152,9 +181,9 @@ assert_vt_has_ttype <- function(
 
       # dtype should be either a class name (string) or an initialized instance
       if (is.character(dtype)) {
-        # dtype is a class name string - use test_class
+        # dtype is a class name string - use inherits
         type_names[i] <- dtype
-        if (test_class(tensor_type$dtype, dtype)) {
+        if (inherits(tensor_type$dtype, dtype)) {
           dtype_matched <- TRUE
           break
         }
@@ -210,7 +239,9 @@ assert_vts_have_same_dtype <- function(
   dtype_x <- x$type$dtype
   dtype_y <- y$type$dtype
 
-  if (dtype_x != dtype_y) {
+  # dtype objects are canonically constructed lists, so identical() is an
+  # exact and dispatch-free equality
+  if (!identical(dtype_x, dtype_y)) {
     cli_abort(
       c(
         "{.arg {arg_x}} and {.arg {arg_y}} must have the same dtype.",
@@ -280,7 +311,7 @@ assert_func <- function(
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
-  if (!test_class(x, "Func")) {
+  if (!inherits(x, "Func")) {
     cli_abort(
       c(
         "{.arg {arg}} must be a Func.",

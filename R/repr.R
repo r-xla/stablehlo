@@ -8,9 +8,6 @@
 #' @return `character(1)`
 #' @export
 repr <- function(x, ...) {
-  if (is.null(FUNC_ENV$vars)) {
-    local_vars()
-  }
   UseMethod("repr")
 }
 
@@ -32,16 +29,4 @@ repr.integer <- function(x, ...) {
 #' @export
 repr.logical <- function(x, ...) {
   if (x) "true" else "false"
-}
-
-FUNC_ENV <- new.env()
-
-local_vars <- function(local_envir = parent.frame()) {
-  FUNC_ENV$vars <- hashtab()
-  FUNC_ENV$counter <- 0L
-  withr::defer(envir = local_envir, {
-    FUNC_ENV$vars <- NULL
-    FUNC_ENV$counter <- NULL
-  })
-  NULL
 }

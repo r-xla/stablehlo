@@ -4,14 +4,14 @@
 \alias{OpInputFunc}
 \title{OpInputFunc}
 \usage{
-OpInputFunc(inputs, body)
+OpInputFunc(inputs, lines)
 }
 \arguments{
 \item{inputs}{(\code{FuncInputs})\cr
 The inputs of the function.}
 
-\item{body}{(\code{FuncBody})\cr
-The body of the function.}
+\item{lines}{(\code{character()})\cr
+The rendered op lines of the function body.}
 }
 \value{
 (\code{OpInputFunc})

@@ -1,5 +1,12 @@
 # stablehlo (development version)
 
+## Performance
+
+* The package was optimized w.r.t. runtime performance.
+  This was achieved by reducing the number of classes
+  that are used internally when creating `Func`s.
+  The `hlo_<*>` user API remains unaffected.
+
 ## Bug fixes
 
 * emit width-correct hex for f64 NaN/Inf constants

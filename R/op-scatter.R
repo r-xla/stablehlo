@@ -1,7 +1,29 @@
 #' @include op.R hlo.R type_inference.R
 NULL
 
-OpScatter <- new_Op("OpScatter", "scatter")
+render_scatter <- function(ctx) {
+  attrs_str <- paste(
+    vapply(ctx$attrs, repr, character(1)),
+    collapse = ", "
+  )
+
+  paste0(
+    ctx$outputs_str,
+    " = \"stablehlo.scatter\"(",
+    ctx$values_str,
+    ")",
+    ctx$funcs_str,
+    " {\n",
+    "scatter_dimension_numbers = ",
+    repr(ctx$custom_attrs$scatter_dimension_numbers),
+    ",\n",
+    attrs_str,
+    "\n}: ",
+    ctx$sig_str
+  )
+}
+
+OpScatter <- new_Op("OpScatter", "scatter", render = render_scatter)
 
 #' @title ScatterDimensionNumbers
 #' @description
@@ -490,34 +512,5 @@ hlo_scatter <- function(
       ),
       BoolAttr(name = "unique_indices", value = as.logical(unique_indices))
     ),
-  )
-}
-
-#' @export
-repr.OpScatter <- function(x, toplevel = TRUE, simplify_dense = TRUE, ...) {
-  values_repr <- repr(x$inputs$values)
-  scatter_dim_nums <- x$inputs$custom_attrs$scatter_dimension_numbers
-
-  attrs_parts <- character()
-  for (attr in x$inputs$attrs) {
-    attrs_parts <- c(attrs_parts, repr(attr))
-  }
-  attrs_str <- paste(attrs_parts, collapse = ", ")
-
-  paste0(
-    repr(x$outputs),
-    " = ",
-    repr(x$name),
-    "(",
-    values_repr,
-    ")",
-    repr(x$inputs$funcs),
-    " {\n",
-    "scatter_dimension_numbers = ",
-    repr(scatter_dim_nums),
-    ",\n",
-    attrs_str,
-    "\n}: ",
-    repr(x$signature)
   )
 }

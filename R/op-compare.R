@@ -1,7 +1,21 @@
 #' @include op.R hlo.R
 NULL
 
-OpCompare <- new_Op("OpCompare", "compare")
+render_compare <- function(ctx) {
+  paste0(
+    ctx$outputs_str,
+    " = stablehlo.compare ",
+    ctx$custom_attrs$comparison_direction,
+    ", ",
+    ctx$values_str,
+    ", ",
+    ctx$custom_attrs$compare_type,
+    " : ",
+    ctx$sig_str
+  )
+}
+
+OpCompare <- new_Op("OpCompare", "compare", render = render_compare)
 
 #' @rdname hlo_compare
 #' @export
@@ -88,25 +102,5 @@ hlo_compare <- function(
       comparison_direction = comparison_direction,
       compare_type = compare_type
     )
-  )
-}
-
-#' @export
-repr.OpCompare <- function(
-  x,
-  toplevel = TRUE,
-  simplify_dense = TRUE,
-  ...
-) {
-  paste0(
-    repr(x$outputs),
-    " = stablehlo.compare ",
-    x$inputs$custom_attrs$comparison_direction,
-    ", ",
-    repr(x$inputs$values),
-    ", ",
-    x$inputs$custom_attrs$compare_type,
-    " : ",
-    repr(x$signature)
   )
 }
