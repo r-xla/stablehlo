@@ -1,7 +1,34 @@
 #' @include op.R hlo.R
 NULL
 
-OpTriangularSolve <- new_Op("OpTriangularSolve", "triangular_solve")
+render_triangular_solve <- function(ctx) {
+  attrs_str <- vapply(
+    ctx$attrs,
+    repr,
+    character(1)
+  )
+  transpose_attr <- sprintf(
+    "transpose_a = #stablehlo<transpose %s>",
+    ctx$custom_attrs$transpose_a
+  )
+  all_attrs <- paste(c(attrs_str, transpose_attr), collapse = ",\n")
+
+  paste0(
+    ctx$outputs_str,
+    " = \"stablehlo.triangular_solve\" (",
+    ctx$values_str,
+    ") {\n",
+    all_attrs,
+    "\n}: ",
+    ctx$sig_str
+  )
+}
+
+OpTriangularSolve <- new_Op(
+  "OpTriangularSolve",
+  "triangular_solve",
+  render = render_triangular_solve
+)
 
 #' @rdname hlo_triangular_solve
 #' @export
@@ -125,37 +152,5 @@ hlo_triangular_solve <- function(
     custom_attrs = list(
       transpose_a = transpose_a
     )
-  )
-}
-
-#' @export
-repr.OpTriangularSolve <- function(
-  x,
-  toplevel = TRUE,
-  simplify_dense = TRUE,
-  ...
-) {
-  attrs_str <- vapply(
-    x$inputs$attrs,
-    repr,
-    character(1),
-    simplify_dense = simplify_dense
-  )
-  transpose_attr <- sprintf(
-    "transpose_a = #stablehlo<transpose %s>",
-    x$inputs$custom_attrs$transpose_a
-  )
-  all_attrs <- paste(c(attrs_str, transpose_attr), collapse = ",\n")
-
-  paste0(
-    repr(x$outputs),
-    " = ",
-    repr(x$name),
-    " (",
-    repr(x$inputs$values),
-    ") {\n",
-    all_attrs,
-    "\n}: ",
-    repr(x$signature)
   )
 }

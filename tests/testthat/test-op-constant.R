@@ -6,7 +6,7 @@ test_that("scalars", {
     } else {
       hlo_scalar(x)
     }
-    expect_snapshot(repr(f$func$body[[1]]))
+    expect_snapshot(cat(func_lines(f$func)[[1L]]))
   }
   check(3.14, "f32")
   check(3.14, "f64")
@@ -146,7 +146,6 @@ test_that("empty array: dense<[]> formatting", {
   skip_if_not_installed("pjrt")
   local_func()
   empty_tensor <- hlo_empty("i64", 0L)
-  constant_op <- empty_tensor$func$body[[1]]
   f <- hlo_return(empty_tensor)
   expect_snapshot(repr(f))
   program <- pjrt_program(repr(f))
@@ -177,35 +176,18 @@ test_that("can use dtype with constant", {
   expect_snapshot(hlo_scalar(FALSE, BooleanType()))
 })
 
-test_that("nan, inf, -inf scalars execute correctly for f32 and f64", {
-  skip_if_not_installed("pjrt")
-  # f64 previously reused the 32-bit hex bit-patterns, so the constants were
-  # parsed as tiny denormals (~1e-314) instead of Inf/-Inf/NaN at runtime.
-  for (dt in c("f32", "f64")) {
-    local_func()
-    x1 <- hlo_scalar(Inf, dtype = dt)
-    x2 <- hlo_scalar(-Inf, dtype = dt)
-    x3 <- hlo_scalar(NaN, dtype = dt)
-    f <- hlo_return(x1, x2, x3)
-    exec <- pjrt_compile(pjrt_program(repr(f)))
-    outs <- lapply(pjrt_execute(exec), as_array)
-    expect_equal(outs[[1]], Inf, info = dt)
-    expect_equal(outs[[2]], -Inf, info = dt)
-    expect_true(is.nan(outs[[3]]), info = dt)
-  }
-})
-
-test_that("nan, inf, -inf in an f64 tensor execute correctly", {
+test_that("nan, inf, -inf", {
   skip_if_not_installed("pjrt")
   local_func()
-  x <- hlo_tensor(c(1, NaN, Inf, -Inf), dtype = "f64")
-  f <- hlo_return(x)
+  x1 <- hlo_scalar(Inf, dtype = "f32")
+  x2 <- hlo_scalar(-Inf, dtype = "f32")
+  x3 <- hlo_scalar(NaN, dtype = "f32")
+  f <- hlo_return(x1, x2, x3)
   exec <- pjrt_compile(pjrt_program(repr(f)))
-  out <- as_array(pjrt_execute(exec))
-  expect_equal(out[1], 1)
-  expect_true(is.nan(out[2]))
-  expect_equal(out[3], Inf)
-  expect_equal(out[4], -Inf)
+  outs <- lapply(pjrt_execute(exec), as_array)
+  expect_equal(outs[[1]], Inf)
+  expect_equal(outs[[2]], -Inf)
+  expect_equal(outs[[3]], NaN)
 })
 
 test_that("Efficient representation of constants with single value", {

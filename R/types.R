@@ -42,6 +42,19 @@ repr.FloatType <- function(x, ...) {
 # Re-export assert_dtype from tengen
 assert_dtype <- tengen::assert_dtype
 
+# Dispatch-free rendering of a DataType; falls back to repr() for
+# extension dtypes.
+dtype_str <- function(dtype) {
+  switch(
+    class(dtype)[[1L]],
+    FloatType = paste0("f", dtype$value),
+    IntegerType = paste0("i", dtype$value),
+    UIntegerType = paste0("ui", dtype$value),
+    BooleanType = "i1",
+    repr(dtype)
+  )
+}
+
 #' @title TensorType
 #' @description
 #' Represents a tensor type with a specific data type and shape.
@@ -50,20 +63,27 @@ assert_dtype <- tengen::assert_dtype
 #' @return `TensorType`
 #' @export
 TensorType <- function(dtype, shape) {
-  assert_dtype(dtype)
-  checkmate::assert_class(shape, "Shape")
+  dims <- shape$dims
+  if (anyNA(dims)) {
+    dims[is.na(dims)] <- "?"
+  }
 
+  # The rendered type string is cached; it uniquely encodes (dtype, shape),
+  # so repr and equality never have to re-derive it.
+  str <- if (length(dims) > 0L) {
+    paste0("tensor<", paste0(dims, collapse = "x"), "x", dtype_str(dtype), ">")
+  } else {
+    paste0("tensor<", dtype_str(dtype), ">")
+  }
   structure(
-    list(dtype = dtype, shape = shape),
+    list(dtype = dtype, shape = shape, str = str),
     class = "TensorType"
   )
 }
 
 #' @export
 `==.TensorType` <- function(e1, e2) {
-  test_class(e2, "TensorType") &&
-    e1$dtype == e2$dtype &&
-    e1$shape == e2$shape
+  test_class(e2, "TensorType") && identical(e1$str, e2$str)
 }
 
 #' @export
@@ -74,8 +94,7 @@ TensorType <- function(dtype, shape) {
 
 #' @export
 repr.TensorType <- function(x, ...) {
-  shape_repr <- repr(x$shape)
-  paste0("tensor<", shape_repr, if (nzchar(shape_repr)) "x", repr(x$dtype), ">")
+  x$str
 }
 
 #' @export
@@ -103,12 +122,17 @@ dtype.TensorType <- function(x, ...) {
 
 # TokenType - internal, not exported
 TokenType <- function() {
-  structure(list(), class = "TokenType")
+  structure(list(str = "!stablehlo.token"), class = "TokenType")
 }
 
 #' @export
 repr.TokenType <- function(x, ...) {
-  "!stablehlo.token"
+  x$str
+}
+
+# Cached type string of a ValueType (both TensorType and TokenType carry one).
+type_str <- function(vt) {
+  vt$type$str
 }
 
 #' @export
@@ -129,10 +153,7 @@ ValueType <- function(type, shape = NULL) {
   }
 
   # Validate type is TensorType or TokenType
-  if (
-    !test_class(type, "TensorType") &&
-      !test_class(type, "TokenType")
-  ) {
+  if (!inherits(type, "TensorType") && !inherits(type, "TokenType")) {
     cli_abort("type must be a TensorType or TokenType")
   }
 
@@ -157,7 +178,7 @@ dtype.ValueType <- function(x, ...) {
 #' @export
 #' @method shape ValueType
 shape.ValueType <- function(x, ...) {
-  shape(x$type)
+  x$type$shape$dims
 }
 
 #' @export
@@ -204,7 +225,7 @@ ValueTypes <- new_list_of("ValueTypes", "ValueType")
 #' @export
 repr.ValueTypes <- function(x, ...) {
   paste0(
-    vapply(x, repr, character(1)),
+    vapply(x, type_str, character(1)),
     collapse = ", "
   )
 }

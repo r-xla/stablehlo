@@ -5,36 +5,6 @@
 #'
 NULL
 
-#' @title OpName
-#' @description
-#' This represents the name of an operation, containing a mnemonic and a dialect.
-#' @param mnemonic (`character(1)`)\cr
-#'   The mnemonic of the operation.
-#' @param dialect (`character(1)`)\cr
-#'   The MLIR dialect this op belongs to. Defaults to `"stablehlo"`.
-#'   Use `"chlo"` for CHLO ops (which lower to StableHLO during compilation).
-#' @return (`OpName`)
-#' @export
-OpName <- function(mnemonic, dialect = "stablehlo") {
-  checkmate::assert_string(mnemonic)
-  checkmate::assert_string(dialect)
-
-  structure(
-    list(mnemonic = mnemonic, dialect = dialect),
-    class = "OpName"
-  )
-}
-
-#' @export
-`==.OpName` <- function(e1, e2) {
-  e1$mnemonic == e2$mnemonic && e1$dialect == e2$dialect
-}
-
-#' @export
-repr.OpName <- function(x, ...) {
-  paste0("\"", x$dialect, ".", x$mnemonic, "\"")
-}
-
 # Attribute Types ----------------------------------------------------------
 
 #' @title OpInputAttr
@@ -214,340 +184,102 @@ constant_attr <- function(
   ConstantAttr(name = name, value = constant, simplify_dense = simplify_dense)
 }
 
-#' @title OpInputValue
-#' @description
-#' This represents a value that can be used as input to an operation.
-#' @param id ([`ValueId`])\cr
-#'   The id of the value.
-#' @return (`OpInputValue`)
-#' @export
-OpInputValue <- function(id) {
-  checkmate::assert_class(id, "ValueId")
+# Op descriptors and rendering ---------------------------------------------
 
-  structure(
-    list(id = id),
-    class = "OpInputValue"
-  )
+#' Define a new Op
+#'
+#' Creates the descriptor of a StableHLO operation, consumed by `hlo_fn()`.
+#'
+#' @param classname Name of the op (kept for readability at the call sites).
+#' @param mnemonic The operation mnemonic.
+#' @param dialect The MLIR dialect (`"stablehlo"` or `"chlo"`). Defaults to `"stablehlo"`.
+#' @param render (`function(ctx)` | `NULL`)\cr
+#'   Custom render function producing the op's MLIR line. `NULL` uses the
+#'   default assembly/generic format. The `ctx` argument is a list with
+#'   fields `mnemonic`, `dialect`, `outputs_str`, `values_str`,
+#'   `in_type_strs`, `out_type_strs`, `sig_str`, `attrs`, `attrs_str`,
+#'   `funcs_str` and `custom_attrs`.
+#' @return A descriptor `list` for use with `hlo_fn()`.
+#' @keywords internal
+new_Op <- function(classname, mnemonic, dialect = "stablehlo", render = NULL) {
+  list(mnemonic = mnemonic, dialect = dialect, render = render)
 }
 
-#' @export
-repr.OpInputValue <- function(x, ...) {
-  repr(x$id)
-}
-
-#' @export
-`==.OpInputValue` <- function(e1, e2) {
-  e1$id == e2$id
-}
-
-#' @title OpInputValues
-#' @description
-#' List of [`OpInputValue`]s.
-#' @param items (`list()` of [`OpInputValue`])\cr
-#'   The values that can be used as inputs to operations.
-#' @return (`OpInputValues`)
-#' @export
-OpInputValues <- new_list_of(
-  "OpInputValues",
-  "OpInputValue"
-)
-
-#' @export
-repr.OpInputValues <- function(x, ...) {
-  paste0(vapply(x, repr, character(1)), collapse = ", ")
-}
-
-#' @title OpInputAttrs
-#' @description
-#' List of [`OpInputAttr`]s.
-#' @param items (`list()` of [`OpInputAttr`])\cr
-#'   The attributes that can be used as inputs to operations.
-#' @return (`OpInputAttrs`)
-#' @export
-OpInputAttrs <- new_list_of("OpInputAttrs", "OpInputAttr")
-
-#' @export
-repr.OpInputAttrs <- function(x, simplify_dense = TRUE, ...) {
-  if (length(x) == 0) {
+# Renders the ` {\n<attr>,\n<attr>\n}` block of an op line ("" if no attrs).
+render_attrs <- function(attrs, simplify_dense = TRUE) {
+  if (length(attrs) == 0L) {
     return("")
   }
-
-  a <- vapply(
-    x,
-    function(item) repr(item, simplify_dense = simplify_dense),
-    character(1)
-  ) |>
-    paste(collapse = ",\n")
-
+  a <- paste0(
+    vapply(
+      attrs,
+      function(item) repr(item, simplify_dense = simplify_dense),
+      character(1)
+    ),
+    collapse = ",\n"
+  )
   paste0(" {\n", a, "\n}")
 }
 
-#' @title OpInputs
-#' @description
-#' This represents all the inputs to an operation, including values, functions, and attributes.
-#' @param values ([`OpInputValues`])\cr
-#'   The values used as inputs.
-#' @param funcs ([`OpInputFuncs`])\cr
-#'   The functions used as inputs.
-#' @param attrs ([`OpInputAttrs`])\cr
-#'   The attributes used as inputs.
-#' @param custom_attrs (`list`)\cr
-#'   Custom attributes. Use this attributes that require custom formatting.
-#' @return (`OpInputs`)
-#' @export
-OpInputs <- function(
-  values,
-  funcs = OpInputFuncs(),
-  attrs = OpInputAttrs(),
-  custom_attrs = list()
-) {
-  checkmate::assert_class(values, "OpInputValues")
-  checkmate::assert_class(funcs, "OpInputFuncs")
-  checkmate::assert_class(attrs, "OpInputAttrs")
-  checkmate::assert_list(custom_attrs)
-
-  structure(
-    list(
-      values = values,
-      funcs = funcs,
-      attrs = attrs,
-      custom_attrs = custom_attrs
-    ),
-    class = "OpInputs"
-  )
-}
-
-#' @export
-repr.OpInputs <- function(x, simplify_dense = TRUE, ...) {
-  paste0(
-    "(",
-    repr(x$values),
-    ")",
-    repr(x$funcs),
-    repr(x$attrs, simplify_dense = simplify_dense)
-  )
-}
-
-#' @export
-`==.OpInputs` <- function(e1, e2) {
-  e1$values == e2$values &&
-    e1$funcs == e2$funcs &&
-    e1$attrs == e2$attrs
-}
-
-#' @title OpOutput
-#' @description
-#' This represents an output of an operation.
-#' @param id ([`ValueId`])\cr
-#'   The id of the output.
-#' @return (`OpOutput`)
-#' @export
-OpOutput <- function(id = ValueId()) {
-  checkmate::assert_class(id, "ValueId")
-
-  structure(
-    list(id = id),
-    class = "OpOutput"
-  )
-}
-
-#' @export
-`==.OpOutput` <- function(e1, e2) {
-  e1$id == e2$id
-}
-
-#' @export
-repr.OpOutput <- function(x, ...) {
-  repr(x$id)
-}
-
-#' @title OpOutputs
-#' @description
-#' List of [`OpOutput`]s.
-#' @param items (`list()` of [`OpOutput`])\cr
-#'   The outputs of an operation.
-#' @return (`OpOutputs`)
-#' @export
-OpOutputs <- new_list_of("OpOutputs", "OpOutput")
-
-#' @export
-repr.OpOutputs <- function(x, ...) {
-  if (length(x) == 0L) {
+# Renders the `({...}, {...})` region block of an op line ("" if no funcs).
+render_funcs <- function(funcs) {
+  if (length(funcs) == 0L) {
     return("")
-  } else {
-    paste0(vapply(x, repr, character(1)), collapse = ", ")
   }
-}
-
-#' @title OpSignature
-#' @description
-#' This represents the signature of an operation, defining its input and output types.
-#' @param input_types ([`ValueTypes`])\cr
-#'   The types of the inputs.
-#' @param output_types ([`ValueTypes`])\cr
-#'   The types of the outputs.
-#' @return (`OpSignature`)
-#' @export
-OpSignature <- function(input_types, output_types) {
-  checkmate::assert_class(input_types, "ValueTypes")
-  checkmate::assert_class(output_types, "ValueTypes")
-
-  structure(
-    list(input_types = input_types, output_types = output_types),
-    class = "OpSignature"
-  )
-}
-
-#' @export
-repr.OpSignature <- function(x, ...) {
   paste0(
     "(",
-    repr(x$input_types),
-    ")",
-    " -> ",
-    "(",
-    repr(x$output_types),
+    paste0(
+      vapply(
+        funcs,
+        function(x) {
+          repr.OpInputFunc(OpInputFunc(x$inputs, func_lines(x)))
+        },
+        character(1)
+      ),
+      collapse = ", "
+    ),
     ")"
   )
 }
 
-#' @export
-`==.OpSignature` <- function(e1, e2) {
-  e1$input_types == e2$input_types &&
-    e1$output_types == e2$output_types
-}
-
-#' @title Op
-#' @description
-#' This represents a StableHLO operation.
-#' @param name ([`OpName`])\cr
-#'   The name of the operation.
-#' @param inputs ([`OpInputs`])\cr
-#'   The inputs to the operation.
-#' @param outputs ([`OpOutputs`])\cr
-#'   The outputs of the operation.
-#' @param signature ([`OpSignature`])\cr
-#'   The signature of the operation.
-#' @return (`Op`)
-#' @export
-Op <- function(name, inputs, outputs, signature) {
-  checkmate::assert_class(name, "OpName")
-  checkmate::assert_class(inputs, "OpInputs")
-  checkmate::assert_class(outputs, "OpOutputs")
-  checkmate::assert_class(signature, "OpSignature")
-
-  structure(
-    list(
-      name = name,
-      inputs = inputs,
-      outputs = outputs,
-      signature = signature
-    ),
-    class = "Op"
-  )
-}
-
-#' Create a new Op subclass
-#' @param classname Name of the new Op class
-#' @param mnemonic The operation mnemonic
-#' @param dialect The MLIR dialect (`"stablehlo"` or `"chlo"`). Defaults to `"stablehlo"`.
-#' @return Constructor function for the Op subclass
-#' @keywords internal
-new_Op <- function(classname, mnemonic, dialect = "stablehlo") {
-  # Return a constructor function
-  function(inputs, outputs, signature) {
-    base_op <- Op(
-      name = OpName(mnemonic, dialect = dialect),
-      inputs = inputs,
-      outputs = outputs,
-      signature = signature
-    )
-    class(base_op) <- c(classname, "Op")
-    base_op
+# Default op rendering. Assembly format (`%0 = stablehlo.op %x, %y : type`)
+# is used when the op is a plain stablehlo op without attributes or regions
+# and all input and output types are identical; otherwise the generic format
+# (`%0 = "stablehlo.op" (%x, %y): (type1, type2) -> (output_type)`).
+render_op_default <- function(ctx) {
+  if (
+    ctx$dialect == "stablehlo" &&
+      length(ctx$in_type_strs) > 0L &&
+      nchar(ctx$funcs_str) == 0L &&
+      nchar(ctx$attrs_str) == 0L &&
+      length(ctx$custom_attrs) == 0L
+  ) {
+    strs <- c(ctx$in_type_strs, ctx$out_type_strs)
+    if (all(strs == strs[[1L]])) {
+      return(paste0(
+        ctx$outputs_str,
+        " = ",
+        "stablehlo.",
+        ctx$mnemonic,
+        " ",
+        ctx$values_str,
+        " : ",
+        strs[[1L]]
+      ))
+    }
   }
-}
-
-#' @export
-repr.Op <- function(x, toplevel = TRUE, simplify_dense = TRUE, ...) {
-  if (use_assembly_format(x)) {
-    repr_op_assembly(x, simplify_dense = simplify_dense)
-  } else {
-    repr_op_generic(x, simplify_dense = simplify_dense)
-  }
-}
-
-# Assembly format: `%0 = stablehlo.op %x, %y {attrs}: type`
-# Used when all input and output types are the same.
-repr_op_assembly <- function(x, simplify_dense = TRUE) {
-  values_repr <- repr(x$inputs$values)
-  attrs_repr <- repr(x$inputs$attrs, simplify_dense = simplify_dense)
-  type_repr <- repr(x$signature$output_types[[1L]])
   paste0(
-    repr(x$outputs),
-    " = ",
-    x$name$dialect,
+    ctx$outputs_str,
+    " = \"",
+    ctx$dialect,
     ".",
-    x$name$mnemonic,
-    " ",
-    values_repr,
-    attrs_repr,
-    " : ",
-    type_repr
-  )
-}
-
-# Generic format: `%0 = "stablehlo.op" (%x, %y) {attrs}: (type1, type2) -> (output_type)`
-repr_op_generic <- function(x, simplify_dense = TRUE) {
-  paste0(
-    repr(x$outputs),
-    " = ",
-    repr(x$name),
-    " ",
-    repr(x$inputs, simplify_dense = simplify_dense),
+    ctx$mnemonic,
+    "\" (",
+    ctx$values_str,
+    ")",
+    ctx$funcs_str,
+    ctx$attrs_str,
     ": ",
-    repr(x$signature)
+    ctx$sig_str
   )
-}
-
-# Assembly format is used when all input and output types are identical
-# and there are no attributes or function inputs.
-# CHLO ops use a different custom assembly syntax (with `-> tensor<...>`
-# suffix), so we always emit them in generic format.
-use_assembly_format <- function(op) {
-  if (!identical(op$name$dialect, "stablehlo")) {
-    return(FALSE)
-  }
-  inputs <- op$inputs
-  sig <- op$signature
-  if (length(sig$input_types) == 0L) {
-    return(FALSE)
-  }
-  if (length(inputs$funcs) > 0L) {
-    return(FALSE)
-  }
-  if (length(inputs$attrs) > 0L) {
-    return(FALSE)
-  }
-  if (length(inputs$custom_attrs) > 0L) {
-    return(FALSE)
-  }
-  all_types <- c(sig$input_types, sig$output_types)
-  first <- all_types[[1L]]
-  all(vapply(all_types[-1L], function(t) t == first, logical(1)))
-}
-
-#' @export
-`==.Op` <- function(e1, e2) {
-  e1$name == e2$name &&
-    e1$inputs == e2$inputs &&
-    e1$outputs == e2$outputs &&
-    e1$signature == e2$signature
-}
-
-#' @export
-`!=.Op` <- function(e1, e2) {
-  e1$name != e2$name ||
-    e1$inputs != e2$inputs ||
-    e1$outputs != e2$outputs ||
-    e1$signature != e2$signature
 }

@@ -1,9 +1,5 @@
 # stablehlo (development version)
 
-## Bug fixes
-
-* emit width-correct hex for f64 NaN/Inf constants
-
 # stablehlo 0.3.0
 
 ## Features

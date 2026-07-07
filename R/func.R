@@ -15,11 +15,8 @@ NULL
 #' @return (`FuncInput`)
 #' @export
 FuncInput <- function(id, type, alias = NULL) {
-  checkmate::assert_class(id, "ValueId")
-  checkmate::assert_class(type, "ValueType")
   if (!is.null(alias)) {
     alias <- as.integer(alias)
-    checkmate::assert_int(alias)
   }
 
   structure(
@@ -137,18 +134,67 @@ repr.FuncId <- function(x, ...) {
   identical(e1$id, e2$id)
 }
 
-#' @title FuncBody
-#' @description
-#' The body of a [`Func`], containing a list of operations.
-#' @param items (`list()` of [`Op`])\cr
-#'   The operations in the function body.
-#' @return (`FuncBody`)
-#' @export
-FuncBody <- new_list_of("FuncBody", "Op")
+# Append a deferred op to the func's buffer. Each op is stored as a
+# `list(render, payload)` pair; the line is produced by `render(payload)` at
+# repr time (see func_lines()), once value ids can be numbered. The buffer is
+# a cons list, so appending is O(1) per op and never touches earlier ops.
+func_emit <- function(func, item) {
+  buf <- func[["buf"]]
+  buf$n <- buf$n + 1L
+  buf$stack <- list(item, buf$stack)
+}
 
-#' @export
-repr.FuncBody <- function(x, ...) {
-  paste0(vapply(x, repr, character(1)), collapse = "\n")
+# Rendered op lines of a Func, in emission order (`character()`). Rendering
+# happens here (not at creation) so value ids get their numbers in
+# appearance order; ops are therefore rendered front-to-back.
+func_lines <- function(func) {
+  # Normally repr.Func installs the numbering scope; when func_lines() is
+  # called on its own (e.g. directly, in tests) install a transient one so
+  # ids still number from %0. Nested calls (region funcs) share the scope.
+  if (is.null(globals[["REPR_IDS"]])) {
+    push_repr_ids(collect_named_numeric(func))
+    on.exit(pop_repr_ids(NULL), add = TRUE)
+  }
+  buf <- func[["buf"]]
+  n <- buf$n
+  # The cons list is LIFO (head = last op); materialise in emission order.
+  items <- vector("list", n)
+  node <- buf$stack
+  i <- n
+  while (i > 0L) {
+    items[[i]] <- node[[1L]]
+    node <- node[[2L]]
+    i <- i - 1L
+  }
+  lines <- character(n)
+  for (i in seq_len(n)) {
+    item <- items[[i]]
+    lines[[i]] <- item[[1L]](item[[2L]])
+  }
+  lines
+}
+
+# Integers already claimed by named ids in this func and its region funcs, so
+# repr-time numbering can skip exactly those (see id_number()).
+collect_named_numeric <- function(func) {
+  out <- integer()
+  for (inp in func$inputs) {
+    id <- inp$id$id
+    if (is.character(id) && grepl("^[0-9]+$", id)) {
+      v <- suppressWarnings(as.integer(id))
+      if (!is.na(v)) {
+        out <- c(out, v)
+      }
+    }
+  }
+  node <- func[["buf"]]$stack
+  while (!is.null(node)) {
+    for (cf in node[[1L]][[2L]]$funcs) {
+      out <- c(out, collect_named_numeric(cf))
+    }
+    node <- node[[2L]]
+  }
+  out
 }
 
 #' @title Get the last function created
@@ -224,15 +270,12 @@ local_func <- function(id = "main", envir = parent.frame()) {
 #'   The inputs of the function.
 #' @param outputs (`FuncOutputs`\cr
 #'   The outputs of the function.
-#' @param body (`FuncBody`\cr
-#'   The body of the function.
 #' @return A [`Func`] object.
 #' @export
 Func <- function(
   id = FuncId(),
   inputs = FuncInputs(),
-  outputs = FuncOutputs(),
-  body = FuncBody()
+  outputs = FuncOutputs()
 ) {
   if (is.character(id)) {
     id <- FuncId(id)
@@ -240,14 +283,18 @@ Func <- function(
   checkmate::assert_class(id, "FuncId")
   checkmate::assert_class(inputs, "FuncInputs")
   checkmate::assert_class(outputs, "FuncOutputs")
-  checkmate::assert_class(body, "FuncBody")
 
-  # Use an environment for reference semantics
+  # Use an environment for reference semantics.
+  # Ops are stored as deferred (render, payload) pairs and rendered at repr
+  # time (see func_emit()/func_lines()).
   env <- new.env(parent = emptyenv())
   env$id <- id
   env$inputs <- inputs
   env$outputs <- outputs
-  env$body <- body
+  buf <- new.env(parent = emptyenv())
+  buf$n <- 0L
+  buf$stack <- NULL
+  env$buf <- buf
 
   # Return the environment directly with Func class
   class(env) <- c("Func", "environment")
@@ -256,7 +303,13 @@ Func <- function(
 
 #' @export
 repr.Func <- function(x, ...) {
-  # Func ::= 'func' '.' 'func' FuncId FuncInputs FuncOutputs '{' FuncBody '}'
+  # Func ::= 'func' '.' 'func' FuncId FuncInputs FuncOutputs '{' Op* '}'
+  # Install a fresh value-id numbering scope unless one is already active
+  # (region funcs rendered within, or an enclosing print.FuncValue, share it).
+  if (is.null(globals[["REPR_IDS"]])) {
+    push_repr_ids(collect_named_numeric(x))
+    on.exit(pop_repr_ids(NULL), add = TRUE)
+  }
   paste0(
     "func.func ",
     repr(x$id),
@@ -265,7 +318,7 @@ repr.Func <- function(x, ...) {
     " ",
     repr(x$outputs),
     " {\n",
-    repr(x$body),
+    paste0(func_lines(x), collapse = "\n"),
     "\n}\n"
   )
 }
@@ -280,78 +333,41 @@ print.Func <- function(x, ...) {
 #' This represents a function that can be used as input to an operation.
 #' @param inputs (`FuncInputs`)\cr
 #'   The inputs of the function.
-#' @param body (`FuncBody`)\cr
-#'   The body of the function.
+#' @param lines (`character()`)\cr
+#'   The rendered op lines of the function body.
 #' @return (`OpInputFunc`)
 #' @export
-OpInputFunc <- function(inputs, body) {
-  checkmate::assert_class(inputs, "FuncInputs")
-  checkmate::assert_class(body, "FuncBody")
+OpInputFunc <- function(inputs, lines) {
+  # Inside a region, the trailing func-level `return` becomes
+  # `stablehlo.return`.
+  n <- length(lines)
+  if (n > 0L) {
+    lines[[n]] <- sub("^return ", "stablehlo.return ", lines[[n]])
+  }
 
   structure(
-    list(inputs = inputs, body = body),
+    list(inputs = inputs, lines = lines),
     class = "OpInputFunc"
   )
 }
 
 #' @export
 repr.OpInputFunc <- function(x, ...) {
+  body_str <- paste0(x$lines, collapse = "\n    ")
   # Don't print parameters if there are none:
   if (length(x$inputs) == 0) {
-    return(
-      paste0(
-        "{\n",
-        paste0(
-          vapply(
-            x$body,
-            function(item) repr(item, toplevel = FALSE),
-            character(1)
-          ),
-          collapse = "\n    "
-        ),
-        "\n}"
-      )
-    )
+    return(paste0("{\n", body_str, "\n}"))
   }
   paste0(
     "{\n  ^bb0",
     repr(x$inputs),
     ":\n    ",
-    paste0(
-      vapply(
-        x$body,
-        function(item) repr(item, toplevel = FALSE),
-        character(1)
-      ),
-      collapse = "\n    "
-    ),
+    body_str,
     "\n}"
   )
 }
 
 #' @export
 `==.OpInputFunc` <- function(e1, e2) {
-  e1$inputs == e2$inputs && e1$body == e2$body
-}
-
-#' @title OpInputFuncs
-#' @description
-#' List of [`OpInputFunc`]s.
-#' @param items (`list()` of [`OpInputFunc`])\cr
-#'   The functions that can be used as inputs to operations.
-#' @return (`OpInputFuncs`)
-#' @export
-OpInputFuncs <- new_list_of("OpInputFuncs", "OpInputFunc")
-
-#' @export
-repr.OpInputFuncs <- function(x, ...) {
-  if (length(x) == 0) {
-    return("")
-  }
-
-  paste0(
-    "(",
-    paste0(vapply(x, repr, character(1)), collapse = ", "),
-    ")"
-  )
+  e1$inputs == e2$inputs && identical(e1$lines, e2$lines)
 }

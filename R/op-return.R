@@ -1,24 +1,19 @@
 #' @include op.R hlo.R
 NULL
 
-# Technically this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
-OpReturn <- function(inputs, outputs = OpOutputs(), signature = NULL) {
-  if (length(outputs)) {
-    cli_abort("OpReturn op must not have outputs.")
-  }
-  if (length(signature$output_types)) {
-    cli_abort("Invalid signature for ReturnOp.")
-  }
-
-  base_op <- Op(
-    name = OpName("return"),
-    inputs = inputs,
-    outputs = outputs,
-    signature = signature
+# The func-level `return` line; OpInputFunc rewrites it to
+# `stablehlo.return` when the func is embedded as a region.
+render_return <- function(ctx) {
+  paste0(
+    "return ",
+    ctx$values_str,
+    " : ",
+    paste0(ctx$in_type_strs, collapse = ", ")
   )
-  class(base_op) <- c("OpReturn", "Op")
-  base_op
 }
+
+# Technically this is not listed as an Op, but a Func's body is defined as {Op}, so I guess it kind of is?
+OpReturn <- new_Op("OpReturn", "return", render = render_return)
 
 #' @rdname hlo_return
 #' @export
@@ -70,16 +65,4 @@ hlo_return <- function(..., func = .current_func()) {
     finalize_module()
   }
   return(func)
-}
-
-#' @export
-repr.OpReturn <- function(x, toplevel = TRUE, ...) {
-  name <- if (toplevel) "return" else "stablehlo.return"
-  paste0(
-    name,
-    " ",
-    repr(x$inputs$values),
-    " : ",
-    repr(x$signature$input_types)
-  )
 }

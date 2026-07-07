@@ -12,8 +12,21 @@ hlo_fn <- function(
 ) {
   # custom_attrs are attributes that are formatted in a special way, see e.g.
   # hlo_dot_general for an example.
-  # In principle this can be any type
-  # You then need to implement repr for the Op class
+  # In principle this can be any type.
+  # You then need to pass a custom render function to new_Op().
+  op_render <- op_class$render %??% render_op_default
+  mnemonic <- op_class$mnemonic
+  dialect <- op_class$dialect
+
+  # Fill in the id-dependent parts of the ctx (only knowable once ids are
+  # numbered at repr time) and render the op line.
+  finalize_render <- function(ctx) {
+    ctx$outputs_str <- ids_str(ctx$output_ids)
+    ctx$values_str <- ids_str(ctx$value_ids)
+    ctx$funcs_str <- if (is.null(ctx$funcs)) "" else render_funcs(ctx$funcs)
+    op_render(ctx)
+  }
+
   function(
     values,
     funcs = NULL,
@@ -22,11 +35,11 @@ hlo_fn <- function(
     simplify = TRUE
   ) {
     if (length(value_list_names) == 0L) {
-      lapply(values, function(x) {
-        if (!test_class(x, "FuncValue")) {
+      for (x in values) {
+        if (!inherits(x, "FuncValue")) {
           cli_abort("All arguments must be FuncValues")
         }
-      })
+      }
       flat_values <- values
     } else {
       flat_values <- list()
@@ -46,51 +59,36 @@ hlo_fn <- function(
       }
     }
 
-    lapply(funcs, function(x) {
-      if (!test_class(x, "Func")) {
+    for (x in funcs) {
+      if (!inherits(x, "Func")) {
         cli_abort("All functions must be Func objects")
       }
-    })
+    }
 
     # Process attrs - expect a list of OpInputAttr subclasses
-    attrs <- attrs %??% list()
-    lapply(attrs, function(x) {
-      if (!test_class(x, "OpInputAttr")) {
+    for (x in attrs) {
+      if (!inherits(x, "OpInputAttr")) {
         cli_abort(
           "All attributes must be OpInputAttr subclasses (e.g., ConstantAttr, StringAttr, BoolAttr, ScalarAttr)"
         )
       }
-    })
-
-    op_input_funcs <- OpInputFuncs(
-      lapply(funcs, function(x) {
-        OpInputFunc(
-          inputs = x$inputs,
-          body = x$body
-        )
-      })
-    )
-
-    op_input_attrs <- OpInputAttrs(attrs)
+    }
 
     func <- merge_funcs(lapply(flat_values, function(x) x$func))
 
-    inputs <- OpInputs(
-      OpInputValues(lapply(flat_values, function(x) OpInputValue(x$value_id))),
-      funcs = op_input_funcs,
-      attrs = op_input_attrs,
-      custom_attrs = custom_attrs %??% list()
-    )
-
     # For infer_args, keep structure: extract value_type from each FuncValue
-    infer_args <- lapply(values, function(v) {
-      if (is.list(v) && !test_class(v, "FuncValue")) {
-        # List of FuncValues
-        lapply(v, function(x) x$value_type)
-      } else {
-        v$value_type
-      }
-    })
+    infer_args <- if (length(value_list_names) == 0L) {
+      lapply(values, function(v) v$value_type)
+    } else {
+      lapply(values, function(v) {
+        if (inherits(v, "FuncValue")) {
+          v$value_type
+        } else {
+          # List of FuncValues
+          lapply(v, function(x) x$value_type)
+        }
+      })
+    }
 
     if (length(funcs) > 0L) {
       infer_args <- c(infer_args, funcs)
@@ -109,24 +107,42 @@ hlo_fn <- function(
       infer_args <- c(infer_args, custom_attrs)
     }
 
-    output_types <- rlang::exec(type_inference, !!!infer_args)
+    output_types <- do.call(type_inference, infer_args)
     nout <- length(output_types)
 
-    output_value_ids <- replicate(nout, ValueId(), simplify = FALSE)
-    outputs <- OpOutputs(lapply(output_value_ids, OpOutput))
+    output_value_ids <- lapply(seq_len(nout), function(i) ValueId())
 
-    signature <- OpSignature(
-      input_types = ValueTypes(lapply(flat_values, function(x) x$value_type)),
-      output_types = output_types
+    in_type_strs <- vapply(
+      flat_values,
+      function(x) x$value_type$type$str,
+      character(1)
+    )
+    out_type_strs <- vapply(output_types, type_str, character(1))
+    custom_attrs <- custom_attrs %??% list()
+
+    # Value ids are numbered at repr time, so store the ValueId objects (and
+    # region funcs) and defer the id-dependent strings to finalize_render().
+    ctx <- list(
+      mnemonic = mnemonic,
+      dialect = dialect,
+      output_ids = output_value_ids,
+      value_ids = lapply(flat_values, function(x) x$value_id),
+      funcs = funcs,
+      in_type_strs = in_type_strs,
+      out_type_strs = out_type_strs,
+      sig_str = paste0(
+        "(",
+        paste0(in_type_strs, collapse = ", "),
+        ") -> (",
+        paste0(out_type_strs, collapse = ", "),
+        ")"
+      ),
+      attrs = attrs,
+      attrs_str = render_attrs(attrs),
+      custom_attrs = custom_attrs
     )
 
-    op <- op_class(
-      inputs = inputs,
-      outputs = outputs,
-      signature = signature
-    )
-
-    func$body <- FuncBody(c(func$body, list(op)))
+    func_emit(func, list(finalize_render, ctx))
 
     if (return_func) {
       func$outputs <- FuncOutputs(
@@ -224,11 +240,15 @@ hlo_input <- function(
 #' print(f)
 hlo_closure <- function(...) {
   vars <- list(...)
-  ids <- vapply(vars, function(v) v$value_id$id, character(1))
-  if (anyDuplicated(ids)) {
-    cli_abort(
-      "Each variable can only be captured once in hlo_closure (duplicate value_id detected)"
-    )
+  seen <- utils::hashtab()
+  for (v in vars) {
+    cell <- v$value_id$id
+    if (!is.null(seen[[cell]])) {
+      cli_abort(
+        "Each variable can only be captured once in hlo_closure (duplicate value_id detected)"
+      )
+    }
+    seen[[cell]] <- TRUE
   }
   envir <- parent.frame()
   lapply(vars, function(variable) {

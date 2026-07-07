@@ -2,21 +2,28 @@
 % Please edit documentation in R/op.R
 \name{new_Op}
 \alias{new_Op}
-\title{Create a new Op subclass}
+\title{Define a new Op}
 \usage{
-new_Op(classname, mnemonic, dialect = "stablehlo")
+new_Op(classname, mnemonic, dialect = "stablehlo", render = NULL)
 }
 \arguments{
-\item{classname}{Name of the new Op class}
+\item{classname}{Name of the op (kept for readability at the call sites).}
 
-\item{mnemonic}{The operation mnemonic}
+\item{mnemonic}{The operation mnemonic.}
 
 \item{dialect}{The MLIR dialect (\code{"stablehlo"} or \code{"chlo"}). Defaults to \code{"stablehlo"}.}
+
+\item{render}{(\verb{function(ctx)} | \code{NULL})\cr
+Custom render function producing the op's MLIR line. \code{NULL} uses the
+default assembly/generic format. The \code{ctx} argument is a list with
+fields \code{mnemonic}, \code{dialect}, \code{outputs_str}, \code{values_str},
+\code{in_type_strs}, \code{out_type_strs}, \code{sig_str}, \code{attrs}, \code{attrs_str},
+\code{funcs_str} and \code{custom_attrs}.}
 }
 \value{
-Constructor function for the Op subclass
+A descriptor \code{list} for use with \code{hlo_fn()}.
 }
 \description{
-Create a new Op subclass
+Creates the descriptor of a StableHLO operation, consumed by \code{hlo_fn()}.
 }
 \keyword{internal}

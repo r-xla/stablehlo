@@ -1,8 +1,6 @@
 #' @include op.R hlo.R
 NULL
 
-OpIota <- new_Op("OpIota", "iota")
-
 #' @rdname hlo_iota
 #' @export
 infer_types_iota <- function(iota_dimension, dtype, shape) {
@@ -53,31 +51,33 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
   )
 
   value_id <- ValueId()
-  op <- OpIota(
-    inputs = OpInputs(
-      values = OpInputValues(list()),
-      funcs = OpInputFuncs(),
-      attrs = OpInputAttrs(
-        list(
-          ScalarAttr(
-            name = "iota_dimension",
-            value = as.integer(iota_dimension_const$data),
-            dtype = IntegerType(64L)
-          )
+  attr_str <- render_attrs(list(
+    ScalarAttr(
+      name = "iota_dimension",
+      value = as.integer(iota_dimension_const$data),
+      dtype = IntegerType(64L)
+    )
+  ))
+  func_emit(
+    func,
+    list(
+      function(p) {
+        paste0(
+          repr(p$value_id),
+          " = \"stablehlo.iota\" ()",
+          p$attr_str,
+          ": () -> (",
+          p$out_type_str,
+          ")"
         )
+      },
+      list(
+        value_id = value_id,
+        attr_str = attr_str,
+        out_type_str = type_str(output_types[[1L]])
       )
-    ),
-    outputs = OpOutputs(
-      items = list(
-        OpOutput(value_id)
-      )
-    ),
-    signature = OpSignature(
-      input_types = ValueTypes(list()),
-      output_types = output_types
     )
   )
-  func$body <- FuncBody(c(func$body, list(op)))
 
   FuncValue(
     value_id = value_id,

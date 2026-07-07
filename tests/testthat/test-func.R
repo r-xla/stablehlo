@@ -46,13 +46,10 @@ test_that("Func repr", {
     )
   ))
 
-  body <- FuncBody(list())
-
   func <- Func(
     id = FuncId("my_func"),
     inputs = inputs,
-    outputs = outputs,
-    body = body
+    outputs = outputs
   )
 
   expect_snapshot(repr(func))

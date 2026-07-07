@@ -3,6 +3,7 @@ globals[["FUNC_STASH"]] <- list()
 globals[["CURRENT_FUNC"]] <- NULL
 globals[["MODULE_STASH"]] <- list()
 globals[["CURRENT_MODULE"]] <- NULL
+globals[["REPR_IDS"]] <- NULL
 globals[["dtypes"]] <- c(
   "bool",
   "i8",

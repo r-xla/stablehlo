@@ -1,7 +1,20 @@
 #' @include op.R hlo.R
 NULL
 
-OpSelect <- new_Op("OpSelect", "select")
+# select always uses assembly format with two types: pred_type, value_type
+render_select <- function(ctx) {
+  paste0(
+    ctx$outputs_str,
+    " = stablehlo.select ",
+    ctx$values_str,
+    " : ",
+    ctx$in_type_strs[[1L]],
+    ", ",
+    ctx$in_type_strs[[2L]]
+  )
+}
+
+OpSelect <- new_Op("OpSelect", "select", render = render_select)
 
 #' @rdname hlo_select
 #' @export
@@ -30,22 +43,6 @@ infer_types_select <- function(
       )
     )
   ))
-}
-
-#' @export
-repr.OpSelect <- function(x, toplevel = TRUE, simplify_dense = TRUE, ...) {
-  # select always uses assembly format with two types: pred_type, value_type
-  pred_type <- repr(x$signature$input_types[[1L]])
-  value_type <- repr(x$signature$input_types[[2L]])
-  paste0(
-    repr(x$outputs),
-    " = stablehlo.select ",
-    repr(x$inputs$values),
-    " : ",
-    pred_type,
-    ", ",
-    value_type
-  )
 }
 
 hlo_select_impl <- hlo_fn(

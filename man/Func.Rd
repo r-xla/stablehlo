@@ -4,12 +4,7 @@
 \alias{Func}
 \title{Func}
 \usage{
-Func(
-  id = FuncId(),
-  inputs = FuncInputs(),
-  outputs = FuncOutputs(),
-  body = FuncBody()
-)
+Func(id = FuncId(), inputs = FuncInputs(), outputs = FuncOutputs())
 }
 \arguments{
 \item{id}{(\code{FuncId}\cr
@@ -20,9 +15,6 @@ The inputs of the function.}
 
 \item{outputs}{(\code{FuncOutputs}\cr
 The outputs of the function.}
-
-\item{body}{(\code{FuncBody}\cr
-The body of the function.}
 }
 \value{
 A \code{\link{Func}} object.

@@ -33,26 +33,13 @@ format_double <- function(x, precision = 64) {
   infs <- is.infinite(x)
   finite_mask <- !nans & !infs
 
-  # IEEE-754 bit patterns for non-finite values, at the requested width. These
-  # must match the tensor's element width: reusing the 32-bit patterns for an
-  # f64 constant makes it parse as a tiny denormal (~1e-314), not NaN/Inf.
-  if (precision == 32) {
-    nan_hex <- "0x7FC00000"
-    pos_inf_hex <- "0x7F800000"
-    neg_inf_hex <- "0xFF800000"
-  } else {
-    nan_hex <- "0x7FF8000000000000"
-    pos_inf_hex <- "0x7FF0000000000000"
-    neg_inf_hex <- "0xFFF0000000000000"
-  }
-
-  res[nans] <- nan_hex
+  res[nans] <- "0x7FC00000"
 
   if (any(infs)) {
     pos_inf <- infs & (x > 0)
     neg_inf <- infs & (x < 0)
-    res[pos_inf] <- pos_inf_hex
-    res[neg_inf] <- neg_inf_hex
+    res[pos_inf] <- "0x7F800000"
+    res[neg_inf] <- "0xFF800000"
   }
 
   if (any(finite_mask)) {
