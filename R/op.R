@@ -54,11 +54,11 @@ ScalarAttr <- function(name, value, dtype) {
 repr.ScalarAttr <- function(x, simplify_dense = TRUE, ...) {
   type_repr <- repr(x$dtype)
   data <- x$value$data
-  value_repr <- if (test_class(x$dtype, "BooleanType")) {
+  value_repr <- if (inherits(x$dtype, "BooleanType")) {
     sprintf("%s : %s", tolower(as.character(data)), type_repr)
   } else if (
-    test_class(x$dtype, "IntegerType") ||
-      test_class(x$dtype, "UIntegerType")
+    inherits(x$dtype, "IntegerType") ||
+      inherits(x$dtype, "UIntegerType")
   ) {
     sprintf("%d : %s", as.integer(data), type_repr)
   } else {

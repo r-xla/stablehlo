@@ -14,7 +14,7 @@ NULL
 #' @export
 Module <- function(funcs = list()) {
   lapply(funcs, function(f) {
-    if (!test_class(f, "Func")) {
+    if (!inherits(f, "Func")) {
       cli_abort("{.arg funcs} must all be {.cls Func} objects.")
     }
   })

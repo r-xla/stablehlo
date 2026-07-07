@@ -25,20 +25,20 @@ repr.Constant <- function(x, simplify_dense = TRUE, ...) {
   data <- x$data
   type <- x$type
 
-  value_reprs <- if (test_class(data, "PJRTBuffer")) {
+  value_reprs <- if (inherits(data, "PJRTBuffer")) {
     pjrt::format_buffer(data)
   } else {
-    if (test_class(type$dtype, "FloatType")) {
+    if (inherits(type$dtype, "FloatType")) {
       format_double(
         data,
         precision = type$dtype$value
       )
     } else if (
-      test_class(type$dtype, "IntegerType") ||
-        test_class(type$dtype, "UIntegerType")
+      inherits(type$dtype, "IntegerType") ||
+        inherits(type$dtype, "UIntegerType")
     ) {
       as.character(data)
-    } else if (test_class(type$dtype, "BooleanType")) {
+    } else if (inherits(type$dtype, "BooleanType")) {
       tolower(as.logical(data))
     }
   }
@@ -102,7 +102,7 @@ repr.Constant <- function(x, simplify_dense = TRUE, ...) {
     }
   }
 
-  if (!test_class(data, "PJRTBuffer")) {
+  if (!inherits(data, "PJRTBuffer")) {
     dim(value_reprs) <- dim2(data)
   }
 

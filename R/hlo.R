@@ -51,7 +51,7 @@ hlo_fn <- function(
           }
           flat_values <- c(flat_values, v)
         } else {
-          if (!test_class(v, "FuncValue")) {
+          if (!inherits(v, "FuncValue")) {
             cli_abort("'{nm}' must be a FuncValue")
           }
           flat_values <- c(flat_values, list(v))
