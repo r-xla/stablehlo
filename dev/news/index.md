@@ -2,6 +2,12 @@
 
 ## stablehlo (development version)
 
+### Performance
+
+- The package was optimized w.r.t. runtime performance. This was
+  achieved by reducing the number of classes that are used internally
+  when creating `Func`s. The `hlo_<*>` user API remains unaffected.
+
 ### Bug fixes
 
 - emit width-correct hex for f64 NaN/Inf constants
@@ -40,8 +46,7 @@
     [`hlo_top_k()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_top_k.md)
     returning the top-k values and their indices along the last
     dimension.
-- [`OpName()`](https://r-xla.github.io/stablehlo/dev/reference/OpName.md)
-  and
+- `OpName()` and
   [`new_Op()`](https://r-xla.github.io/stablehlo/dev/reference/new_Op.md)
   gain a `dialect` argument (default `"stablehlo"`) to support ops from
   other MLIR dialects.

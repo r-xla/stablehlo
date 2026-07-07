@@ -5,7 +5,7 @@ This represents a function that can be used as input to an operation.
 ## Usage
 
 ``` r
-OpInputFunc(inputs, body)
+OpInputFunc(inputs, lines)
 ```
 
 ## Arguments
@@ -15,10 +15,10 @@ OpInputFunc(inputs, body)
   (`FuncInputs`)  
   The inputs of the function.
 
-- body:
+- lines:
 
-  (`FuncBody`)  
-  The body of the function.
+  ([`character()`](https://rdrr.io/r/base/character.html))  
+  The rendered op lines of the function body.
 
 ## Value
 

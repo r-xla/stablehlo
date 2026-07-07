@@ -60,10 +60,11 @@
 
 
 <dl><dt id="arg-id">id<a class="anchor" aria-label="anchor" href="#arg-id"></a></dt>
-<dd><p>(<code>character(1)</code> or <code><a href="https://rdrr.io/r/base/environment.html" class="external-link">environment</a></code>)<br>
-Either a fixed name or an environment.
-If using an environment (default), the name will be generated automatically
-when calling <code><a href="repr.html">repr()</a></code>, i.e. the first value id will be <code>%0</code>, the second <code>%1</code>, etc..</p></dd>
+<dd><p>(<code>character(1)</code> or <code>NULL</code>)<br>
+Either a fixed name or <code>NULL</code> (default). A <code>NULL</code> id is assigned a numeric
+name lazily when the program is rendered (<code><a href="repr.html">repr()</a></code>), in the order ids
+first appear: <code>%0</code>, <code>%1</code>, ..., skipping any integer already claimed by a
+named id in the same program (e.g. an input called <code>"2"</code>).</p></dd>
 
 </dl></div>
     <div class="section level2">

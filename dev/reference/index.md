@@ -14,8 +14,6 @@
   : DotDimensionNumbers
 - [`Func()`](https://r-xla.github.io/stablehlo/dev/reference/Func.md) :
   Func
-- [`FuncBody()`](https://r-xla.github.io/stablehlo/dev/reference/FuncBody.md)
-  : FuncBody
 - [`FuncId()`](https://r-xla.github.io/stablehlo/dev/reference/FuncId.md)
   : FuncId
 - [`FuncInput()`](https://r-xla.github.io/stablehlo/dev/reference/FuncInput.md)
@@ -32,29 +30,10 @@
   : GatherDimensionNumbers
 - [`Module()`](https://r-xla.github.io/stablehlo/dev/reference/Module.md)
   : Module
-- [`Op()`](https://r-xla.github.io/stablehlo/dev/reference/Op.md) : Op
 - [`OpInputAttr()`](https://r-xla.github.io/stablehlo/dev/reference/OpInputAttr.md)
   : OpInputAttr
-- [`OpInputAttrs()`](https://r-xla.github.io/stablehlo/dev/reference/OpInputAttrs.md)
-  : OpInputAttrs
 - [`OpInputFunc()`](https://r-xla.github.io/stablehlo/dev/reference/OpInputFunc.md)
   : OpInputFunc
-- [`OpInputFuncs()`](https://r-xla.github.io/stablehlo/dev/reference/OpInputFuncs.md)
-  : OpInputFuncs
-- [`OpInputValue()`](https://r-xla.github.io/stablehlo/dev/reference/OpInputValue.md)
-  : OpInputValue
-- [`OpInputValues()`](https://r-xla.github.io/stablehlo/dev/reference/OpInputValues.md)
-  : OpInputValues
-- [`OpInputs()`](https://r-xla.github.io/stablehlo/dev/reference/OpInputs.md)
-  : OpInputs
-- [`OpName()`](https://r-xla.github.io/stablehlo/dev/reference/OpName.md)
-  : OpName
-- [`OpOutput()`](https://r-xla.github.io/stablehlo/dev/reference/OpOutput.md)
-  : OpOutput
-- [`OpOutputs()`](https://r-xla.github.io/stablehlo/dev/reference/OpOutputs.md)
-  : OpOutputs
-- [`OpSignature()`](https://r-xla.github.io/stablehlo/dev/reference/OpSignature.md)
-  : OpSignature
 - [`ScalarAttr()`](https://r-xla.github.io/stablehlo/dev/reference/ScalarAttr.md)
   : ScalarAttr
 - [`ScatterDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/ScatterDimensionNumbers.md)

@@ -6,12 +6,7 @@ modifications to a Func object modify the original.
 ## Usage
 
 ``` r
-Func(
-  id = FuncId(),
-  inputs = FuncInputs(),
-  outputs = FuncOutputs(),
-  body = FuncBody()
-)
+Func(id = FuncId(), inputs = FuncInputs(), outputs = FuncOutputs())
 ```
 
 ## Arguments
@@ -30,11 +25,6 @@ Func(
 
   (`FuncOutputs`  
   The outputs of the function.
-
-- body:
-
-  (`FuncBody`  
-  The body of the function.
 
 ## Value
 

@@ -48,6 +48,10 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="stablehlo-development-version">stablehlo (development version)<a class="anchor" aria-label="anchor" href="#stablehlo-development-version"></a></h2>
 <div class="section level3">
+<h3 id="performance-development-version">Performance<a class="anchor" aria-label="anchor" href="#performance-development-version"></a></h3>
+<ul><li>The package was optimized w.r.t. runtime performance. This was achieved by reducing the number of classes that are used internally when creating <code>Func</code>s. The <code>hlo_&lt;*&gt;</code> user API remains unaffected.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>emit width-correct hex for f64 NaN/Inf constants</li>
 </ul></div>
@@ -65,7 +69,7 @@
 <li>Selection: <code><a href="../reference/hlo_top_k.html">hlo_top_k()</a></code> returning the top-k values and their indices along the last dimension.</li>
 </ul></li>
 <li>
-<code><a href="../reference/OpName.html">OpName()</a></code> and <code><a href="../reference/new_Op.html">new_Op()</a></code> gain a <code>dialect</code> argument (default <code>"stablehlo"</code>) to support ops from other MLIR dialects.</li>
+<code>OpName()</code> and <code><a href="../reference/new_Op.html">new_Op()</a></code> gain a <code>dialect</code> argument (default <code>"stablehlo"</code>) to support ops from other MLIR dialects.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-0-3-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-3-0"></a></h3>

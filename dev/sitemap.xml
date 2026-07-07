@@ -15,7 +15,6 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/CustomOpBackendConfig.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/DotDimensionNumbers.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/Func.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/FuncBody.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/FuncId.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/FuncInput.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/FuncInputs.html</loc></url>
@@ -24,18 +23,8 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/FuncValue.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/GatherDimensionNumbers.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/Module.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/Op.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputAttr.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputAttrs.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputFunc.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputFuncs.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputValue.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputValues.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputs.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpName.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpOutput.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpOutputs.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpSignature.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/ScalarAttr.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/ScatterDimensionNumbers.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/Shape.html</loc></url>
