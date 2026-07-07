@@ -91,7 +91,6 @@ assert_vt_is_tensor <- function(
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
-  force(arg)
   if (!test_class(x, "ValueType")) {
     cli_abort(
       c(
@@ -122,7 +121,6 @@ assert_vt_has_ttype <- function(
   call = rlang::caller_env()
 ) {
   dtypes <- list(...)
-  force(arg)
 
   if (!test_class(x, "ValueType")) {
     cli_abort(
