@@ -7,10 +7,12 @@
 \usage{
 infer_types_broadcast_in_dim(operand, broadcast_dimensions, shape)
 
-hlo_broadcast_in_dim(operand, broadcast_dimensions, shape)
+hlo_broadcast_in_dim(operand, broadcast_dimensions, shape, output_types = NULL)
 }
 \arguments{
 \item{operand, broadcast_dimensions, shape}{(\code{\link{FuncValue}})\cr}
+
+\item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }
 \value{
 \code{\link{FuncValue}}\cr

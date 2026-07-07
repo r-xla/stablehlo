@@ -12,6 +12,9 @@ hlo_logistic_impl <- hlo_fn(OpLogistic, infer_types_logistic)
 #' @templateVar mnemonic logistic
 #' @template op
 #' @export
-hlo_logistic <- function(operand) {
-  hlo_logistic_impl(values = list(operand = operand))
+hlo_logistic <- function(operand, output_types = NULL) {
+  hlo_logistic_impl(
+    values = list(operand = operand),
+    output_types = output_types
+  )
 }

@@ -12,6 +12,6 @@ hlo_negate_impl <- hlo_fn(OpNegate, infer_types_negate)
 #' @templateVar mnemonic negate
 #' @template op
 #' @export
-hlo_negate <- function(operand) {
-  hlo_negate_impl(values = list(operand = operand))
+hlo_negate <- function(operand, output_types = NULL) {
+  hlo_negate_impl(values = list(operand = operand), output_types = output_types)
 }

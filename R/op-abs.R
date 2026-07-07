@@ -16,6 +16,6 @@ hlo_abs_impl <- hlo_fn(OpAbs, infer_types_numeric_uni)
 #' @templateVar mnemonic abs
 #' @template op
 #' @export
-hlo_abs <- function(operand) {
-  hlo_abs_impl(values = list(operand = operand))
+hlo_abs <- function(operand, output_types = NULL) {
+  hlo_abs_impl(values = list(operand = operand), output_types = output_types)
 }

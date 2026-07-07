@@ -47,11 +47,13 @@ hlo_transpose_impl <- hlo_fn(OpTranspose, infer_types_transpose)
 #' @export
 hlo_transpose <- function(
   operand,
-  permutation
+  permutation,
+  output_types = NULL
 ) {
   perm_int <- as.integer(permutation)
   hlo_transpose_impl(
     values = list(operand = operand),
+    output_types = output_types,
     attrs = list(
       constant_attr(
         "permutation",

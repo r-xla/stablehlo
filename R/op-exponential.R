@@ -12,6 +12,9 @@ hlo_exponential_impl <- hlo_fn(OpExponential, infer_types_exponential)
 #' @templateVar mnemonic exponential
 #' @template op
 #' @export
-hlo_exponential <- function(operand) {
-  hlo_exponential_impl(values = list(operand = operand))
+hlo_exponential <- function(operand, output_types = NULL) {
+  hlo_exponential_impl(
+    values = list(operand = operand),
+    output_types = output_types
+  )
 }

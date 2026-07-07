@@ -304,7 +304,8 @@ hlo_dot_general <- function(
   rhs,
   contracting_dims,
   batching_dims = NULL,
-  precision_config = NULL
+  precision_config = NULL,
+  output_types = NULL
 ) {
   precision_config <- normalize_precision_config(precision_config)
   dot_general_impl(
@@ -312,6 +313,7 @@ hlo_dot_general <- function(
       lhs = lhs,
       rhs = rhs
     ),
+    output_types = output_types,
     custom_attrs = list(
       dot_dimension_numbers = DotDimensionNumbers(
         contracting_dims = contracting_dims,

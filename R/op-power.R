@@ -12,6 +12,9 @@ hlo_power_impl <- hlo_fn(OpPower, infer_types_power)
 #' @templateVar mnemonic power
 #' @template op
 #' @export
-hlo_power <- function(lhs, rhs) {
-  hlo_power_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_power <- function(lhs, rhs, output_types = NULL) {
+  hlo_power_impl(
+    values = list(lhs = lhs, rhs = rhs),
+    output_types = output_types
+  )
 }

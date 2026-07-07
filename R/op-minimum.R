@@ -12,6 +12,9 @@ hlo_minimum_impl <- hlo_fn(OpMinimum, infer_types_minimum)
 #' @templateVar mnemonic minimum
 #' @template op
 #' @export
-hlo_minimum <- function(lhs, rhs) {
-  hlo_minimum_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_minimum <- function(lhs, rhs, output_types = NULL) {
+  hlo_minimum_impl(
+    values = list(lhs = lhs, rhs = rhs),
+    output_types = output_types
+  )
 }

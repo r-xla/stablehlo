@@ -32,7 +32,8 @@ hlo_fn <- function(
     funcs = NULL,
     attrs = NULL,
     custom_attrs = NULL,
-    simplify = TRUE
+    simplify = TRUE,
+    output_types = NULL
   ) {
     if (length(value_list_names) == 0L) {
       for (x in values) {
@@ -76,38 +77,43 @@ hlo_fn <- function(
 
     func <- merge_funcs(lapply(flat_values, function(x) x$func))
 
-    # For infer_args, keep structure: extract value_type from each FuncValue
-    infer_args <- if (length(value_list_names) == 0L) {
-      lapply(values, function(v) v$value_type)
-    } else {
-      lapply(values, function(v) {
-        if (inherits(v, "FuncValue")) {
-          v$value_type
-        } else {
-          # List of FuncValues
-          lapply(v, function(x) x$value_type)
-        }
-      })
-    }
+    # When the caller already knows the output types (e.g. a lowering that
+    # ran type inference at trace time), it can pass them via `output_types`
+    # and inference (including its validation of the inputs) is skipped.
+    if (is.null(output_types)) {
+      # For infer_args, keep structure: extract value_type from each FuncValue
+      infer_args <- if (length(value_list_names) == 0L) {
+        lapply(values, function(v) v$value_type)
+      } else {
+        lapply(values, function(v) {
+          if (inherits(v, "FuncValue")) {
+            v$value_type
+          } else {
+            # List of FuncValues
+            lapply(v, function(x) x$value_type)
+          }
+        })
+      }
 
-    if (length(funcs) > 0L) {
-      infer_args <- c(infer_args, funcs)
-    }
-    # For type inference, extract values from OpInputAttr subclasses as named args
-    if (length(attrs) > 0L) {
-      attr_values <- lapply(attrs, function(x) x$value)
-      names(attr_values) <- vapply(
-        attrs,
-        function(x) x$name,
-        character(1)
-      )
-      infer_args <- c(infer_args, attr_values)
-    }
-    if (length(custom_attrs) > 0L) {
-      infer_args <- c(infer_args, custom_attrs)
-    }
+      if (length(funcs) > 0L) {
+        infer_args <- c(infer_args, funcs)
+      }
+      # For type inference, extract values from OpInputAttr subclasses as named args
+      if (length(attrs) > 0L) {
+        attr_values <- lapply(attrs, function(x) x$value)
+        names(attr_values) <- vapply(
+          attrs,
+          function(x) x$name,
+          character(1)
+        )
+        infer_args <- c(infer_args, attr_values)
+      }
+      if (length(custom_attrs) > 0L) {
+        infer_args <- c(infer_args, custom_attrs)
+      }
 
-    output_types <- do.call(type_inference, infer_args)
+      output_types <- do.call(type_inference, infer_args)
+    }
     nout <- length(output_types)
 
     output_value_ids <- lapply(seq_len(nout), function(i) ValueId())
