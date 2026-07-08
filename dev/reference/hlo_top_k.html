@@ -63,7 +63,7 @@ for details.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">infer_types_top_k</span><span class="op">(</span><span class="va">operand</span>, <span class="va">k</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">hlo_top_k</span><span class="op">(</span><span class="va">operand</span>, <span class="va">k</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">hlo_top_k</span><span class="op">(</span><span class="va">operand</span>, <span class="va">k</span>, output_types <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -79,6 +79,10 @@ Tensor of integer, unsigned integer, or floating-point type with rank &gt;= 1.</
 <dd><p>(<code>integer(1)</code>)<br>
 Number of top elements to return along the last dimension. Must satisfy
 <code>1 &lt;= k &lt;= dim(operand, -1)</code>.</p></dd>
+
+
+<dt id="arg-output-types">output_types<a class="anchor" aria-label="anchor" href="#arg-output-types"></a></dt>
+<dd><p>(<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of <code><a href="ValueType.html">ValueType</a></code> | <code>NULL</code>)<br> Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.</p></dd>
 
 </dl></div>
     <div class="section level2">

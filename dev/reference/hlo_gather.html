@@ -65,7 +65,8 @@
 <span>  <span class="va">start_indices</span>,</span>
 <span>  <span class="va">gather_dimension_numbers</span>,</span>
 <span>  <span class="va">slice_sizes</span>,</span>
-<span>  indices_are_sorted <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  indices_are_sorted <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  output_types <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -90,6 +91,10 @@ The sizes of the slices to gather.</p></dd>
 <dt id="arg-indices-are-sorted">indices_are_sorted<a class="anchor" aria-label="anchor" href="#arg-indices-are-sorted"></a></dt>
 <dd><p>(<code>logical(1)</code>)<br>
 Whether indices are sorted.</p></dd>
+
+
+<dt id="arg-output-types">output_types<a class="anchor" aria-label="anchor" href="#arg-output-types"></a></dt>
+<dd><p>(<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of <code><a href="ValueType.html">ValueType</a></code> | <code>NULL</code>)<br> Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.</p></dd>
 
 </dl></div>
     <div class="section level2">

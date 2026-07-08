@@ -54,6 +54,10 @@ should stay in the same order of magnitude as `pjrt_compile()`):
   call.
 - **Cached type strings**: `TensorType` renders `tensor<...>` once at
   creation and stores it in `$str`; equality and all rendering reuse it.
+- **Known output types**: the `hlo_*` builders of common ops accept
+  `output_types` (a list of `ValueType`). When provided, `hlo_fn()`
+  skips type inference and its input validation entirely — used by
+  lowerings (e.g. anvl) that already ran inference at trace time.
 - Constructors on the hot path (`FuncValue`, `FuncInput`, `TensorType`,
   …) do not validate their inputs; validation happens in `hlo_fn()` and
   the `infer_types_*` functions. Prefer

@@ -61,7 +61,15 @@
 <span>  <span class="va">transpose_a</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">hlo_triangular_solve</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, <span class="va">left_side</span>, <span class="va">lower</span>, <span class="va">unit_diagonal</span>, <span class="va">transpose_a</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">hlo_triangular_solve</span><span class="op">(</span></span>
+<span>  <span class="va">a</span>,</span>
+<span>  <span class="va">b</span>,</span>
+<span>  <span class="va">left_side</span>,</span>
+<span>  <span class="va">lower</span>,</span>
+<span>  <span class="va">unit_diagonal</span>,</span>
+<span>  <span class="va">transpose_a</span>,</span>
+<span>  output_types <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -90,6 +98,10 @@ If <code>TRUE</code>, assume diagonal elements of <code>a</code> are 1.</p></dd>
 <dt id="arg-transpose-a">transpose_a<a class="anchor" aria-label="anchor" href="#arg-transpose-a"></a></dt>
 <dd><p>(<code>character(1)</code>)<br>
 One of <code>"NO_TRANSPOSE"</code>, <code>"TRANSPOSE"</code>, or <code>"ADJOINT"</code>.</p></dd>
+
+
+<dt id="arg-output-types">output_types<a class="anchor" aria-label="anchor" href="#arg-output-types"></a></dt>
+<dd><p>(<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of <code><a href="ValueType.html">ValueType</a></code> | <code>NULL</code>)<br> Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.</p></dd>
 
 </dl></div>
     <div class="section level2">

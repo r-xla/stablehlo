@@ -64,7 +64,8 @@
 <span>  <span class="va">rhs</span>,</span>
 <span>  <span class="va">contracting_dims</span>,</span>
 <span>  batching_dims <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  precision_config <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  precision_config <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output_types <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -87,6 +88,10 @@ The precision configuration, a character vector of length 2 giving the
 precision used for <code>lhs</code> and <code>rhs</code>. Each entry must be one of <code>"DEFAULT"</code>,
 <code>"HIGH"</code> or <code>"HIGHEST"</code>. If <code>NULL</code> (default), no precision configuration is
 emitted, which is equivalent to <code>"DEFAULT"</code> for both operands.</p></dd>
+
+
+<dt id="arg-output-types">output_types<a class="anchor" aria-label="anchor" href="#arg-output-types"></a></dt>
+<dd><p>(<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of <code><a href="ValueType.html">ValueType</a></code> | <code>NULL</code>)<br> Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.</p></dd>
 
 </dl></div>
     <div class="section level2">

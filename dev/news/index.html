@@ -49,7 +49,8 @@
 <h2 class="pkg-version" data-toc-text="development version" id="stablehlo-development-version">stablehlo (development version)<a class="anchor" aria-label="anchor" href="#stablehlo-development-version"></a></h2>
 <div class="section level3">
 <h3 id="performance-development-version">Performance<a class="anchor" aria-label="anchor" href="#performance-development-version"></a></h3>
-<ul><li>The package was optimized w.r.t. runtime performance. This was achieved by reducing the number of classes that are used internally when creating <code>Func</code>s. The <code>hlo_&lt;*&gt;</code> user API remains unaffected.</li>
+<ul><li><p>The package was optimized w.r.t. runtime performance. This was achieved by reducing the number of classes that are used internally when creating <code>Func</code>s. The <code>hlo_&lt;*&gt;</code> user API remains unaffected.</p></li>
+<li><p>The <code>hlo_*</code> builders of common ops gained an <code>output_types</code> argument. When the output types are known ahead of time (e.g. from a lowering that ran type inference at trace time), passing them skips redundant inference and its input validation.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>

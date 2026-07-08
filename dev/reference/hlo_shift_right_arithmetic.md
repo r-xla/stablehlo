@@ -8,7 +8,7 @@ details.
 ``` r
 infer_types_shift_right_arithmetic(lhs, rhs)
 
-hlo_shift_right_arithmetic(lhs, rhs)
+hlo_shift_right_arithmetic(lhs, rhs, output_types = NULL)
 ```
 
 ## Arguments
@@ -16,6 +16,15 @@ hlo_shift_right_arithmetic(lhs, rhs)
 - lhs, rhs:
 
   ([`FuncValue`](https://r-xla.github.io/stablehlo/dev/reference/FuncValue.md))  
+
+- output_types:
+
+  ([`list()`](https://rdrr.io/r/base/list.html) of
+  [`ValueType`](https://r-xla.github.io/stablehlo/dev/reference/ValueType.md)
+  \| `NULL`)  
+  Output types known ahead of time (e.g. from type inference at trace
+  time). When provided, type inference and its input validation are
+  skipped.
 
 ## Value
 

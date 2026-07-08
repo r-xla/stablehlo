@@ -65,7 +65,8 @@
 <span>  <span class="va">padding_value</span>,</span>
 <span>  <span class="va">edge_padding_low</span>,</span>
 <span>  <span class="va">edge_padding_high</span>,</span>
-<span>  <span class="va">interior_padding</span></span>
+<span>  <span class="va">interior_padding</span>,</span>
+<span>  output_types <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -75,6 +76,10 @@
 
 <dl><dt id="arg-operand-padding-value-edge-padding-low-edge-padding-high-interior-padding">operand, padding_value, edge_padding_low, edge_padding_high, interior_padding<a class="anchor" aria-label="anchor" href="#arg-operand-padding-value-edge-padding-low-edge-padding-high-interior-padding"></a></dt>
 <dd><p>(<code><a href="FuncValue.html">FuncValue</a></code>)<br></p></dd>
+
+
+<dt id="arg-output-types">output_types<a class="anchor" aria-label="anchor" href="#arg-output-types"></a></dt>
+<dd><p>(<code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> of <code><a href="ValueType.html">ValueType</a></code> | <code>NULL</code>)<br> Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.</p></dd>
 
 </dl></div>
     <div class="section level2">

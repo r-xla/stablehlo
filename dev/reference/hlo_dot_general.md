@@ -17,7 +17,8 @@ hlo_dot_general(
   rhs,
   contracting_dims,
   batching_dims = NULL,
-  precision_config = NULL
+  precision_config = NULL,
+  output_types = NULL
 )
 ```
 
@@ -40,6 +41,15 @@ hlo_dot_general(
   `"DEFAULT"`, `"HIGH"` or `"HIGHEST"`. If `NULL` (default), no
   precision configuration is emitted, which is equivalent to `"DEFAULT"`
   for both operands.
+
+- output_types:
+
+  ([`list()`](https://rdrr.io/r/base/list.html) of
+  [`ValueType`](https://r-xla.github.io/stablehlo/dev/reference/ValueType.md)
+  \| `NULL`)  
+  Output types known ahead of time (e.g. from type inference at trace
+  time). When provided, type inference and its input validation are
+  skipped.
 
 ## Value
 
