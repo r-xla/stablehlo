@@ -16,12 +16,17 @@ The builder is optimized for low per-op overhead (lowering a graph
 should stay in the same order of magnitude as `pjrt_compile()`):
 
 - **Lazy rendering**: each op is stored on its func as a deferred
-  `list(render, ctx)` pair via `func_emit()` (a cons list, so appending
-  is O(1) per op and never touches earlier ops). The MLIR text line is
-  produced by `render(ctx)` at
+  `list(render, ctx)` pair via `func_emit()`, appended to the func’s
+  `buf` (a
+  [`fastmap::fastqueue`](https://r-lib.github.io/fastmap/reference/fastqueue.html)).
+  The queue gives amortised-O(1) append that never copies earlier ops —
+  note that growing an ordinary R list held in a field
+  (`buf$ops[[n]] <- item`) is *not* O(1): the list is copy-on-modify and
+  gets duplicated on every append, so it degrades to O(n^2). The MLIR
+  text line is produced by `render(ctx)` at
   [`repr()`](https://r-xla.github.io/stablehlo/dev/reference/repr.md)
-  time, in `func_lines()`, front-to-back. There is no op-record tree to
-  walk; a single
+  time, in `func_lines()`, front-to-back (`buf$as_list()` yields ops in
+  emission order). There is no op-record tree to walk; a single
   [`repr()`](https://r-xla.github.io/stablehlo/dev/reference/repr.md)
   per program means deferring the render costs nothing over rendering
   eagerly.

@@ -55,7 +55,7 @@
 <h2 id="design">Design<a class="anchor" aria-label="anchor" href="#design"></a></h2>
 <p>The builder is optimized for low per-op overhead (lowering a graph should stay in the same order of magnitude as <code>pjrt_compile()</code>):</p>
 <ul><li>
-<strong>Lazy rendering</strong>: each op is stored on its func as a deferred <code>list(render, ctx)</code> pair via <code>func_emit()</code> (a cons list, so appending is O(1) per op and never touches earlier ops). The MLIR text line is produced by <code>render(ctx)</code> at <code><a href="reference/repr.html">repr()</a></code> time, in <code>func_lines()</code>, front-to-back. There is no op-record tree to walk; a single <code><a href="reference/repr.html">repr()</a></code> per program means deferring the render costs nothing over rendering eagerly.</li>
+<strong>Lazy rendering</strong>: each op is stored on its func as a deferred <code>list(render, ctx)</code> pair via <code>func_emit()</code>, appended to the func’s <code>buf</code> (a <code><a href="https://r-lib.github.io/fastmap/reference/fastqueue.html" class="external-link">fastmap::fastqueue</a></code>). The queue gives amortised-O(1) append that never copies earlier ops — note that growing an ordinary R list held in a field (<code>buf$ops[[n]] &lt;- item</code>) is <em>not</em> O(1): the list is copy-on-modify and gets duplicated on every append, so it degrades to O(n^2). The MLIR text line is produced by <code>render(ctx)</code> at <code><a href="reference/repr.html">repr()</a></code> time, in <code>func_lines()</code>, front-to-back (<code>buf$as_list()</code> yields ops in emission order). There is no op-record tree to walk; a single <code><a href="reference/repr.html">repr()</a></code> per program means deferring the render costs nothing over rendering eagerly.</li>
 <li>
 <strong>Repr-time value ids</strong>: an auto SSA id (<code><a href="reference/ValueId.html">ValueId()</a></code>) carries a mutable cell and gets its number when first rendered — in appearance order (<code>%0</code>, <code>%1</code>, …), sharing one counter per program installed by <code>repr.Func</code>. Numbering skips integers already claimed by named ids (<code>collect_named_numeric()</code>), so an input named <code>"2"</code> does not collide with <code>%2</code> and a large name like <code>%1000000</code> does not inflate the counter. Region funcs rendered within the program share the scope, so ids stay unique across embedded regions.</li>
 <li>
@@ -151,7 +151,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>
