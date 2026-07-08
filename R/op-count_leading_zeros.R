@@ -16,6 +16,9 @@ hlo_count_leading_zeros_impl <- hlo_fn(
 #' @templateVar mnemonic count_leading_zeros
 #' @template op
 #' @export
-hlo_count_leading_zeros <- function(operand) {
-  hlo_count_leading_zeros_impl(values = list(operand = operand))
+hlo_count_leading_zeros <- function(operand, output_types = NULL) {
+  hlo_count_leading_zeros_impl(
+    values = list(operand = operand),
+    output_types = output_types
+  )
 }

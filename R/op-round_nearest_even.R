@@ -15,6 +15,9 @@ hlo_round_nearest_even_impl <- hlo_fn(
 #' @templateVar mnemonic round_nearest_even
 #' @template op
 #' @export
-hlo_round_nearest_even <- function(operand) {
-  hlo_round_nearest_even_impl(values = list(operand = operand))
+hlo_round_nearest_even <- function(operand, output_types = NULL) {
+  hlo_round_nearest_even_impl(
+    values = list(operand = operand),
+    output_types = output_types
+  )
 }

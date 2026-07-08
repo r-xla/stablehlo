@@ -20,6 +20,9 @@ hlo_shift_right_arithmetic_impl <- hlo_fn( # nolint
 #' @templateVar mnemonic shift_right_arithmetic
 #' @template op
 #' @export
-hlo_shift_right_arithmetic <- function(lhs, rhs) {
-  hlo_shift_right_arithmetic_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_shift_right_arithmetic <- function(lhs, rhs, output_types = NULL) {
+  hlo_shift_right_arithmetic_impl(
+    values = list(lhs = lhs, rhs = rhs),
+    output_types = output_types
+  )
 }

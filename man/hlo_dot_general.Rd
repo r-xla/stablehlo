@@ -17,7 +17,8 @@ hlo_dot_general(
   rhs,
   contracting_dims,
   batching_dims = NULL,
-  precision_config = NULL
+  precision_config = NULL,
+  output_types = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ The precision configuration, a character vector of length 2 giving the
 precision used for \code{lhs} and \code{rhs}. Each entry must be one of \code{"DEFAULT"},
 \code{"HIGH"} or \code{"HIGHEST"}. If \code{NULL} (default), no precision configuration is
 emitted, which is equivalent to \code{"DEFAULT"} for both operands.}
+
+\item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }
 \value{
 \code{\link{FuncValue}}\cr

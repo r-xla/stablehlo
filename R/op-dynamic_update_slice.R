@@ -78,11 +78,13 @@ hlo_dynamic_update_slice_impl <- hlo_fn(
 hlo_dynamic_update_slice <- function(
   operand,
   update,
-  ...
+  ...,
+  output_types = NULL
 ) {
   start_indices <- list(...)
 
   hlo_dynamic_update_slice_impl(
-    values = c(list(operand = operand, update = update), start_indices)
+    values = c(list(operand = operand, update = update), start_indices),
+    output_types = output_types
   )
 }

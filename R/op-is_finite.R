@@ -18,6 +18,9 @@ hlo_is_finite_impl <- hlo_fn(OpIsFinite, infer_types_is_finite)
 #' @templateVar mnemonic is_finite
 #' @template op
 #' @export
-hlo_is_finite <- function(operand) {
-  hlo_is_finite_impl(values = list(operand = operand))
+hlo_is_finite <- function(operand, output_types = NULL) {
+  hlo_is_finite_impl(
+    values = list(operand = operand),
+    output_types = output_types
+  )
 }

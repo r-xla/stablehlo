@@ -84,10 +84,12 @@ hlo_broadcast_in_dim_impl <- hlo_fn(
 hlo_broadcast_in_dim <- function(
   operand,
   broadcast_dimensions,
-  shape
+  shape,
+  output_types = NULL
 ) {
   hlo_broadcast_in_dim_impl(
     values = list(operand = operand),
+    output_types = output_types,
     attrs = list(
       constant_attr(
         "broadcast_dimensions",

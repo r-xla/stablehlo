@@ -12,6 +12,9 @@ hlo_shift_left_impl <- hlo_fn(OpShiftLeft, infer_types_shift_left)
 #' @templateVar mnemonic shift_left
 #' @template op
 #' @export
-hlo_shift_left <- function(lhs, rhs) {
-  hlo_shift_left_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_shift_left <- function(lhs, rhs, output_types = NULL) {
+  hlo_shift_left_impl(
+    values = list(lhs = lhs, rhs = rhs),
+    output_types = output_types
+  )
 }

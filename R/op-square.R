@@ -12,6 +12,6 @@ hlo_square_impl <- hlo_fn(OpSquare, infer_types_square)
 #' @templateVar mnemonic square
 #' @template op_chlo
 #' @export
-hlo_square <- function(operand) {
-  hlo_square_impl(values = list(operand = operand))
+hlo_square <- function(operand, output_types = NULL) {
+  hlo_square_impl(values = list(operand = operand), output_types = output_types)
 }

@@ -42,6 +42,9 @@ hlo_clamp_impl <- hlo_fn(OpClamp, infer_types_clamp)
 #' @templateVar mnemonic clamp
 #' @template op
 #' @export
-hlo_clamp <- function(min, operand, max) {
-  hlo_clamp_impl(values = list(min = min, operand = operand, max = max))
+hlo_clamp <- function(min, operand, max, output_types = NULL) {
+  hlo_clamp_impl(
+    values = list(min = min, operand = operand, max = max),
+    output_types = output_types
+  )
 }

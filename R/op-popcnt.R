@@ -12,6 +12,6 @@ hlo_popcnt_impl <- hlo_fn(OpPopcnt, infer_types_popcnt)
 #' @templateVar mnemonic popcnt
 #' @template op
 #' @export
-hlo_popcnt <- function(operand) {
-  hlo_popcnt_impl(values = list(operand = operand))
+hlo_popcnt <- function(operand, output_types = NULL) {
+  hlo_popcnt_impl(values = list(operand = operand), output_types = output_types)
 }

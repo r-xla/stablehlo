@@ -107,7 +107,8 @@ hlo_slice <- function(
   operand,
   start_indices,
   limit_indices,
-  strides
+  strides,
+  output_types = NULL
 ) {
   start_int <- as.integer(start_indices)
   limit_int <- as.integer(limit_indices)
@@ -115,6 +116,7 @@ hlo_slice <- function(
 
   hlo_slice_impl(
     values = list(operand = operand),
+    output_types = output_types,
     attrs = list(
       constant_attr(
         "start_indices",

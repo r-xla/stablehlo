@@ -12,6 +12,6 @@ hlo_or_impl <- hlo_fn(OpOr, infer_types_or)
 #' @templateVar mnemonic or
 #' @template op
 #' @export
-hlo_or <- function(lhs, rhs) {
-  hlo_or_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_or <- function(lhs, rhs, output_types = NULL) {
+  hlo_or_impl(values = list(lhs = lhs, rhs = rhs), output_types = output_types)
 }

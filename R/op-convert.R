@@ -24,9 +24,10 @@ hlo_convert_impl <- hlo_fn(OpConvert, infer_types_convert)
 #' @templateVar mnemonic convert
 #' @template op
 #' @export
-hlo_convert <- function(operand, dtype) {
+hlo_convert <- function(operand, dtype, output_types = NULL) {
   hlo_convert_impl(
     values = list(operand = operand),
+    output_types = output_types,
     custom_attrs = list(dtype = dtype)
   )
 }

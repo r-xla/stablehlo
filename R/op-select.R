@@ -56,9 +56,11 @@ hlo_select_impl <- hlo_fn(
 hlo_select <- function(
   pred,
   on_true,
-  on_false
+  on_false,
+  output_types = NULL
 ) {
   hlo_select_impl(
-    values = list(pred = pred, on_true = on_true, on_false = on_false)
+    values = list(pred = pred, on_true = on_true, on_false = on_false),
+    output_types = output_types
   )
 }

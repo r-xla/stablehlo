@@ -15,6 +15,9 @@ hlo_is_neg_inf_impl <- hlo_fn(OpIsNegInf, infer_types_is_neg_inf)
 #' @templateVar mnemonic is_neg_inf
 #' @template op_chlo
 #' @export
-hlo_is_neg_inf <- function(operand) {
-  hlo_is_neg_inf_impl(values = list(operand = operand))
+hlo_is_neg_inf <- function(operand, output_types = NULL) {
+  hlo_is_neg_inf_impl(
+    values = list(operand = operand),
+    output_types = output_types
+  )
 }

@@ -12,6 +12,9 @@ hlo_divide_impl <- hlo_fn(OpDivide, infer_types_divide)
 #' @templateVar mnemonic divide
 #' @template op
 #' @export
-hlo_divide <- function(lhs, rhs) {
-  hlo_divide_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_divide <- function(lhs, rhs, output_types = NULL) {
+  hlo_divide_impl(
+    values = list(lhs = lhs, rhs = rhs),
+    output_types = output_types
+  )
 }

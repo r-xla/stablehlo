@@ -12,6 +12,6 @@ hlo_asinh_impl <- hlo_fn(OpAsinh, infer_types_asinh)
 #' @templateVar mnemonic asinh
 #' @template op_chlo
 #' @export
-hlo_asinh <- function(operand) {
-  hlo_asinh_impl(values = list(operand = operand))
+hlo_asinh <- function(operand, output_types = NULL) {
+  hlo_asinh_impl(values = list(operand = operand), output_types = output_types)
 }

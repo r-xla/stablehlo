@@ -12,6 +12,6 @@ hlo_rsqrt_impl <- hlo_fn(OpRsqrt, infer_types_rsqrt)
 #' @templateVar mnemonic rsqrt
 #' @template op
 #' @export
-hlo_rsqrt <- function(operand) {
-  hlo_rsqrt_impl(values = list(operand = operand))
+hlo_rsqrt <- function(operand, output_types = NULL) {
+  hlo_rsqrt_impl(values = list(operand = operand), output_types = output_types)
 }

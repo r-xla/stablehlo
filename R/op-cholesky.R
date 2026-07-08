@@ -53,10 +53,12 @@ hlo_cholesky_impl <- hlo_fn(
 #' @export
 hlo_cholesky <- function(
   operand,
-  lower
+  lower,
+  output_types = NULL
 ) {
   hlo_cholesky_impl(
     values = list(operand = operand),
+    output_types = output_types,
     attrs = list(
       BoolAttr(name = "lower", value = as.logical(lower))
     )

@@ -94,10 +94,12 @@ hlo_compare <- function(
   lhs,
   rhs,
   comparison_direction,
-  compare_type
+  compare_type,
+  output_types = NULL
 ) {
   hlo_compare_impl(
     values = list(lhs = lhs, rhs = rhs),
+    output_types = output_types,
     custom_attrs = list(
       comparison_direction = comparison_direction,
       compare_type = compare_type

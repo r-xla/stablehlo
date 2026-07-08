@@ -12,6 +12,9 @@ hlo_multiply_impl <- hlo_fn(OpMultiply, infer_types_multiply)
 #' @templateVar mnemonic multiply
 #' @template op
 #' @export
-hlo_multiply <- function(lhs, rhs) {
-  hlo_multiply_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_multiply <- function(lhs, rhs, output_types = NULL) {
+  hlo_multiply_impl(
+    values = list(lhs = lhs, rhs = rhs),
+    output_types = output_types
+  )
 }

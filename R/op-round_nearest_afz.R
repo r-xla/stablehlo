@@ -15,6 +15,9 @@ hlo_round_nearest_afz_impl <- hlo_fn(
 #' @templateVar mnemonic round_nearest_afz
 #' @template op
 #' @export
-hlo_round_nearest_afz <- function(operand) {
-  hlo_round_nearest_afz_impl(values = list(operand = operand))
+hlo_round_nearest_afz <- function(operand, output_types = NULL) {
+  hlo_round_nearest_afz_impl(
+    values = list(operand = operand),
+    output_types = output_types
+  )
 }

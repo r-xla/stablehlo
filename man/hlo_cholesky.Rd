@@ -4,10 +4,12 @@
 \alias{hlo_cholesky}
 \title{Cholesky Operator}
 \usage{
-hlo_cholesky(operand, lower)
+hlo_cholesky(operand, lower, output_types = NULL)
 }
 \arguments{
 \item{operand, lower}{(\code{\link{FuncValue}})\cr}
+
+\item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }
 \value{
 \code{\link{FuncValue}}\cr

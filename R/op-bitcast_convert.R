@@ -92,10 +92,12 @@ hlo_bitcast_convert_impl <- hlo_fn(
 #' @export
 hlo_bitcast_convert <- function(
   operand,
-  dtype
+  dtype,
+  output_types = NULL
 ) {
   hlo_bitcast_convert_impl(
     values = list(operand = operand),
+    output_types = output_types,
     custom_attrs = list(dtype = dtype)
   )
 }

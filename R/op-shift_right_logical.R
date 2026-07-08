@@ -19,6 +19,9 @@ hlo_shift_right_logical_impl <- hlo_fn(
 #' @templateVar mnemonic shift_right_logical
 #' @template op
 #' @export
-hlo_shift_right_logical <- function(lhs, rhs) {
-  hlo_shift_right_logical_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_shift_right_logical <- function(lhs, rhs, output_types = NULL) {
+  hlo_shift_right_logical_impl(
+    values = list(lhs = lhs, rhs = rhs),
+    output_types = output_types
+  )
 }

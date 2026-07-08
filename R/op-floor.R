@@ -12,6 +12,6 @@ hlo_floor_impl <- hlo_fn(OpFloor, infer_types_floor)
 #' @templateVar mnemonic floor
 #' @template op
 #' @export
-hlo_floor <- function(operand) {
-  hlo_floor_impl(values = list(operand = operand))
+hlo_floor <- function(operand, output_types = NULL) {
+  hlo_floor_impl(values = list(operand = operand), output_types = output_types)
 }

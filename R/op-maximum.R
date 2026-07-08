@@ -12,6 +12,9 @@ hlo_maximum_impl <- hlo_fn(OpMaximum, infer_types_maximum)
 #' @templateVar mnemonic maximum
 #' @template op
 #' @export
-hlo_maximum <- function(lhs, rhs) {
-  hlo_maximum_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_maximum <- function(lhs, rhs, output_types = NULL) {
+  hlo_maximum_impl(
+    values = list(lhs = lhs, rhs = rhs),
+    output_types = output_types
+  )
 }

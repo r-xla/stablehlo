@@ -87,12 +87,14 @@ hlo_dynamic_slice_impl <- hlo_fn(
 hlo_dynamic_slice <- function(
   operand,
   ...,
-  slice_sizes
+  slice_sizes,
+  output_types = NULL
 ) {
   start_indices <- list(...)
 
   hlo_dynamic_slice_impl(
     values = c(list(operand = operand), start_indices),
+    output_types = output_types,
     attrs = list(
       constant_attr(
         "slice_sizes",

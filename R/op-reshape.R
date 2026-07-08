@@ -43,10 +43,12 @@ hlo_reshape_impl <- hlo_fn(
 #' @export
 hlo_reshape <- function(
   operand,
-  shape
+  shape,
+  output_types = NULL
 ) {
   hlo_reshape_impl(
     values = list(operand = operand),
+    output_types = output_types,
     custom_attrs = list(shape = as.integer(shape))
   )
 }

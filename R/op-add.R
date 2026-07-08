@@ -12,6 +12,6 @@ hlo_add_impl <- hlo_fn(OpAdd, infer_types_add)
 #' @templateVar mnemonic add
 #' @template op
 #' @export
-hlo_add <- function(lhs, rhs) {
-  hlo_add_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_add <- function(lhs, rhs, output_types = NULL) {
+  hlo_add_impl(values = list(lhs = lhs, rhs = rhs), output_types = output_types)
 }

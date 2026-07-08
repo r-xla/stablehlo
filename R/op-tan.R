@@ -12,6 +12,6 @@ hlo_tan_impl <- hlo_fn(OpTan, infer_types_tan)
 #' @templateVar mnemonic tan
 #' @template op
 #' @export
-hlo_tan <- function(operand) {
-  hlo_tan_impl(values = list(operand = operand))
+hlo_tan <- function(operand, output_types = NULL) {
+  hlo_tan_impl(values = list(operand = operand), output_types = output_types)
 }

@@ -140,10 +140,12 @@ hlo_triangular_solve <- function(
   left_side,
   lower,
   unit_diagonal,
-  transpose_a
+  transpose_a,
+  output_types = NULL
 ) {
   hlo_triangular_solve_impl(
     values = list(a = a, b = b),
+    output_types = output_types,
     attrs = list(
       BoolAttr(name = "left_side", value = as.logical(left_side)),
       BoolAttr(name = "lower", value = as.logical(lower)),

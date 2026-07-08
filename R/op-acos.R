@@ -12,6 +12,6 @@ hlo_acos_impl <- hlo_fn(OpAcos, infer_types_acos)
 #' @templateVar mnemonic acos
 #' @template op_chlo
 #' @export
-hlo_acos <- function(operand) {
-  hlo_acos_impl(values = list(operand = operand))
+hlo_acos <- function(operand, output_types = NULL) {
+  hlo_acos_impl(values = list(operand = operand), output_types = output_types)
 }
