@@ -58,7 +58,7 @@ assert_one_of <- function(
   call = rlang::caller_env()
 ) {
   for (type in types) {
-    if (test_class(x, type)) {
+    if (inherits(x, type)) {
       return(invisible(NULL))
     }
   }
@@ -104,7 +104,7 @@ assert_vt_is_tensor <- function(
   if (inherits(x, "ValueType") && inherits(x$type, "TensorType")) {
     return(invisible(NULL))
   }
-  if (!test_class(x, "ValueType")) {
+  if (!inherits(x, "ValueType")) {
     cli_abort(
       c(
         "{.arg {arg}} must be a ValueType.",
@@ -114,7 +114,7 @@ assert_vt_is_tensor <- function(
     )
   }
   tensor_type <- x$type
-  if (!test_class(tensor_type, "TensorType")) {
+  if (!inherits(tensor_type, "TensorType")) {
     cli_abort(
       c(
         "{.arg {arg}} must contain a TensorType.",
@@ -154,7 +154,7 @@ assert_vt_has_ttype <- function(
     }
   }
 
-  if (!test_class(x, "ValueType")) {
+  if (!inherits(x, "ValueType")) {
     cli_abort(
       c(
         "{.arg {arg}} must be a ValueType.",
@@ -165,7 +165,7 @@ assert_vt_has_ttype <- function(
   }
 
   tensor_type <- x$type
-  if (!test_class(tensor_type, "TensorType")) {
+  if (!inherits(tensor_type, "TensorType")) {
     cli_abort(
       c(
         "{.arg {arg}} must contain a TensorType.",
@@ -184,9 +184,9 @@ assert_vt_has_ttype <- function(
 
       # dtype should be either a class name (string) or an initialized instance
       if (is.character(dtype)) {
-        # dtype is a class name string - use test_class
+        # dtype is a class name string - use inherits
         type_names[i] <- dtype
-        if (test_class(tensor_type$dtype, dtype)) {
+        if (inherits(tensor_type$dtype, dtype)) {
           dtype_matched <- TRUE
           break
         }
@@ -314,7 +314,7 @@ assert_func <- function(
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
-  if (!test_class(x, "Func")) {
+  if (!inherits(x, "Func")) {
     cli_abort(
       c(
         "{.arg {arg}} must be a Func.",

@@ -192,7 +192,7 @@ impl_hlo_constant <- function(value, dtype, func, shape) {
   } else {
     as.character(as_dtype(dtype))
   }
-  if (length(shape) && !test_class(value, "PJRTBuffer") && length(value) > 1) {
+  if (length(shape) && !inherits(value, "PJRTBuffer") && length(value) > 1) {
     # stablehlo allows e.g. dense<0.0> : tensor<2x2xf32>, so if length(value) == 1
     # we don't need to recycle to keep the program size smaller
     value <- array(value, dim = shape)

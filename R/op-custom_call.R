@@ -135,7 +135,7 @@ infer_types_custom_call <- function(
     return(ValueTypes(list()))
   }
 
-  if (!test_class(output_types, "ValueTypes")) {
+  if (!inherits(output_types, "ValueTypes")) {
     output_types <- ValueTypes(output_types)
   }
 

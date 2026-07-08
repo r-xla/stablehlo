@@ -4,7 +4,7 @@ NULL
 
 
 func_output_types <- function(func) {
-  if (!test_class(func, "Func")) {
+  if (!inherits(func, "Func")) {
     cli_abort("func must be a Func object, but got {.class {class(func)[1]}}.")
   }
   lapply(func$outputs, function(x) x$type)

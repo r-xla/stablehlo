@@ -83,7 +83,7 @@ TensorType <- function(dtype, shape) {
 
 #' @export
 `==.TensorType` <- function(e1, e2) {
-  test_class(e2, "TensorType") && identical(e1$str, e2$str)
+  inherits(e2, "TensorType") && identical(e1$str, e2$str)
 }
 
 #' @export
@@ -166,9 +166,9 @@ ValueType <- function(type, shape = NULL) {
 #' @export
 #' @method dtype ValueType
 dtype.ValueType <- function(x, ...) {
-  if (test_class(x$type, "TensorType")) {
+  if (inherits(x$type, "TensorType")) {
     x$type$dtype
-  } else if (test_class(x$type, "TokenType")) {
+  } else if (inherits(x$type, "TokenType")) {
     stop("ValueType with TokenType has no dtype")
   } else {
     stop("Unsupported ValueType for dtype")
@@ -201,7 +201,7 @@ make_vt <- function(type, shape) {
 
 #' @export
 `==.ValueType` <- function(e1, e2) {
-  if (!test_class(e2, "ValueType")) {
+  if (!inherits(e2, "ValueType")) {
     return(FALSE)
   }
   e1$type == e2$type

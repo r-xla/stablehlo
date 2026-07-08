@@ -44,7 +44,7 @@ infer_types_call <- function(callee, ...) {
 #' @return [`FuncValue`] or `list()` of [`FuncValue`]s.
 #' @export
 hlo_call <- function(callee, ..., simplify = TRUE) {
-  if (!test_class(callee, "Func")) {
+  if (!inherits(callee, "Func")) {
     cli_abort("{.arg callee} must be a {.cls Func} object.")
   }
   if (length(callee$outputs) == 0L) {
@@ -53,7 +53,7 @@ hlo_call <- function(callee, ..., simplify = TRUE) {
 
   dots <- list(...)
   lapply(dots, function(x) {
-    if (!test_class(x, "FuncValue")) {
+    if (!inherits(x, "FuncValue")) {
       cli_abort("All arguments must be {.cls FuncValue}s.")
     }
   })

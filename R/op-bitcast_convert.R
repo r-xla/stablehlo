@@ -14,7 +14,7 @@ infer_types_bitcast_convert <- function(
 
   if (
     # https://github.com/openxla/stablehlo/issues/1672
-    test_class(operand$type$dtype, "BooleanType")
+    inherits(operand$type$dtype, "BooleanType")
   ) {
     cli_abort(c(
       "Bitcast conversions from and to i1 are not supported.",

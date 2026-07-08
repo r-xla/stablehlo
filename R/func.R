@@ -177,14 +177,13 @@ func_lines <- function(func) {
 # Integers already claimed by named ids in this func and its region funcs, so
 # repr-time numbering can skip exactly those (see id_number()).
 collect_named_numeric <- function(func) {
-  out <- integer()
+  out <- numeric()
   for (inp in func$inputs) {
     id <- inp$id$id
     if (is.character(id) && grepl("^[0-9]+$", id)) {
-      v <- suppressWarnings(as.integer(id))
-      if (!is.na(v)) {
-        out <- c(out, v)
-      }
+      # as.numeric (not as.integer) so a huge all-digit name doesn't overflow
+      # the integer range; such a value simply never matches a small auto id.
+      out <- c(out, as.numeric(id))
     }
   }
   node <- func[["buf"]]$stack

@@ -1,5 +1,21 @@
 # stablehlo (development version)
 
+## Performance
+
+* The package was optimized w.r.t. runtime performance.
+  This was achieved by reducing the number of classes
+  that are used internally when creating `Func`s.
+  The `hlo_<*>` user API remains unaffected.
+
+* The `hlo_*` builders of common ops gained an `output_types` argument.
+  When the output types are known ahead of time (e.g. from a lowering that
+  ran type inference at trace time), passing them skips redundant inference
+  and its input validation.
+
+## Bug fixes
+
+* emit width-correct hex for f64 NaN/Inf constants
+
 # stablehlo 0.3.0
 
 ## Features
