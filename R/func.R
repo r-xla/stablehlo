@@ -136,12 +136,11 @@ repr.FuncId <- function(x, ...) {
 
 # Append a deferred op to the func's buffer. Each op is stored as a
 # `list(render, payload)` pair; the line is produced by `render(payload)` at
-# repr time (see func_lines()), once value ids can be numbered. The buffer is
-# a cons list, so appending is O(1) per op and never touches earlier ops.
+# repr time (see func_lines()), once value ids can be numbered. The buffer is a
+# `fastmap::fastqueue`, giving amortised-O(1) append that never copies earlier
+# ops (unlike growing an R list held in a field, which is copy-on-modify).
 func_emit <- function(func, item) {
-  buf <- func[["buf"]]
-  buf$n <- buf$n + 1L
-  buf$stack <- list(item, buf$stack)
+  func[["buf"]]$add(item)
 }
 
 # Rendered op lines of a Func, in emission order (`character()`). Rendering
@@ -155,17 +154,9 @@ func_lines <- function(func) {
     push_repr_ids(collect_named_numeric(func))
     on.exit(pop_repr_ids(NULL), add = TRUE)
   }
-  buf <- func[["buf"]]
-  n <- buf$n
-  # The cons list is LIFO (head = last op); materialise in emission order.
-  items <- vector("list", n)
-  node <- buf$stack
-  i <- n
-  while (i > 0L) {
-    items[[i]] <- node[[1L]]
-    node <- node[[2L]]
-    i <- i - 1L
-  }
+  # `as_list()` returns ops in insertion (emission) order.
+  items <- func[["buf"]]$as_list()
+  n <- length(items)
   lines <- character(n)
   for (i in seq_len(n)) {
     item <- items[[i]]
@@ -186,12 +177,10 @@ collect_named_numeric <- function(func) {
       out <- c(out, as.numeric(id))
     }
   }
-  node <- func[["buf"]]$stack
-  while (!is.null(node)) {
-    for (cf in node[[1L]][[2L]]$funcs) {
+  for (item in func[["buf"]]$as_list()) {
+    for (cf in item[[2L]]$funcs) {
       out <- c(out, collect_named_numeric(cf))
     }
-    node <- node[[2L]]
   }
   out
 }
@@ -290,10 +279,7 @@ Func <- function(
   env$id <- id
   env$inputs <- inputs
   env$outputs <- outputs
-  buf <- new.env(parent = emptyenv())
-  buf$n <- 0L
-  buf$stack <- NULL
-  env$buf <- buf
+  env$buf <- fastmap::fastqueue()
 
   # Return the environment directly with Func class
   class(env) <- c("Func", "environment")
