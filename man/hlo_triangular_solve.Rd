@@ -14,7 +14,15 @@ infer_types_triangular_solve(
   transpose_a
 )
 
-hlo_triangular_solve(a, b, left_side, lower, unit_diagonal, transpose_a)
+hlo_triangular_solve(
+  a,
+  b,
+  left_side,
+  lower,
+  unit_diagonal,
+  transpose_a,
+  output_types = NULL
+)
 }
 \arguments{
 \item{a, b}{(\code{\link{FuncValue}})\cr}
@@ -30,6 +38,8 @@ If \code{TRUE}, assume diagonal elements of \code{a} are 1.}
 
 \item{transpose_a}{(\code{character(1)})\cr
 One of \code{"NO_TRANSPOSE"}, \code{"TRANSPOSE"}, or \code{"ADJOINT"}.}
+
+\item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }
 \value{
 \code{\link{FuncValue}}\cr

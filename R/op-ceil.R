@@ -12,6 +12,6 @@ hlo_ceil_impl <- hlo_fn(OpCeil, infer_types_ceil)
 #' @templateVar mnemonic ceil
 #' @template op
 #' @export
-hlo_ceil <- function(operand) {
-  hlo_ceil_impl(values = list(operand = operand))
+hlo_ceil <- function(operand, output_types = NULL) {
+  hlo_ceil_impl(values = list(operand = operand), output_types = output_types)
 }

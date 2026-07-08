@@ -12,6 +12,6 @@ hlo_cosh_impl <- hlo_fn(OpCosh, infer_types_cosh)
 #' @templateVar mnemonic cosh
 #' @template op_chlo
 #' @export
-hlo_cosh <- function(operand) {
-  hlo_cosh_impl(values = list(operand = operand))
+hlo_cosh <- function(operand, output_types = NULL) {
+  hlo_cosh_impl(values = list(operand = operand), output_types = output_types)
 }

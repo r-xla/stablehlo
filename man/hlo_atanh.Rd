@@ -7,10 +7,12 @@
 \usage{
 infer_types_atanh(operand)
 
-hlo_atanh(operand)
+hlo_atanh(operand, output_types = NULL)
 }
 \arguments{
 \item{operand}{(\code{\link{FuncValue}})\cr}
+
+\item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }
 \value{
 \code{\link{FuncValue}}\cr

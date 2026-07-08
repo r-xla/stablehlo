@@ -58,10 +58,12 @@ hlo_reverse_impl <- hlo_fn(
 #' @export
 hlo_reverse <- function(
   operand,
-  dimensions
+  dimensions,
+  output_types = NULL
 ) {
   hlo_reverse_impl(
     values = list(operand = operand),
+    output_types = output_types,
     attrs = list(
       constant_attr(
         "dimensions",

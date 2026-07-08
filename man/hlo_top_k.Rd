@@ -7,7 +7,7 @@
 \usage{
 infer_types_top_k(operand, k)
 
-hlo_top_k(operand, k)
+hlo_top_k(operand, k, output_types = NULL)
 }
 \arguments{
 \item{operand}{(\code{\link{FuncValue}})\cr
@@ -16,6 +16,8 @@ Tensor of integer, unsigned integer, or floating-point type with rank >= 1.}
 \item{k}{(\code{integer(1)})\cr
 Number of top elements to return along the last dimension. Must satisfy
 \verb{1 <= k <= dim(operand, -1)}.}
+
+\item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }
 \value{
 \code{\link{FuncValue}}\cr

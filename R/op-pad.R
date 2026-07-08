@@ -90,10 +90,12 @@ hlo_pad <- function(
   padding_value,
   edge_padding_low,
   edge_padding_high,
-  interior_padding
+  interior_padding,
+  output_types = NULL
 ) {
   hlo_pad_impl(
     values = list(operand = operand, padding_value = padding_value),
+    output_types = output_types,
     attrs = list(
       constant_attr(
         "edge_padding_low",

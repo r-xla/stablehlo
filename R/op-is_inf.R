@@ -15,6 +15,6 @@ hlo_is_inf_impl <- hlo_fn(OpIsInf, infer_types_is_inf)
 #' @templateVar mnemonic is_inf
 #' @template op_chlo
 #' @export
-hlo_is_inf <- function(operand) {
-  hlo_is_inf_impl(values = list(operand = operand))
+hlo_is_inf <- function(operand, output_types = NULL) {
+  hlo_is_inf_impl(values = list(operand = operand), output_types = output_types)
 }

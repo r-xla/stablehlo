@@ -11,11 +11,14 @@ hlo_rng_bit_generator(
   initial_state,
   rng_algorithm = c("DEFAULT", "THREE_FRY", "PHILOX"),
   dtype,
-  shape
+  shape,
+  output_types = NULL
 )
 }
 \arguments{
 \item{initial_state, rng_algorithm, dtype, shape}{(\code{\link{FuncValue}})\cr}
+
+\item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }
 \value{
 \code{\link{FuncValue}}\cr

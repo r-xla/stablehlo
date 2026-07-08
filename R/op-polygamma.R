@@ -14,6 +14,6 @@ hlo_polygamma_impl <- hlo_fn(OpPolygamma, infer_types_polygamma)
 #' @templateVar mnemonic polygamma
 #' @template op_chlo
 #' @export
-hlo_polygamma <- function(n, x) {
-  hlo_polygamma_impl(values = list(n = n, x = x))
+hlo_polygamma <- function(n, x, output_types = NULL) {
+  hlo_polygamma_impl(values = list(n = n, x = x), output_types = output_types)
 }

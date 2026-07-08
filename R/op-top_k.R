@@ -66,9 +66,10 @@ hlo_top_k_impl <- hlo_fn(OpTopK, infer_types_top_k)
 #'   `operand`) and their indices into the last dimension (dtype `i32`). Ties
 #'   are broken by lower index first.
 #' @export
-hlo_top_k <- function(operand, k) {
+hlo_top_k <- function(operand, k, output_types = NULL) {
   hlo_top_k_impl(
     values = list(operand = operand),
+    output_types = output_types,
     attrs = list(
       ScalarAttr(
         name = "k",

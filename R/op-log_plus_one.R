@@ -12,6 +12,9 @@ hlo_log_plus_one_impl <- hlo_fn(OpLogPlusOne, infer_types_log_plus_one)
 #' @templateVar mnemonic log_plus_one
 #' @template op
 #' @export
-hlo_log_plus_one <- function(operand) {
-  hlo_log_plus_one_impl(values = list(operand = operand))
+hlo_log_plus_one <- function(operand, output_types = NULL) {
+  hlo_log_plus_one_impl(
+    values = list(operand = operand),
+    output_types = output_types
+  )
 }

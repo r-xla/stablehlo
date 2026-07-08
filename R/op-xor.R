@@ -12,6 +12,6 @@ hlo_xor_impl <- hlo_fn(OpXor, infer_types_xor)
 #' @templateVar mnemonic xor
 #' @template op
 #' @export
-hlo_xor <- function(lhs, rhs) {
-  hlo_xor_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_xor <- function(lhs, rhs, output_types = NULL) {
+  hlo_xor_impl(values = list(lhs = lhs, rhs = rhs), output_types = output_types)
 }

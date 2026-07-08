@@ -7,10 +7,12 @@
 \usage{
 infer_types_polygamma(n, x)
 
-hlo_polygamma(n, x)
+hlo_polygamma(n, x, output_types = NULL)
 }
 \arguments{
 \item{n, x}{(\code{\link{FuncValue}})\cr}
+
+\item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }
 \value{
 \code{\link{FuncValue}}\cr

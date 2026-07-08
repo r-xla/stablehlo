@@ -12,6 +12,6 @@ hlo_lgamma_impl <- hlo_fn(OpLgamma, infer_types_lgamma)
 #' @templateVar mnemonic lgamma
 #' @template op_chlo
 #' @export
-hlo_lgamma <- function(operand) {
-  hlo_lgamma_impl(values = list(operand = operand))
+hlo_lgamma <- function(operand, output_types = NULL) {
+  hlo_lgamma_impl(values = list(operand = operand), output_types = output_types)
 }

@@ -96,11 +96,13 @@ hlo_rng_bit_generator <- function(
   initial_state,
   rng_algorithm = c("DEFAULT", "THREE_FRY", "PHILOX"),
   dtype,
-  shape
+  shape,
+  output_types = NULL
 ) {
   algo <- match.arg(rng_algorithm)
   hlo_rng_bit_generator_impl(
     values = list(initial_state = initial_state),
+    output_types = output_types,
     custom_attrs = list(
       rng_algorithm = algo,
       dtype = dtype,

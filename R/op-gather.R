@@ -402,7 +402,8 @@ hlo_gather <- function(
   start_indices,
   gather_dimension_numbers,
   slice_sizes,
-  indices_are_sorted = FALSE
+  indices_are_sorted = FALSE,
+  output_types = NULL
 ) {
   assert_class(gather_dimension_numbers, "GatherDimensionNumbers")
 
@@ -418,6 +419,7 @@ hlo_gather <- function(
       operand = operand,
       start_indices = start_indices
     ),
+    output_types = output_types,
     custom_attrs = list(gather_dimension_numbers = gather_dimension_numbers),
     attrs = list(
       ConstantAttr(name = "slice_sizes", value = slice_sizes_const),

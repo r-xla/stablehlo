@@ -12,6 +12,9 @@ hlo_digamma_impl <- hlo_fn(OpDigamma, infer_types_digamma)
 #' @templateVar mnemonic digamma
 #' @template op_chlo
 #' @export
-hlo_digamma <- function(operand) {
-  hlo_digamma_impl(values = list(operand = operand))
+hlo_digamma <- function(operand, output_types = NULL) {
+  hlo_digamma_impl(
+    values = list(operand = operand),
+    output_types = output_types
+  )
 }

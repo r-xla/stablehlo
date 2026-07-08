@@ -12,6 +12,6 @@ hlo_cbrt_impl <- hlo_fn(OpCbrt, infer_types_cbrt)
 #' @templateVar mnemonic cbrt
 #' @template op
 #' @export
-hlo_cbrt <- function(operand) {
-  hlo_cbrt_impl(values = list(operand = operand))
+hlo_cbrt <- function(operand, output_types = NULL) {
+  hlo_cbrt_impl(values = list(operand = operand), output_types = output_types)
 }

@@ -121,13 +121,14 @@ hlo_concatenate_impl <- hlo_fn(OpConcatenate, infer_types_concatenate)
 #' @templateVar mnemonic concatenate
 #' @template op
 #' @export
-hlo_concatenate <- function(..., dimension) {
+hlo_concatenate <- function(..., dimension, output_types = NULL) {
   dots <- list(...)
   if (length(dimension) != 1) {
     cli_abort("dimension must be a scalar")
   }
   hlo_concatenate_impl(
     values = dots,
+    output_types = output_types,
     attrs = list(
       ScalarAttr(
         name = "dimension",

@@ -12,6 +12,6 @@ hlo_erf_impl <- hlo_fn(OpErf, infer_types_erf)
 #' @templateVar mnemonic erf
 #' @template op_chlo
 #' @export
-hlo_erf <- function(operand) {
-  hlo_erf_impl(values = list(operand = operand))
+hlo_erf <- function(operand, output_types = NULL) {
+  hlo_erf_impl(values = list(operand = operand), output_types = output_types)
 }

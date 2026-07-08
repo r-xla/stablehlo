@@ -18,7 +18,8 @@ hlo_gather(
   start_indices,
   gather_dimension_numbers,
   slice_sizes,
-  indices_are_sorted = FALSE
+  indices_are_sorted = FALSE,
+  output_types = NULL
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ The sizes of the slices to gather.}
 
 \item{indices_are_sorted}{(\code{logical(1)})\cr
 Whether indices are sorted.}
+
+\item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }
 \value{
 \code{\link{FuncValue}}\cr

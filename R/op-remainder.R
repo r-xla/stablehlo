@@ -12,6 +12,9 @@ hlo_remainder_impl <- hlo_fn(OpRemainder, infer_types_remainder)
 #' @templateVar mnemonic remainder
 #' @template op
 #' @export
-hlo_remainder <- function(lhs, rhs) {
-  hlo_remainder_impl(values = list(lhs = lhs, rhs = rhs))
+hlo_remainder <- function(lhs, rhs, output_types = NULL) {
+  hlo_remainder_impl(
+    values = list(lhs = lhs, rhs = rhs),
+    output_types = output_types
+  )
 }

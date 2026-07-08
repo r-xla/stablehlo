@@ -12,6 +12,6 @@ hlo_sine_impl <- hlo_fn(OpSine, infer_types_sine)
 #' @templateVar mnemonic sine
 #' @template op
 #' @export
-hlo_sine <- function(operand) {
-  hlo_sine_impl(values = list(operand = operand))
+hlo_sine <- function(operand, output_types = NULL) {
+  hlo_sine_impl(values = list(operand = operand), output_types = output_types)
 }
