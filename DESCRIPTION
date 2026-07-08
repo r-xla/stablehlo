@@ -19,6 +19,7 @@ BugReports: https://github.com/r-xla/stablehlo/issues
 Imports:
     checkmate,
     cli,
+    fastmap,
     methods,
     rlang,
     tengen (>= 0.2.0),

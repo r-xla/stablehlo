@@ -11,14 +11,15 @@ The builder is optimized for low per-op overhead (lowering a graph should stay
 in the same order of magnitude as `pjrt_compile()`):
 
 * **Lazy rendering**: each op is stored on its func as a deferred
-  `list(render, ctx)` pair via `func_emit()`, appended to a growable `ops`
-  list held in the func's `buf` environment. Because `ops` is not aliased
-  between emissions, `buf$ops[[n]] <- item` extends it in place with
-  amortised-O(1) doubling, so appending stays cheap and never rebuilds earlier
-  entries. The MLIR text line is produced by `render(ctx)` at `repr()` time, in
-  `func_lines()`, front-to-back (the buffer is already in emission order). There
-  is no op-record tree to walk; a single `repr()` per program means deferring
-  the render costs nothing over rendering eagerly.
+  `list(render, ctx)` pair via `func_emit()`, appended to the func's `buf`
+  (a `fastmap::fastqueue`). The queue gives amortised-O(1) append that never
+  copies earlier ops — note that growing an ordinary R list held in a field
+  (`buf$ops[[n]] <- item`) is *not* O(1): the list is copy-on-modify and gets
+  duplicated on every append, so it degrades to O(n^2). The MLIR text line is
+  produced by `render(ctx)` at `repr()` time, in `func_lines()`, front-to-back
+  (`buf$as_list()` yields ops in emission order). There is no op-record tree to
+  walk; a single `repr()` per program means deferring the render costs nothing
+  over rendering eagerly.
 * **Repr-time value ids**: an auto SSA id (`ValueId()`) carries a mutable cell
   and gets its number when first rendered — in appearance order (`%0`, `%1`,
   ...), sharing one counter per program installed by `repr.Func`. Numbering

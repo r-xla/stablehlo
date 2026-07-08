@@ -136,14 +136,11 @@ repr.FuncId <- function(x, ...) {
 
 # Append a deferred op to the func's buffer. Each op is stored as a
 # `list(render, payload)` pair; the line is produced by `render(payload)` at
-# repr time (see func_lines()), once value ids can be numbered. `ops` is grown
-# in place: because it lives in the `buf` environment and is not aliased between
-# emissions, `[[<-` extends it with amortised-O(1) doubling rather than copying.
+# repr time (see func_lines()), once value ids can be numbered. The buffer is a
+# `fastmap::fastqueue`, giving amortised-O(1) append that never copies earlier
+# ops (unlike growing an R list held in a field, which is copy-on-modify).
 func_emit <- function(func, item) {
-  buf <- func[["buf"]]
-  n <- buf$n + 1L
-  buf$n <- n
-  buf$ops[[n]] <- item
+  func[["buf"]]$add(item)
 }
 
 # Rendered op lines of a Func, in emission order (`character()`). Rendering
@@ -157,13 +154,12 @@ func_lines <- function(func) {
     push_repr_ids(collect_named_numeric(func))
     on.exit(pop_repr_ids(NULL), add = TRUE)
   }
-  buf <- func[["buf"]]
-  ops <- buf$ops
-  n <- buf$n
-  # `ops` is already in emission order (front-to-back).
+  # `as_list()` returns ops in insertion (emission) order.
+  items <- func[["buf"]]$as_list()
+  n <- length(items)
   lines <- character(n)
   for (i in seq_len(n)) {
-    item <- ops[[i]]
+    item <- items[[i]]
     lines[[i]] <- item[[1L]](item[[2L]])
   }
   lines
@@ -181,9 +177,8 @@ collect_named_numeric <- function(func) {
       out <- c(out, as.numeric(id))
     }
   }
-  buf <- func[["buf"]]
-  for (i in seq_len(buf$n)) {
-    for (cf in buf$ops[[i]][[2L]]$funcs) {
+  for (item in func[["buf"]]$as_list()) {
+    for (cf in item[[2L]]$funcs) {
       out <- c(out, collect_named_numeric(cf))
     }
   }
@@ -284,10 +279,7 @@ Func <- function(
   env$id <- id
   env$inputs <- inputs
   env$outputs <- outputs
-  buf <- new.env(parent = emptyenv())
-  buf$n <- 0L
-  buf$ops <- list()
-  env$buf <- buf
+  env$buf <- fastmap::fastqueue()
 
   # Return the environment directly with Func class
   class(env) <- c("Func", "environment")
