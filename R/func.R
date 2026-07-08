@@ -136,12 +136,14 @@ repr.FuncId <- function(x, ...) {
 
 # Append a deferred op to the func's buffer. Each op is stored as a
 # `list(render, payload)` pair; the line is produced by `render(payload)` at
-# repr time (see func_lines()), once value ids can be numbered. The buffer is
-# a cons list, so appending is O(1) per op and never touches earlier ops.
+# repr time (see func_lines()), once value ids can be numbered. `ops` is grown
+# in place: because it lives in the `buf` environment and is not aliased between
+# emissions, `[[<-` extends it with amortised-O(1) doubling rather than copying.
 func_emit <- function(func, item) {
   buf <- func[["buf"]]
-  buf$n <- buf$n + 1L
-  buf$stack <- list(item, buf$stack)
+  n <- buf$n + 1L
+  buf$n <- n
+  buf$ops[[n]] <- item
 }
 
 # Rendered op lines of a Func, in emission order (`character()`). Rendering
@@ -156,19 +158,12 @@ func_lines <- function(func) {
     on.exit(pop_repr_ids(NULL), add = TRUE)
   }
   buf <- func[["buf"]]
+  ops <- buf$ops
   n <- buf$n
-  # The cons list is LIFO (head = last op); materialise in emission order.
-  items <- vector("list", n)
-  node <- buf$stack
-  i <- n
-  while (i > 0L) {
-    items[[i]] <- node[[1L]]
-    node <- node[[2L]]
-    i <- i - 1L
-  }
+  # `ops` is already in emission order (front-to-back).
   lines <- character(n)
   for (i in seq_len(n)) {
-    item <- items[[i]]
+    item <- ops[[i]]
     lines[[i]] <- item[[1L]](item[[2L]])
   }
   lines
@@ -186,12 +181,11 @@ collect_named_numeric <- function(func) {
       out <- c(out, as.numeric(id))
     }
   }
-  node <- func[["buf"]]$stack
-  while (!is.null(node)) {
-    for (cf in node[[1L]][[2L]]$funcs) {
+  buf <- func[["buf"]]
+  for (i in seq_len(buf$n)) {
+    for (cf in buf$ops[[i]][[2L]]$funcs) {
       out <- c(out, collect_named_numeric(cf))
     }
-    node <- node[[2L]]
   }
   out
 }
@@ -292,7 +286,7 @@ Func <- function(
   env$outputs <- outputs
   buf <- new.env(parent = emptyenv())
   buf$n <- 0L
-  buf$stack <- NULL
+  buf$ops <- list()
   env$buf <- buf
 
   # Return the environment directly with Func class

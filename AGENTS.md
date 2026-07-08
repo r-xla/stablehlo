@@ -11,9 +11,12 @@ The builder is optimized for low per-op overhead (lowering a graph should stay
 in the same order of magnitude as `pjrt_compile()`):
 
 * **Lazy rendering**: each op is stored on its func as a deferred
-  `list(render, ctx)` pair via `func_emit()` (a cons list, so appending is
-  O(1) per op and never touches earlier ops). The MLIR text line is produced
-  by `render(ctx)` at `repr()` time, in `func_lines()`, front-to-back. There
+  `list(render, ctx)` pair via `func_emit()`, appended to a growable `ops`
+  list held in the func's `buf` environment. Because `ops` is not aliased
+  between emissions, `buf$ops[[n]] <- item` extends it in place with
+  amortised-O(1) doubling, so appending stays cheap and never rebuilds earlier
+  entries. The MLIR text line is produced by `render(ctx)` at `repr()` time, in
+  `func_lines()`, front-to-back (the buffer is already in emission order). There
   is no op-record tree to walk; a single `repr()` per program means deferring
   the render costs nothing over rendering eagerly.
 * **Repr-time value ids**: an auto SSA id (`ValueId()`) carries a mutable cell
