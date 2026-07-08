@@ -101,9 +101,6 @@ assert_vt_is_tensor <- function(
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
-  if (inherits(x, "ValueType") && inherits(x$type, "TensorType")) {
-    return(invisible(NULL))
-  }
   if (!inherits(x, "ValueType")) {
     cli_abort(
       c(

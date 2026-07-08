@@ -83,7 +83,7 @@ pop_repr_ids <- function(prev) {
 id_number <- function(cell) {
   st <- globals[["REPR_IDS"]]
   if (is.null(st)) {
-    return("0")
+    stop("Internal error")
   }
   cached <- st$map[[cell]]
   if (!is.null(cached)) {
