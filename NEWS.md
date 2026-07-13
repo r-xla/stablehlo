@@ -16,6 +16,10 @@
 
 * emit width-correct hex for f64 NaN/Inf constants
 
+## Features
+
+* Added `hlo_convolution()`
+
 # stablehlo 0.3.0
 
 ## Features
