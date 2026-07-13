@@ -77,6 +77,7 @@ Collate:
     'op-concatenate.R'
     'op-constant.R'
     'op-convert.R'
+    'op-convolution.R'
     'op-cosh.R'
     'op-cosine.R'
     'op-count_leading_zeros.R'

@@ -14,6 +14,28 @@ inferred_types <- function(make) {
   list(make()$value_type)
 }
 
+# a 2D NHWC convolution, the simplest op carrying custom_attrs
+conv_2d <- function(output_types = NULL) {
+  hlo_convolution(
+    hlo_input("lhs", "f32", shape = c(1L, 4L, 4L, 1L)),
+    hlo_input("rhs", "f32", shape = c(3L, 3L, 1L, 1L)),
+    dimension_numbers = ConvDimensionNumbers(
+      input_batch_dimension = 0L,
+      input_feature_dimension = 3L,
+      input_spatial_dimensions = c(1L, 2L),
+      kernel_input_feature_dimension = 2L,
+      kernel_output_feature_dimension = 3L,
+      kernel_spatial_dimensions = c(0L, 1L),
+      output_batch_dimension = 0L,
+      output_feature_dimension = 3L,
+      output_spatial_dimensions = c(1L, 2L)
+    ),
+    window_strides = c(1L, 1L),
+    padding = matrix(0L, nrow = 2L, ncol = 2L),
+    output_types = output_types
+  )
+}
+
 test_that("output_types path produces identical IR to inference (all shapes)", {
   cases <- list(
     "floor (unary elementwise)" = list(
@@ -61,6 +83,10 @@ test_that("output_types path produces identical IR to inference (all shapes)", {
       ot = function(ot) {
         hlo_acos(hlo_input("x", "f32", shape = c(2, 3)), output_types = ot)
       }
+    ),
+    "convolution (op with custom_attrs)" = list(
+      infer = function() conv_2d(),
+      ot = function(ot) conv_2d(output_types = ot)
     )
   )
 
