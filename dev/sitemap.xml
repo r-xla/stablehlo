@@ -12,6 +12,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/BoolAttr.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/Constant.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/ConstantAttr.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/ConvDimensionNumbers.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/CustomOpBackendConfig.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/DotDimensionNumbers.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/Func.html</loc></url>
@@ -72,6 +73,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_concatenate.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_constant.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_convert.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_cosh.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_cosine.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/hlo_count_leading_zeros.html</loc></url>

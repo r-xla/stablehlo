@@ -8,6 +8,8 @@
   : Constant
 - [`ConstantAttr()`](https://r-xla.github.io/stablehlo/dev/reference/ConstantAttr.md)
   : ConstantAttr
+- [`ConvDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/ConvDimensionNumbers.md)
+  : ConvDimensionNumbers
 - [`CustomOpBackendConfig()`](https://r-xla.github.io/stablehlo/dev/reference/CustomOpBackendConfig.md)
   : CustomOpBackendConfig
 - [`DotDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/DotDimensionNumbers.md)
@@ -153,6 +155,9 @@
 - [`infer_types_convert()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convert.md)
   [`hlo_convert()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convert.md)
   : Convert Operator
+- [`infer_types_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md)
+  [`hlo_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md)
+  : Convolution Operator
 - [`infer_types_cosh()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_cosh.md)
   [`hlo_cosh()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_cosh.md)
   : Cosh Operator (CHLO)
