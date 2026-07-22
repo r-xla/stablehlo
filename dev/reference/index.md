@@ -389,7 +389,5 @@
   : Convert R value to Constant
 - [`repr()`](https://r-xla.github.io/stablehlo/dev/reference/repr.md) :
   Generate string representation for object
-- [`to_array_terminology()`](https://r-xla.github.io/stablehlo/dev/reference/to_array_terminology.md)
-  : Report arrays instead of tensors
 - [`to_one_based()`](https://r-xla.github.io/stablehlo/dev/reference/to_one_based.md)
   : Convert 0-based indices to 1-based
