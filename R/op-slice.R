@@ -12,9 +12,9 @@ infer_types_slice <- function(
   strides
 ) {
   assert_vt_is_tensor(operand)
-  assert_const(start_indices, dtype = IntegerType(64L), ndims = 1L)
-  assert_const(limit_indices, dtype = IntegerType(64L), ndims = 1L)
-  assert_const(strides, dtype = IntegerType(64L), ndims = 1L)
+  assert_const(start_indices, dtype = IntegerType(64L), naxes = 1L)
+  assert_const(limit_indices, dtype = IntegerType(64L), naxes = 1L)
+  assert_const(strides, dtype = IntegerType(64L), naxes = 1L)
 
   operand_rank <- length(shape(operand))
   start_idx <- start_indices$data

@@ -126,17 +126,17 @@ assert_vt_has_ttype <- function(
   x,
   ...,
   shape = NULL,
-  ndims = NULL,
+  naxes = NULL,
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
   dtypes <- list(...)
 
   # Fast path for the common success case: class-name dtypes, no
-  # shape/ndims constraint.
+  # shape/naxes constraint.
   if (
     is.null(shape) &&
-      is.null(ndims) &&
+      is.null(naxes) &&
       inherits(x, "ValueType") &&
       inherits(x$type, "TensorType")
   ) {
@@ -217,11 +217,11 @@ assert_vt_has_ttype <- function(
       call = call
     )
   }
-  if (!is.null(ndims) && ndims(tensor_type) != ndims) {
+  if (!is.null(naxes) && naxes(tensor_type) != naxes) {
     cli_abort(
       c(
-        "{.arg {arg}} must have {ndims} dimensions.",
-        x = "Got {length(shape(tensor_type))} dimensions."
+        "{.arg {arg}} must have {naxes} axes.",
+        x = "Got {length(shape(tensor_type))} axes."
       ),
       call = call
     )
@@ -256,7 +256,7 @@ assert_const <- function(
   x,
   dtype = NULL,
   shape = NULL,
-  ndims = NULL,
+  naxes = NULL,
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
@@ -290,11 +290,11 @@ assert_const <- function(
       call = call
     )
   }
-  if (!is.null(ndims) && ndims(x$type) != ndims) {
+  if (!is.null(naxes) && naxes(x$type) != naxes) {
     cli_abort(
       c(
-        "{.arg {arg}} must have {ndims} dimensions.",
-        x = "Got {length(shape(x$type))} dimensions."
+        "{.arg {arg}} must have {naxes} axes.",
+        x = "Got {length(shape(x$type))} axes."
       ),
       call = call
     )

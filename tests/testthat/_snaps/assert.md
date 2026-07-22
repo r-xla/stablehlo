@@ -28,29 +28,29 @@
 ---
 
     Code
-      assert_vt_has_ttype(scalar, ndims = 1L)
+      assert_vt_has_ttype(scalar, naxes = 1L)
     Condition
       Error:
-      ! `scalar` must have 1 dimensions.
-      x Got 0 dimensions.
+      ! `scalar` must have 1 axes.
+      x Got 0 axes.
 
 ---
 
     Code
-      assert_vt_has_ttype(vector, ndims = 2L)
+      assert_vt_has_ttype(vector, naxes = 2L)
     Condition
       Error:
-      ! `vector` must have 2 dimensions.
-      x Got 1 dimensions.
+      ! `vector` must have 2 axes.
+      x Got 1 axes.
 
 ---
 
     Code
-      assert_vt_has_ttype(matrix, ndims = 1L)
+      assert_vt_has_ttype(matrix, naxes = 1L)
     Condition
       Error:
-      ! `matrix` must have 1 dimensions.
-      x Got 2 dimensions.
+      ! `matrix` must have 1 axes.
+      x Got 2 axes.
 
 # assert_vt_is_tensor
 
