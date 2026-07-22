@@ -55,13 +55,3 @@
 
     Got tensor<2x3xf32>
 
-# to_array_terminology rewrites cli_abort messages
-
-    `init_values` must be 0-D arrays.
-    x Got array<2x2xf32>.
-
-# to_array_terminology rewrites lazily generated ErrorStablehlo messages
-
-    `init_values[0]` must be 0-D arrays.
-    x Got array<2x2xf32>.
-

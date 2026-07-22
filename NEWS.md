@@ -20,10 +20,6 @@
 
 * Added `hlo_convolution()`
 
-* Added `to_array_terminology()`, which rewrites a condition's message to say
-  "array" instead of "tensor". It is intended for downstream packages such as
-  `anvl` whose users work with arrays; stablehlo's own errors are unchanged.
-
 # stablehlo 0.3.0
 
 ## Features
