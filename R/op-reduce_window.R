@@ -110,15 +110,16 @@ infer_types_reduce_window <- function(
   strides <- as.integer(window_strides$data)
   base_dil <- as.integer(base_dilations$data)
   window_dil <- as.integer(window_dilations$data)
-  pad <- padding$data
 
   # (C12)
-  if (nrow(pad) != rank || ncol(pad) != 2L) {
+  pad_dims <- shape(padding$type)
+  if (pad_dims[1L] != rank || pad_dims[2L] != 2L) {
     cli_abort(c(
       "{.arg padding} must have shape [rank, 2].",
-      x = "Expected shape [{rank}, 2], got [{nrow(pad)}, {ncol(pad)}]."
+      x = "Expected shape {shapevec_repr(c(rank, 2L))}, got {shapevec_repr(pad_dims)}."
     ))
   }
+  pad <- matrix(as.integer(padding$data), nrow = rank, ncol = 2L)
 
   # (C6)
   if (length(strides) != rank) {

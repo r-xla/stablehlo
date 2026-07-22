@@ -79,7 +79,7 @@
 ---
 
     `padding` must have shape [N - 2, 2].
-    x Expected shape [2, 2], got [1, 2].
+    x Expected shape (2x2), got (1x2).
 
 ---
 

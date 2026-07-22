@@ -160,4 +160,18 @@ test_that("errors", {
     ),
     error = TRUE
   )
+  # padding must have shape [rank, 2]
+  expect_snapshot(
+    infer_types_reduce_window(
+      vt("f32", c(4L, 4L)),
+      vt("f32", integer()),
+      body = body,
+      window_dimensions = cnst(c(2L, 2L), "i64", 2L),
+      window_strides = s2,
+      base_dilations = d2,
+      window_dilations = d2,
+      padding = cnst(c(0L, 0L), "i64", c(1L, 2L))
+    ),
+    error = TRUE
+  )
 })

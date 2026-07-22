@@ -45,6 +45,19 @@
       window_dimensions = cnst(c(2L, 2L), "i64", 2L), window_strides = cnst(c(0L, 1L),
       "i64", 2L), base_dilations = d2, window_dilations = d2, padding = pad2)
     Condition
-      Error in `if (nrow(pad) != rank || ncol(pad) != 2L) ...`:
-      ! missing value where TRUE/FALSE needed
+      Error in `infer_types_reduce_window()`:
+      ! `window_strides` must be positive.
+      x Got (0x1)
+
+---
+
+    Code
+      infer_types_reduce_window(vt("f32", c(4L, 4L)), vt("f32", integer()), body = body,
+      window_dimensions = cnst(c(2L, 2L), "i64", 2L), window_strides = s2,
+      base_dilations = d2, window_dilations = d2, padding = cnst(c(0L, 0L), "i64", c(
+        1L, 2L)))
+    Condition
+      Error in `infer_types_reduce_window()`:
+      ! `padding` must have shape [rank, 2].
+      x Expected shape (2x2), got (1x2).
 
