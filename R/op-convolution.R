@@ -223,8 +223,6 @@ infer_types_convolution <- function(
   n_spatial <- rank - 2L
 
   strides <- as.integer(window_strides$data)
-  pad <- padding$data
-  storage.mode(pad) <- "integer"
   lhs_dil <- as.integer(lhs_dilation$data)
   rhs_dil <- as.integer(rhs_dilation$data)
   reversal <- as.logical(window_reversal$data)
@@ -256,12 +254,14 @@ infer_types_convolution <- function(
     ))
   }
   # (C4)
-  if (nrow(pad) != n_spatial || ncol(pad) != 2L) {
+  pad_dims <- shape(padding$type)
+  if (pad_dims[1L] != n_spatial || pad_dims[2L] != 2L) {
     cli_abort(c(
       "{.arg padding} must have shape [N - 2, 2].",
-      x = "Expected shape [{n_spatial}, 2], got [{nrow(pad)}, {ncol(pad)}]."
+      x = "Expected shape {shapevec_repr(c(n_spatial, 2L))}, got {shapevec_repr(pad_dims)}."
     ))
   }
+  pad <- matrix(as.integer(padding$data), nrow = n_spatial, ncol = 2L)
   # (C5)
   if (length(lhs_dil) != n_spatial) {
     cli_abort(c(
