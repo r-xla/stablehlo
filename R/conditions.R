@@ -84,52 +84,6 @@ to_one_based.default <- function(x, ...) {
   x
 }
 
-#' @title Report arrays instead of tensors
-#' @description
-#' Rewrites a condition's message to use array terminology: "tensor" becomes
-#' "array" and "Tensor" becomes "Array". This is for downstream packages such
-#' as `anvl`, whose users think in terms of arrays rather than the StableHLO
-#' notion of tensors. stablehlo's own errors are unaffected unless this
-#' function is applied to them.
-#'
-#' The substitution is applied on word boundaries, so identifiers such as
-#' `TensorType`, `hlo_tensor()` or `assert_vts_are_tensors()` are left
-#' untouched. A rendered type such as `tensor<2x3xf32>` *is* rewritten to
-#' `array<2x3xf32>`, which is the intended behaviour for array-facing packages.
-#' @param x (`condition`)\cr Condition whose message should be rewritten.
-#'   Other objects are returned unchanged.
-#' @return The condition, with array terminology applied to its message.
-#' @export
-to_array_terminology <- function(x) {
-  if (!inherits(x, "condition")) {
-    return(x)
-  }
-  # Messages of `ErrorStablehlo` conditions are built lazily by
-  # `conditionMessage()` methods, messages of `cli_abort()` conditions live in
-  # the `message` / `body` fields. Cover both.
-  if (is.character(x$message)) {
-    x$message <- array_terminology(x$message)
-  }
-  if (is.character(x$body)) {
-    x$body <- array_terminology(x$body)
-  }
-  class(x) <- c("ArrayTerminology", class(x))
-  x
-}
-
-#' @export
-conditionMessage.ArrayTerminology <- function(c, ...) {
-  array_terminology(NextMethod())
-}
-
-# Word-boundary substitution of tensor -> array. `_` counts as a word
-# character, so `hlo_tensor` and `TensorType` have no word boundary around
-# "tensor" and are left alone.
-array_terminology <- function(x) {
-  x <- gsub("\\btensor(s?)\\b", "array\\1", x)
-  gsub("\\bTensor(s?)\\b", "Array\\1", x)
-}
-
 #' @title ErrorDimensionUniqueness
 #' @description Error when dimension indices are not unique
 #' @param arg (`character(1)`)\cr Name of the argument that caused the error

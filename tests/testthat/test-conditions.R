@@ -189,69 +189,6 @@ test_that("to_one_based works with ErrorIndexInSet", {
   expect_equal(converted$set, index_vec(c(1L, 2L, 3L)))
 })
 
-test_that("to_array_terminology rewrites cli_abort messages", {
-  err <- tryCatch(
-    cli::cli_abort(c(
-      "{.arg init_values} must be 0-D tensors.",
-      x = "Got {.val {vt('f32', c(2, 2))}}."
-    )),
-    error = identity
-  )
-  expect_match(conditionMessage(err), "tensor", fixed = TRUE)
-
-  converted <- to_array_terminology(err)
-  expect_s3_class(converted, "ArrayTerminology")
-  expect_false(grepl("tensor", conditionMessage(converted), fixed = TRUE))
-  # `rlang::cnd_message()` (used by `expect_snapshot()`) reads the `message` and
-  # `body` fields instead of dispatching on `conditionMessage()`
-  expect_false(
-    grepl("tensor", rlang::cnd_message(converted, prefix = TRUE), fixed = TRUE)
-  )
-  expect_snapshot_error(stop(converted))
-})
-
-test_that("to_array_terminology rewrites lazily generated ErrorStablehlo messages", {
-  err <- error_unexpected_list_type(
-    arg = "init_values",
-    index = 0L,
-    expected = "must be 0-D tensors",
-    actual = vt("f32", c(2, 2)),
-    call = call("abc"),
-    signal = FALSE
-  )
-  expect_match(conditionMessage(err), "tensor", fixed = TRUE)
-
-  converted <- to_array_terminology(err)
-  expect_false(grepl("tensor", conditionMessage(converted), fixed = TRUE))
-  expect_false(
-    grepl("tensor", rlang::cnd_message(converted, prefix = TRUE), fixed = TRUE)
-  )
-  expect_snapshot_error(stop(converted))
-})
-
-test_that("to_array_terminology leaves identifiers alone", {
-  err <- tryCatch(
-    cli::cli_abort("hlo_tensor() and TensorType build tensors"),
-    error = identity
-  )
-  expect_match(
-    conditionMessage(to_array_terminology(err)),
-    "hlo_tensor() and TensorType build arrays",
-    fixed = TRUE
-  )
-})
-
-test_that("to_array_terminology passes non-conditions through", {
-  expect_equal(to_array_terminology("tensor"), "tensor")
-})
-
-test_that("stablehlo's own errors keep tensor terminology", {
-  expect_error(
-    assert_vt_equal(vt("f32", 2L), vt("i32", 2L)),
-    "must have the same tensor type"
-  )
-})
-
 test_that("incrementing IndexVec maintains class", {
   x <- index_vec(1L)
   expect_equal(index_vec(2L), index_vec(x + 1L))
