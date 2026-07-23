@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">stablehlo</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.0.902</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.0.903</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,6 +47,10 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="stablehlo-development-version">stablehlo (development version)<a class="anchor" aria-label="anchor" href="#stablehlo-development-version"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>Adopted tengen’s enum-style <code>DataType</code>.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="performance-development-version">Performance<a class="anchor" aria-label="anchor" href="#performance-development-version"></a></h3>
 <ul><li><p>The package was optimized w.r.t. runtime performance. This was achieved by reducing the number of classes that are used internally when creating <code>Func</code>s. The <code>hlo_&lt;*&gt;</code> user API remains unaffected.</p></li>
