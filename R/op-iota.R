@@ -21,9 +21,9 @@ infer_types_iota <- function(iota_dimension, dtype, shape) {
   }
 
   dtype <- as_dtype(dtype)
-  assert_one_of(
+  assert_dtype_one_of(
     dtype,
-    c("IntegerType", "UIntegerType", "FloatType")
+    c("int", "uint", "float")
   )
 
   ValueTypes(list(
@@ -55,7 +55,7 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
     ScalarAttr(
       name = "iota_dimension",
       value = as.integer(iota_dimension_const$data),
-      dtype = IntegerType(64L)
+      dtype = as_dtype("i64")
     )
   ))
   func_emit(

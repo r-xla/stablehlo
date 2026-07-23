@@ -1,6 +1,18 @@
 #' @importFrom stats setNames
 NULL
 
+# Category token -> predicate match for a DataType.
+dtype_in_category <- function(dt, category) {
+  switch(
+    category,
+    float = is_dtype_float(dt),
+    int = is_dtype_int(dt),
+    uint = is_dtype_uint(dt),
+    bool = is_dtype_bool(dt),
+    cli_abort("Unknown dtype category: {.val {category}}")
+  )
+}
+
 is_valid_id <- function(name) {
   test_string(name, pattern = "(^[a-zA-Z][a-zA-Z0-9_]*$)|(^[0-9]+$)")
 }
@@ -145,7 +157,11 @@ assert_vt_has_ttype <- function(
     }
     dt <- x$type$dtype
     for (dtype in dtypes) {
-      if (is.character(dtype) && inherits(dt, dtype)) {
+      if (
+        is.character(dtype) &&
+          !inherits(dtype, "DataType") &&
+          dtype_in_category(dt, dtype)
+      ) {
         return(invisible(NULL))
       }
     }
@@ -179,18 +195,20 @@ assert_vt_has_ttype <- function(
     for (i in seq_along(dtypes)) {
       dtype <- dtypes[[i]]
 
-      # dtype should be either a class name (string) or an initialized instance
-      if (is.character(dtype)) {
-        # dtype is a class name string - use inherits
-        type_names[i] <- dtype
-        if (inherits(tensor_type$dtype, dtype)) {
-          dtype_matched <- TRUE
-          break
-        }
-      } else {
+      # dtype should be either a category token (plain string) or an
+      # initialized DataType instance. DataType is itself a classed
+      # character vector, so the instance check must come first.
+      if (inherits(dtype, "DataType")) {
         # dtype is an initialized instance - compare with identical
         type_names[i] <- repr(dtype)
         if (identical(tensor_type$dtype, dtype)) {
+          dtype_matched <- TRUE
+          break
+        }
+      } else if (is.character(dtype)) {
+        # dtype is a category token - use predicate match
+        type_names[i] <- dtype
+        if (dtype_in_category(tensor_type$dtype, dtype)) {
           dtype_matched <- TRUE
           break
         }
@@ -320,4 +338,24 @@ assert_func <- function(
       call = call
     )
   }
+}
+
+assert_dtype_one_of <- function(
+  x,
+  categories,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  for (category in categories) {
+    if (dtype_in_category(x, category)) {
+      return(invisible(NULL))
+    }
+  }
+  cli_abort(
+    c(
+      "{.arg {arg}} must have a {.or {categories}} dtype.",
+      x = "Got {.val {x}}."
+    ),
+    call = call
+  )
 }

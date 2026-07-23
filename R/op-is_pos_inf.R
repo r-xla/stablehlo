@@ -6,7 +6,7 @@ OpIsPosInf <- new_Op("OpIsPosInf", "is_pos_inf", dialect = "chlo")
 #' @rdname hlo_is_pos_inf
 #' @export
 infer_types_is_pos_inf <- function(operand) {
-  assert_vt_has_ttype(operand, "FloatType")
+  assert_vt_has_ttype(operand, "float")
   ValueTypes(list(make_vt("pred", shape(operand))))
 }
 

@@ -69,15 +69,15 @@ test_that("output types and shapes", {
   expect_length(vt_out, 2L)
   expect_equal(shape(vt_out[[1L]]), 3L)
   expect_equal(shape(vt_out[[2L]]), 3L)
-  expect_equal(vt_out[[1L]]$type$dtype, FloatType(32L))
-  expect_equal(vt_out[[2L]]$type$dtype, IntegerType(32L))
+  expect_equal(vt_out[[1L]]$type$dtype, as_dtype("f32"))
+  expect_equal(vt_out[[2L]]$type$dtype, as_dtype("i32"))
 
   # higher-rank input — only last dim changes
   vt_out <- infer_types_top_k(vt("i64", c(2L, 3L, 7L)), k = scnst(2L, "i64"))
   expect_equal(shape(vt_out[[1L]]), c(2L, 3L, 2L))
   expect_equal(shape(vt_out[[2L]]), c(2L, 3L, 2L))
-  expect_equal(vt_out[[1L]]$type$dtype, IntegerType(64L))
-  expect_equal(vt_out[[2L]]$type$dtype, IntegerType(32L))
+  expect_equal(vt_out[[1L]]$type$dtype, as_dtype("i64"))
+  expect_equal(vt_out[[2L]]$type$dtype, as_dtype("i32"))
 })
 
 test_that("errors", {

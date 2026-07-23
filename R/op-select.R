@@ -25,7 +25,7 @@ infer_types_select <- function(
 ) {
   # (C2)
   assert_vt_equal(on_true, on_false)
-  assert_vt_has_ttype(pred, "BooleanType")
+  assert_vt_has_ttype(pred, "bool")
 
   # (C1)
   if (naxes(pred) != 0 && !identical(shape(pred), shape(on_true))) {

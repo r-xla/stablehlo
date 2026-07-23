@@ -1,16 +1,16 @@
 # assert_vt_has_ttype
 
     Code
-      assert_vt_has_ttype(x = y, "BooleanType", shape = integer())
+      assert_vt_has_ttype(x = y, "bool", shape = integer())
     Condition
       Error:
-      ! `y` must have dtype BooleanType.
+      ! `y` must have dtype bool.
       x Got i32.
 
 ---
 
     Code
-      assert_vt_has_ttype(x = y, "IntegerType", shape = 1L)
+      assert_vt_has_ttype(x = y, "int", shape = 1L)
     Condition
       Error:
       ! `y` must have shape (1).
@@ -19,7 +19,7 @@
 ---
 
     Code
-      assert_vt_has_ttype(x = y, IntegerType(64L), shape = integer())
+      assert_vt_has_ttype(x = y, as_dtype("i64"), shape = integer())
     Condition
       Error:
       ! `y` must have dtype i64.

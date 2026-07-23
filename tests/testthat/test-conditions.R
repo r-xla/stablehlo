@@ -161,7 +161,8 @@ test_that("ErrorIndexInSet", {
 })
 
 test_that("cli_format.DataType uses repr()", {
-  expect_snapshot_error(cli::cli_abort("Got {.val {FloatType(32)}}"))
+  dt <- as_dtype("f32")
+  expect_snapshot_error(cli::cli_abort("Got {.val {dt}}"))
 })
 
 test_that("cli_format.Shape uses repr()", {
@@ -169,7 +170,7 @@ test_that("cli_format.Shape uses repr()", {
 })
 
 test_that("cli_format.ValueType uses repr()", {
-  vt <- ValueType(TensorType(FloatType(32), Shape(c(2, 3))))
+  vt <- ValueType(TensorType(as_dtype("f32"), Shape(c(2, 3))))
   expect_snapshot_error(cli::cli_abort("Got {.val {vt}}"))
 })
 

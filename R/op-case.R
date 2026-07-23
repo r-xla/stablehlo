@@ -7,7 +7,7 @@ OpCase <- new_Op("OpCase", "case")
 #' @export
 infer_types_case <- function(index, ...) {
   branches <- list(...)
-  assert_vt_has_ttype(index, IntegerType(32L))
+  assert_vt_has_ttype(index, as_dtype("i32"))
 
   if (length(branches) == 0L) {
     cli_abort("branches must be a non-empty list")

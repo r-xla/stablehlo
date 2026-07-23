@@ -2,25 +2,25 @@ test_that("assert_vt_has_ttype", {
   y <- make_vt("i32", integer())
 
   expect_snapshot(
-    assert_vt_has_ttype(x = y, "BooleanType", shape = integer()),
+    assert_vt_has_ttype(x = y, "bool", shape = integer()),
     error = TRUE
   )
   expect_snapshot(
-    assert_vt_has_ttype(x = y, "IntegerType", shape = 1L),
+    assert_vt_has_ttype(x = y, "int", shape = 1L),
     error = TRUE
   )
   expect_error(
-    assert_vt_has_ttype(x = y, "IntegerType", shape = integer()),
+    assert_vt_has_ttype(x = y, "int", shape = integer()),
     NA
   )
 
   # Test with initialized dtype instance
   expect_error(
-    assert_vt_has_ttype(x = y, IntegerType(32L), shape = integer()),
+    assert_vt_has_ttype(x = y, as_dtype("i32"), shape = integer()),
     NA
   )
   expect_snapshot(
-    assert_vt_has_ttype(x = y, IntegerType(64L), shape = integer()),
+    assert_vt_has_ttype(x = y, as_dtype("i64"), shape = integer()),
     error = TRUE
   )
 

@@ -32,16 +32,16 @@ test_that("basic tests", {
 
 test_that("works with 3D tensors", {
   out <- infer_types_concatenate(
-    ValueType(TensorType(dtype = BooleanType(), shape = Shape(c(2, 3, 4)))),
-    ValueType(TensorType(dtype = BooleanType(), shape = Shape(c(2, 1, 4)))),
+    ValueType(TensorType(dtype = as_dtype("bool"), shape = Shape(c(2, 3, 4)))),
+    ValueType(TensorType(dtype = as_dtype("bool"), shape = Shape(c(2, 1, 4)))),
     dimension = Constant(
       1L,
-      TensorType(dtype = IntegerType(64L), shape = Shape(integer()))
+      TensorType(dtype = as_dtype("i64"), shape = Shape(integer()))
     )
   )[[1L]]$type
   expect_equal(
     out,
-    TensorType(dtype = BooleanType(), shape = Shape(c(2, 4, 4)))
+    TensorType(dtype = as_dtype("bool"), shape = Shape(c(2, 4, 4)))
   )
 })
 

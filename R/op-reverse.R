@@ -10,7 +10,7 @@ infer_types_reverse <- function(
   dimensions
 ) {
   assert_vt_is_tensor(operand)
-  assert_const(dimensions, dtype = IntegerType(64L), naxes = 1L)
+  assert_const(dimensions, dtype = as_dtype("i64"), naxes = 1L)
 
   operand_dims <- shape(operand)
   revdims <- dimensions$data

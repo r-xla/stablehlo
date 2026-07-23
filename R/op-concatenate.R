@@ -51,7 +51,7 @@ to_one_based.ErrorConcatenateShapes <- function(x, ...) {
 #' @export
 infer_types_concatenate <- function(..., dimension) {
   assert_vts_are_tensors(...)
-  assert_const(dimension, dtype = IntegerType(64L), shape = integer())
+  assert_const(dimension, dtype = as_dtype("i64"), shape = integer())
   dimension <- dimension$data
 
   dots <- list(...)
@@ -133,7 +133,7 @@ hlo_concatenate <- function(..., dimension, output_types = NULL) {
       ScalarAttr(
         name = "dimension",
         value = as.integer(dimension),
-        dtype = IntegerType(64L)
+        dtype = as_dtype("i64")
       )
     )
   )

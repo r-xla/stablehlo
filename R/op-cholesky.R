@@ -8,8 +8,8 @@ infer_types_cholesky <- function(
   lower
 ) {
   assert_vt_is_tensor(operand)
-  assert_vt_has_ttype(operand, "FloatType")
-  assert_const(lower, dtype = BooleanType(), shape = integer())
+  assert_vt_has_ttype(operand, "float")
+  assert_const(lower, dtype = as_dtype("bool"), shape = integer())
 
   operand_dims <- shape(operand)
   rank <- length(operand_dims)

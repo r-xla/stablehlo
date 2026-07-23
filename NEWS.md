@@ -1,5 +1,9 @@
 # stablehlo (development version)
 
+## Breaking changes
+
+* Adopted tengen's enum-style `DataType`.
+
 ## Performance
 
 * The package was optimized w.r.t. runtime performance.

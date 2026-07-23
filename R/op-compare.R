@@ -50,21 +50,19 @@ infer_types_compare <- function(
 
   # (C3)
   dtype <- lhs$type$dtype
-  if (inherits(dtype, "IntegerType")) {
+  if (is_dtype_int(dtype)) {
     if (compare_type != "SIGNED") {
       cli_abort(
         "{.arg compare_type} must be SIGNED for signed integer data types."
       )
     }
-  } else if (
-    inherits(dtype, "UIntegerType") || inherits(dtype, "BooleanType")
-  ) {
+  } else if (is_dtype_uint(dtype) || is_dtype_bool(dtype)) {
     if (compare_type != "UNSIGNED") {
       cli_abort(
         "{.arg compare_type} must be UNSIGNED for unsigned integer or boolean data types."
       )
     }
-  } else if (inherits(dtype, "FloatType")) {
+  } else if (is_dtype_float(dtype)) {
     if (!(compare_type %in% c("FLOAT", "TOTALORDER"))) {
       cli_abort(
         "{.arg compare_type} must be FLOAT or TOTALORDER for floating-point data types."
@@ -75,7 +73,7 @@ infer_types_compare <- function(
   ValueTypes(list(
     ValueType(
       TensorType(
-        dtype = BooleanType(),
+        dtype = as_dtype("bool"),
         shape = Shape(shape(lhs))
       )
     )

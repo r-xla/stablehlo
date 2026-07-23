@@ -39,7 +39,7 @@ infer_types_while <- function(..., cond, body) {
   cond_out <- cond$outputs[[1L]]$type
   assert_vt_has_ttype(
     cond_out,
-    "BooleanType",
+    "bool",
     shape = integer(),
     arg = "output(condition)"
   )

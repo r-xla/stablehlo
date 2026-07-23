@@ -2,57 +2,31 @@
 NULL
 
 #' @export
-tengen::BooleanType
-
-#' @export
-tengen::IntegerType
-
-#' @export
-tengen::UIntegerType
-
-#' @export
-tengen::FloatType
-
-#' @export
 tengen::is_dtype
 
 #' @export
 tengen::as_dtype
 
-#' @export
-repr.BooleanType <- function(x, ...) {
-  "i1"
-}
-
-#' @export
-repr.IntegerType <- function(x, ...) {
-  as.character(x)
-}
-
-#' @export
-repr.UIntegerType <- function(x, ...) {
-  as.character(x)
-}
-
-#' @export
-repr.FloatType <- function(x, ...) {
-  as.character(x)
-}
-
 # Re-export assert_dtype from tengen
 assert_dtype <- tengen::assert_dtype
 
-# Dispatch-free rendering of a DataType; falls back to repr() for
-# extension dtypes.
+# Dtypes whose MLIR spelling differs from their canonical tengen name.
+mlir_dtype_overrides <- c(
+  bool = "i1",
+  c64 = "complex<f32>",
+  c128 = "complex<f64>"
+)
+
+# MLIR spelling of a DataType.
 dtype_str <- function(dtype) {
-  switch(
-    class(dtype)[[1L]],
-    FloatType = paste0("f", dtype$value),
-    IntegerType = paste0("i", dtype$value),
-    UIntegerType = paste0("ui", dtype$value),
-    BooleanType = "i1",
-    repr(dtype)
-  )
+  name <- as.character(dtype)
+  spelling <- mlir_dtype_overrides[name]
+  if (is.na(spelling)) name else unname(spelling)
+}
+
+#' @export
+repr.DataType <- function(x, ...) {
+  dtype_str(x)
 }
 
 #' @title TensorType
@@ -148,7 +122,9 @@ print.TokenType <- function(x, ...) {
 #' @param shape The shape of the value (only used when type is character).
 #' @export
 ValueType <- function(type, shape = NULL) {
-  if (is.character(type)) {
+  # A DataType is itself a character vector, so exclude it from the
+  # dtype-string shortcut.
+  if (is.character(type) && !is_dtype(type)) {
     return(make_vt(type, shape = shape))
   }
 

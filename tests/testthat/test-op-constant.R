@@ -173,7 +173,7 @@ test_that("scalar constant with hlo_tensor", {
 
 test_that("can use dtype with constant", {
   local_func()
-  expect_snapshot(hlo_scalar(FALSE, BooleanType()))
+  expect_snapshot(hlo_scalar(FALSE, as_dtype("bool")))
 })
 
 test_that("nan, inf, -inf scalars execute correctly for f32 and f64", {

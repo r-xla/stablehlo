@@ -3,10 +3,6 @@
 \docType{import}
 \name{reexports}
 \alias{reexports}
-\alias{BooleanType}
-\alias{IntegerType}
-\alias{UIntegerType}
-\alias{FloatType}
 \alias{is_dtype}
 \alias{as_dtype}
 \alias{shape}
@@ -18,6 +14,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{tengen}{\code{\link[tengen:as_dtype]{as_dtype()}}, \code{\link[tengen:BooleanType]{BooleanType()}}, \code{\link[tengen:dtype]{dtype()}}, \code{\link[tengen:FloatType]{FloatType()}}, \code{\link[tengen:IntegerType]{IntegerType()}}, \code{\link[tengen:is_dtype]{is_dtype()}}, \code{\link[tengen:shape]{shape()}}, \code{\link[tengen:UIntegerType]{UIntegerType()}}}
+  \item{tengen}{\code{\link[tengen:as_dtype]{as_dtype()}}, \code{\link[tengen:dtype]{dtype()}}, \code{\link[tengen:is_dtype]{is_dtype()}}, \code{\link[tengen:shape]{shape()}}}
 }}
 
