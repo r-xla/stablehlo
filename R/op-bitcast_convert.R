@@ -39,7 +39,6 @@ infer_types_bitcast_convert <- function(
         "ui16",
         "ui32",
         "ui64",
-        "f8",
         "f16",
         "f32",
         "f64"

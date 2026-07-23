@@ -10,11 +10,27 @@ tengen::as_dtype
 # Re-export assert_dtype from tengen
 assert_dtype <- tengen::assert_dtype
 
-# MLIR spelling of a DataType: booleans render as i1, everything else by
-# its canonical name.
+# Dtypes whose MLIR spelling differs from their canonical tengen name.
+mlir_dtype_overrides <- c(
+  bool = "i1",
+  f8e5m2 = "f8E5M2",
+  f8e4m3fn = "f8E4M3FN",
+  f8e4m3b11fnuz = "f8E4M3B11FNUZ",
+  f8e5m2fnuz = "f8E5M2FNUZ",
+  f8e4m3fnuz = "f8E4M3FNUZ",
+  f8e4m3 = "f8E4M3",
+  f8e3m4 = "f8E3M4",
+  f8e8m0fnu = "f8E8M0FNU",
+  f4e2m1fn = "f4E2M1FN",
+  c64 = "complex<f32>",
+  c128 = "complex<f64>"
+)
+
+# MLIR spelling of a DataType.
 dtype_str <- function(dtype) {
   name <- as.character(dtype)
-  if (name == "bool") "i1" else name
+  spelling <- mlir_dtype_overrides[name]
+  if (is.na(spelling)) name else unname(spelling)
 }
 
 #' @export
@@ -115,7 +131,9 @@ print.TokenType <- function(x, ...) {
 #' @param shape The shape of the value (only used when type is character).
 #' @export
 ValueType <- function(type, shape = NULL) {
-  if (is.character(type)) {
+  # A DataType is itself a character vector, so exclude it from the
+  # dtype-string shortcut.
+  if (is.character(type) && !is_dtype(type)) {
     return(make_vt(type, shape = shape))
   }
 

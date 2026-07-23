@@ -3,12 +3,34 @@ test_that("repr.DataType", {
   expect_equal(repr(as_dtype("bool")), "i1")
 })
 
+test_that("repr.DataType uses MLIR spellings", {
+  expect_equal(repr(as_dtype("f8e5m2")), "f8E5M2")
+  expect_equal(repr(as_dtype("f8e4m3fn")), "f8E4M3FN")
+  expect_equal(repr(as_dtype("f8e8m0fnu")), "f8E8M0FNU")
+  expect_equal(repr(as_dtype("f4e2m1fn")), "f4E2M1FN")
+  expect_equal(repr(as_dtype("c64")), "complex<f32>")
+  expect_equal(repr(as_dtype("c128")), "complex<f64>")
+  expect_equal(repr(as_dtype("bf16")), "bf16")
+})
+
 test_that("TensorType repr", {
   tt <- TensorType(
     dtype = as_dtype("f32"),
     shape = Shape(c(1L, 2L))
   )
   expect_equal(repr(tt), "tensor<1x2xf32>")
+
+  expect_equal(
+    repr(TensorType(dtype = as_dtype("f8e5m2"), shape = Shape(4L))),
+    "tensor<4xf8E5M2>"
+  )
+})
+
+test_that("ValueType rejects a bare DataType", {
+  expect_error(
+    ValueType(as_dtype("f32")),
+    "must be a TensorType or TokenType"
+  )
 })
 
 test_that("is_dtype", {
