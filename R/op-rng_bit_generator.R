@@ -31,7 +31,7 @@ infer_types_rng_bit_generator <- function(
   shape
 ) {
   assert_vt_is_tensor(initial_state)
-  assert_vt_has_ttype(initial_state, dtype = UIntegerType(64L), ndims = 1L)
+  assert_vt_has_ttype(initial_state, dtype = UIntegerType(64L), naxes = 1L)
 
   if (!test_choice(rng_algorithm, c("DEFAULT", "THREE_FRY", "PHILOX"))) {
     cli_abort(c(

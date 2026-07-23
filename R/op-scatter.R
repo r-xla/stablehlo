@@ -225,7 +225,7 @@ infer_types_scatter <- function(
     any(x < 0L) || any(x >= rank)
   }
 
-  update_rank <- ndims(updates[[1L]])
+  update_rank <- naxes(updates[[1L]])
   # (C8)
   if (any_outside_rank_range(update_window_dims, update_rank)) {
     error_index_out_of_bounds(

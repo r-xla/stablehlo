@@ -11,7 +11,7 @@ infer_types_broadcast_in_dim <- function(
   shape
 ) {
   assert_vt_is_tensor(operand)
-  assert_const(broadcast_dimensions, dtype = "i64", ndims = 1L)
+  assert_const(broadcast_dimensions, dtype = "i64", naxes = 1L)
   assert_shapevec(shape)
 
   operand_dims <- shape(operand)

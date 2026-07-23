@@ -17,11 +17,11 @@ infer_types_reduce_window <- function(
 ) {
   assert_func(body)
   assert_vts_are_tensors(...)
-  assert_const(window_dimensions, dtype = IntegerType(64L), ndims = 1L)
-  assert_const(window_strides, dtype = IntegerType(64L), ndims = 1)
-  assert_const(base_dilations, dtype = IntegerType(64L), ndims = 1L)
-  assert_const(window_dilations, dtype = IntegerType(64L), ndims = 1L)
-  assert_const(padding, dtype = IntegerType(64L), ndims = 2L)
+  assert_const(window_dimensions, dtype = IntegerType(64L), naxes = 1L)
+  assert_const(window_strides, dtype = IntegerType(64L), naxes = 1)
+  assert_const(base_dilations, dtype = IntegerType(64L), naxes = 1L)
+  assert_const(window_dilations, dtype = IntegerType(64L), naxes = 1L)
+  assert_const(padding, dtype = IntegerType(64L), naxes = 2L)
 
   value_types <- list(...)
 

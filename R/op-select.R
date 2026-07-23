@@ -28,7 +28,7 @@ infer_types_select <- function(
   assert_vt_has_ttype(pred, "BooleanType")
 
   # (C1)
-  if (ndims(pred) != 0 && !identical(shape(pred), shape(on_true))) {
+  if (naxes(pred) != 0 && !identical(shape(pred), shape(on_true))) {
     cli_abort(c(
       "rank of {.arg pred} must be 0 or equal to rank of {.arg on_true}",
       x = "Got shapes {shapevec_repr(shape(pred))} and {shapevec_repr(shape(on_true))}."

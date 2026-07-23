@@ -24,36 +24,36 @@ test_that("assert_vt_has_ttype", {
     error = TRUE
   )
 
-  # Test with ndims argument
+  # Test with naxes argument
   scalar <- make_vt("f32", integer())
   vector <- make_vt("f32", 3L)
   matrix <- make_vt("f32", c(2L, 3L))
 
-  # Should pass when ndims matches
+  # Should pass when naxes matches
   expect_error(
-    assert_vt_has_ttype(scalar, ndims = 0L),
+    assert_vt_has_ttype(scalar, naxes = 0L),
     NA
   )
   expect_error(
-    assert_vt_has_ttype(vector, ndims = 1L),
+    assert_vt_has_ttype(vector, naxes = 1L),
     NA
   )
   expect_error(
-    assert_vt_has_ttype(matrix, ndims = 2L),
+    assert_vt_has_ttype(matrix, naxes = 2L),
     NA
   )
 
-  # Should fail when ndims doesn't match
+  # Should fail when naxes doesn't match
   expect_snapshot(
-    assert_vt_has_ttype(scalar, ndims = 1L),
+    assert_vt_has_ttype(scalar, naxes = 1L),
     error = TRUE
   )
   expect_snapshot(
-    assert_vt_has_ttype(vector, ndims = 2L),
+    assert_vt_has_ttype(vector, naxes = 2L),
     error = TRUE
   )
   expect_snapshot(
-    assert_vt_has_ttype(matrix, ndims = 1L),
+    assert_vt_has_ttype(matrix, naxes = 1L),
     error = TRUE
   )
 })

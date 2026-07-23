@@ -30,6 +30,8 @@ Suggests:
     knitr,
     pjrt (>= 0.4.0),
     testthat (>= 3.0.0)
+Remotes:
+    r-xla/tengen
 Additional_repositories:
     https://r-xla.r-universe.dev
 Config/build/compilation-database: true

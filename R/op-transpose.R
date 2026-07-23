@@ -10,7 +10,7 @@ infer_types_transpose <- function(
   permutation
 ) {
   assert_vt_is_tensor(operand)
-  assert_const(permutation, dtype = IntegerType(64L), ndims = 1L)
+  assert_const(permutation, dtype = IntegerType(64L), naxes = 1L)
 
   operand_dims <- shape(operand)
   num_dims <- length(operand_dims)
