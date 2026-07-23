@@ -56,9 +56,7 @@ infer_types_compare <- function(
         "{.arg compare_type} must be SIGNED for signed integer data types."
       )
     }
-  } else if (
-    is_dtype_uint(dtype) || is_dtype_bool(dtype)
-  ) {
+  } else if (is_dtype_uint(dtype) || is_dtype_bool(dtype)) {
     if (compare_type != "UNSIGNED") {
       cli_abort(
         "{.arg compare_type} must be UNSIGNED for unsigned integer or boolean data types."
