@@ -4,10 +4,6 @@ test_that("repr.DataType", {
 })
 
 test_that("repr.DataType uses MLIR spellings", {
-  expect_equal(repr(as_dtype("f8e5m2")), "f8E5M2")
-  expect_equal(repr(as_dtype("f8e4m3fn")), "f8E4M3FN")
-  expect_equal(repr(as_dtype("f8e8m0fnu")), "f8E8M0FNU")
-  expect_equal(repr(as_dtype("f4e2m1fn")), "f4E2M1FN")
   expect_equal(repr(as_dtype("c64")), "complex<f32>")
   expect_equal(repr(as_dtype("c128")), "complex<f64>")
   expect_equal(repr(as_dtype("bf16")), "bf16")
@@ -21,8 +17,8 @@ test_that("TensorType repr", {
   expect_equal(repr(tt), "tensor<1x2xf32>")
 
   expect_equal(
-    repr(TensorType(dtype = as_dtype("f8e5m2"), shape = Shape(4L))),
-    "tensor<4xf8E5M2>"
+    repr(TensorType(dtype = as_dtype("bf16"), shape = Shape(4L))),
+    "tensor<4xbf16>"
   )
 })
 

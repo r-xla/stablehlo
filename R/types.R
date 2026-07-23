@@ -13,15 +13,6 @@ assert_dtype <- tengen::assert_dtype
 # Dtypes whose MLIR spelling differs from their canonical tengen name.
 mlir_dtype_overrides <- c(
   bool = "i1",
-  f8e5m2 = "f8E5M2",
-  f8e4m3fn = "f8E4M3FN",
-  f8e4m3b11fnuz = "f8E4M3B11FNUZ",
-  f8e5m2fnuz = "f8E5M2FNUZ",
-  f8e4m3fnuz = "f8E4M3FNUZ",
-  f8e4m3 = "f8E4M3",
-  f8e3m4 = "f8E3M4",
-  f8e8m0fnu = "f8E8M0FNU",
-  f4e2m1fn = "f4E2M1FN",
   c64 = "complex<f32>",
   c128 = "complex<f64>"
 )
