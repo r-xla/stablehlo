@@ -62,7 +62,7 @@ repr.ScalarAttr <- function(x, simplify_dense = TRUE, ...) {
   ) {
     sprintf("%d : %s", as.integer(data), type_repr)
   } else {
-    precision <- dtype_bits(x$dtype)
+    precision <- dtype_width(x$dtype)
     sprintf(
       "%s : %s",
       format_double(as.double(data), precision = precision),

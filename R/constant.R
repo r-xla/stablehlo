@@ -31,7 +31,7 @@ repr.Constant <- function(x, simplify_dense = TRUE, ...) {
     if (is_dtype_float(type$dtype)) {
       format_double(
         data,
-        precision = dtype_bits(type$dtype)
+        precision = dtype_width(type$dtype)
       )
     } else if (
       is_dtype_int(type$dtype) ||

@@ -47,7 +47,7 @@ infer_types_bitcast_convert <- function(
     cli_abort("Unsupported dtype: {dtype}")
   }
 
-  operand_bits <- dtype_bits(operand$type$dtype)
+  operand_bits <- dtype_width(operand$type$dtype)
   operand_dims <- shape(operand)
 
   output_bits <- as.integer(sub(".*?([0-9]+)$", "\\1", dtype))
