@@ -72,7 +72,7 @@ f
 * stableHLO uses 0-based indexing. Wherever operations take dimension indices
   (e.g., axes, start indices, permutation dimensions), use 0-based values.
   This differs from R's 1-based indexing.
-* We try to use `"bool"` for the `BooleanType`. However, in the generated stableHLO
+* We try to use `"bool"` for the boolean dtype. However, in the generated stableHLO
   representation this will show up as `"i1"`. Think of these as interchangeable.
 
 ## Limitations

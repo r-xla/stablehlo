@@ -15,19 +15,19 @@ test_that("StringAttr repr works correctly", {
 test_that("ScalarAttr repr works correctly", {
   expect_snapshot({
     # Integer types
-    repr(ScalarAttr(name = "dim", value = 42L, dtype = IntegerType(32L)))
-    repr(ScalarAttr(name = "size", value = 100L, dtype = IntegerType(64L)))
+    repr(ScalarAttr(name = "dim", value = 42L, dtype = as_dtype("i32")))
+    repr(ScalarAttr(name = "size", value = 100L, dtype = as_dtype("i64")))
 
     # Unsigned types
-    repr(ScalarAttr(name = "count", value = 255L, dtype = UIntegerType(8L)))
+    repr(ScalarAttr(name = "count", value = 255L, dtype = as_dtype("ui8")))
 
     # Float types
-    repr(ScalarAttr(name = "scale", value = 1.5, dtype = FloatType(32L)))
-    repr(ScalarAttr(name = "rate", value = 0.001, dtype = FloatType(64L)))
+    repr(ScalarAttr(name = "scale", value = 1.5, dtype = as_dtype("f32")))
+    repr(ScalarAttr(name = "rate", value = 0.001, dtype = as_dtype("f64")))
 
     # Boolean type
-    repr(ScalarAttr(name = "is_stable", value = TRUE, dtype = BooleanType()))
-    repr(ScalarAttr(name = "lower", value = FALSE, dtype = BooleanType()))
+    repr(ScalarAttr(name = "is_stable", value = TRUE, dtype = as_dtype("bool")))
+    repr(ScalarAttr(name = "lower", value = FALSE, dtype = as_dtype("bool")))
   })
 })
 
@@ -35,7 +35,7 @@ test_that("CustomOpBackendConfig repr works correctly", {
   expect_snapshot({
     repr(CustomOpBackendConfig(list(
       BoolAttr(name = "flag", value = TRUE),
-      ScalarAttr(name = "count", value = 42L, dtype = IntegerType(32L)),
+      ScalarAttr(name = "count", value = 42L, dtype = as_dtype("i32")),
       StringAttr(name = "name", value = "test")
     )))
     repr(CustomOpBackendConfig())

@@ -9,11 +9,11 @@ infer_types_top_k <- function(operand, k) {
   assert_vt_is_tensor(operand)
   assert_vt_has_ttype(
     operand,
-    "FloatType",
-    "IntegerType",
-    "UIntegerType"
+    "float",
+    "int",
+    "uint"
   )
-  assert_const(k, dtype = IntegerType(64L), shape = integer())
+  assert_const(k, dtype = as_dtype("i64"), shape = integer())
   k <- k$data
 
   operand_shape <- shape(operand)
@@ -46,7 +46,7 @@ infer_types_top_k <- function(operand, k) {
     TensorType(dtype = operand$type$dtype, shape = Shape(result_shape))
   )
   indices_type <- ValueType(
-    TensorType(dtype = IntegerType(32L), shape = Shape(result_shape))
+    TensorType(dtype = as_dtype("i32"), shape = Shape(result_shape))
   )
 
   ValueTypes(list(values_type, indices_type))
@@ -74,7 +74,7 @@ hlo_top_k <- function(operand, k, output_types = NULL) {
       ScalarAttr(
         name = "k",
         value = as.integer(k),
-        dtype = IntegerType(64L)
+        dtype = as_dtype("i64")
       )
     ),
     simplify = FALSE

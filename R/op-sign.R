@@ -7,7 +7,7 @@ OpSign <- new_Op("OpSign", "sign")
 #' @export
 infer_types_sign <- function(operand) {
   assert_vt_is_tensor(operand)
-  assert_vt_has_ttype(operand, "FloatType", "IntegerType")
+  assert_vt_has_ttype(operand, "float", "int")
   ValueTypes(list(operand))
 }
 

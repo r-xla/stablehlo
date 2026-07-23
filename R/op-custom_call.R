@@ -193,7 +193,7 @@ hlo_custom_call <- function(
       ScalarAttr(
         name = "api_version",
         value = as.integer(api_version),
-        dtype = IntegerType(32L)
+        dtype = as_dtype("i32")
       ),
       BoolAttr(name = "has_side_effect", value = has_side_effect)
     ),

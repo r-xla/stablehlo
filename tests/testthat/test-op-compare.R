@@ -111,10 +111,10 @@ test_that("errors", {
   check(vt("f32", 2L), vt("f32", 2L), "INVALID", "FLOAT")
   # (I4) invalid compare_type
   check(vt("f32", 2L), vt("f32", 2L), "EQ", "INVALID")
-  # (C3) compare type must be SIGNED for IntegerType
+  # (C3) compare type must be SIGNED for signed integer dtypes
   check(vt("i32", 2L), vt("i32", 2L), "EQ", "UNSIGNED")
-  # (C3) compare type must be UNSIGNED for UIntegerType
+  # (C3) compare type must be UNSIGNED for unsigned integer dtypes
   check(vt("ui32", 2L), vt("ui32", 2L), "EQ", "SIGNED")
-  # (C3) compare type must be FLOAT or TOTALORDER for FloatType
+  # (C3) compare type must be FLOAT or TOTALORDER for float dtypes
   check(vt("f32", 2L), vt("f32", 2L), "EQ", "SIGNED")
 })

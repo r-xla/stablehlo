@@ -14,7 +14,7 @@ infer_types_bitcast_convert <- function(
 
   if (
     # https://github.com/openxla/stablehlo/issues/1672
-    inherits(operand$type$dtype, "BooleanType")
+    is_dtype_bool(operand$type$dtype)
   ) {
     cli_abort(c(
       "Bitcast conversions from and to i1 are not supported.",
@@ -48,7 +48,7 @@ infer_types_bitcast_convert <- function(
     cli_abort("Unsupported dtype: {dtype}")
   }
 
-  operand_bits <- operand$type$dtype$value
+  operand_bits <- dtype_bits(operand$type$dtype)
   operand_dims <- shape(operand)
 
   output_bits <- as.integer(sub(".*?([0-9]+)$", "\\1", dtype))

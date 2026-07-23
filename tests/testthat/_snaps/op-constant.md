@@ -186,7 +186,7 @@
 # can use dtype with constant
 
     Code
-      hlo_scalar(FALSE, BooleanType())
+      hlo_scalar(FALSE, as_dtype("bool"))
     Output
       Variable %0 in:
       func.func @main () ->  {

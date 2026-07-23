@@ -52,6 +52,6 @@
       infer_types_top_k(vt("pred", c(2L, 3L)), k = scnst(1L, "i64"))
     Condition
       Error in `infer_types_top_k()`:
-      ! `operand` must have dtype FloatType, IntegerType, or UIntegerType.
+      ! `operand` must have dtype float, int, or uint.
       x Got bool.
 

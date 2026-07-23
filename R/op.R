@@ -35,7 +35,7 @@ OpInputAttr <- function(name, value, dtype) {
 #' @param value (`numeric(1)` or `logical(1)`)\cr
 #'   The scalar value.
 #' @param dtype ([`DataType`])\cr
-#'   The dtype of the scalar (e.g., `IntegerType(32)`, `FloatType(32)`, `BooleanType()`).
+#'   The dtype of the scalar (e.g., `as_dtype("i32")`, `as_dtype("f32")`, `as_dtype("bool")`).
 #' @return `ScalarAttr`
 #' @export
 ScalarAttr <- function(name, value, dtype) {
@@ -54,15 +54,15 @@ ScalarAttr <- function(name, value, dtype) {
 repr.ScalarAttr <- function(x, simplify_dense = TRUE, ...) {
   type_repr <- repr(x$dtype)
   data <- x$value$data
-  value_repr <- if (inherits(x$dtype, "BooleanType")) {
+  value_repr <- if (is_dtype_bool(x$dtype)) {
     sprintf("%s : %s", tolower(as.character(data)), type_repr)
   } else if (
-    inherits(x$dtype, "IntegerType") ||
-      inherits(x$dtype, "UIntegerType")
+    is_dtype_int(x$dtype) ||
+      is_dtype_uint(x$dtype)
   ) {
     sprintf("%d : %s", as.integer(data), type_repr)
   } else {
-    precision <- x$dtype$value
+    precision <- dtype_bits(x$dtype)
     sprintf(
       "%s : %s",
       format_double(as.double(data), precision = precision),
@@ -88,7 +88,7 @@ BoolAttr <- function(name, value) {
   constant <- r_to_constant(value, dtype = "i1", shape = integer())
 
   structure(
-    list(name = name, value = constant, dtype = BooleanType()),
+    list(name = name, value = constant, dtype = as_dtype("bool")),
     class = c("BoolAttr", "OpInputAttr")
   )
 }

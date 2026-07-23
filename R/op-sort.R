@@ -7,7 +7,7 @@ OpSort <- new_Op("OpSort", "sort")
 #' @export
 infer_types_sort <- function(..., dimension, is_stable, comparator) {
   assert_vts_are_tensors(...)
-  assert_const(dimension, dtype = IntegerType(64L), shape = integer())
+  assert_const(dimension, dtype = as_dtype("i64"), shape = integer())
   assert_const(is_stable, dtype = "i1", shape = integer())
   assert_func(comparator)
   dimension <- dimension$data
@@ -65,7 +65,7 @@ hlo_sort <- function(..., dimension, is_stable, comparator) {
       ScalarAttr(
         name = "dimension",
         value = as.integer(dimension),
-        dtype = IntegerType(64L)
+        dtype = as_dtype("i64")
       ),
       BoolAttr(name = "is_stable", value = as.logical(is_stable))
     ),

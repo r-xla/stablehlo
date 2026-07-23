@@ -2,57 +2,24 @@
 NULL
 
 #' @export
-tengen::BooleanType
-
-#' @export
-tengen::IntegerType
-
-#' @export
-tengen::UIntegerType
-
-#' @export
-tengen::FloatType
-
-#' @export
 tengen::is_dtype
 
 #' @export
 tengen::as_dtype
 
-#' @export
-repr.BooleanType <- function(x, ...) {
-  "i1"
-}
-
-#' @export
-repr.IntegerType <- function(x, ...) {
-  as.character(x)
-}
-
-#' @export
-repr.UIntegerType <- function(x, ...) {
-  as.character(x)
-}
-
-#' @export
-repr.FloatType <- function(x, ...) {
-  as.character(x)
-}
-
 # Re-export assert_dtype from tengen
 assert_dtype <- tengen::assert_dtype
 
-# Dispatch-free rendering of a DataType; falls back to repr() for
-# extension dtypes.
+# MLIR spelling of a DataType: booleans render as i1, everything else by
+# its canonical name.
 dtype_str <- function(dtype) {
-  switch(
-    class(dtype)[[1L]],
-    FloatType = paste0("f", dtype$value),
-    IntegerType = paste0("i", dtype$value),
-    UIntegerType = paste0("ui", dtype$value),
-    BooleanType = "i1",
-    repr(dtype)
-  )
+  name <- as.character(dtype)
+  if (name == "bool") "i1" else name
+}
+
+#' @export
+repr.DataType <- function(x, ...) {
+  dtype_str(x)
 }
 
 #' @title TensorType

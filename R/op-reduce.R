@@ -11,7 +11,7 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
 
   lapply(inputs, assert_vt_is_tensor)
   lapply(init_values, assert_vt_is_tensor)
-  assert_const(dimensions, dtype = IntegerType(64L), naxes = 1L)
+  assert_const(dimensions, dtype = as_dtype("i64"), naxes = 1L)
   assert_func(body)
 
   # (C3)

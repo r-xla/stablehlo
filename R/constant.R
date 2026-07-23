@@ -28,17 +28,17 @@ repr.Constant <- function(x, simplify_dense = TRUE, ...) {
   value_reprs <- if (inherits(data, "PJRTBuffer")) {
     pjrt::format_buffer(data)
   } else {
-    if (inherits(type$dtype, "FloatType")) {
+    if (is_dtype_float(type$dtype)) {
       format_double(
         data,
-        precision = type$dtype$value
+        precision = dtype_bits(type$dtype)
       )
     } else if (
-      inherits(type$dtype, "IntegerType") ||
-        inherits(type$dtype, "UIntegerType")
+      is_dtype_int(type$dtype) ||
+        is_dtype_uint(type$dtype)
     ) {
       as.character(data)
-    } else if (inherits(type$dtype, "BooleanType")) {
+    } else if (is_dtype_bool(type$dtype)) {
       tolower(as.logical(data))
     }
   }
@@ -145,7 +145,7 @@ r_to_constant.logical <- function(value, dtype = NULL, shape, ...) {
   }
   shape <- Shape(shape)
 
-  tensor_type <- TensorType(dtype = BooleanType(), shape = shape)
+  tensor_type <- TensorType(dtype = as_dtype("bool"), shape = shape)
 
   return(Constant(data = value, type = tensor_type))
 }

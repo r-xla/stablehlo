@@ -7,7 +7,7 @@ OpAbs <- new_Op("OpAbs", "abs")
 #' @rdname hlo_abs
 #' @export
 infer_types_abs <- function(operand) {
-  assert_vt_has_ttype(operand, "FloatType", "IntegerType")
+  assert_vt_has_ttype(operand, "float", "int")
   ValueTypes(list(operand))
 }
 

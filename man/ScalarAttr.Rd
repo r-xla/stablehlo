@@ -14,7 +14,7 @@ The name of the attribute.}
 The scalar value.}
 
 \item{dtype}{(\code{\link[tengen:DataType]{DataType}})\cr
-The dtype of the scalar (e.g., \code{IntegerType(32)}, \code{FloatType(32)}, \code{BooleanType()}).}
+The dtype of the scalar (e.g., \code{as_dtype("i32")}, \code{as_dtype("f32")}, \code{as_dtype("bool")}).}
 }
 \value{
 \code{ScalarAttr}

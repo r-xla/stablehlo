@@ -31,7 +31,7 @@
       infer_types_numeric_biv(lhs, rhs)
     Condition
       Error in `infer_types_numeric_biv()`:
-      ! `lhs` must have dtype FloatType, IntegerType, or UIntegerType.
+      ! `lhs` must have dtype float, int, or uint.
       x Got bool.
 
 ---
@@ -49,7 +49,7 @@
       infer_types_float_biv(lhs, rhs)
     Condition
       Error in `infer_types_float_biv()`:
-      ! `lhs` must have dtype FloatType.
+      ! `lhs` must have dtype float.
       x Got i32.
 
 ---
@@ -67,7 +67,7 @@
       infer_types_integerish_biv(lhs, rhs)
     Condition
       Error in `infer_types_integerish_biv()`:
-      ! `lhs` must have dtype BooleanType, IntegerType, or UIntegerType.
+      ! `lhs` must have dtype bool, int, or uint.
       x Got f32.
 
 ---
@@ -76,7 +76,7 @@
       infer_types_integerish_biv(lhs, rhs)
     Condition
       Error in `infer_types_integerish_biv()`:
-      ! `rhs` must have dtype BooleanType, IntegerType, or UIntegerType.
+      ! `rhs` must have dtype bool, int, or uint.
       x Got f32.
 
 ---
@@ -112,7 +112,7 @@
       infer_types_numeric_uni(operand)
     Condition
       Error in `infer_types_numeric_uni()`:
-      ! `operand` must have dtype FloatType, IntegerType, or UIntegerType.
+      ! `operand` must have dtype float, int, or uint.
       x Got bool.
 
 # infer_types_float_uni errors
@@ -121,7 +121,7 @@
       infer_types_float_uni(operand)
     Condition
       Error in `infer_types_float_uni()`:
-      ! `operand` must have dtype FloatType.
+      ! `operand` must have dtype float.
       x Got i32.
 
 # infer_types_integer_uni errors
@@ -130,7 +130,7 @@
       infer_types_integer_uni(operand)
     Condition
       Error in `infer_types_integer_uni()`:
-      ! `operand` must have dtype IntegerType or UIntegerType.
+      ! `operand` must have dtype int or uint.
       x Got f32.
 
 # infer_types_integerish_uni errors
@@ -139,6 +139,6 @@
       infer_types_integerish_uni(operand)
     Condition
       Error in `infer_types_integerish_uni()`:
-      ! `operand` must have dtype BooleanType, IntegerType, or UIntegerType.
+      ! `operand` must have dtype bool, int, or uint.
       x Got f32.
 

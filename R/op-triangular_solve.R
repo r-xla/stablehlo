@@ -43,9 +43,9 @@ infer_types_triangular_solve <- function(
   # (C1)
   assert_vts_are_tensors(a, b)
   assert_vts_have_same_dtype(a, b)
-  assert_const(left_side, dtype = BooleanType(), shape = integer())
-  assert_const(lower, dtype = BooleanType(), shape = integer())
-  assert_const(unit_diagonal, dtype = BooleanType(), shape = integer())
+  assert_const(left_side, dtype = as_dtype("bool"), shape = integer())
+  assert_const(lower, dtype = as_dtype("bool"), shape = integer())
+  assert_const(unit_diagonal, dtype = as_dtype("bool"), shape = integer())
   left_side <- left_side$data
   lower <- lower$data
   unit_diagonal <- unit_diagonal$data

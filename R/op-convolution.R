@@ -193,13 +193,13 @@ infer_types_convolution <- function(
   }
   assert_class(precision_config, "PrecisionConfig")
   assert_vts_are_tensors(lhs, rhs)
-  assert_const(window_strides, dtype = IntegerType(64L), naxes = 1L)
-  assert_const(padding, dtype = IntegerType(64L), naxes = 2L)
-  assert_const(lhs_dilation, dtype = IntegerType(64L), naxes = 1L)
-  assert_const(rhs_dilation, dtype = IntegerType(64L), naxes = 1L)
-  assert_const(window_reversal, dtype = BooleanType(), naxes = 1L)
-  assert_const(feature_group_count, dtype = IntegerType(64L), shape = integer())
-  assert_const(batch_group_count, dtype = IntegerType(64L), shape = integer())
+  assert_const(window_strides, dtype = as_dtype("i64"), naxes = 1L)
+  assert_const(padding, dtype = as_dtype("i64"), naxes = 2L)
+  assert_const(lhs_dilation, dtype = as_dtype("i64"), naxes = 1L)
+  assert_const(rhs_dilation, dtype = as_dtype("i64"), naxes = 1L)
+  assert_const(window_reversal, dtype = as_dtype("bool"), naxes = 1L)
+  assert_const(feature_group_count, dtype = as_dtype("i64"), shape = integer())
+  assert_const(batch_group_count, dtype = as_dtype("i64"), shape = integer())
 
   lhs_shape <- shape(lhs)
   rhs_shape <- shape(rhs)
@@ -582,12 +582,12 @@ hlo_convolution <- function(
     ScalarAttr(
       name = "feature_group_count",
       value = as.integer(feature_group_count),
-      dtype = IntegerType(64L)
+      dtype = as_dtype("i64")
     ),
     ScalarAttr(
       name = "batch_group_count",
       value = as.integer(batch_group_count),
-      dtype = IntegerType(64L)
+      dtype = as_dtype("i64")
     )
   )
 
