@@ -2,11 +2,7 @@
 
 ## Breaking changes
 
-* Adopted tengen's enum-style `DataType`: the old class hierarchy
-  (`BooleanType()`/`IntegerType()`/`UIntegerType()`/`FloatType()`) is gone.
-  `assert_vt_has_ttype()` now takes dtype category strings (`"float"`,
-  `"int"`, `"uint"`, `"bool"`) instead of class names, matched via
-  `is_dtype_float()`/`is_dtype_int()`/`is_dtype_uint()`/`is_dtype_bool()`.
+* Adopted tengen's enum-style `DataType`.
 
 ## Performance
 
