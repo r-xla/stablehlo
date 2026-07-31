@@ -1,5 +1,10 @@
 # stablehlo (development version)
 
+## Features
+
+* Added `hlo_convolution()`
+* The package now works with R >= 4.2.0
+
 ## Breaking changes
 
 * Adopted tengen's enum-style `DataType`.
@@ -20,9 +25,6 @@
 
 * emit width-correct hex for f64 NaN/Inf constants
 
-## Features
-
-* Added `hlo_convolution()`
 
 # stablehlo 0.3.0
 
