@@ -17,7 +17,7 @@ URL: https://r-xla.github.io/stablehlo/,
     https://github.com/r-xla/stablehlo
 BugReports: https://github.com/r-xla/stablehlo/issues
 Depends:
-    R (>= 4.3.0)
+    R (>= 4.4.0)
 Imports:
     checkmate,
     cli,
@@ -33,7 +33,8 @@ Suggests:
     pjrt (>= 0.4.0),
     testthat (>= 3.0.0)
 Remotes:
-    r-xla/tengen
+    r-xla/tengen,
+    r-xla/xlamisc
 Additional_repositories:
     https://r-xla.r-universe.dev
 Config/build/compilation-database: true
