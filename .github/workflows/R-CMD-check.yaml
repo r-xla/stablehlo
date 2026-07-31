@@ -23,6 +23,9 @@ jobs:
           # Disabled: the self-hosted GPU runner is currently unavailable.
           # - { os: "ubuntu", platform: "cuda"}
           - { os: "windows", r: "release", platform: "cpu"}
+          - { os: "ubuntu", r: "oldrel-1", platform: "cpu" }
+          - { os: "ubuntu", r: "oldrel-2", platform: "cpu" }
+          - { os: "ubuntu", r: "oldrel-3", platform: "cpu" }
 
         include:
           # - config: {os: "ubuntu", platform: "cuda"}
