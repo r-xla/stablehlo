@@ -2,6 +2,12 @@
 
 ## stablehlo (development version)
 
+### Features
+
+- Added
+  [`hlo_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md)
+- The package now works with R \>= 4.2.0
+
 ### Breaking changes
 
 - Adopted tengen’s enum-style `DataType`.
@@ -20,11 +26,6 @@
 ### Bug fixes
 
 - emit width-correct hex for f64 NaN/Inf constants
-
-### Features
-
-- Added
-  [`hlo_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md)
 
 ## stablehlo 0.3.0
 
