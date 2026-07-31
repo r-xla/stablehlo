@@ -26,7 +26,6 @@ jobs:
           - { os: "ubuntu", r: "oldrel-1", platform: "cpu" }
           - { os: "ubuntu", r: "oldrel-2", platform: "cpu" }
           - { os: "ubuntu", r: "oldrel-3", platform: "cpu" }
-          - { os: "ubuntu", r: "oldrel-4", platform: "cpu" }
 
         include:
           # - config: {os: "ubuntu", platform: "cuda"}

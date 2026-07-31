@@ -17,7 +17,7 @@ URL: https://r-xla.github.io/stablehlo/,
     https://github.com/r-xla/stablehlo
 BugReports: https://github.com/r-xla/stablehlo/issues
 Depends:
-    R (>= 4.2.0)
+    R (>= 4.3.0)
 Imports:
     checkmate,
     cli,
