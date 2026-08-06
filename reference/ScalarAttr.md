@@ -22,9 +22,9 @@ ScalarAttr(name, value, dtype)
 
 - dtype:
 
-  ([`tengen::DataType`](https://r-xla.github.io/tengen/reference/DataType.html))  
-  The dtype of the scalar (e.g., `IntegerType(32)`, `FloatType(32)`,
-  [`BooleanType()`](https://r-xla.github.io/tengen/reference/BooleanType.html)).
+  ([`DataType`](https://r-xla.github.io/tengen/reference/DataType.html))  
+  The dtype of the scalar (e.g., `as_dtype("i32")`, `as_dtype("f32")`,
+  `as_dtype("bool")`).
 
 ## Value
 

@@ -7,7 +7,7 @@ See <https://openxla.org/stablehlo/spec#shift_left> for details.
 ``` r
 infer_types_shift_left(lhs, rhs)
 
-hlo_shift_left(lhs, rhs)
+hlo_shift_left(lhs, rhs, output_types = NULL)
 ```
 
 ## Arguments
@@ -15,6 +15,15 @@ hlo_shift_left(lhs, rhs)
 - lhs, rhs:
 
   ([`FuncValue`](https://r-xla.github.io/stablehlo/reference/FuncValue.md))  
+
+- output_types:
+
+  ([`list()`](https://rdrr.io/r/base/list.html) of
+  [`ValueType`](https://r-xla.github.io/stablehlo/reference/ValueType.md)
+  \| `NULL`)  
+  Output types known ahead of time (e.g. from type inference at trace
+  time). When provided, type inference and its input validation are
+  skipped.
 
 ## Value
 

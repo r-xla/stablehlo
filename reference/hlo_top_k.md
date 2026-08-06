@@ -10,7 +10,7 @@ details.
 ``` r
 infer_types_top_k(operand, k)
 
-hlo_top_k(operand, k)
+hlo_top_k(operand, k, output_types = NULL)
 ```
 
 ## Arguments
@@ -26,6 +26,15 @@ hlo_top_k(operand, k)
   (`integer(1)`)  
   Number of top elements to return along the last dimension. Must
   satisfy `1 <= k <= dim(operand, -1)`.
+
+- output_types:
+
+  ([`list()`](https://rdrr.io/r/base/list.html) of
+  [`ValueType`](https://r-xla.github.io/stablehlo/reference/ValueType.md)
+  \| `NULL`)  
+  Output types known ahead of time (e.g. from type inference at trace
+  time). When provided, type inference and its input validation are
+  skipped.
 
 ## Value
 

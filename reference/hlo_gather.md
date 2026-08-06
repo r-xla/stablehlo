@@ -18,7 +18,8 @@ hlo_gather(
   start_indices,
   gather_dimension_numbers,
   slice_sizes,
-  indices_are_sorted = FALSE
+  indices_are_sorted = FALSE,
+  output_types = NULL
 )
 ```
 
@@ -42,6 +43,15 @@ hlo_gather(
 
   (`logical(1)`)  
   Whether indices are sorted.
+
+- output_types:
+
+  ([`list()`](https://rdrr.io/r/base/list.html) of
+  [`ValueType`](https://r-xla.github.io/stablehlo/reference/ValueType.md)
+  \| `NULL`)  
+  Output types known ahead of time (e.g. from type inference at trace
+  time). When provided, type inference and its input validation are
+  skipped.
 
 ## Value
 

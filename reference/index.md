@@ -8,13 +8,13 @@
   : Constant
 - [`ConstantAttr()`](https://r-xla.github.io/stablehlo/reference/ConstantAttr.md)
   : ConstantAttr
+- [`ConvDimensionNumbers()`](https://r-xla.github.io/stablehlo/reference/ConvDimensionNumbers.md)
+  : ConvDimensionNumbers
 - [`CustomOpBackendConfig()`](https://r-xla.github.io/stablehlo/reference/CustomOpBackendConfig.md)
   : CustomOpBackendConfig
 - [`DotDimensionNumbers()`](https://r-xla.github.io/stablehlo/reference/DotDimensionNumbers.md)
   : DotDimensionNumbers
 - [`Func()`](https://r-xla.github.io/stablehlo/reference/Func.md) : Func
-- [`FuncBody()`](https://r-xla.github.io/stablehlo/reference/FuncBody.md)
-  : FuncBody
 - [`FuncId()`](https://r-xla.github.io/stablehlo/reference/FuncId.md) :
   FuncId
 - [`FuncInput()`](https://r-xla.github.io/stablehlo/reference/FuncInput.md)
@@ -31,29 +31,10 @@
   : GatherDimensionNumbers
 - [`Module()`](https://r-xla.github.io/stablehlo/reference/Module.md) :
   Module
-- [`Op()`](https://r-xla.github.io/stablehlo/reference/Op.md) : Op
 - [`OpInputAttr()`](https://r-xla.github.io/stablehlo/reference/OpInputAttr.md)
   : OpInputAttr
-- [`OpInputAttrs()`](https://r-xla.github.io/stablehlo/reference/OpInputAttrs.md)
-  : OpInputAttrs
 - [`OpInputFunc()`](https://r-xla.github.io/stablehlo/reference/OpInputFunc.md)
   : OpInputFunc
-- [`OpInputFuncs()`](https://r-xla.github.io/stablehlo/reference/OpInputFuncs.md)
-  : OpInputFuncs
-- [`OpInputValue()`](https://r-xla.github.io/stablehlo/reference/OpInputValue.md)
-  : OpInputValue
-- [`OpInputValues()`](https://r-xla.github.io/stablehlo/reference/OpInputValues.md)
-  : OpInputValues
-- [`OpInputs()`](https://r-xla.github.io/stablehlo/reference/OpInputs.md)
-  : OpInputs
-- [`OpName()`](https://r-xla.github.io/stablehlo/reference/OpName.md) :
-  OpName
-- [`OpOutput()`](https://r-xla.github.io/stablehlo/reference/OpOutput.md)
-  : OpOutput
-- [`OpOutputs()`](https://r-xla.github.io/stablehlo/reference/OpOutputs.md)
-  : OpOutputs
-- [`OpSignature()`](https://r-xla.github.io/stablehlo/reference/OpSignature.md)
-  : OpSignature
 - [`ScalarAttr()`](https://r-xla.github.io/stablehlo/reference/ScalarAttr.md)
   : ScalarAttr
 - [`ScatterDimensionNumbers()`](https://r-xla.github.io/stablehlo/reference/ScatterDimensionNumbers.md)
@@ -173,6 +154,9 @@
 - [`infer_types_convert()`](https://r-xla.github.io/stablehlo/reference/hlo_convert.md)
   [`hlo_convert()`](https://r-xla.github.io/stablehlo/reference/hlo_convert.md)
   : Convert Operator
+- [`infer_types_convolution()`](https://r-xla.github.io/stablehlo/reference/hlo_convolution.md)
+  [`hlo_convolution()`](https://r-xla.github.io/stablehlo/reference/hlo_convolution.md)
+  : Convolution Operator
 - [`infer_types_cosh()`](https://r-xla.github.io/stablehlo/reference/hlo_cosh.md)
   [`hlo_cosh()`](https://r-xla.github.io/stablehlo/reference/hlo_cosh.md)
   : Cosh Operator (CHLO)

@@ -13,12 +13,13 @@ ValueId(id = NULL)
 
 - id:
 
-  (`character(1)` or
-  [`environment`](https://rdrr.io/r/base/environment.html))  
-  Either a fixed name or an environment. If using an environment
-  (default), the name will be generated automatically when calling
-  [`repr()`](https://r-xla.github.io/stablehlo/reference/repr.md), i.e.
-  the first value id will be `%0`, the second `%1`, etc..
+  (`character(1)` or `NULL`)  
+  Either a fixed name or `NULL` (default). A `NULL` id is assigned a
+  numeric name lazily when the program is rendered
+  ([`repr()`](https://r-xla.github.io/stablehlo/reference/repr.md)), in
+  the order ids first appear: `%0`, `%1`, ..., skipping any integer
+  already claimed by a named id in the same program (e.g. an input
+  called `"2"`).
 
 ## Value
 
