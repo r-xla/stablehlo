@@ -3,8 +3,8 @@
 ## Features
 
 * Added `hlo_convolution()`
-* `hlo_dot_general()` gained a `precision_config` argument, which is either
-  `NULL` or one or two of `"DEFAULT"`, `"HIGH"` and `"HIGHEST"`.
+* `hlo_dot_general()` gained a `precision_config` argument, which is
+  either `NULL` or one or two of `"DEFAULT"`, `"HIGH"` and `"HIGHEST"`.
 
 ## Breaking changes
 
