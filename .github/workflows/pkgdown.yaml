@@ -17,3 +17,5 @@ jobs:
     permissions:
       contents: write
     uses: r-xla/actions/.github/workflows/pkgdown.yaml@main
+    with:
+      setup-pjrt: true
