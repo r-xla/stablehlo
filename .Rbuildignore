@@ -25,3 +25,5 @@ SPEC.md
 ^.claude/
 ^todo.md
 ^jarl.toml$
+^.worktrees/
+^.worktrees/

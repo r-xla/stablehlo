@@ -26,7 +26,7 @@ Imports:
     rlang,
     tengen (>= 0.3.0),
     withr,
-    xlamisc (>= 0.4.0)
+    xlamisc (>= 0.4.1)
 Suggests:
     rmarkdown,
     knitr,

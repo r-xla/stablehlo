@@ -6,6 +6,9 @@
 # * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
 # * https://testthat.r-lib.org/articles/special-files.html
 
+# FIXME:
+Sys.setenv(PJRT_INSTALL = "1")
+
 if (requireNamespace("pjrt", quietly = TRUE)) {
   library("pjrt")
 }
