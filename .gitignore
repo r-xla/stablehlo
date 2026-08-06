@@ -13,3 +13,5 @@ docs
 attic
 .claude
 todo.md
+.worktrees/
+.claude/worktrees/
