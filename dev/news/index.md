@@ -2,22 +2,31 @@
 
 ## stablehlo (development version)
 
+## stablehlo 0.4.0
+
 ### Features
 
 - Added
   [`hlo_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md)
-- The package now works with R \>= 4.2.0
+- [`hlo_dot_general()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_dot_general.md)
+  gained a `precision_config` argument, which is either `NULL` or one or
+  two of `"DEFAULT"`, `"HIGH"` and `"HIGHEST"`.
 
 ### Breaking changes
 
-- Adopted tengen’s enum-style `DataType`.
+- Adopted tengen’s enum-style `DataType`. The `BooleanType()`,
+  `FloatType()`, `IntegerType()` and `UIntegerType()` constructors were
+  removed, use
+  [`dtype()`](https://r-xla.github.io/tengen/reference/dtype.html) /
+  [`as_dtype()`](https://r-xla.github.io/tengen/reference/as_dtype.html)
+  instead.
+- The package now requires R \>= 4.4.0.
 
 ### Performance
 
 - The package was optimized w.r.t. runtime performance. This was
   achieved by reducing the number of classes that are used internally
   when creating `Func`s. The `hlo_<*>` user API remains unaffected.
-
 - The `hlo_*` builders of common ops gained an `output_types` argument.
   When the output types are known ahead of time (e.g. from a lowering
   that ran type inference at trace time), passing them skips redundant
@@ -26,6 +35,9 @@
 ### Bug fixes
 
 - emit width-correct hex for f64 NaN/Inf constants
+- [`hlo_reduce_window()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce_window.md)
+  now validates the shape of `padding` against its declared type instead
+  of its R representation.
 
 ## stablehlo 0.3.0
 
