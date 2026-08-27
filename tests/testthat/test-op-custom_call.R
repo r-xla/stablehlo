@@ -67,6 +67,42 @@ test_that("backend_config carries array-valued attributes", {
   expect_snapshot(repr(f))
 })
 
+test_that("custom call with output_operand_aliases", {
+  local_func()
+  x <- hlo_input("x", "f32", shape = c(2, 3))
+  out <- hlo_custom_call(
+    x,
+    call_target_name = "in_place",
+    api_version = 4L,
+    has_side_effect = FALSE,
+    output_types = list(ValueType("f32", shape = c(2, 3))),
+    operand_layouts = list(c(1L, 0L)),
+    result_layouts = list(c(1L, 0L)),
+    output_operand_aliases = list(OutputOperandAlias(operand_index = 0L))
+  )
+  f <- hlo_return(out)
+  expect_snapshot(repr(f))
+})
+
+test_that("OutputOperandAlias renders tuple indices", {
+  expect_snapshot(
+    repr(OutputOperandAlias(
+      operand_index = 1L,
+      output_tuple_indices = 0L,
+      operand_tuple_indices = 2L
+    ))
+  )
+  expect_error(OutputOperandAlias(operand_index = -1L))
+  expect_error(
+    hlo_custom_call(
+      call_target_name = "x",
+      has_side_effect = FALSE,
+      output_operand_aliases = list("nope")
+    ),
+    "May only contain the following types"
+  )
+})
+
 test_that("CustomOpBackendConfig rejects unsupported attribute types", {
   expect_error(
     CustomOpBackendConfig(list(ValueType("f32", shape = 1))),

@@ -23,6 +23,10 @@ render_custom_call <- function(ctx) {
   if (!is.null(rl)) {
     attr_reprs <- c(attr_reprs, repr_layouts("result_layouts", rl))
   }
+  ooa <- ctx$custom_attrs$output_operand_aliases
+  if (!is.null(ooa)) {
+    attr_reprs <- c(attr_reprs, repr_output_operand_aliases(ooa))
+  }
   attrs_str <- paste0("{\n  ", paste(attr_reprs, collapse = ",\n  "), "\n}")
 
   # Build output part
@@ -161,8 +165,7 @@ custom_call_impl <- hlo_fn(OpCustomCall, infer_types_custom_call)
 #' Create a custom call operation that invokes an external function via the
 #' FFI (Foreign Function Interface) API.
 #'
-#' Note that the attributes `called_computations` and `output_operand_aliases` are not
-#' implemented yet.
+#' Note that the attribute `called_computations` is not implemented yet.
 #'
 #' @param ... ([`FuncValue`])\cr
 #'   Input values to pass to the custom call.
@@ -185,6 +188,11 @@ custom_call_impl <- hlo_fn(OpCustomCall, infer_types_custom_call)
 #' @param result_layouts (`list` of `integer()` | `NULL`)\cr
 #'   Layouts for each result in minor-to-major order. Same format as
 #'   `operand_layouts`.
+#' @param output_operand_aliases (`list` of [`OutputOperandAlias`] | `NULL`)\cr
+#'   Buffer aliases between operands and results. XLA then hands the handler
+#'   the *same* pointer for the aliased operand and result, so a handler that
+#'   works in place does not force a copy. `NULL` (the default) means no
+#'   aliasing.
 #' @return ([`FuncValue`] | `list()` | `NULL`)\cr
 #'   The output value(s), or NULL for side-effect only calls.
 #' @export
@@ -196,8 +204,16 @@ hlo_custom_call <- function(
   backend_config = NULL,
   output_types = NULL,
   operand_layouts = NULL,
-  result_layouts = NULL
+  result_layouts = NULL,
+  output_operand_aliases = NULL
 ) {
+  if (!is.null(output_operand_aliases)) {
+    checkmate::assert_list(
+      output_operand_aliases,
+      types = "OutputOperandAlias",
+      min.len = 1L
+    )
+  }
   values <- list(...)
   custom_call_impl(
     values = values,
@@ -215,13 +231,15 @@ hlo_custom_call <- function(
         backend_config = backend_config,
         output_types = output_types,
         operand_layouts = operand_layouts,
-        result_layouts = result_layouts
+        result_layouts = result_layouts,
+        output_operand_aliases = output_operand_aliases
       )
     } else {
       list(
         output_types = output_types,
         operand_layouts = operand_layouts,
-        result_layouts = result_layouts
+        result_layouts = result_layouts,
+        output_operand_aliases = output_operand_aliases
       )
     }
   )
@@ -243,4 +261,78 @@ repr_layout <- function(layout) {
 repr_layouts <- function(name, layouts) {
   items <- vapply(layouts, repr_layout, character(1))
   paste0(name, " = [", paste(items, collapse = ", "), "]")
+}
+
+#' @title OutputOperandAlias
+#' @description
+#' Declares that a [`hlo_custom_call()`] result shares its buffer with one of
+#' the call's operands. XLA then hands the handler the same pointer for both,
+#' which is how an in-place kernel avoids a copy -- and why a handler that
+#' overwrites its input must be written to tolerate it.
+#'
+#' Indices are 0-based, as everywhere in StableHLO. The `*_tuple_indices` are
+#' the path into a tuple-typed result or operand and stay empty for the
+#' ordinary case of a call with plain tensor results.
+#' @param operand_index (`integer(1)`)\cr
+#'   Which operand of the custom call the result aliases.
+#' @param output_tuple_indices (`integer()`)\cr
+#'   Path into the result tuple. Empty (the default) for a single result;
+#'   for a call with several results, the index of the aliased one.
+#' @param operand_tuple_indices (`integer()`)\cr
+#'   Path into the operand, if that operand is a tuple. Empty by default.
+#' @return `OutputOperandAlias`
+#' @examples
+#' # the single result is written into the buffer of the first operand
+#' OutputOperandAlias(operand_index = 0L)
+#' @export
+OutputOperandAlias <- function(
+  operand_index,
+  output_tuple_indices = integer(),
+  operand_tuple_indices = integer()
+) {
+  checkmate::assert_int(operand_index, lower = 0L)
+  checkmate::assert_integerish(
+    output_tuple_indices,
+    lower = 0L,
+    any.missing = FALSE
+  )
+  checkmate::assert_integerish(
+    operand_tuple_indices,
+    lower = 0L,
+    any.missing = FALSE
+  )
+
+  structure(
+    list(
+      operand_index = as.integer(operand_index),
+      output_tuple_indices = as.integer(output_tuple_indices),
+      operand_tuple_indices = as.integer(operand_tuple_indices)
+    ),
+    class = "OutputOperandAlias"
+  )
+}
+
+#' @export
+repr.OutputOperandAlias <- function(x, ...) {
+  paste0(
+    "#stablehlo.output_operand_alias<output_tuple_indices = [",
+    paste(x$output_tuple_indices, collapse = ", "),
+    "], operand_index = ",
+    x$operand_index,
+    ", operand_tuple_indices = [",
+    paste(x$operand_tuple_indices, collapse = ", "),
+    "]>"
+  )
+}
+
+#' @export
+print.OutputOperandAlias <- function(x, ...) {
+  cat(repr(x), "\n", sep = "")
+  invisible(x)
+}
+
+# Format a list of aliases as `output_operand_aliases = [#stablehlo...., ...]`
+repr_output_operand_aliases <- function(aliases) {
+  items <- vapply(aliases, repr, character(1))
+  paste0("output_operand_aliases = [", paste(items, collapse = ", "), "]")
 }

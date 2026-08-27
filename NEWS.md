@@ -5,6 +5,10 @@
 * `CustomOpBackendConfig()` now accepts `ConstantAttr` items, so a custom
   call can carry array-valued attributes (what an XLA FFI handler decodes
   as `Span<const T>`) and not just scalars, booleans and strings.
+* `hlo_custom_call()` gained an `output_operand_aliases` argument, built
+  with the new `OutputOperandAlias()`. XLA then hands the handler the same
+  buffer for the aliased operand and result, which is what lets an in-place
+  kernel avoid a copy.
 
 # stablehlo 0.4.0
 
