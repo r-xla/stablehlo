@@ -1,5 +1,11 @@
 # stablehlo (development version)
 
+## Features
+
+* `CustomOpBackendConfig()` now accepts `ConstantAttr` items, so a custom
+  call can carry array-valued attributes (what an XLA FFI handler decodes
+  as `Span<const T>`) and not just scalars, booleans and strings.
+
 # stablehlo 0.4.0
 
 ## Features

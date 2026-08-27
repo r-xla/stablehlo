@@ -29,7 +29,8 @@ The API version. Default is 4.}
 Whether the custom call has side effects.}
 
 \item{backend_config}{(\code{\link{CustomOpBackendConfig}} | \code{NULL})\cr
-Optional backend configuration.}
+Optional backend configuration. Its attributes are what the FFI
+handler receives through \verb{.Attr<T>("name")} or \verb{.Attrs<Dictionary>()}.}
 
 \item{output_types}{(\code{list} of \code{\link{ValueType}} | \code{NULL})\cr
 The output types of the custom call. Default is NULL (no outputs).}

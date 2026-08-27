@@ -54,16 +54,28 @@ OpCustomCall <- new_Op(
 #' @title CustomOpBackendConfig
 #' @description
 #' A backend configuration as a list of typed attributes for custom operations.
-#' Each element must be a `BoolAttr`, `StringAttr`, or `ScalarAttr` for now.
-#' All attribute names must be unique.
+#' Each element must be a [`BoolAttr`], [`StringAttr`], [`ScalarAttr`] or
+#' [`ConstantAttr`]. All attribute names must be unique.
+#'
+#' A [`ConstantAttr`] built with [`constant_attr()`] carries a vector rather
+#' than a scalar and is what an XLA FFI handler decodes as
+#' `Span<const T>`. The dtype has to match the handler's element type
+#' exactly -- `Span<const int64_t>` needs `"i64"`, not the `"i32"` that
+#' [`constant_attr()`] would infer from an R integer vector.
 #' @param items (`list`)\cr
-#'   A list of `BoolAttr`, `StringAttr`, or `ScalarAttr` objects.
+#'   A list of [`BoolAttr`], [`StringAttr`], [`ScalarAttr`] or
+#'   [`ConstantAttr`] objects.
 #' @return `CustomOpBackendConfig`
+#' @examples
+#' CustomOpBackendConfig(list(
+#'   StringAttr(name = "mode", value = "fast"),
+#'   constant_attr(name = "axes", value = c(0L, 2L), dtype = "i64")
+#' ))
 #' @export
 CustomOpBackendConfig <- function(items = list()) {
   checkmate::assert_list(
     items,
-    types = c("BoolAttr", "StringAttr", "ScalarAttr")
+    types = c("BoolAttr", "StringAttr", "ScalarAttr", "ConstantAttr")
   )
 
   # Check for unique names
@@ -161,7 +173,8 @@ custom_call_impl <- hlo_fn(OpCustomCall, infer_types_custom_call)
 #' @param has_side_effect (`logical(1)`)\cr
 #'   Whether the custom call has side effects.
 #' @param backend_config ([`CustomOpBackendConfig`] | `NULL`)\cr
-#'   Optional backend configuration.
+#'   Optional backend configuration. Its attributes are what the FFI
+#'   handler receives through `.Attr<T>("name")` or `.Attrs<Dictionary>()`.
 #' @param output_types (`list` of [`ValueType`] | `NULL`)\cr
 #'   The output types of the custom call. Default is NULL (no outputs).
 #' @param operand_layouts (`list` of `integer()` | `NULL`)\cr
