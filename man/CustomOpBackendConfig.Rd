@@ -8,13 +8,26 @@ CustomOpBackendConfig(items = list())
 }
 \arguments{
 \item{items}{(\code{list})\cr
-A list of \code{BoolAttr}, \code{StringAttr}, or \code{ScalarAttr} objects.}
+A list of \code{\link{BoolAttr}}, \code{\link{StringAttr}}, \code{\link{ScalarAttr}} or
+\code{\link{ConstantAttr}} objects.}
 }
 \value{
 \code{CustomOpBackendConfig}
 }
 \description{
 A backend configuration as a list of typed attributes for custom operations.
-Each element must be a \code{BoolAttr}, \code{StringAttr}, or \code{ScalarAttr} for now.
-All attribute names must be unique.
+Each element must be a \code{\link{BoolAttr}}, \code{\link{StringAttr}}, \code{\link{ScalarAttr}} or
+\code{\link{ConstantAttr}}. All attribute names must be unique.
+
+A \code{\link{ConstantAttr}} built with \code{\link[=constant_attr]{constant_attr()}} carries a vector rather
+than a scalar and is what an XLA FFI handler decodes as
+\verb{Span<const T>}. The dtype has to match the handler's element type
+exactly -- \verb{Span<const int64_t>} needs \code{"i64"}, not the \code{"i32"} that
+\code{\link[=constant_attr]{constant_attr()}} would infer from an R integer vector.
+}
+\examples{
+CustomOpBackendConfig(list(
+  StringAttr(name = "mode", value = "fast"),
+  constant_attr(name = "axes", value = c(0L, 2L), dtype = "i64")
+))
 }

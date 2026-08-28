@@ -12,7 +12,8 @@ hlo_custom_call(
   backend_config = NULL,
   output_types = NULL,
   operand_layouts = NULL,
-  result_layouts = NULL
+  result_layouts = NULL,
+  output_operand_aliases = NULL
 )
 }
 \arguments{
@@ -29,7 +30,8 @@ The API version. Default is 4.}
 Whether the custom call has side effects.}
 
 \item{backend_config}{(\code{\link{CustomOpBackendConfig}} | \code{NULL})\cr
-Optional backend configuration.}
+Optional backend configuration. Its attributes are what the FFI
+handler receives through \verb{.Attr<T>("name")} or \verb{.Attrs<Dictionary>()}.}
 
 \item{output_types}{(\code{list} of \code{\link{ValueType}} | \code{NULL})\cr
 The output types of the custom call. Default is NULL (no outputs).}
@@ -43,6 +45,12 @@ row-major. Default \code{NULL} means no layout constraint.}
 \item{result_layouts}{(\code{list} of \code{integer()} | \code{NULL})\cr
 Layouts for each result in minor-to-major order. Same format as
 \code{operand_layouts}.}
+
+\item{output_operand_aliases}{(\code{list} of \code{\link{OutputOperandAlias}} | \code{NULL})\cr
+Buffer aliases between operands and results. XLA then hands the handler
+the \emph{same} pointer for the aliased operand and result, so a handler that
+works in place does not force a copy. \code{NULL} (the default) means no
+aliasing.}
 }
 \value{
 (\code{\link{FuncValue}} | \code{list()} | \code{NULL})\cr
@@ -52,6 +60,5 @@ The output value(s), or NULL for side-effect only calls.
 Create a custom call operation that invokes an external function via the
 FFI (Foreign Function Interface) API.
 
-Note that the attributes \code{called_computations} and \code{output_operand_aliases} are not
-implemented yet.
+Note that the attribute \code{called_computations} is not implemented yet.
 }
