@@ -6,12 +6,12 @@
 #' @param rhs (`ValueType`)\cr
 #'   The right-hand side operand.
 #' @return (`ValueType`)\cr
-#'   The inferred type.
+#'   The inferred type. Where one operand has a dynamic axis and the other a
+#'   known size, the known size wins.
 #' @export
 infer_types_generic_biv <- function(lhs, rhs) {
   assert_vts_are_tensors(lhs = lhs, rhs = rhs)
-  assert_vt_equal(lhs, rhs)
-  ValueTypes(list(lhs))
+  ValueTypes(list(vt_meet(lhs, rhs)))
 }
 
 #' @title Infer types for float binary operations
@@ -26,9 +26,8 @@ infer_types_generic_biv <- function(lhs, rhs) {
 #' @export
 infer_types_float_biv <- function(lhs, rhs) {
   assert_vts_are_tensors(lhs = lhs, rhs = rhs)
-  assert_vt_equal(lhs, rhs)
   assert_vt_has_ttype(lhs, "float")
-  ValueTypes(list(lhs))
+  ValueTypes(list(vt_meet(lhs, rhs)))
 }
 
 #' @title Infer types for boolean integerish operations
@@ -44,8 +43,7 @@ infer_types_float_biv <- function(lhs, rhs) {
 infer_types_integerish_biv <- function(lhs, rhs) {
   assert_vt_has_ttype(lhs, "bool", "int", "uint")
   assert_vt_has_ttype(rhs, "bool", "int", "uint")
-  assert_vt_equal(lhs, rhs)
-  ValueTypes(list(lhs))
+  ValueTypes(list(vt_meet(lhs, rhs)))
 }
 
 #' @title Infer types for unary operations
@@ -126,6 +124,5 @@ infer_types_numeric_uni <- function(operand) {
 #' @export
 infer_types_numeric_biv <- function(lhs, rhs) {
   assert_vt_has_ttype(lhs, "float", "int", "uint")
-  assert_vt_equal(lhs, rhs)
-  ValueTypes(list(lhs))
+  ValueTypes(list(vt_meet(lhs, rhs)))
 }

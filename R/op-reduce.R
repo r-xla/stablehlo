@@ -37,13 +37,12 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   })
 
   # (C1)
+  # Folding with `dim_meet` rather than checking each input against the first:
+  # `may_eq` is not transitive, so a pairwise check would accept `(3, ?, 4)`.
+  # The fold validates and refines in one pass, so a dynamic input meeting a
+  # static one gives the static result shape.
   input_shapes <- lapply(input_value_types, function(vt) shape(vt))
-  ref_shape <- input_shapes[[1L]]
-  if (
-    !all(vapply(input_shapes, function(s) identical(s, ref_shape), logical(1L)))
-  ) {
-    cli_abort("All inputs to reduce must have the same shape")
-  }
+  ref_shape <- shapes_meet(input_shapes, arg = "inputs")
 
   # (C2)
   for (i in seq_len(num_inputs)) {

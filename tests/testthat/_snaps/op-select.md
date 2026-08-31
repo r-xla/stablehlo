@@ -12,6 +12,6 @@
         3L)))
     Condition
       Error in `infer_types_select()`:
-      ! rank of `pred` must be 0 or equal to rank of `on_true`
+      ! `pred` must have the same shape as `on_true`.
       x Got shapes (3x3) and (2x3).
 

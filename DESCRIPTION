@@ -46,6 +46,7 @@ Collate:
     'shape.R'
     'types.R'
     'constant.R'
+    'dim.R'
     'format_double.R'
     'value_id.R'
     'func.R'
@@ -87,6 +88,7 @@ Collate:
     'op-digamma.R'
     'op-divide.R'
     'op-dot_general.R'
+    'op-dynamic_broadcast_in_dim.R'
     'op-dynamic_slice.R'
     'op-dynamic_update_slice.R'
     'op-erf.R'
@@ -96,6 +98,7 @@ Collate:
     'op-exponential_minus_one.R'
     'op-floor.R'
     'op-gather.R'
+    'op-get_dimension_size.R'
     'op-if.R'
     'op-iota.R'
     'op-is_finite.R'
@@ -150,4 +153,4 @@ Collate:
     'roxygen.R'
     'zzz.R'
 Config/Needs/website: rmarkdown
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
