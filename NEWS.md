@@ -1,5 +1,21 @@
 # stablehlo (development version)
 
+## Features
+
+* Shape inference understands dimensions that are only known at run time. A
+  constraint over an `NA` axis size is refused only when it is *certainly*
+  violated and left to the runtime otherwise, and where one operand knows a
+  size the other does not, the known size wins: `add(tensor<?xf32>,
+  tensor<3xf32>)` used to be an error and now infers `tensor<3xf32>`. Applied
+  to the elementwise and comparison ops, `select`, `reduce` and `concatenate`.
+  Type *identity* is deliberately unchanged -- `tensor<?xf32>` still does not
+  equal `tensor<3xf32>` -- so buffer aliasing stays sound.
+* Added `hlo_get_dimension_size()` and `hlo_dynamic_broadcast_in_dim()`, the
+  two ops a program needs to broadcast to a shape it only learns at run time.
+  `Shape()` and `TensorType()` already accepted `NA` for a dynamic axis size;
+  these make one usable. XLA does not compile a dynamic shape, so they are for
+  backends that do (anvl's experimental IREE backend).
+
 ## Breaking changes
 
 * A `Shape` *is* its integer vector now, with a class attached, rather than a

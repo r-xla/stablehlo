@@ -87,19 +87,27 @@ infer_types_concatenate <- function(..., dimension) {
     )
   }
 
-  # (C2)
+  # (C2) Every axis but the concatenated one must agree. Folding with
+  # `dim_meet` refines as it checks, so an input with a dynamic off-axis size
+  # takes the size a sibling knows.
   dims_no_concat <- lapply(input_dims, \(x) x[-dim_r])
-  if (
-    !all(vapply(dims_no_concat, identical, logical(1), dims_no_concat[[1]]))
-  ) {
+  off_axis <- Reduce(function(a, b) ifelse(is.na(a), b, a), dims_no_concat)
+  clash <- vapply(
+    dims_no_concat,
+    function(d) any(must(off_axis != d)),
+    logical(1L)
+  )
+  if (any(clash)) {
     error_concatenate_shapes(
       dimensions = dimension,
       shapes = lapply(input_dims, Shape)
     )
   }
 
-  # (C6)
-  result_dims <- input_dims[[1]]
+  # (C6) The concatenated axis is the sum of the parts, which is unknown as
+  # soon as any part is: `sum(c(3L, NA))` is `NA`, which is the answer we want.
+  result_dims <- integer(length(input_dims[[1]]))
+  result_dims[-dim_r] <- off_axis
   result_dims[dim_r] <- sum(vapply(
     input_dims,
     \(x) x[dim_r],

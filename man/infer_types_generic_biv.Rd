@@ -15,7 +15,8 @@ The right-hand side operand.}
 }
 \value{
 (\code{ValueType})\cr
-The inferred type.
+The inferred type. Where one operand has a dynamic axis and the other a
+known size, the known size wins.
 }
 \description{
 Infer the types for binary operations.
