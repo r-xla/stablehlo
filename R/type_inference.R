@@ -48,6 +48,26 @@ infer_types_integerish_biv <- function(lhs, rhs) {
   ValueTypes(list(lhs))
 }
 
+#' @title Infer types for power
+#' @description
+#' Infer the types for `power`.
+#' Unlike [`infer_types_numeric_biv()`], unsigned integers are not accepted:
+#' the spec allows them, but XLA lowers an integer `power` through
+#' `math.ipowi`, which takes signless integers only, so an unsigned operand
+#' passes inference and then fails to compile.
+#' @param lhs (`ValueType`)\cr
+#'   The left-hand side operand.
+#' @param rhs (`ValueType`)\cr
+#'   The right-hand side operand.
+#' @return (`ValueType`)\cr
+#'   The inferred type.
+#' @export
+infer_types_power <- function(lhs, rhs) {
+  assert_vt_has_ttype(lhs, "float", "int")
+  assert_vt_equal(lhs, rhs)
+  ValueTypes(list(lhs))
+}
+
 #' @title Infer types for unary operations
 #' @description
 #' Infer the types for unary operations.

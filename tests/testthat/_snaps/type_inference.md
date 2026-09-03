@@ -88,6 +88,42 @@
       ! `lhs` and `rhs` must have the same tensor type.
       x Got tensor<2x3xi32> and tensor<3x4xi32>.
 
+# infer_types_power errors
+
+    Code
+      infer_types_power(lhs, rhs)
+    Condition
+      Error in `infer_types_power()`:
+      ! `lhs` must have dtype float or int.
+      x Got ui8.
+
+---
+
+    Code
+      infer_types_power(lhs, rhs)
+    Condition
+      Error in `infer_types_power()`:
+      ! `lhs` must have dtype float or int.
+      x Got ui32.
+
+---
+
+    Code
+      infer_types_power(lhs, rhs)
+    Condition
+      Error in `infer_types_power()`:
+      ! `lhs` must have dtype float or int.
+      x Got bool.
+
+---
+
+    Code
+      infer_types_power(lhs, rhs)
+    Condition
+      Error in `infer_types_power()`:
+      ! `lhs` and `rhs` must have the same tensor type.
+      x Got tensor<2x3xi32> and tensor<3x4xi32>.
+
 # infer_types_generic_uni errors
 
     Code

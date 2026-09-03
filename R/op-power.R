@@ -3,10 +3,6 @@ NULL
 
 OpPower <- new_Op("OpPower", "power")
 
-#' @rdname hlo_power
-#' @export
-infer_types_power <- infer_types_numeric_biv
-
 hlo_power_impl <- hlo_fn(OpPower, infer_types_power)
 
 #' @templateVar mnemonic power
