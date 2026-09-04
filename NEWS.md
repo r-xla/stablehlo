@@ -1,5 +1,11 @@
 # stablehlo (development version)
 
+## Breaking changes
+
+* A `Shape` *is* its integer vector now, with a class attached, rather than a
+  list wrapping one. `length(shape)` is the rank, `shape[i]` is an axis size,
+  and `shape$dims` is gone -- read the sizes with `shape()` or `unclass()`.
+
 # stablehlo 0.4.0
 
 ## Features

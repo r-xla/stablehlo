@@ -3,7 +3,11 @@ NULL
 
 #' @title Shape
 #' @description
-#' Represents the shape of a tensor.
+#' Represents the shape of a tensor: the size of each axis, `NA` where a size
+#' is only known at run time.
+#'
+#' A `Shape` *is* its integer vector, with a class attached, so `length()` is
+#' the rank and `[` selects axes without unwrapping anything first.
 #' @param dims (`integer()`)
 #' @return `Shape`
 #' @export
@@ -14,21 +18,28 @@ Shape <- function(dims = integer()) {
     cli_abort("Dimensions must be >= 0")
   }
 
-  structure(
-    list(dims = dims),
-    class = "Shape"
-  )
+  structure(dims, class = "Shape")
 }
 
 #' @export
 `==.Shape` <- function(e1, e2) {
-  identical(e1$dims, e2$dims)
+  identical(unclass(e1), unclass(e2))
+}
+
+#' @export
+# jarl-ignore comparison_negation: != must delegate to == for S3 consistency
+`!=.Shape` <- function(e1, e2) {
+  !(e1 == e2) # nolint
 }
 
 #' @export
 repr.Shape <- function(x, ...) {
-  x$dims[is.na(x$dims)] <- "?"
-  if (length(x$dims) > 0) paste0(x$dims, collapse = "x") else ""
+  dims <- unclass(x)
+  if (length(dims) == 0L) {
+    return("")
+  }
+  dims[is.na(dims)] <- "?"
+  paste0(dims, collapse = "x")
 }
 
 #' @export
@@ -45,7 +56,7 @@ print.Shape <- function(x, ...) {
 #' @export
 #' @method shape Shape
 shape.Shape <- function(x, ...) {
-  x$dims
+  unclass(x)
 }
 
 #' @export
