@@ -375,6 +375,8 @@
   : Infer types for binary operations
 - [`infer_types_generic_uni()`](https://r-xla.github.io/stablehlo/dev/reference/infer_types_generic_uni.md)
   : Infer types for unary operations
+- [`infer_types_integer_biv()`](https://r-xla.github.io/stablehlo/dev/reference/infer_types_integer_biv.md)
+  : Infer types for integer binary operations
 - [`infer_types_integer_uni()`](https://r-xla.github.io/stablehlo/dev/reference/infer_types_integer_uni.md)
   : Infer types for integer unary operations
 - [`infer_types_integerish_biv()`](https://r-xla.github.io/stablehlo/dev/reference/infer_types_integerish_biv.md)
