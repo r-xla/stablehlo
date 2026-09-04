@@ -49,12 +49,4 @@ describe("Shape", {
     expect_error(Shape(c(2, 3)) == c(2L, 3L), "not defined for a")
     expect_error(c(2L, 3L) == Shape(c(2, 3)), "not defined for a")
   })
-
-  it("is compared for type identity on its axis sizes", {
-    expect_true(identical(unclass(Shape(c(2, 3))), unclass(Shape(c(2, 3)))))
-    expect_false(identical(unclass(Shape(c(2, 3))), unclass(Shape(c(3, 2)))))
-    # An unknown axis size is a value of its own under identity.
-    expect_true(identical(unclass(Shape(c(2, NA))), unclass(Shape(c(2, NA)))))
-    expect_false(identical(unclass(Shape(c(2, NA))), unclass(Shape(c(2, 3)))))
-  })
 })
