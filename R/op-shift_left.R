@@ -5,7 +5,7 @@ OpShiftLeft <- new_Op("OpShiftLeft", "shift_left")
 
 #' @rdname hlo_shift_left
 #' @export
-infer_types_shift_left <- infer_types_integerish_biv
+infer_types_shift_left <- infer_types_integer_biv
 
 hlo_shift_left_impl <- hlo_fn(OpShiftLeft, infer_types_shift_left)
 
