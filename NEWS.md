@@ -2,13 +2,14 @@
 
 ## Breaking changes
 
-* A `Shape` *is* its integer vector now, with a class attached, rather than a
-  list wrapping one. `length(shape)` is the rank, `shape[i]` is an axis size,
-  and `shape$dims` is gone -- read the sizes with `unclass()`.
+* A `Shape` is now represented as an integer.
+* `shape.Shape` was removed.
 
-* `shape()` has no `Shape` method any more, for the same reason: a `Shape`
-  already *is* its integer vector, so there is nothing to extract. `shape()`
-  keeps working on a `ValueType`, `TensorType` or `Constant`.
+## Bug fixes
+
+* `hlo_triangular_solve()` now rejects operands that are not of floating-point
+  type, as required by the StableHLO spec. Such operands used to reach the
+  backend and fail there.
 
 # stablehlo 0.4.0
 

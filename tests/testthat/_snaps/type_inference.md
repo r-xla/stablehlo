@@ -88,6 +88,42 @@
       ! `lhs` and `rhs` must have the same tensor type.
       x Got tensor<2x3xi32> and tensor<3x4xi32>.
 
+# infer_types_integer_biv errors
+
+    Code
+      infer_types_integer_biv(lhs, rhs)
+    Condition
+      Error in `infer_types_integer_biv()`:
+      ! `lhs` must have dtype int or uint.
+      x Got f32.
+
+---
+
+    Code
+      infer_types_integer_biv(lhs, rhs)
+    Condition
+      Error in `infer_types_integer_biv()`:
+      ! `lhs` must have dtype int or uint.
+      x Got bool.
+
+---
+
+    Code
+      infer_types_integer_biv(lhs, rhs)
+    Condition
+      Error in `infer_types_integer_biv()`:
+      ! `rhs` must have dtype int or uint.
+      x Got bool.
+
+---
+
+    Code
+      infer_types_integer_biv(lhs, rhs)
+    Condition
+      Error in `infer_types_integer_biv()`:
+      ! `lhs` and `rhs` must have the same tensor type.
+      x Got tensor<2x3xi32> and tensor<3x4xi32>.
+
 # infer_types_generic_uni errors
 
     Code
