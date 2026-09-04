@@ -47,6 +47,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="stablehlo-development-version">stablehlo (development version)<a class="anchor" aria-label="anchor" href="#stablehlo-development-version"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/hlo_triangular_solve.html">hlo_triangular_solve()</a></code> now rejects operands that are not of floating-point type, as required by the StableHLO spec. Such operands used to reach the backend and fail there.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="stablehlo-040">stablehlo 0.4.0<a class="anchor" aria-label="anchor" href="#stablehlo-040"></a></h2>

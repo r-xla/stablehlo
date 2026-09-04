@@ -2,6 +2,13 @@
 
 ## stablehlo (development version)
 
+### Bug fixes
+
+- [`hlo_triangular_solve()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_triangular_solve.md)
+  now rejects operands that are not of floating-point type, as required
+  by the StableHLO spec. Such operands used to reach the backend and
+  fail there.
+
 ## stablehlo 0.4.0
 
 ### Features
