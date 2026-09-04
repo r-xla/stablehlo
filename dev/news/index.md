@@ -2,6 +2,11 @@
 
 ## stablehlo (development version)
 
+### Breaking changes
+
+- A `Shape` is now represented as an integer.
+- `shape.Shape` was removed.
+
 ### Bug fixes
 
 - [`hlo_triangular_solve()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_triangular_solve.md)
