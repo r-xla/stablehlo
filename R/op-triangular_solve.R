@@ -40,10 +40,10 @@ infer_types_triangular_solve <- function(
   unit_diagonal,
   transpose_a
 ) {
-  # (I1), (I2): floating-point or complex operands only
+  # (I1), (I2): floating-point operands only (complex is not supported yet)
   assert_vts_are_tensors(a, b)
-  assert_vt_has_ttype(a, "float", "complex")
-  assert_vt_has_ttype(b, "float", "complex")
+  assert_vt_has_ttype(a, "float")
+  assert_vt_has_ttype(b, "float")
   # (C1)
   assert_vts_have_same_dtype(a, b)
   assert_const(left_side, dtype = as_dtype("bool"), shape = integer())

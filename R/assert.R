@@ -6,7 +6,6 @@ dtype_in_category <- function(dt, category) {
   switch(
     category,
     float = is_dtype_float(dt),
-    complex = is_dtype_complex(dt),
     int = is_dtype_int(dt),
     uint = is_dtype_uint(dt),
     bool = is_dtype_bool(dt),

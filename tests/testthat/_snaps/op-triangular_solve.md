@@ -12,7 +12,7 @@
         TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
     Condition
       Error in `infer_types_triangular_solve()`:
-      ! `a` must have dtype float or complex.
+      ! `a` must have dtype float.
       x Got i32.
 
 ---
@@ -22,7 +22,7 @@
         TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
     Condition
       Error in `infer_types_triangular_solve()`:
-      ! `b` must have dtype float or complex.
+      ! `b` must have dtype float.
       x Got bool.
 
 ---
