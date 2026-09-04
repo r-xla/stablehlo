@@ -155,6 +155,7 @@ hlo_tensor.PJRTBuffer <- function(value, ..., func = NULL) {
 #' @export
 hlo_empty <- function(dtype, shape, func = NULL) {
   func <- func %??% .current_func()
+  shape <- as.integer(shape)
   data <- if (dtype == "pred") {
     logical()
   } else if (startsWith(dtype, "f")) {

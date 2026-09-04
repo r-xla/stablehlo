@@ -43,7 +43,7 @@ repr.Constant <- function(x, simplify_dense = TRUE, ...) {
     }
   }
 
-  data_dims <- x$type$shape$dims
+  data_dims <- unclass(x$type$shape)
 
   if (simplify_dense) {
     if (length(data_dims) > 1) {
@@ -197,5 +197,5 @@ r_to_constant.PJRTBuffer <- function(value, dtype = NULL, shape, ...) {
 #' @export
 #' @method shape Constant
 shape.Constant <- function(x, ...) {
-  x$type$shape$dims
+  unclass(x$type$shape)
 }

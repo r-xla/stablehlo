@@ -1,5 +1,10 @@
 # stablehlo (development version)
 
+## Breaking changes
+
+* A `Shape` is now represented as an integer.
+* `shape.Shape` was removed.
+
 ## Bug fixes
 
 * `hlo_triangular_solve()` now rejects operands that are not of floating-point
