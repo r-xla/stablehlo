@@ -1,10 +1,14 @@
 # stablehlo (development version)
 
+## Breaking changes
+
+* A `Shape` is now represented as an integer.
+* `shape.Shape` was removed.
+
 ## Bug fixes
 
 * `hlo_triangular_solve()` now rejects operands that are not of floating-point
-  type, as required by the StableHLO spec. Such operands used to reach the
-  backend and fail there.
+  type, as required by the StableHLO spec.
 
 # stablehlo 0.4.0
 

@@ -51,13 +51,11 @@ infer_types_rng_bit_generator <- function(
         x = "Got {.val {state_size}}."
       ))
     }
-  } else if (algo == "PHILOX") {
-    if (!(state_size %in% c(2L, 3L))) {
-      cli_abort(c(
-        "PHILOX requires length(initial_state) to be 2 or 3",
-        x = "Got {.val {state_size}}."
-      ))
-    }
+  } else if (algo == "PHILOX" && !(state_size %in% c(2L, 3L))) {
+    cli_abort(c(
+      "PHILOX requires length(initial_state) to be 2 or 3",
+      x = "Got {.val {state_size}}."
+    ))
   }
 
   out_dtype <- as_dtype(dtype)
