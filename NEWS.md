@@ -1,5 +1,14 @@
 # stablehlo (development version)
 
+## Breaking changes
+
+* A `Shape` *is* its integer vector now, with a class attached, rather than a
+  list wrapping one. `length(shape)` is the rank, `shape[i]` is an axis size,
+  and `shape$dims` is gone -- read the sizes with `shape()` or `unclass()`.
+  This halves what a `Shape` costs to keep (568 to 288 bytes) but barely moves
+  program building (about 2%); the reason to do it is that the wrapper made
+  every rank read a `length(shape$dims)`.
+
 ## Features
 
 * Shape inference understands dimensions that are only known at run time. A

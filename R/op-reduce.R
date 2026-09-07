@@ -31,7 +31,7 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   init_value_types <- init_values
 
   lapply(init_value_types, function(vt) {
-    if (length(vt$type$shape$dims) != 0L) {
+    if (length(vt$type$shape) != 0L) {
       cli_abort("{.arg init_values} must be 0-D tensors")
     }
   })
@@ -99,7 +99,7 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   out_vts <- lapply(seq_len(num_inputs), function(i) {
     out_elem_vt <- body_out_types[[i]]
     # Expect 0-D tensor data type; take dtype from it
-    if (length(out_elem_vt$type$shape$dims) != 0L) {
+    if (length(out_elem_vt$type$shape) != 0L) {
       cli_abort("{.arg body} outputs must be 0-D tensors")
     }
     ValueType(
