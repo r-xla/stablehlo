@@ -46,6 +46,26 @@ infer_types_integerish_biv <- function(lhs, rhs) {
   ValueTypes(list(vt_meet(lhs, rhs)))
 }
 
+#' @title Infer types for integer binary operations
+#' @description
+#' Infer the types for binary operations taking integers only.
+#' Unlike [`infer_types_integerish_biv()`], booleans are not accepted: the
+#' bit-shift operations take a `tensor of integer type`, which in the
+#' StableHLO spec does not include `i1`.
+#' @param lhs (`ValueType`)\cr
+#'   The left-hand side operand.
+#' @param rhs (`ValueType`)\cr
+#'   The right-hand side operand.
+#' @return (`ValueType`)\cr
+#'   The inferred type.
+#' @export
+infer_types_integer_biv <- function(lhs, rhs) {
+  assert_vt_has_ttype(lhs, "int", "uint")
+  assert_vt_has_ttype(rhs, "int", "uint")
+  assert_vt_equal(lhs, rhs)
+  ValueTypes(list(lhs))
+}
+
 #' @title Infer types for unary operations
 #' @description
 #' Infer the types for unary operations.

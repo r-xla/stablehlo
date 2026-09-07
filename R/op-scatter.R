@@ -521,6 +521,6 @@ hlo_scatter <- function(
         value = as.logical(indices_are_sorted)
       ),
       BoolAttr(name = "unique_indices", value = as.logical(unique_indices))
-    ),
+    )
   )
 }

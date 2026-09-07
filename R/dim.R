@@ -21,6 +21,9 @@ NULL
 #   identical()  Are these the same type?  Used for type identity (buffer
 #              aliasing, `output_types`), where `?` must *not* match a known
 #              size. Unchanged, and deliberately so.
+#
+# `==` on a `Shape` refuses to answer at all, precisely because it cannot know
+# which of the three was meant -- see `error_shape_comparison()` in shape.R.
 #   dim_meet() What is the most we know?  Used to build result shapes: it
 #              errors on a definite clash and otherwise returns the refined
 #              shape, so a dynamic operand meeting a static one yields the

@@ -2,12 +2,8 @@
 
 ## Breaking changes
 
-* A `Shape` *is* its integer vector now, with a class attached, rather than a
-  list wrapping one. `length(shape)` is the rank, `shape[i]` is an axis size,
-  and `shape$dims` is gone -- read the sizes with `shape()` or `unclass()`.
-  This halves what a `Shape` costs to keep (568 to 288 bytes) but barely moves
-  program building (about 2%); the reason to do it is that the wrapper made
-  every rank read a `length(shape$dims)`.
+* A `Shape` is now represented as an integer.
+* `shape.Shape` was removed.
 
 ## Features
 
@@ -15,18 +11,16 @@
   constraint over an `NA` axis size is refused only when it is *certainly*
   violated and left to the runtime otherwise, and where one operand knows a
   size the other does not, the known size wins: `add(tensor<?xf32>,
-  tensor<3xf32>)` used to be an error and now infers `tensor<3xf32>`. Applied
-  to the elementwise and comparison ops, `select`, `reduce` and `concatenate`.
+  tensor<3xf32>)` used to be an error and now infers `tensor<3xf32>`.
   Type *identity* is deliberately unchanged -- `tensor<?xf32>` still does not
   equal `tensor<3xf32>` -- so buffer aliasing stays sound.
 
-  Covered so far: the elementwise and comparison ops, `select`, `reduce`,
-  `sort`, `transpose`, `concatenate`, `dot_general`, `broadcast_in_dim`,
-  `reshape` and `slice`. The last three keep a fully static result -- their
-  shape is an attribute -- but no longer refuse an operand whose size they
-  cannot check, leaving that to the runtime. `pad`, `iota`, `clamp`,
-  `convert`, `reverse` and `reduce_window` already carried a dynamic axis
-  through unchanged.
+  Every op that can take a dynamic operand now does: of the 85 that can be
+  driven with one, 78 carry a `?` through and 7 have a statically determined
+  result, because their extents come from an attribute rather than an operand.
+  `broadcast_in_dim`, `reshape`, `slice`, `dynamic_slice` and
+  `dynamic_update_slice` are in the second group -- they no longer refuse an
+  operand whose size they cannot check, and leave it to the runtime.
 
   Dynamic programs are tested by refining them back to concrete shapes with
   `pjrt::pjrt_refine_shapes()` and running them, which checks that the result
@@ -37,6 +31,11 @@
   `Shape()` and `TensorType()` already accepted `NA` for a dynamic axis size;
   these make one usable. XLA does not compile a dynamic shape, so they are for
   backends that do (anvl's experimental IREE backend).
+
+## Bug fixes
+
+* `hlo_triangular_solve()` now rejects operands that are not of floating-point
+  type, as required by the StableHLO spec.
 
 # stablehlo 0.4.0
 
