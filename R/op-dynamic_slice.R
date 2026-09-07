@@ -58,7 +58,8 @@ infer_types_dynamic_slice <- function(
   }
 
   # (C4)
-  if (any(slice_sizes_data > shape(operand))) {
+  # An axis of unknown size cannot bound the slice here; the runtime does it.
+  if (any(must(slice_sizes_data > shape(operand)))) {
     cli_abort(c(
       "{.arg slice_sizes} must not be greater than {.arg operand}'s shape.",
       x = "Got slice_sizes {shapevec_repr(slice_sizes_data)} and operand shape {shapevec_repr(shape(operand))}."

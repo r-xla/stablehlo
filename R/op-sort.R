@@ -21,10 +21,10 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
     cli_abort("provide at least one input")
   }
 
-  # (C3)
-  if (
-    !all(vapply(input_dims[-1], \(x) identical(input_dims[[1]], x), logical(1)))
-  ) {
+  # (C3) Folding with `dim_meet` so that a dynamic axis on one input takes the
+  # size another input knows, and only a definite clash is refused.
+  ref_dims <- Reduce(function(a, b) ifelse(is.na(a), b, a), input_dims)
+  if (any(vapply(input_dims, \(d) any(must(ref_dims != d)), logical(1)))) {
     # nolint next
     shapes_str <- vapply(input_dims, shapevec_repr, character(1))
     cli_abort(c(
@@ -34,7 +34,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
   }
 
   # (C4)
-  num_dims <- length(input_dims[[1]])
+  num_dims <- length(ref_dims)
   if ((dimension < -num_dims) || (dimension >= num_dims)) {
     error_index_out_of_bounds(
       arg = "dimension",
@@ -44,10 +44,10 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
     )
   }
 
-  # (C2), (C3)
+  # (C2), (C3) Every output has the refined shape; only the dtypes differ.
   ValueTypes(lapply(
     dots,
-    \(x) ValueType(x$type)
+    \(x) ValueType(TensorType(dtype = x$type$dtype, shape = Shape(ref_dims)))
   ))
 }
 

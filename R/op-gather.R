@@ -320,7 +320,8 @@ infer_types_gather <- function(
     batch_shape_start_indices <- start_indices_shape[
       start_indices_batching_dims + 1L
     ]
-    if (!identical(batch_shape_operand, batch_shape_start_indices)) {
+    # An axis of unknown size on either side is checked at run time.
+    if (any(must(batch_shape_operand != batch_shape_start_indices))) {
       cli_abort(c(
         "Shape of batch dimensions of {.arg operand} and {.arg start_indices} must match.",
         x = "Got {shapevec_repr(batch_shape_operand)} and {shapevec_repr(batch_shape_start_indices)}."
@@ -356,7 +357,9 @@ infer_types_gather <- function(
   }
 
   # (C21)
-  if (any(slice_sizes_vec < 0L) || any(slice_sizes_vec > operand_shape)) {
+  # `slice_sizes` is a static attribute, so its lower bound is always
+  # decidable; the upper bound is only decidable where the operand's axis is.
+  if (any(slice_sizes_vec < 0L) || any(must(slice_sizes_vec > operand_shape))) {
     cli_abort(c(
       "0 <= slice_sizes <= shape(operand).",
       x = "Got slice_sizes = {vec_repr(slice_sizes_vec)}, but operand shape is {shapevec_repr(operand_shape)}."

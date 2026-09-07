@@ -399,35 +399,35 @@ infer_types_convolution <- function(
   kernel_output_feature_size <- rhs_shape[kofd + 1L]
 
   # (C10)
-  if (input_batch_size %% bg_count != 0L) {
+  if (must(input_batch_size %% bg_count != 0L)) {
     cli_abort(c(
       "dim(lhs, input_batch_dimension) must be divisible by {.arg batch_group_count}.",
       x = "Got dim = {input_batch_size}, batch_group_count = {bg_count}."
     ))
   }
   # (C11)
-  if (input_feature_size %% fg_count != 0L) {
+  if (must(input_feature_size %% fg_count != 0L)) {
     cli_abort(c(
       "dim(lhs, input_feature_dimension) must be divisible by {.arg feature_group_count}.",
       x = "Got dim = {input_feature_size}, feature_group_count = {fg_count}."
     ))
   }
   # (C14)
-  if (kernel_input_feature_size != input_feature_size %/% fg_count) {
+  if (must(kernel_input_feature_size != input_feature_size %/% fg_count)) {
     cli_abort(c(
       "dim(rhs, kernel_input_feature_dimension) must equal dim(lhs, input_feature_dimension) / feature_group_count.",
       x = "Got dim = {kernel_input_feature_size}, expected {input_feature_size %/% fg_count}."
     ))
   }
   # (C15)
-  if (kernel_output_feature_size %% bg_count != 0L) {
+  if (must(kernel_output_feature_size %% bg_count != 0L)) {
     cli_abort(c(
       "dim(rhs, kernel_output_feature_dimension) must be divisible by {.arg batch_group_count}.",
       x = "Got dim = {kernel_output_feature_size}, batch_group_count = {bg_count}."
     ))
   }
   # (C16)
-  if (kernel_output_feature_size %% fg_count != 0L) {
+  if (must(kernel_output_feature_size %% fg_count != 0L)) {
     cli_abort(c(
       "dim(rhs, kernel_output_feature_dimension) must be divisible by {.arg feature_group_count}.",
       x = "Got dim = {kernel_output_feature_size}, feature_group_count = {fg_count}."
@@ -467,18 +467,24 @@ infer_types_convolution <- function(
     lhs_size <- lhs_shape[lhs_dim + 1L]
     rhs_size <- rhs_shape[rhs_dim + 1L]
 
-    dilated_input <- if (lhs_size == 0L) {
+    dilated_input <- if (is.na(lhs_size)) {
+      NA_integer_
+    } else if (lhs_size == 0L) {
       0L
     } else {
       (lhs_size - 1L) * lhs_dil[sd] + 1L
     }
     padded_input <- pad[sd, 1L] + dilated_input + pad[sd, 2L]
-    dilated_window <- if (rhs_size == 0L) {
+    dilated_window <- if (is.na(rhs_size)) {
+      NA_integer_
+    } else if (rhs_size == 0L) {
       0L
     } else {
       (rhs_size - 1L) * rhs_dil[sd] + 1L
     }
-    num_windows <- if (padded_input == 0L || dilated_window > padded_input) {
+    num_windows <- if (is.na(padded_input) || is.na(dilated_window)) {
+      NA_integer_
+    } else if (padded_input == 0L || dilated_window > padded_input) {
       0L
     } else {
       as.integer(floor((padded_input - dilated_window) / strides[sd]) + 1L)

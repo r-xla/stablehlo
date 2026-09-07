@@ -67,8 +67,9 @@ infer_types_slice <- function(
     )
   }
 
-  if (any(limit_idx > operand_shape)) {
-    invalid_positions <- which(limit_idx > operand_shape)
+  # An axis of unknown size cannot bound the limit here; the runtime does it.
+  if (any(must(limit_idx > operand_shape))) {
+    invalid_positions <- which(must(limit_idx > operand_shape))
     error_index_out_of_bounds(
       arg = "limit_indices",
       index = limit_idx[invalid_positions],

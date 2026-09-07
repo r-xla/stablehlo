@@ -1,5 +1,3 @@
-N <- NA_integer_
-
 test_that("may() is false only when the relation is known false", {
   expect_equal(may(c(TRUE, FALSE, NA)), c(TRUE, FALSE, TRUE))
   expect_equal(must(c(TRUE, FALSE, NA)), c(TRUE, FALSE, FALSE))

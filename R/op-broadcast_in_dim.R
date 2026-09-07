@@ -47,10 +47,13 @@ infer_types_broadcast_in_dim <- function(
 
   # (C5) For all d in axes(operand):
   #   shape(operand, d) = 1 OR shape(operand, d) = shape(result, broadcast_dimensions[d])
+  # An operand axis of unknown size satisfies this for *some* run-time size, so
+  # it is left to the runtime; the result shape is the static attribute either
+  # way.
   for (d in seq_along(bdims)) {
     op_dim <- operand_dims[d]
     out_dim <- result_dims[bdims[d] + 1L]
-    if ((op_dim != out_dim) && op_dim != 1L) {
+    if (must(op_dim != out_dim) && must(op_dim != 1L)) {
       error_dim_size_mismatch(
         arg1 = "operand",
         arg2 = "result",

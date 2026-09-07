@@ -151,16 +151,25 @@ infer_types_scatter <- function(
   scatter_dims_to_operand_dims <- scatter_dimension_numbers$scatter_dims_to_operand_dims
   index_vector_dim <- scatter_dimension_numbers$index_vector_dim
 
-  input_shape <- shape(inputs[[1L]])
+  # The refined shape across all inputs: an input with a dynamic axis takes the
+  # size a sibling knows, so the checks below and the result type get the most
+  # that is known. `must()` is what makes the (C1) check refuse only a definite
+  # clash.
+  input_shapes <- lapply(inputs, shape)
+  input_shape <- Reduce(function(a, b) ifelse(is.na(a), b, a), input_shapes)
   input_rank <- length(input_shape)
   scatter_indices_shape <- shape(scatter_indices)
   scatter_indices_rank <- length(scatter_indices_shape)
-  updates_shape <- shape(updates[[1L]])
+  updates_shape <- Reduce(
+    function(a, b) ifelse(is.na(a), b, a),
+    lapply(updates, shape)
+  )
   updates_rank <- length(updates_shape)
 
   # (C1)
-  input_shapes <- lapply(inputs, shape)
-  if (length(unique(input_shapes)) != 1L) {
+  if (
+    any(vapply(input_shapes, \(d) any(must(input_shape != d)), logical(1L)))
+  ) {
     # fmt: skip
     shapes_str <- paste(vapply(inputs, function(x) shapevec_repr(shape(x)), character(1)), collapse = ", ") # nolint
     cli_abort(c(
@@ -183,7 +192,7 @@ infer_types_scatter <- function(
 
   # (C3)
   for (i in seq_along(updates)[-1L]) {
-    if (!identical(shape(updates[[i]]), updates_shape)) {
+    if (any(must(shape(updates[[i]]) != updates_shape))) {
       # fmt: skip
       shapes_str <- vapply(updates, function(u) shapevec_repr(shape(u)), character(1))
       cli_abort(c(
@@ -324,7 +333,8 @@ infer_types_scatter <- function(
   batch_shape_scatter <- scatter_indices_shape[
     scatter_indices_batching_dims + 1L
   ]
-  if (!identical(batch_shape_inputs, batch_shape_scatter)) {
+  # An axis of unknown size on either side is checked at run time.
+  if (any(must(batch_shape_inputs != batch_shape_scatter))) {
     cli_abort(
       "Shape of batch dimensions of {.arg inputs} and {.arg scatter_indices} must match.",
       x = "Got {shapevec_repr(batch_shape_inputs)} and {shapevec_repr(batch_shape_scatter)}."

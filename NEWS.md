@@ -19,6 +19,19 @@
   to the elementwise and comparison ops, `select`, `reduce` and `concatenate`.
   Type *identity* is deliberately unchanged -- `tensor<?xf32>` still does not
   equal `tensor<3xf32>` -- so buffer aliasing stays sound.
+
+  Covered so far: the elementwise and comparison ops, `select`, `reduce`,
+  `sort`, `transpose`, `concatenate`, `dot_general`, `broadcast_in_dim`,
+  `reshape` and `slice`. The last three keep a fully static result -- their
+  shape is an attribute -- but no longer refuse an operand whose size they
+  cannot check, leaving that to the runtime. `pad`, `iota`, `clamp`,
+  `convert`, `reverse` and `reduce_window` already carried a dynamic axis
+  through unchanged.
+
+  Dynamic programs are tested by refining them back to concrete shapes with
+  `pjrt::pjrt_refine_shapes()` and running them, which checks that the result
+  type the refinement pass derives is the one this package's inference derives
+  from the static shapes.
 * Added `hlo_get_dimension_size()` and `hlo_dynamic_broadcast_in_dim()`, the
   two ops a program needs to broadcast to a shape it only learns at run time.
   `Shape()` and `TensorType()` already accepted `NA` for a dynamic axis size;

@@ -238,8 +238,9 @@ infer_types_dot_general <- function(
   dim_batch1 <- dim_lhs[lhs_batching + 1L]
   dim_batch2 <- dim_rhs[rhs_batching + 1L]
 
-  # (C10)
-  if (!identical(dim_merge1, dim_merge2)) {
+  # (C10) The contracted sizes must agree, but they do not survive into the
+  # result, so an axis of unknown size on either side is left to the runtime.
+  if (any(must(dim_merge1 != dim_merge2))) {
     error_dot_general_dim_mismatch(
       arg = "contracting_dims",
       shape_lhs = dim_lhs,
@@ -249,7 +250,7 @@ infer_types_dot_general <- function(
   }
 
   # (C9)
-  if (!identical(dim_batch1, dim_batch2)) {
+  if (any(must(dim_batch1 != dim_batch2))) {
     error_dot_general_dim_mismatch(
       arg = "batching_dims",
       shape_lhs = dim_lhs,
@@ -257,6 +258,8 @@ infer_types_dot_general <- function(
       dims = batching_dims
     )
   }
+  # The batch sizes *do* survive, so take the side that knows them.
+  dim_batch <- ifelse(is.na(dim_batch1), dim_batch2, dim_batch1)
 
   ii1 <- c(lhs_contracting, lhs_batching)
   dim_lhs_remaining <- if (length(ii1)) {
@@ -271,7 +274,7 @@ infer_types_dot_general <- function(
     dim_rhs
   }
   # C12
-  out_dim <- c(dim_batch1, dim_lhs_remaining, dim_rhs_remaining)
+  out_dim <- c(dim_batch, dim_lhs_remaining, dim_rhs_remaining)
 
   ValueTypes(list(
     ValueType(TensorType(dtype = lhs$type$dtype, shape = Shape(out_dim)))
