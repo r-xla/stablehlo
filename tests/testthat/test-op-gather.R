@@ -530,3 +530,37 @@ test_that("gather defers the checks it cannot decide", {
     )
   )
 })
+
+test_that("gather's batch-size check and refinement are both live", {
+  dn <- function(...) {
+    GatherDimensionNumbers(
+      offset_dims = 1L,
+      collapsed_slice_dims = 1L,
+      operand_batching_dims = 0L,
+      start_indices_batching_dims = 0L,
+      start_index_map = 1L,
+      index_vector_dim = 1L,
+      ...
+    )
+  }
+  g <- function(operand, indices) {
+    local_func()
+    hlo_gather(
+      dyn_input("a", "f32", operand),
+      dyn_input("i", "i32", indices),
+      gather_dimension_numbers = dn(),
+      slice_sizes = c(1L, 1L, 2L)
+    )
+  }
+  # (C17): batch sizes known and different.
+  expect_error(g(c(4L, 5L, 6L), c(3L, 1L)), "batch dimensions")
+  # ... and the meet, in both directions.
+  expect_equal(
+    repr(g(c(4L, 5L, 6L), c(N, 1L))$value_type$type),
+    "tensor<4x2xf32>"
+  )
+  expect_equal(
+    repr(g(c(N, 5L, 6L), c(3L, 1L))$value_type$type),
+    "tensor<3x2xf32>"
+  )
+})

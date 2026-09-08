@@ -79,3 +79,31 @@ test_that("errors", {
   # invalid transpose_a
   check(vt("f32", c(3L, 3L)), vt("f32", c(3L, 2L)), transpose_a = "INVALID")
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("triangular_solve meets a's trailing axes and its batch axes", {
+  ts <- function(a, b) {
+    local_func()
+    hlo_triangular_solve(
+      dyn_input("a", "f32", a),
+      dyn_input("b", "f32", b),
+      left_side = TRUE,
+      lower = TRUE,
+      unit_diagonal = FALSE,
+      transpose_a = "NO_TRANSPOSE"
+    )
+  }
+  # (C3) makes `a` square, so a dynamic trailing axis is provably 3.
+  expect_equal(repr(ts(c(3L, N), c(N, 2L))$value_type$type), "tensor<3x2xf32>")
+  expect_equal(repr(ts(c(N, 3L), c(N, 2L))$value_type$type), "tensor<3x2xf32>")
+  expect_equal(repr(ts(c(N, N), c(3L, 2L))$value_type$type), "tensor<3x2xf32>")
+  expect_equal(repr(ts(c(N, N), c(N, 2L))$value_type$type), "tensor<?x2xf32>")
+  # A definite clash is still refused.
+  expect_error(ts(c(3L, N), c(2L, 2L)))
+  # Batch axes meet too.
+  expect_equal(
+    repr(ts(c(N, 3L, N), c(5L, N, 2L))$value_type$type),
+    "tensor<5x3x2xf32>"
+  )
+})

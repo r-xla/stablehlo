@@ -196,3 +196,30 @@ test_that("the inferred dynamic types compile with IREE", {
   res <- iree_compiles(src)
   expect_true(res$ok, info = res$log)
 })
+
+test_that("the ops whose shape is an attribute reject a dynamic one", {
+  # These results are rendered as static types, so `NA` must not reach them --
+  # `hlo_dynamic_reshape()` and `hlo_dynamic_iota()` are the escape hatch.
+  local_func()
+  x <- hlo_input("x", "f32", shape = c(2L, 3L))
+  expect_error(hlo_reshape(x, shape = c(N, 2L)), "missing")
+  expect_error(
+    hlo_iota(iota_dimension = 0L, dtype = "f32", shape = N),
+    "missing"
+  )
+  expect_error(
+    hlo_broadcast_in_dim(x, broadcast_dimensions = c(0L, 1L), shape = c(N, 3L)),
+    "missing"
+  )
+  expect_error(hlo_empty("f32", shape = c(N, 3L)), "missing")
+  expect_error(hlo_tensor(1:6, dtype = "i32", shape = c(N, 3L)), "missing")
+  expect_error(
+    hlo_rng_bit_generator(
+      hlo_input("s", "ui64", shape = 2L),
+      rng_algorithm = "PHILOX",
+      dtype = "f32",
+      shape = c(N, 2L)
+    ),
+    "missing"
+  )
+})

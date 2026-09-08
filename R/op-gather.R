@@ -194,7 +194,8 @@ infer_types_gather <- function(
   # down.
   #
   # Skipped unless the batching dims are equal in count and in range, so that
-  # (C11), (C13), (C14) and (C16) still report their own failures rather than
+  # (C6), (C11), (C13), (C14) and (C16) still report their own failures rather
+  # than
   # being shadowed by an error about the batch *projection* -- shapes the
   # caller never passed.
   batch_dims_usable <- length(operand_batching_dims) > 0L &&
@@ -203,7 +204,9 @@ infer_types_gather <- function(
     all(
       start_indices_batching_dims >= 0L &
         start_indices_batching_dims < start_indices_rank
-    )
+    ) &&
+    !anyDuplicated(operand_batching_dims) &&
+    !anyDuplicated(start_indices_batching_dims)
   if (batch_dims_usable) {
     batch_shape_operand <- operand_shape[operand_batching_dims + 1L]
     batch_shape_start_indices <- start_indices_shape[

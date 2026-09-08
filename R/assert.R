@@ -34,35 +34,6 @@ assert_valid_id <- function(
   }
 }
 
-assert_vt_equal <- function(
-  x,
-  y,
-  ...,
-  msg = NULL,
-  is_tensor = TRUE,
-  arg_x = rlang::caller_arg(x),
-  arg_y = rlang::caller_arg(y),
-  call = rlang::caller_env()
-) {
-  rlang::check_dots_empty()
-
-  if (is_tensor) {
-    assert_vts_are_tensors(x, y)
-  }
-
-  if (x == y) {
-    return()
-  }
-
-  cli_abort(
-    c(
-      "{.arg {arg_x}} and {.arg {arg_y}} must have the same tensor type.",
-      x = "Got {.val {x$type}} and {.val {y$type}}."
-    ),
-    call = call
-  )
-}
-
 assert_one_of <- function(
   x,
   types,

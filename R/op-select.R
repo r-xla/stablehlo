@@ -57,7 +57,7 @@ infer_types_select <- function(
         x = "Got shapes {shapevec_repr(pred_dims)} and {shapevec_repr(dims)}."
       ))
     }
-    if (any(must(pred_dims != dims))) {
+    if (any(must_ne(pred_dims, dims))) {
       cli_abort(c(
         "{.arg pred} must have the same shape as {.arg on_true}.",
         x = "Got shapes {shapevec_repr(pred_dims)} and {shapevec_repr(dims)}."

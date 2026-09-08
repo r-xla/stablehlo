@@ -102,24 +102,6 @@
       ! `x` must contain a TensorType.
       x Got <TokenType>.
 
-# assert_vt_equal
-
-    Code
-      assert_vt_equal(x, z1)
-    Condition
-      Error:
-      ! `x` and `z1` must have the same tensor type.
-      x Got tensor<i32> and tensor<1xi32>.
-
----
-
-    Code
-      assert_vt_equal(x, z2)
-    Condition
-      Error:
-      ! `x` and `z2` must have the same tensor type.
-      x Got tensor<i32> and tensor<f32>.
-
 # assert_vts_have_same_dtype
 
     Code

@@ -9,7 +9,8 @@
 * `==` and `!=` on a `Shape` now raise an error rather than answering. Once an
   axis size can be `NA`, "are these two shapes equal" is three questions that
   disagree exactly where it matters, and an operator cannot say which was
-  meant; the error names them and points at the helper for each.
+  meant; the error says so and points at the helper for each of the two a
+  caller can act on.
 
 * `shape()` has no `Shape` method any more, for the same reason as the first
   point: a `Shape` already *is* its integer vector, so there is nothing to
