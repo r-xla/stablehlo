@@ -118,3 +118,19 @@ test_that("errors", {
   # (C3) compare type must be FLOAT or TOTALORDER for float dtypes
   check(vt("f32", 2L), vt("f32", 2L), "EQ", "SIGNED")
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("compare: result is bool over the met shape", {
+  expect_equal(
+    inferred(function() {
+      hlo_compare(
+        dyn_input("a", "f32", N),
+        dyn_input("b", "f32", 3L),
+        comparison_direction = "LT",
+        compare_type = "FLOAT"
+      )
+    }),
+    "tensor<3xi1>"
+  )
+})

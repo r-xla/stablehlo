@@ -3,7 +3,10 @@
 \name{infer_types_dynamic_iota}
 \alias{infer_types_dynamic_iota}
 \alias{hlo_dynamic_iota}
-\title{DynamicIota Operator}
+\title{Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
+since the sizes it describes are data. Where StableHLO can constant-fold the
+size operands it will verify the claim itself and reject a wrong one
+downstream.}
 \usage{
 infer_types_dynamic_iota(output_shape, iota_dimension, dtype, shape)
 
@@ -16,10 +19,7 @@ hlo_dynamic_iota(
 )
 }
 \arguments{
-\item{output_shape}{(\code{\link{FuncValue}} | \code{\link{ValueType}})\cr
-A rank-1 integer tensor holding the result's axis sizes. This is what
-makes the op dynamic: the sizes are values in the program rather than part
-of its type.}
+\item{output_shape}{(\code{\link{FuncValue}})\cr}
 
 \item{iota_dimension}{(\code{integer(1)})\cr
 The axis along which to generate increasing values.}
@@ -32,8 +32,6 @@ The result's static shape, with \code{NA} at each axis whose size is only known
 at run time. It cannot be inferred, because \code{output_shape} is data.}
 
 \item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
-
-\item{output_shape, iota_dimension, dtype, shape}{(\code{\link{FuncValue}})\cr}
 }
 \value{
 \code{\link{FuncValue}}\cr

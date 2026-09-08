@@ -74,3 +74,42 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("while requires its body's type to equal the carried type", {
+  dyn <- vt("f32", N)
+  # A body that refines `?` to `3` looks sound -- the loop forgets it next
+  # iteration -- but SPEC (C2) requires `(T...) -> (T...)`, and `scf.while`
+  # requires the yielded type to match the region's input type.
+  expect_error(
+    infer_types_while(
+      dyn,
+      cond = fake_func(inputs = list(dyn), out = list(vt("i1", integer()))),
+      body = fake_func(out = list(vt("f32", 3L)))
+    ),
+    class = "ErrorUnequalTypes"
+  )
+  # And the other direction likewise.
+  static <- vt("f32", 3L)
+  expect_error(
+    infer_types_while(
+      static,
+      cond = fake_func(inputs = list(static), out = list(vt("i1", integer()))),
+      body = fake_func(out = list(vt("f32", N)))
+    ),
+    class = "ErrorUnequalTypes"
+  )
+  # A dynamic axis carried consistently is fine, and (C3) returns the carried
+  # type.
+  expect_equal(
+    repr(
+      infer_types_while(
+        dyn,
+        cond = fake_func(inputs = list(dyn), out = list(vt("i1", integer()))),
+        body = fake_func(out = list(vt("f32", N)))
+      )[[1L]]$type
+    ),
+    "tensor<?xf32>"
+  )
+})

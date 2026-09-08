@@ -23,12 +23,20 @@ hlo_real_dynamic_slice(
 )
 }
 \arguments{
+\item{operand}{(\code{\link{FuncValue}})\cr
+The array to slice.}
+
 \item{start_indices, limit_indices, strides}{(\code{\link{FuncValue}} | \code{\link{ValueType}})\cr
 Rank-1 integer tensors, one element per axis of \code{operand}.}
 
 \item{shape}{(\code{integer()})\cr
 The result's static shape, with \code{NA} at each axis whose size is only known
 at run time.}
+
+\item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr
+Output types known ahead of time (e.g. from type inference at trace
+time). When provided, type inference and its input validation are
+skipped.}
 }
 \value{
 \code{\link{FuncValue}}
@@ -45,4 +53,8 @@ no op with a data-dependent result extent. It is here because it is the only
 way to express one: a program that computes how much of a buffer is live --
 the count of distinct elements, of rows passing a filter -- and returns just
 that much.
+
+Note that XLA cannot compile it (\verb{can't be translated to XLA HLO}), and
+shape refinement cannot remove it either, since no shape in the program
+determines the extent. It needs a backend that compiles dynamic shapes.
 }

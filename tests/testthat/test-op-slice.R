@@ -50,3 +50,31 @@ test_that("errors", {
   # (C4) strides must be non-negative
   check(vt("f32", c(4L, 5L)), c(0L, 0L), c(2L, 3L), c(-1L, 1L))
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("slice and dynamic_slice defer their bounds against a dynamic axis", {
+  # limit 4 on an axis of unknown size: legal if the operand is long enough.
+  expect_equal(
+    inferred(function() {
+      hlo_slice(
+        dyn_input("a", "f32", N),
+        start_indices = 0L,
+        limit_indices = 4L,
+        strides = 1L
+      )
+    }),
+    "tensor<4xf32>"
+  )
+  # Known and too short: refused.
+  local_func()
+  expect_error(
+    hlo_slice(
+      dyn_input("a", "f32", 3L),
+      start_indices = 0L,
+      limit_indices = 4L,
+      strides = 1L
+    ),
+    class = "ErrorIndexOutOfBounds"
+  )
+})

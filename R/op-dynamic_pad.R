@@ -4,13 +4,6 @@ NULL
 OpDynamicPad <- new_Op("OpDynamicPad", "dynamic_pad")
 
 #' @rdname hlo_dynamic_pad
-#' @param padding_value ([`FuncValue`] | [`ValueType`])\cr
-#'   A scalar of the operand's element type, used for the padding.
-#' @param edge_padding_low,edge_padding_high,interior_padding ([`FuncValue`] |
-#'   [`ValueType`])\cr
-#'   Rank-1 integer tensors, one element per axis of `operand`. These are
-#'   values rather than attributes, which is what distinguishes this op from
-#'   [`hlo_pad()`].
 #' @param shape (`integer()`)\cr
 #'   The result's static shape, with `NA` at each axis whose size is only known
 #'   at run time. It cannot be inferred, because the paddings are data.
@@ -70,9 +63,10 @@ infer_types_dynamic_pad <- function(
     }
   }
 
-  # (C4) The result's shape is a function of the paddings, which are data, so
-  # it is taken from the hint rather than computed. Its rank is still the
-  # operand's.
+  # (C4) `shape(result)` is a function of the paddings, which are data, so it
+  # is taken from the hint rather than computed; only its rank is checkable.
+  # (C3) `0 <= interior_padding` is likewise a run-time matter -- the values
+  # are not known here.
   if (length(shape) != rank) {
     cli_abort(c(
       "The result must have the same rank as {.arg operand}.",
@@ -87,7 +81,13 @@ infer_types_dynamic_pad <- function(
 
 hlo_dynamic_pad_impl <- hlo_fn(OpDynamicPad, infer_types_dynamic_pad)
 
+#'
+#' Note that `shape` is a *claim*, not a check: nothing here can verify it,
+#' since the sizes it describes are data. Where StableHLO can constant-fold the
+#' size operands it will verify the claim itself and reject a wrong one
+#' downstream.
 #' @templateVar mnemonic dynamic_pad
+#' @templateVar not_func_variables shape
 #' @template op
 #' @export
 hlo_dynamic_pad <- function(

@@ -433,3 +433,55 @@ test_that("errors", {
     c(1L, 4L, 1L)
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("gather takes a dynamic operand, result from slice_sizes", {
+  expect_equal(
+    inferred(function() {
+      hlo_gather(
+        dyn_input("a", "f32", c(N, 3L)),
+        dyn_input("i", "i32", c(2L, 1L)),
+        gather_dimension_numbers = GatherDimensionNumbers(
+          offset_dims = 1L,
+          collapsed_slice_dims = 0L,
+          start_index_map = 0L,
+          index_vector_dim = 1L
+        ),
+        slice_sizes = c(1L, 3L)
+      )
+    }),
+    "tensor<2x3xf32>"
+  )
+})
+
+test_that("gather over a dynamic operand", {
+  skip_if_no_refine()
+  expect_refines_and_runs(
+    build = function(shapes) {
+      hlo_gather(
+        dyn_input("a", "f32", shapes[[1L]]),
+        dyn_input("i", "i32", shapes[[2L]]),
+        gather_dimension_numbers = GatherDimensionNumbers(
+          offset_dims = 1L,
+          collapsed_slice_dims = 0L,
+          start_index_map = 0L,
+          index_vector_dim = 1L
+        ),
+        slice_sizes = c(1L, 3L)
+      )
+    },
+    dyn_shapes = list(c(N, 3L), c(2L, 1L)),
+    dtype = c("f32", "i32"),
+    runs = list(
+      list(
+        shapes = list(c(4L, 3L), c(2L, 1L)),
+        args = list(1:12 + 0, c(0L, 2L))
+      ),
+      list(
+        shapes = list(c(6L, 3L), c(2L, 1L)),
+        args = list(1:18 + 0, c(1L, 4L))
+      )
+    )
+  )
+})

@@ -1,18 +1,37 @@
 #' @include op.R hlo.R op-gather.R
 NULL
 
-OpDynamicGather <- new_Op("OpDynamicGather", "dynamic_gather")
+# `dimension_numbers` is a custom attribute, which the default renderer does
+# not emit -- so this op needs a renderer of its own, exactly as `gather` does.
+render_dynamic_gather <- function(ctx) {
+  attrs_str <- paste(vapply(ctx$attrs, repr, character(1)), collapse = ", ")
+  paste0(
+    ctx$outputs_str,
+    " = \"stablehlo.dynamic_gather\"(",
+    ctx$values_str,
+    ") {\n",
+    "dimension_numbers = ",
+    repr(ctx$custom_attrs$gather_dimension_numbers),
+    ",\n",
+    attrs_str,
+    "\n}: ",
+    ctx$sig_str
+  )
+}
+
+OpDynamicGather <- new_Op(
+  "OpDynamicGather",
+  "dynamic_gather",
+  render = render_dynamic_gather
+)
 
 #' @rdname hlo_dynamic_gather
-#' @param slice_sizes ([`FuncValue`] | [`ValueType`])\cr
-#'   A rank-1 integer tensor giving the slice extents. A *value*, which is what
-#'   distinguishes this op from [`hlo_gather()`].
 #' @export
 infer_types_dynamic_gather <- function(
   operand,
   start_indices,
-  slice_sizes,
   gather_dimension_numbers,
+  slice_sizes,
   indices_are_sorted = FALSE
 ) {
   assert_vt_is_tensor(slice_sizes)
@@ -24,7 +43,7 @@ infer_types_dynamic_gather <- function(
     ))
   }
   rank <- length(shape(operand))
-  # (C8) one slice extent per axis of `operand`.
+  # (C11) `size(slice_sizes) = rank(operand)`.
   if (must_ne(declared, rank)) {
     cli_abort(c(
       "{.arg slice_sizes} must have one element per axis of {.arg operand}.",
@@ -53,6 +72,7 @@ infer_types_dynamic_gather <- function(
 hlo_dynamic_gather_impl <- hlo_fn(OpDynamicGather, infer_types_dynamic_gather)
 
 #' @templateVar mnemonic dynamic_gather
+#' @templateVar not_func_variables gather_dimension_numbers,indices_are_sorted
 #' @template op
 #' @param gather_dimension_numbers ([`GatherDimensionNumbers`])\cr
 #'   Which axes of the operand and indices play which role.
@@ -62,8 +82,8 @@ hlo_dynamic_gather_impl <- hlo_fn(OpDynamicGather, infer_types_dynamic_gather)
 hlo_dynamic_gather <- function(
   operand,
   start_indices,
-  slice_sizes,
   gather_dimension_numbers,
+  slice_sizes,
   indices_are_sorted = FALSE,
   output_types = NULL
 ) {

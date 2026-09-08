@@ -4,10 +4,6 @@ NULL
 OpDynamicIota <- new_Op("OpDynamicIota", "dynamic_iota")
 
 #' @rdname hlo_dynamic_iota
-#' @param output_shape ([`FuncValue`] | [`ValueType`])\cr
-#'   A rank-1 integer tensor holding the result's axis sizes. This is what
-#'   makes the op dynamic: the sizes are values in the program rather than part
-#'   of its type.
 #' @param shape (`integer()`)\cr
 #'   The result's static shape, with `NA` at each axis whose size is only known
 #'   at run time. It cannot be inferred, because `output_shape` is data.
@@ -60,7 +56,13 @@ infer_types_dynamic_iota <- function(
 
 hlo_dynamic_iota_impl <- hlo_fn(OpDynamicIota, infer_types_dynamic_iota)
 
+#'
+#' Note that `shape` is a *claim*, not a check: nothing here can verify it,
+#' since the sizes it describes are data. Where StableHLO can constant-fold the
+#' size operands it will verify the claim itself and reject a wrong one
+#' downstream.
 #' @templateVar mnemonic dynamic_iota
+#' @templateVar not_func_variables iota_dimension,dtype,shape
 #' @template op
 #' @param iota_dimension (`integer(1)`)\cr
 #'   The axis along which to generate increasing values.

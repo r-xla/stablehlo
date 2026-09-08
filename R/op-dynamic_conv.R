@@ -1,19 +1,44 @@
 #' @include op.R hlo.R op-convolution.R
 NULL
 
-OpDynamicConv <- new_Op("OpDynamicConv", "dynamic_conv")
+# `dimension_numbers` and `precision_config` are custom attributes, which the
+# default renderer does not emit -- so this op needs a renderer of its own,
+# exactly as `convolution` does.
+render_dynamic_conv <- function(ctx) {
+  attrs_parts <- vapply(
+    ctx$attrs,
+    function(a) repr(a, simplify_dense = TRUE),
+    character(1)
+  )
+  all_parts <- c(
+    attrs_parts,
+    paste0("dimension_numbers = ", repr(ctx$custom_attrs$dimension_numbers)),
+    paste0("precision_config = ", repr(ctx$custom_attrs$precision_config))
+  )
+  paste0(
+    ctx$outputs_str,
+    " = \"stablehlo.dynamic_conv\"(",
+    ctx$values_str,
+    ") {\n",
+    paste(all_parts, collapse = ",\n"),
+    "\n}: ",
+    ctx$sig_str
+  )
+}
+
+OpDynamicConv <- new_Op(
+  "OpDynamicConv",
+  "dynamic_conv",
+  render = render_dynamic_conv
+)
 
 #' @rdname hlo_dynamic_conv
-#' @param padding ([`FuncValue`] | [`ValueType`])\cr
-#'   A rank-2 integer tensor of shape `(n_spatial, 2)` giving the low and high
-#'   padding per spatial axis. A *value*, which is what distinguishes this op
-#'   from [`hlo_convolution()`].
 #' @export
 infer_types_dynamic_conv <- function(
   lhs,
   rhs,
-  padding,
   dimension_numbers,
+  padding,
   precision_config,
   window_strides,
   lhs_dilation,
@@ -67,6 +92,7 @@ infer_types_dynamic_conv <- function(
 hlo_dynamic_conv_impl <- hlo_fn(OpDynamicConv, infer_types_dynamic_conv)
 
 #' @templateVar mnemonic dynamic_conv
+#' @templateVar not_func_variables dimension_numbers,window_strides,lhs_dilation,rhs_dilation,window_reversal,feature_group_count,batch_group_count,precision_config
 #' @template op
 #' @param dimension_numbers ([`ConvDimensionNumbers`])\cr
 #'   Which axes of `lhs`, `rhs` and the result play which role.
@@ -80,9 +106,9 @@ hlo_dynamic_conv_impl <- hlo_fn(OpDynamicConv, infer_types_dynamic_conv)
 hlo_dynamic_conv <- function(
   lhs,
   rhs,
-  padding,
   dimension_numbers,
   window_strides,
+  padding,
   lhs_dilation = NULL,
   rhs_dilation = NULL,
   window_reversal = NULL,
@@ -93,7 +119,11 @@ hlo_dynamic_conv <- function(
 ) {
   assert_class(dimension_numbers, "ConvDimensionNumbers")
   n_spatial <- length(dimension_numbers$input_spatial_dimensions)
-  precision_config <- normalize_precision_config(precision_config)
+  # As `hlo_convolution()` does: the custom attribute must be a
+  # `PrecisionConfig`, since that is what `repr()` renders.
+  precision_config <- PrecisionConfig(
+    normalize_precision_config(precision_config)
+  )
   one_d_int <- function(name, value) {
     value <- as.integer(value)
     constant_attr(name, value, dtype = "i64", shape = length(value))

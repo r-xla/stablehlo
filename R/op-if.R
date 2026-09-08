@@ -15,44 +15,29 @@ infer_types_if <- function(pred, true_branch, false_branch) {
       x = "Got {length(out_types1)} and {length(out_types2)}."
     ))
   }
-  # Only one branch runs, so the result knows an axis only if *both* branches
-  # know it and agree -- the join, not the meet. Taking the meet here (or
-  # simply returning the true branch's types, as this did) would report an axis
-  # as `3` on the strength of one branch while the other admits any size.
-  #
-  # A dtype or rank difference is still a hard error, and so are two known but
-  # different sizes: StableHLO requires the branches to agree, and widening
-  # those to `?` would launder a program bug into a dynamic shape.
-  joined <- vector("list", length(out_types1))
+  # (C2) The branches must have the *same* type -- equality, not compatibility
+  # and not a join. It is tempting to widen a `tensor<3xf32>` branch against a
+  # `tensor<?xf32>` one to `tensor<?xf32>`, since only one branch runs; but
+  # SPEC (C2) says `output_types(true_branch) = output_types(false_branch)`
+  # and (C3) makes the result *a branch's* type, and IREE cannot lower the
+  # widened form at all: `scf.if` requires the yielded type to match the
+  # region's declared result type. A program that needs the widening must do
+  # it explicitly, inside the branch.
   for (i in seq_along(out_types1)) {
-    t1 <- out_types1[[i]]
-    t2 <- out_types2[[i]]
-    compatible <- t1$type$dtype == t2$type$dtype &&
-      length(shape(t1)) == length(shape(t2)) &&
-      !any(must_ne(shape(t1), shape(t2)))
-    if (!compatible) {
+    if (out_types1[[i]] != out_types2[[i]]) {
       error_unequal_types(
         arg1 = "output_types(true_branch)",
         arg2 = "output_types(false_branch)",
         index = i - 1L,
         expected = "must have the same type",
-        actual1 = t1,
-        actual2 = t2
+        actual1 = out_types1[[i]],
+        actual2 = out_types2[[i]]
       )
     }
-    joined[[i]] <- ValueType(
-      TensorType(
-        dtype = t1$type$dtype,
-        shape = Shape(shape_join(
-          shape(t1),
-          shape(t2),
-          arg1 = "true_branch",
-          arg2 = "false_branch"
-        ))
-      )
-    )
   }
-  ValueTypes(joined)
+
+  # (C3)
+  ValueTypes(out_types1)
 }
 
 hlo_if_impl <- hlo_fn(OpIf, infer_types_if)

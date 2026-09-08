@@ -495,3 +495,27 @@ test_that("errors", {
     )
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("scatter folds its inputs and updates", {
+  expect_equal(
+    inferred(function() {
+      hlo_scatter(
+        list(dyn_input("a", "f32", c(N, 3L))),
+        dyn_input("i", "i32", c(2L, 1L)),
+        list(dyn_input("u", "f32", c(2L, 3L))),
+        update_computation = add_region(),
+        scatter_dimension_numbers = ScatterDimensionNumbers(
+          update_window_dims = 1L,
+          inserted_window_dims = 0L,
+          scatter_dims_to_operand_dims = 0L,
+          index_vector_dim = 1L
+        ),
+        indices_are_sorted = FALSE,
+        unique_indices = FALSE
+      )
+    }),
+    "tensor<?x3xf32>"
+  )
+})

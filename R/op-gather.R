@@ -167,7 +167,7 @@ infer_types_gather <- function(
   } else {
     1L
   }
-  if (length(start_index_map) != expected_start_index_map_size) {
+  if (must_ne(expected_start_index_map_size, length(start_index_map))) {
     cli_abort(c(
       "length(start_index_map) must equal the index vector size.",
       x = "Got {length(start_index_map)}, but expected {expected_start_index_map_size}."
@@ -320,7 +320,7 @@ infer_types_gather <- function(
     batch_shape_start_indices <- start_indices_shape[
       start_indices_batching_dims + 1L
     ]
-    if (!identical(batch_shape_operand, batch_shape_start_indices)) {
+    if (any(must_ne(batch_shape_operand, batch_shape_start_indices))) {
       cli_abort(c(
         "Shape of batch dimensions of {.arg operand} and {.arg start_indices} must match.",
         x = "Got {shapevec_repr(batch_shape_operand)} and {shapevec_repr(batch_shape_start_indices)}."

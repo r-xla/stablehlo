@@ -30,32 +30,30 @@
   an operand (`broadcast_in_dim`, `reshape`, `slice`, `dynamic_slice`,
   `gather`, `get_dimension_size`, `rng_bit_generator`), and they no longer
   refuse an operand whose size they cannot check. `transpose`, `reverse`,
-  `convert`, `pad` and `reduce_window` needed no change -- they only index
-  axes or do arithmetic that `NA` already propagates through correctly.
+  `convert` and `pad` needed no change -- they only index axes or do
+  arithmetic that `NA` already propagates through correctly. `reduce_window`'s
+  arithmetic likewise, but its "all inputs share a shape" check had to be
+  folded like `reduce`'s.
 
-* Control flow reasons about dynamic axis sizes in the two directions it has
-  to, which are not the same one the elementwise ops use:
-
-  - `if` and `case` take the *join* of their branches, not the meet. Only one
-    branch runs, so a result axis is known only where every branch knows it
-    and they agree; one branch returning `tensor<3xf32>` against another's
-    `tensor<?xf32>` yields `tensor<?xf32>`. Two branches with known but
-    different sizes remain an error rather than widening to `?`.
-  - `while` requires its body's output to be *at least as refined* as the
-    declared carried type, and returns the declared type. A loop carrying
-    `tensor<?xf32>` whose body produces `tensor<3xf32>` is fine (the loop
-    forgets it again); the reverse is refused, because a body that only
-    promises `?` cannot justify a carried `tensor<3xf32>`.
+* Control flow -- `if`, `case`, `while` -- keeps requiring its branch and
+  carried types to match *exactly*, and now says so deliberately rather than
+  by omission. Widening a branch that knows an axis size against one that does
+  not is tempting, since only one branch runs; SPEC forbids it (`if` (C2),
+  `case` (C3), `while` (C2) are all equalities) and IREE cannot lower the
+  widened form at all, because it maps these to `scf.if`/`scf.while`, whose
+  yielded type must match the region's declared type. A program that needs the
+  widening has to do it explicitly, inside the branch.
 
 * The dynamic-op family is complete: every op SPEC.md documents as taking its
   sizes as *operands* rather than attributes is now available --
   `hlo_dynamic_broadcast_in_dim()`, `hlo_dynamic_iota()`,
   `hlo_dynamic_reshape()`, `hlo_dynamic_pad()`, `hlo_dynamic_gather()`,
-  `hlo_dynamic_conv()` and `hlo_get_dimension_size()`, alongside the
-  `hlo_dynamic_slice()` and `hlo_dynamic_update_slice()` that were already
-  here. Each takes a `shape` argument giving the result's static shape with
-  `NA` where a size is only known at run time, because a result whose extents
-  are data cannot be inferred.
+  `hlo_dynamic_conv()`, alongside the `hlo_dynamic_slice()` and
+  `hlo_dynamic_update_slice()` that were already here, plus
+  `hlo_get_dimension_size()` for reading an axis size as a value. Each op
+  whose *result* extents are data takes a `shape` argument giving the result's
+  static shape with `NA` where a size is only known at run time, since such a
+  result cannot be inferred; it is a claim rather than a check.
 
   `hlo_dynamic_gather()` and `hlo_dynamic_conv()` share their static
   counterpart's inference, run with the moved operand marked unknown: every

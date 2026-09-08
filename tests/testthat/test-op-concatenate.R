@@ -78,3 +78,56 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("concatenate: off-axis meets, on-axis sums to unknown", {
+  expect_equal(
+    inferred(function() {
+      hlo_concatenate(
+        dyn_input("a", "f32", c(N, 3L)),
+        dyn_input("b", "f32", c(N, 3L)),
+        dimension = 0L
+      )
+    }),
+    "tensor<?x3xf32>"
+  )
+  # A known part does not make the sum known while another part is unknown.
+  expect_equal(
+    inferred(function() {
+      hlo_concatenate(
+        dyn_input("a", "f32", c(2L, N)),
+        dyn_input("b", "f32", c(N, 4L)),
+        dimension = 0L
+      )
+    }),
+    "tensor<?x4xf32>"
+  )
+  # Off-axis sizes that cannot agree are still refused.
+  local_func()
+  expect_error(
+    hlo_concatenate(
+      dyn_input("a", "f32", c(N, 3L)),
+      dyn_input("b", "f32", c(N, 4L)),
+      dimension = 0L
+    )
+  )
+})
+
+test_that("concatenate: the refiner derives the sum we could not", {
+  skip_if_no_refine()
+  # Our inference says `?` for the concatenated axis; the refiner proves 2n.
+  # This is the case where the two disagree in strength but must not disagree
+  # in fact.
+  expect_refines_and_runs(
+    build = function(shapes) {
+      a <- dyn_input("a", "f32", shapes[[1L]])
+      hlo_concatenate(a, a, dimension = 0L)
+    },
+    dyn_shapes = list(N),
+    runs = list(
+      list(shapes = list(3L), args = list(c(1, 2, 3))),
+      list(shapes = list(6L), args = list(1:6 + 0))
+    )
+  )
+})

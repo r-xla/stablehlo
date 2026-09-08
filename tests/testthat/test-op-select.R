@@ -76,3 +76,50 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("select: meets its operands, scalar pred still exempt", {
+  expect_equal(
+    inferred(function() {
+      hlo_select(
+        dyn_input("p", "bool", N),
+        dyn_input("t", "f32", N),
+        dyn_input("f", "f32", 3L)
+      )
+    }),
+    "tensor<3xf32>"
+  )
+  expect_equal(
+    inferred(function() {
+      hlo_select(
+        hlo_input("p", "bool", shape = integer()),
+        dyn_input("t", "f32", N),
+        dyn_input("f", "f32", N)
+      )
+    }),
+    "tensor<?xf32>"
+  )
+})
+
+test_that("compare and select", {
+  skip_if_no_refine()
+  expect_refines_and_runs(
+    build = function(shapes) {
+      a <- dyn_input("a", "f32", shapes[[1L]])
+      b <- dyn_input("b", "f32", shapes[[2L]])
+      gt <- hlo_compare(
+        a,
+        b,
+        comparison_direction = "GT",
+        compare_type = "FLOAT"
+      )
+      hlo_select(gt, a, b)
+    },
+    dyn_shapes = list(N, N),
+    runs = list(
+      list(shapes = list(4L, 4L), args = list(c(1, 5, 3, 7), c(2, 2, 9, 4))),
+      list(shapes = list(2L, 2L), args = list(c(8, 1), c(3, 6)))
+    )
+  )
+})

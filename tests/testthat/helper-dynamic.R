@@ -86,31 +86,6 @@ iree_compiles <- function(src) {
   )
 }
 
-# Executing a dynamic program needs a backend that compiles one, which XLA does
-# not: it rejects a `?` entry point outright. So these tests run only against
-# the IREE plugin, pointed at by PJRT_PLUGIN_PATH_CPU. Everything above this
-# line checks *inference*; everything below checks that the types inference
-# produces survive a real compile and give right answers at run time. The
-# distinction matters -- an inferred type can be perfectly correct and the
-# backend still return the wrong numbers.
-skip_if_no_iree_runtime <- function() {
-  skip_if_not_installed("pjrt")
-  plugin <- Sys.getenv("PJRT_PLUGIN_PATH_CPU", "")
-  if (!nzchar(plugin) || !file.exists(plugin)) {
-    testthat::skip("PJRT_PLUGIN_PATH_CPU is not set to a plugin file")
-  }
-  if (!grepl("iree", basename(plugin), fixed = TRUE)) {
-    testthat::skip("PJRT_PLUGIN_PATH_CPU is not the IREE plugin")
-  }
-  # Creating the client warns once per session for each custom call pjrt tries
-  # to register, because the IREE plugin exposes no FFI extension. Expected on
-  # this backend, and nothing to do with what these tests assert -- so absorb
-  # it here, once, rather than let it surface as a warning on whichever test
-  # happens to touch the client first.
-  suppressWarnings(pjrt::pjrt_client())
-  invisible(NULL)
-}
-
 # The two-operand comparator `unique()` needs: keep-flag descending first, then
 # value ascending, so the kept values migrate to the front of the sort in the
 # order they already had. A multi-operand sort's comparator takes the operands'
@@ -187,6 +162,21 @@ iree_run <- function(src, inputs, dtype_size = 4L, what = "double") {
   readBin(out_bin, what, n = n, size = dtype_size, endian = "little")
 }
 
+# The result type of a refined program's `main`, read off its signature.
+#
+# Not a grep over the module text: the result type usually coincides with an
+# argument's or a constant's, so searching for it would pass regardless of what
+# `main` actually returns.
+refined_result_type <- function(program) {
+  # `format()` returns the module as one string with embedded newlines, not a
+  # vector of lines.
+  lines <- strsplit(paste(format(program, n = 500L), collapse = "\n"), "\n")[[
+    1L
+  ]]
+  line <- grep("func.func @main", lines, fixed = TRUE, value = TRUE)[[1L]]
+  trimws(sub("^.*\\)\\s*->\\s*(.*?)\\s*\\{?\\s*$", "\\1", line))
+}
+
 skip_if_no_refine <- function() {
   testthat::skip_if_not_installed("pjrt")
   # `pjrt_refine_shapes()` and the `stablehlo-opt` plumbing behind it are newer
@@ -249,10 +239,9 @@ expect_refines_and_runs <- function(
     src_static <- repr(hlo_return(static_out))
 
     refined <- pjrt::pjrt_refine_shapes(src_dyn, types)
-    testthat::expect_match(
-      format(refined, n = 200L),
+    testthat::expect_equal(
+      refined_result_type(refined),
       static_type,
-      fixed = TRUE,
       info = paste("refined result type for", paste(types, collapse = ", "))
     )
 

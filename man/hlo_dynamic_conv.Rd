@@ -8,8 +8,8 @@
 infer_types_dynamic_conv(
   lhs,
   rhs,
-  padding,
   dimension_numbers,
+  padding,
   precision_config,
   window_strides,
   lhs_dilation,
@@ -22,9 +22,9 @@ infer_types_dynamic_conv(
 hlo_dynamic_conv(
   lhs,
   rhs,
-  padding,
   dimension_numbers,
   window_strides,
+  padding,
   lhs_dilation = NULL,
   rhs_dilation = NULL,
   window_reversal = NULL,
@@ -35,12 +35,7 @@ hlo_dynamic_conv(
 )
 }
 \arguments{
-\item{lhs, rhs, padding, dimension_numbers, window_strides, lhs_dilation, rhs_dilation, window_reversal, feature_group_count, batch_group_count, precision_config}{(\code{\link{FuncValue}})\cr}
-
-\item{padding}{(\code{\link{FuncValue}} | \code{\link{ValueType}})\cr
-A rank-2 integer tensor of shape \verb{(n_spatial, 2)} giving the low and high
-padding per spatial axis. A \emph{value}, which is what distinguishes this op
-from \code{\link[=hlo_convolution]{hlo_convolution()}}.}
+\item{lhs, rhs, padding}{(\code{\link{FuncValue}})\cr}
 
 \item{dimension_numbers}{(\code{\link{ConvDimensionNumbers}})\cr
 Which axes of \code{lhs}, \code{rhs} and the result play which role.}

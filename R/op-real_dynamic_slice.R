@@ -80,6 +80,16 @@ hlo_real_dynamic_slice_impl <- hlo_fn(
 #' way to express one: a program that computes how much of a buffer is live --
 #' the count of distinct elements, of rows passing a filter -- and returns just
 #' that much.
+#'
+#' Note that XLA cannot compile it (`can't be translated to XLA HLO`), and
+#' shape refinement cannot remove it either, since no shape in the program
+#' determines the extent. It needs a backend that compiles dynamic shapes.
+#' @param operand ([`FuncValue`])\cr
+#'   The array to slice.
+#' @param output_types (`list()` of [`ValueType`] | `NULL`)\cr
+#'   Output types known ahead of time (e.g. from type inference at trace
+#'   time). When provided, type inference and its input validation are
+#'   skipped.
 #' @return [`FuncValue`]
 #' @export
 hlo_real_dynamic_slice <- function(

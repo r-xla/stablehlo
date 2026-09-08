@@ -8,26 +8,22 @@
 infer_types_dynamic_gather(
   operand,
   start_indices,
-  slice_sizes,
   gather_dimension_numbers,
+  slice_sizes,
   indices_are_sorted = FALSE
 )
 
 hlo_dynamic_gather(
   operand,
   start_indices,
-  slice_sizes,
   gather_dimension_numbers,
+  slice_sizes,
   indices_are_sorted = FALSE,
   output_types = NULL
 )
 }
 \arguments{
-\item{operand, start_indices, slice_sizes, gather_dimension_numbers, indices_are_sorted}{(\code{\link{FuncValue}})\cr}
-
-\item{slice_sizes}{(\code{\link{FuncValue}} | \code{\link{ValueType}})\cr
-A rank-1 integer tensor giving the slice extents. A \emph{value}, which is what
-distinguishes this op from \code{\link[=hlo_gather]{hlo_gather()}}.}
+\item{operand, start_indices, slice_sizes}{(\code{\link{FuncValue}})\cr}
 
 \item{gather_dimension_numbers}{(\code{\link{GatherDimensionNumbers}})\cr
 Which axes of the operand and indices play which role.}

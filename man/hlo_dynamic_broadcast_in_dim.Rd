@@ -3,7 +3,10 @@
 \name{infer_types_dynamic_broadcast_in_dim}
 \alias{infer_types_dynamic_broadcast_in_dim}
 \alias{hlo_dynamic_broadcast_in_dim}
-\title{DynamicBroadcastInDim Operator}
+\title{Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
+since the sizes it describes are data. Where StableHLO can constant-fold the
+size operands it will verify the claim itself and reject a wrong one
+downstream.}
 \usage{
 infer_types_dynamic_broadcast_in_dim(
   operand,
@@ -21,12 +24,10 @@ hlo_dynamic_broadcast_in_dim(
 )
 }
 \arguments{
-\item{operand, output_dimensions, broadcast_dimensions, shape}{(\code{\link{FuncValue}})\cr}
+\item{operand, output_dimensions}{(\code{\link{FuncValue}})\cr}
 
-\item{output_dimensions}{(\code{\link{FuncValue}} | \code{\link{ValueType}})\cr
-A rank-1 integer tensor holding the result's axis sizes, one element per
-axis of the result. This is what makes the op dynamic: the sizes are
-values in the program rather than part of its type.}
+\item{broadcast_dimensions}{(\code{integer()})\cr
+Maps each axis of \code{operand} to an axis of the result.}
 
 \item{shape}{(\code{integer()})\cr
 The result's static shape, with \code{NA} at each axis whose size is only known

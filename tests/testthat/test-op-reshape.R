@@ -27,3 +27,21 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("reshape defers the element-count check when either side is dynamic", {
+  # Both known and unequal: still refused.
+  local_func()
+  expect_error(
+    hlo_reshape(dyn_input("a", "f32", c(2L, 3L)), shape = c(4L, 2L)),
+    "Size of output must equal"
+  )
+  # Dynamic operand: whether the counts match is a run-time question.
+  expect_equal(
+    inferred(function() {
+      hlo_reshape(dyn_input("a", "f32", c(N, 3L)), shape = c(6L, 1L))
+    }),
+    "tensor<6x1xf32>"
+  )
+})

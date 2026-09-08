@@ -151,76 +151,23 @@ vt_meet <- function(
   ValueType(TensorType(dtype = x$type$dtype, shape = Shape(sizes)))
 }
 
-# The two relations control flow needs, and they run in opposite directions to
-# `shape_meet`. Worth being explicit about why, because reaching for the meet
-# here would be unsound in one case and merely wrong in the other.
+# There is deliberately no join, and no refinement relation, even though
+# control flow looks like it wants them.
 #
-# `vt_refines(x, y)` -- "x says at least as much as y". Same dtype, same rank,
-# and every axis y knows, x knows and agrees on; where y is `?`, x may be
-# anything. This is what a `while` body's output must satisfy against the
-# declared carried type. The asymmetry is the point: a loop that declares
-# `tensor<?xf32>` and whose body produces `tensor<3xf32>` is fine, because the
-# loop simply forgets what one iteration happened to know. The reverse -- a
-# loop declaring `tensor<3xf32>` whose body produces `tensor<?xf32>` -- is not
-# fine, because the body may produce a 4 on some iteration and the declared
-# type would be a claim we cannot back. `may_eq` would accept both.
-vt_refines <- function(x, y) {
-  a <- shape(x)
-  b <- shape(y)
-  if (x$type$dtype != y$type$dtype || length(a) != length(b)) {
-    return(FALSE)
-  }
-  # Every axis known in `b` must be known and equal in `a`.
-  known_in_b <- !is.na(b)
-  !anyNA(a[known_in_b]) && all(a[known_in_b] == b[known_in_b])
-}
-
-# `shape_join()` -- the least-refined shape both `a` and `b` refine, i.e. what
-# is still true whichever of them a value came from. An axis survives only if
-# both agree on it; otherwise it widens to `?`.
+# The reasoning that suggests them is sound as far as it goes: only one branch
+# of an `if` runs, so a result axis is known only where every branch knows it
+# and they agree -- the join, not the meet; and a `while` body may legitimately
+# produce a type more refined than the carried one, since the loop forgets the
+# extra knowledge next iteration.
 #
-# This is the *dual* of shape_meet, and `if` / `case` are where it belongs: only
-# one branch runs, so a result axis is known only when both branches know it
-# and say the same thing. Using the meet there would be plain wrong -- it would
-# report an axis as `3` on the strength of one branch alone.
-#
-# Two known-but-different sizes stay an error rather than widening to `?`:
-# StableHLO requires the branches to agree, and silently widening would turn a
-# program bug into a dynamic shape.
-shape_join <- function(
-  a,
-  b,
-  arg1 = "lhs",
-  arg2 = "rhs",
-  call = rlang::caller_env()
-) {
-  if (length(a) != length(b)) {
-    cli_abort(
-      c(
-        "{.arg {arg1}} and {.arg {arg2}} must have the same rank.",
-        x = "Got shapes {shapevec_repr(a)} and {shapevec_repr(b)}."
-      ),
-      call = call
-    )
-  }
-  if (length(a) == 0L) {
-    return(integer())
-  }
-  clash <- must_ne(a, b)
-  if (any(clash)) {
-    axis <- which(clash)[[1L]] - 1L
-    error_dim_size_mismatch(
-      arg1 = arg1,
-      arg2 = arg2,
-      dim1 = axis,
-      dim2 = axis,
-      shape1 = a,
-      shape2 = b,
-      call = call
-    )
-  }
-  ifelse(is.na(a) | is.na(b), NA_integer_, a)
-}
+# StableHLO does not permit either. SPEC requires equality: `if` (C2)
+# `output_types(true_branch) = output_types(false_branch)`, `case` (C3)
+# `same(output_types(branches...))`, `while` (C2) `body` has type
+# `(T0, ..., TN-1) -> (T0, ..., TN-1)`. And a widened result is not merely
+# unspec'd but unusable -- IREE lowers these to `scf.if`/`scf.while`, whose
+# yielded type must match the region's declared type, so it refuses the
+# program outright even though StableHLO's own verifier accepts it. A program
+# that needs the widening has to do it explicitly, inside the branch.
 
 # A shape vector that may carry dynamic axes. `assert_shapevec()` stays strict
 # at every one of its call sites: where StableHLO lets a size vary it does so

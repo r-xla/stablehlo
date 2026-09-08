@@ -69,33 +69,21 @@ infer_types_case <- function(index, ...) {
   if (!all(lengths(out_types_list) == n_out)) {
     error_branches_differ()
   }
-  infer_frame <- environment()
-  joined <- lapply(seq_len(n_out), function(k) {
-    types <- lapply(out_types_list, function(ts) ts[[k]])
-    dtype <- types[[1L]]$type$dtype
-    rank <- length(shape(types[[1L]]))
-    for (t in types) {
-      if (t$type$dtype != dtype || length(shape(t)) != rank) {
-        error_branches_differ(call = infer_frame)
+  # (C3) `same(output_types(branches...))` -- equality across every branch,
+  # not a join of them. See the note in `infer_types_if()`: widening a branch
+  # that knows a size against one that does not is both a spec violation and
+  # something IREE cannot lower.
+  for (k in seq_len(n_out)) {
+    reference <- out_types_list[[1L]][[k]]
+    for (ts in out_types_list[-1L]) {
+      if (ts[[k]] != reference) {
+        error_branches_differ()
       }
     }
-    dims <- withCallingHandlers(
-      Reduce(
-        function(acc, t) {
-          shape_join(acc, shape(t), arg1 = "branch", arg2 = "branch")
-        },
-        types[-1L],
-        init = shape(types[[1L]])
-      ),
-      ErrorDimSizeMismatch = function(cnd) {
-        error_branches_differ(call = infer_frame)
-      }
-    )
-    ValueType(TensorType(dtype = dtype, shape = Shape(dims)))
-  })
+  }
 
   # (C4)
-  ValueTypes(joined)
+  ValueTypes(out_types_list[[1L]])
 }
 
 hlo_case_impl <- hlo_fn(OpCase, infer_types_case)

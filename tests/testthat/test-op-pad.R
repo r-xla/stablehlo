@@ -94,3 +94,22 @@ test_that("errors", {
     c(0L, 0L)
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("pad and transpose carry a dynamic axis through arithmetic", {
+  # NA propagates through pad's result arithmetic, so a padded dynamic axis
+  # stays dynamic while the static one is computed.
+  expect_equal(
+    inferred(function() {
+      hlo_pad(
+        dyn_input("a", "f32", c(N, 3L)),
+        dyn_input("v", "f32", integer()),
+        edge_padding_low = c(1L, 1L),
+        edge_padding_high = c(1L, 1L),
+        interior_padding = c(0L, 0L)
+      )
+    }),
+    "tensor<?x5xf32>"
+  )
+})

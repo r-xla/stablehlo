@@ -65,3 +65,38 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("clamp accepts a dynamic bound and refines from it", {
+  expect_equal(
+    inferred(function() {
+      hlo_clamp(
+        dyn_input("lo", "f32", N),
+        dyn_input("x", "f32", 3L),
+        dyn_input("hi", "f32", N)
+      )
+    }),
+    "tensor<3xf32>"
+  )
+  # The operand is dynamic but a bound is not, so the result is static.
+  expect_equal(
+    inferred(function() {
+      hlo_clamp(
+        dyn_input("lo", "f32", 4L),
+        dyn_input("x", "f32", N),
+        dyn_input("hi", "f32", integer())
+      )
+    }),
+    "tensor<4xf32>"
+  )
+  local_func()
+  expect_error(
+    hlo_clamp(
+      dyn_input("lo", "f32", 4L),
+      dyn_input("x", "f32", 3L),
+      dyn_input("hi", "f32", integer())
+    ),
+    "same shape as"
+  )
+})

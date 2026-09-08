@@ -3,7 +3,10 @@
 \name{infer_types_dynamic_pad}
 \alias{infer_types_dynamic_pad}
 \alias{hlo_dynamic_pad}
-\title{DynamicPad Operator}
+\title{Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
+since the sizes it describes are data. Where StableHLO can constant-fold the
+size operands it will verify the claim itself and reject a wrong one
+downstream.}
 \usage{
 infer_types_dynamic_pad(
   operand,
@@ -25,16 +28,7 @@ hlo_dynamic_pad(
 )
 }
 \arguments{
-\item{operand, padding_value, edge_padding_low, edge_padding_high, interior_padding, shape}{(\code{\link{FuncValue}})\cr}
-
-\item{padding_value}{(\code{\link{FuncValue}} | \code{\link{ValueType}})\cr
-A scalar of the operand's element type, used for the padding.}
-
-\item{edge_padding_low, edge_padding_high, interior_padding}{(\code{\link{FuncValue}} |
-\code{\link{ValueType}})\cr
-Rank-1 integer tensors, one element per axis of \code{operand}. These are
-values rather than attributes, which is what distinguishes this op from
-\code{\link[=hlo_pad]{hlo_pad()}}.}
+\item{operand, padding_value, edge_padding_low, edge_padding_high, interior_padding}{(\code{\link{FuncValue}})\cr}
 
 \item{shape}{(\code{integer()})\cr
 The result's static shape, with \code{NA} at each axis whose size is only known

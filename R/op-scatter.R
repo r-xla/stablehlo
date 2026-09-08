@@ -358,7 +358,9 @@ infer_types_scatter <- function(
   } else {
     1L
   }
-  if (length(scatter_dims_to_operand_dims) != expected_scatter_dims_size) {
+  if (
+    must_ne(expected_scatter_dims_size, length(scatter_dims_to_operand_dims))
+  ) {
     cli_abort(c(
       "length(scatter_dims_to_operand_dims) must equal the index vector size.",
       x = "Got {length(scatter_dims_to_operand_dims)}, but expected {expected_scatter_dims_size}."
@@ -440,7 +442,7 @@ infer_types_scatter <- function(
 
   # (C4) - window dimensions part
   actual_window_sizes <- updates_shape[update_window_dims + 1L]
-  if (any(actual_window_sizes > update_window_dim_sizes)) {
+  if (any(must_gt(actual_window_sizes, update_window_dim_sizes))) {
     cli_abort(c(
       "update_window_dim_sizes must not exceed input dimensions.",
       # nolint next
@@ -451,7 +453,7 @@ infer_types_scatter <- function(
   # (C4) - scatter dimensions part
   if (length(update_scatter_dims) > 0L) {
     actual_scatter_sizes <- updates_shape[update_scatter_dims + 1L]
-    if (!identical(actual_scatter_sizes, update_scatter_dim_sizes)) {
+    if (any(must_ne(actual_scatter_sizes, update_scatter_dim_sizes))) {
       cli_abort(c(
         "Update scatter dimension sizes must match scatter_indices shape (excluding index_vector_dim).",
         x = "Got {vec_repr(actual_scatter_sizes)}, but expected {vec_repr(update_scatter_dim_sizes)}."
@@ -532,6 +534,6 @@ hlo_scatter <- function(
         value = as.logical(indices_are_sorted)
       ),
       BoolAttr(name = "unique_indices", value = as.logical(unique_indices))
-    ),
+    )
   )
 }

@@ -67,3 +67,51 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("if requires its branches to agree exactly", {
+  # SPEC (C2) is equality, and a widened result is one IREE cannot lower --
+  # `scf.if` requires the yielded type to match the region's declared type.
+  # So a branch that knows the axis against one that does not is an error, not
+  # a widening to `?`.
+  expect_error(
+    infer_types_if(
+      pred = vt("i1", integer()),
+      true_branch = fake_func(out = list(vt("f32", 3L))),
+      false_branch = fake_func(out = list(vt("f32", N)))
+    ),
+    class = "ErrorUnequalTypes"
+  )
+  # Two known but different sizes: also an error, as before.
+  expect_error(
+    infer_types_if(
+      pred = vt("i1", integer()),
+      true_branch = fake_func(out = list(vt("f32", 3L))),
+      false_branch = fake_func(out = list(vt("f32", 4L)))
+    ),
+    class = "ErrorUnequalTypes"
+  )
+  # Branches that agree -- on a known size, or on `?` -- give that type.
+  # (C3): the result is a branch's type, not a computed one.
+  expect_equal(
+    repr(
+      infer_types_if(
+        pred = vt("i1", integer()),
+        true_branch = fake_func(out = list(vt("f32", 3L))),
+        false_branch = fake_func(out = list(vt("f32", 3L)))
+      )[[1L]]$type
+    ),
+    "tensor<3xf32>"
+  )
+  expect_equal(
+    repr(
+      infer_types_if(
+        pred = vt("i1", integer()),
+        true_branch = fake_func(out = list(vt("f32", N))),
+        false_branch = fake_func(out = list(vt("f32", N)))
+      )[[1L]]$type
+    ),
+    "tensor<?xf32>"
+  )
+})

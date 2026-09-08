@@ -22,8 +22,8 @@ infer_types_get_dimension_size <- function(operand, dimension) {
     )
   }
 
-  # (C2) The size of an axis is always an i32 scalar, whether the axis is
-  # static or dynamic -- reading it is the only way to learn a dynamic one.
+  # The result is an i32 scalar whichever axis is read; the spec lists no
+  # constraint on it, only (C1) above.
   ValueTypes(list(
     ValueType(TensorType(dtype = as_dtype("i32"), shape = Shape(integer())))
   ))

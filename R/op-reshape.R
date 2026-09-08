@@ -11,7 +11,10 @@ infer_types_reshape <- function(
 ) {
   assert_vt_is_tensor(operand)
 
-  assert_shapevec_dyn(shape)
+  # The result shape is an attribute, so it must be static: StableHLO
+  # requires `reshape`'s result to be statically shaped. Use
+  # `hlo_dynamic_reshape()` for a result shape the program computes.
+  assert_shapevec(shape)
   result_dims <- as.integer(shape)
 
   # (C2) Element counts must agree -- but only when both are known. A dynamic

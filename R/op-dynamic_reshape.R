@@ -4,8 +4,6 @@ NULL
 OpDynamicReshape <- new_Op("OpDynamicReshape", "dynamic_reshape")
 
 #' @rdname hlo_dynamic_reshape
-#' @param output_shape ([`FuncValue`] | [`ValueType`])\cr
-#'   A rank-1 integer tensor holding the result's axis sizes.
 #' @param shape (`integer()`)\cr
 #'   The result's static shape, with `NA` at each axis whose size is only known
 #'   at run time.
@@ -53,7 +51,13 @@ hlo_dynamic_reshape_impl <- hlo_fn(
   infer_types_dynamic_reshape
 )
 
+#'
+#' Note that `shape` is a *claim*, not a check: nothing here can verify it,
+#' since the sizes it describes are data. Where StableHLO can constant-fold the
+#' size operands it will verify the claim itself and reject a wrong one
+#' downstream.
 #' @templateVar mnemonic dynamic_reshape
+#' @templateVar not_func_variables shape
 #' @template op
 #' @export
 hlo_dynamic_reshape <- function(

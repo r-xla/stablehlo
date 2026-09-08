@@ -52,14 +52,15 @@ infer_types_while <- function(..., cond, body) {
       x = "Got {length(body_out_types)} outputs and {length(value_types)} inputs."
     ))
   }
-  # The body's output must say *at least* as much as the carried type, not
-  # exactly as much. Inference refines, so a body given `tensor<?xf32>` can
-  # legitimately come back with `tensor<3xf32>` -- the loop forgets that again
-  # on the next iteration, which is sound. The reverse is not: a loop that
-  # declares `tensor<3xf32>` while its body produces `tensor<?xf32>` would be
-  # claiming a size no iteration guarantees, so `vt_refines` refuses it.
+  # (C2) The body's type must *equal* the carried type. Accepting a body that
+  # merely refines it -- `tensor<3xf32>` where the loop carries
+  # `tensor<?xf32>` -- looks sound, since the loop forgets the extra knowledge
+  # next iteration, but SPEC (C2) says `body` has type
+  # `(T0, ..., TN-1) -> (T0, ..., TN-1)` with `Ti = type(operand[i])`, and IREE
+  # cannot lower it: `scf.while` requires the yielded type to match the
+  # region's input type.
   for (i in seq_along(value_types)) {
-    if (!vt_refines(body_out_types[[i]], value_types[[i]])) {
+    if (body_out_types[[i]] != value_types[[i]]) {
       error_unequal_types(
         arg1 = "body output",
         arg2 = "input",
