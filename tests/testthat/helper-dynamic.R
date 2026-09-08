@@ -162,6 +162,37 @@ iree_run <- function(src, inputs, dtype_size = 4L, what = "double") {
   readBin(out_bin, what, n = n, size = dtype_size, endian = "little")
 }
 
+# For the dynamic-op family: build the program once, refine its argument
+# types, compile and run, and compare against an expected result.
+#
+# `expect_refines_and_runs()` cannot serve here. It builds a statically-shaped
+# twin and requires the refiner to derive the same result type -- but these ops
+# take their extents from *data*, so a static twin still has `?` in its result,
+# and the refiner, which constant-folds the size operands, arrives at a better
+# answer than inference can. The twin also does not compile on its own. So
+# there is no twin: the assertion is that refinement produces a program XLA
+# accepts, and that it computes the right thing.
+expect_dynamic_op_runs <- function(
+  build,
+  types,
+  args,
+  expected,
+  tolerance = 1e-6
+) {
+  local_func(id = "main")
+  src <- repr(hlo_return(build()))
+  testthat::expect_match(src, "?", fixed = TRUE)
+
+  refined <- pjrt::pjrt_refine_shapes(src, types)
+  exec <- pjrt::pjrt_compile(refined)
+  out <- do.call(pjrt::pjrt_execute, c(list(exec), args))
+  testthat::expect_equal(
+    as.vector(tengen::as_array(out)),
+    expected,
+    tolerance = tolerance
+  )
+}
+
 # The result type of a refined program's `main`, read off its signature.
 #
 # Not a grep over the module text: the result type usually coincides with an

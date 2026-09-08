@@ -58,19 +58,27 @@ infer_types_reduce_window <- function(
     }
   })
 
-  # (C2) Folded with `shape_meet` rather than compared against the first, as
+  # (C2) Folded with `shapes_meet()` rather than compared against the first, as
   # `reduce` does: a pairwise check is not transitive, and the fold also
-  # refines, so `ref_shape` below is the most any input knows.
+  # refines, so `ref_shape` below is the most any input knows. It must be the
+  # real fold and not a hand-rolled `ifelse` one -- that recycles instead of
+  # comparing ranks, so a rank mismatch reads as agreement.
   input_shapes <- lapply(input_value_types, function(vt) shape(vt))
-  ref_shape <- Reduce(function(a, b) ifelse(is.na(a), b, a), input_shapes)
-  if (any(vapply(input_shapes, \(d) any(must_ne(ref_shape, d)), logical(1L)))) {
-    # fmt: skip
-    shapes_str <- paste(vapply(input_shapes, shapevec_repr, character(1)), collapse = ", ") # nolint
-    cli_abort(c(
-      "All inputs to reduce_window must have the same shape.",
-      x = "Got shapes: {shapes_str}."
-    ))
-  }
+  infer_frame <- environment()
+  ref_shape <- withCallingHandlers(
+    shapes_meet(input_shapes, arg = "inputs"),
+    ErrorStablehlo = function(cnd) {
+      # fmt: skip
+      shapes_str <- paste(vapply(input_shapes, shapevec_repr, character(1)), collapse = ", ") # nolint
+      cli_abort(
+        c(
+          "All inputs to reduce_window must have the same shape.",
+          x = "Got shapes: {shapes_str}."
+        ),
+        call = infer_frame
+      )
+    }
+  )
 
   # (C3) Each input must have the same dtype as its corresponding init_value
   for (i in seq_len(num_inputs)) {

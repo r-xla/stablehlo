@@ -25,11 +25,12 @@
   tensor<3xf32>)` used to be an error and now infers `tensor<3xf32>`.
 
   Every op that can take a dynamic operand now does. Of the 85 that can be
-  driven with one, 78 carry a `?` through; the other 7 have a statically
-  determined result because their extents come from an attribute rather than
-  an operand (`broadcast_in_dim`, `reshape`, `slice`, `dynamic_slice`,
-  `gather`, `get_dimension_size`, `rng_bit_generator`), and they no longer
-  refuse an operand whose size they cannot check. `transpose`, `reverse`,
+  driven with one, 78 carry a `?` through; the rest have a result whose
+  extents come from an attribute rather than an operand
+  (`broadcast_in_dim`, `reshape`, `slice`, `dynamic_slice`,
+  `get_dimension_size`, and the offset axes of `gather` and the second result
+  of `rng_bit_generator`), and they no longer refuse an operand whose size
+  they cannot check. `transpose`, `reverse`,
   `convert` and `pad` needed no change -- they only index axes or do
   arithmetic that `NA` already propagates through correctly. `reduce_window`'s
   arithmetic likewise, but its "all inputs share a shape" check had to be
@@ -59,6 +60,14 @@
   counterpart's inference, run with the moved operand marked unknown: every
   check that does not depend on it still fires, the ones that do defer, and
   the result comes back with `?` exactly on the axes that operand determines.
+
+  A caveat on the whole family: most of these ops cannot be lowered by a
+  backend directly. `iree-compile` refuses all but `dynamic_reshape` and
+  `real_dynamic_slice` when their size operands are not constants, and XLA
+  refuses a `?` entry point outright. The supported route is to refine the
+  program back to concrete shapes with `pjrt::pjrt_refine_shapes()`, which
+  folds the dynamic op away; that is what the tests do, and it works for every
+  op in the family.
 
 * Added `hlo_real_dynamic_slice()`, which is in the StableHLO dialect but not
   in SPEC.md. It is the only op that gives a result extent computed from the

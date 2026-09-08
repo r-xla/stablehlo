@@ -113,7 +113,18 @@ shape_meet <- function(
 # result shape.
 shapes_meet <- function(shapes, arg = "inputs", call = rlang::caller_env()) {
   Reduce(
-    function(acc, s) shape_meet(acc, s, arg1 = arg, arg2 = arg, call = call),
+    function(acc, s) {
+      if (length(acc) != length(s)) {
+        cli_abort(
+          c(
+            "All {.arg {arg}} must have the same rank.",
+            x = "Got shapes {shapevec_repr(acc)} and {shapevec_repr(s)}."
+          ),
+          call = call
+        )
+      }
+      shape_meet(acc, s, arg1 = arg, arg2 = arg, call = call)
+    },
     shapes
   )
 }

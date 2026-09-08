@@ -519,3 +519,48 @@ test_that("scatter folds its inputs and updates", {
     "tensor<?x3xf32>"
   )
 })
+
+test_that("scatter defers the checks it cannot decide", {
+  reg <- function() {
+    f <- local_func(id = "")
+    l <- hlo_input("l", "f32", shape = integer())
+    r <- hlo_input("r", "f32", shape = integer())
+    hlo_return(hlo_add(l, r))
+    f
+  }
+  dn <- ScatterDimensionNumbers(
+    update_window_dims = 1L,
+    inserted_window_dims = 0L,
+    scatter_dims_to_operand_dims = 0L,
+    index_vector_dim = 1L
+  )
+  scat <- function(operand, indices, updates) {
+    local_func()
+    hlo_scatter(
+      list(dyn_input("a", "f32", operand)),
+      dyn_input("i", "i32", indices),
+      list(dyn_input("u", "f32", updates)),
+      update_computation = reg(),
+      scatter_dimension_numbers = dn,
+      indices_are_sorted = FALSE,
+      unique_indices = FALSE
+    )
+  }
+  # (C19) reads an axis of `scatter_indices`; dynamic means run time.
+  expect_equal(
+    repr(scat(c(4L, 3L), c(2L, N), c(2L, 3L))$value_type$type),
+    "tensor<4x3xf32>"
+  )
+  # (C4) window part compares two shape-derived vectors.
+  expect_equal(
+    repr(scat(c(3L, N), c(2L, 1L), c(2L, 3L))$value_type$type),
+    "tensor<3x?xf32>"
+  )
+  # (C4) scatter part: `?` may be the expected size at run time.
+  expect_equal(
+    repr(scat(c(4L, 3L), c(2L, 1L), c(N, 3L))$value_type$type),
+    "tensor<4x3xf32>"
+  )
+  # A definitely-wrong update window is still refused.
+  expect_error(scat(c(4L, 3L), c(2L, 1L), c(2L, 9L)))
+})

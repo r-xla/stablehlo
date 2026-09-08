@@ -46,3 +46,23 @@ test_that("dynamic_iota", {
     "one element per axis"
   )
 })
+
+test_that("dynamic_iota refines, compiles and runs", {
+  skip_if_no_refine()
+  expect_dynamic_op_runs(
+    build = function() {
+      a <- dyn_input("a", "f32", N)
+      size <- hlo_reshape(hlo_get_dimension_size(a, dimension = 0L), shape = 1L)
+      iota <- hlo_dynamic_iota(
+        size,
+        iota_dimension = 0L,
+        dtype = "f32",
+        shape = N
+      )
+      hlo_add(a, iota)
+    },
+    types = "tensor<4xf32>",
+    args = list(pjrt::pjrt_buffer(rep(10, 4), dtype = "f32")),
+    expected = c(10, 11, 12, 13)
+  )
+})

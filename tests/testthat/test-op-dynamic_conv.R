@@ -96,3 +96,45 @@ test_that("dynamic_conv", {
     "divisible"
   )
 })
+
+test_that("dynamic_conv refines, compiles and runs", {
+  skip_if_no_refine()
+  # A 1x1x2 kernel of ones over a 2x1x4 input: each output is the sum of an
+  # adjacent pair along the spatial axis.
+  x <- array(1:8 + 0, dim = c(2L, 1L, 4L))
+  expect_dynamic_op_runs(
+    build = function() {
+      hlo_dynamic_conv(
+        dyn_input("a", "f32", c(N, 1L, 4L)),
+        dyn_input("k", "f32", c(1L, 1L, 2L)),
+        dimension_numbers = ConvDimensionNumbers(
+          0L,
+          1L,
+          2L,
+          1L,
+          0L,
+          2L,
+          0L,
+          1L,
+          2L
+        ),
+        window_strides = 1L,
+        padding = hlo_tensor(
+          matrix(0L, 1L, 2L),
+          dtype = "i32",
+          shape = c(1L, 2L)
+        )
+      )
+    },
+    types = c("tensor<2x1x4xf32>", "tensor<1x1x2xf32>"),
+    args = list(
+      pjrt::pjrt_buffer(x, dtype = "f32"),
+      pjrt::pjrt_buffer(array(c(1, 1), dim = c(1L, 1L, 2L)), dtype = "f32")
+    ),
+    expected = as.vector(vapply(
+      seq_len(3L),
+      function(j) x[, 1L, j] + x[, 1L, j + 1L],
+      numeric(2L)
+    ))
+  )
+})

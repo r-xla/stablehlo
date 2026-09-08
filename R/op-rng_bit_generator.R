@@ -70,6 +70,9 @@ infer_types_rng_bit_generator <- function(
     out_dtype,
     c("int", "uint", "float")
   )
+  # Static: the result shape is an attribute, and StableHLO requires this
+  # op's output to be statically shaped. There is no dynamic variant.
+  assert_shapevec(shape)
   out_shape <- as.integer(shape)
 
   # (C1)

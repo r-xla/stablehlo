@@ -100,8 +100,15 @@ infer_types_triangular_solve <- function(
     )
   }
 
-  # (C3)
-  a_size <- a_dims[rank_a]
+  # (C3) `a`'s two trailing axes were just required to be equal, so meet them:
+  # with `a = tensor<3x?xf32>` the square size is provably 3, and reading
+  # `a_dims[rank_a]` alone would report `?` and defer a decidable check.
+  a_size <- shape_meet(
+    a_dims[rank_a - 1L],
+    a_dims[rank_a],
+    arg1 = "a",
+    arg2 = "a"
+  )
   b_axis <- if (left_side) rank_b - 1L else rank_b
   if (must_ne(a_size, b_dims[b_axis])) {
     cli_abort(c(

@@ -164,7 +164,9 @@ hlo_empty <- function(dtype, shape, func = NULL) {
     integer()
   }
 
-  if (!any(shape == 0L)) {
+  # `may_eq` rather than `==`: an axis of unknown size may be 0, and `if (NA)`
+  # is an error rather than an answer.
+  if (!any(may_eq(shape, 0L))) {
     cli_abort("Shape must contain at least one 0-dimension")
   }
 

@@ -485,3 +485,48 @@ test_that("gather over a dynamic operand", {
     )
   )
 })
+
+test_that("gather defers the checks it cannot decide", {
+  dn <- GatherDimensionNumbers(
+    offset_dims = 1L,
+    collapsed_slice_dims = 0L,
+    start_index_map = 0L,
+    index_vector_dim = 1L
+  )
+  # (C3) reads an axis of `start_indices`; dynamic means run time.
+  local_func()
+  expect_equal(
+    repr(
+      hlo_gather(
+        dyn_input("a", "f32", c(4L, 3L)),
+        dyn_input("i", "i32", c(2L, N)),
+        gather_dimension_numbers = dn,
+        slice_sizes = c(1L, 3L)
+      )$value_type$type
+    ),
+    "tensor<2x3xf32>"
+  )
+  # (C12) `slice_sizes <= shape(operand)` against a dynamic axis.
+  local_func()
+  expect_equal(
+    repr(
+      hlo_gather(
+        dyn_input("a", "f32", c(N, 3L)),
+        dyn_input("i", "i32", c(2L, 1L)),
+        gather_dimension_numbers = dn,
+        slice_sizes = c(1L, 3L)
+      )$value_type$type
+    ),
+    "tensor<2x3xf32>"
+  )
+  # A slice that certainly overruns a known axis is still refused.
+  local_func()
+  expect_error(
+    hlo_gather(
+      dyn_input("a", "f32", c(4L, 3L)),
+      dyn_input("i", "i32", c(2L, 1L)),
+      gather_dimension_numbers = dn,
+      slice_sizes = c(1L, 9L)
+    )
+  )
+})

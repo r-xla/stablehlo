@@ -41,3 +41,25 @@ test_that("dynamic_pad", {
     "same data type"
   )
 })
+
+test_that("dynamic_pad refines, compiles and runs", {
+  skip_if_no_refine()
+  expect_dynamic_op_runs(
+    build = function() {
+      a <- dyn_input("a", "f32", N)
+      one <- hlo_tensor(1L, dtype = "i32", shape = 1L)
+      zero <- hlo_tensor(0L, dtype = "i32", shape = 1L)
+      hlo_dynamic_pad(
+        a,
+        hlo_scalar(0, dtype = "f32"),
+        one,
+        one,
+        zero,
+        shape = 5L
+      )
+    },
+    types = "tensor<3xf32>",
+    args = list(pjrt::pjrt_buffer(c(1, 2, 3), dtype = "f32")),
+    expected = c(0, 1, 2, 3, 0)
+  )
+})

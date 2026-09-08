@@ -32,7 +32,7 @@ infer_types_dynamic_gather <- function(
   start_indices,
   gather_dimension_numbers,
   slice_sizes,
-  indices_are_sorted = FALSE
+  indices_are_sorted
 ) {
   assert_vt_is_tensor(slice_sizes)
   declared <- shape(slice_sizes)

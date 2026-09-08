@@ -69,3 +69,37 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("case requires its branches to agree exactly", {
+  # SPEC (C3) is `same(output_types(branches...))`, and a widened result is one
+  # IREE cannot lower -- see the note in `infer_types_if()`.
+  expect_error(
+    infer_types_case(
+      index = vt("i32", integer()),
+      fake_func(out = list(vt("f32", 3L))),
+      fake_func(out = list(vt("f32", N)))
+    ),
+    "same output types"
+  )
+  expect_error(
+    infer_types_case(
+      index = vt("i32", integer()),
+      fake_func(out = list(vt("f32", 3L))),
+      fake_func(out = list(vt("f32", 4L)))
+    ),
+    "same output types"
+  )
+  # (C4): the result is branch 0's type.
+  expect_equal(
+    repr(
+      infer_types_case(
+        index = vt("i32", integer()),
+        fake_func(out = list(vt("f32", N))),
+        fake_func(out = list(vt("f32", N)))
+      )[[1L]]$type
+    ),
+    "tensor<?xf32>"
+  )
+})

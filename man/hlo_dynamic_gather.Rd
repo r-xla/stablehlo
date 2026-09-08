@@ -10,7 +10,7 @@ infer_types_dynamic_gather(
   start_indices,
   gather_dimension_numbers,
   slice_sizes,
-  indices_are_sorted = FALSE
+  indices_are_sorted
 )
 
 hlo_dynamic_gather(
