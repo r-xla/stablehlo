@@ -47,10 +47,29 @@
     forgets it again); the reverse is refused, because a body that only
     promises `?` cannot justify a carried `tensor<3xf32>`.
 
-* Added `hlo_get_dimension_size()` and `hlo_dynamic_broadcast_in_dim()`, the
-  two ops a program needs to broadcast to a shape it only learns at run time.
-  `Shape()` and `TensorType()` already accepted `NA` for a dynamic axis size;
-  these make one usable.
+* The dynamic-op family is complete: every op SPEC.md documents as taking its
+  sizes as *operands* rather than attributes is now available --
+  `hlo_dynamic_broadcast_in_dim()`, `hlo_dynamic_iota()`,
+  `hlo_dynamic_reshape()`, `hlo_dynamic_pad()`, `hlo_dynamic_gather()`,
+  `hlo_dynamic_conv()` and `hlo_get_dimension_size()`, alongside the
+  `hlo_dynamic_slice()` and `hlo_dynamic_update_slice()` that were already
+  here. Each takes a `shape` argument giving the result's static shape with
+  `NA` where a size is only known at run time, because a result whose extents
+  are data cannot be inferred.
+
+  `hlo_dynamic_gather()` and `hlo_dynamic_conv()` share their static
+  counterpart's inference, run with the moved operand marked unknown: every
+  check that does not depend on it still fires, the ones that do defer, and
+  the result comes back with `?` exactly on the axes that operand determines.
+
+* Added `hlo_real_dynamic_slice()`, which is in the StableHLO dialect but not
+  in SPEC.md. It is the only op that gives a result extent computed from the
+  *data* rather than from a shape, which is what a program needs to return
+  just the live part of a buffer -- the distinct elements of a vector, the rows
+  passing a filter. Note that XLA cannot compile it at all ("can't be
+  translated to XLA HLO"), and shape refinement cannot remove it, since no
+  shape in the program determines the extent; it needs a backend that compiles
+  dynamic shapes natively.
 
 * Dynamic programs are checked two ways, because each catches what the other
   cannot. One compiles the dynamic program directly and runs it at several

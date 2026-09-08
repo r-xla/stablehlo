@@ -240,7 +240,7 @@ infer_types_gather <- function(
   # (C9)
   if (length(collapsed_slice_dims)) {
     collapsed_sizes <- slice_sizes_vec[collapsed_slice_dims + 1L]
-    if (any(collapsed_sizes > 1L)) {
+    if (any(must_gt(collapsed_sizes, 1L))) {
       # fmt: skip
       cli_abort(c(
         "slice_sizes[collapsed_slice_dims...] must be <= 1.",
@@ -270,7 +270,7 @@ infer_types_gather <- function(
   # (C12)
   if (length(operand_batching_dims)) {
     batching_sizes <- slice_sizes_vec[operand_batching_dims + 1L]
-    if (any(batching_sizes > 1L)) {
+    if (any(must_gt(batching_sizes, 1L))) {
       cli_abort(c(
         "slice_sizes[operand_batching_dims...] must be <= 1.",
         x = "Got slice_sizes at operand_batching_dims: {vec_repr(batching_sizes)}."
@@ -362,7 +362,8 @@ infer_types_gather <- function(
   # a run-time question. slice_sizes reaches the result, so a dynamic operand
   # still gives a static result along those axes.
   if (
-    any(slice_sizes_vec < 0L) || any(must_gt(slice_sizes_vec, operand_shape))
+    any(must_gt(0L, slice_sizes_vec)) ||
+      any(must_gt(slice_sizes_vec, operand_shape))
   ) {
     cli_abort(c(
       "0 <= slice_sizes <= shape(operand).",

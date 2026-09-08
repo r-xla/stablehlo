@@ -79,7 +79,11 @@ iree_compiles <- function(src) {
     stderr = TRUE
   ))
   status <- attr(out, "status")
-  list(ok = is.null(status) || status == 0L, log = paste(out, collapse = "\n"))
+  list(
+    ok = is.null(status) || status == 0L,
+    log = paste(out, collapse = "\n"),
+    vmfb = file.path(dir, "m.vmfb")
+  )
 }
 
 # Executing a dynamic program needs a backend that compiles one, which XLA does
@@ -105,6 +109,82 @@ skip_if_no_iree_runtime <- function() {
   # happens to touch the client first.
   suppressWarnings(pjrt::pjrt_client())
   invisible(NULL)
+}
+
+# The two-operand comparator `unique()` needs: keep-flag descending first, then
+# value ascending, so the kept values migrate to the front of the sort in the
+# order they already had. A multi-operand sort's comparator takes the operands'
+# left halves first, then their right halves.
+keep_desc_value_asc_region <- function() {
+  f <- local_func(id = "")
+  kl <- hlo_input("kl", "i32", shape = integer())
+  kr <- hlo_input("kr", "i32", shape = integer())
+  vl <- hlo_input("vl", "f32", shape = integer())
+  vr <- hlo_input("vr", "f32", shape = integer())
+  gt <- hlo_compare(
+    kl,
+    kr,
+    comparison_direction = "GT",
+    compare_type = "SIGNED"
+  )
+  eq <- hlo_compare(
+    kl,
+    kr,
+    comparison_direction = "EQ",
+    compare_type = "SIGNED"
+  )
+  lt <- hlo_compare(vl, vr, comparison_direction = "LT", compare_type = "FLOAT")
+  hlo_return(hlo_or(gt, hlo_and(eq, lt)))
+  f
+}
+
+# Compile and *run* a program with IREE's command line tools, returning the
+# result as a numeric vector.
+#
+# This exists for one case the refine-and-run route structurally cannot cover:
+# an extent that comes from the data rather than from a shape.
+# `pjrt_refine_shapes()` pins the argument types, but nothing in the program
+# determines such an extent, so the `?` survives refinement -- and XLA then
+# refuses the op outright ("can't be translated to XLA HLO"). A backend that
+# compiles dynamic shapes natively is the only way to execute it.
+#
+# `inputs` are the `NxTxdtype=v` operand strings iree-run-module takes.
+iree_run <- function(src, inputs, dtype_size = 4L, what = "double") {
+  dir <- tempfile("shlo-run-")
+  dir.create(dir)
+  mlir <- file.path(dir, "m.mlir")
+  vmfb <- file.path(dir, "m.vmfb")
+  out_bin <- file.path(dir, "out.bin")
+  writeLines(src, mlir)
+  comp <- iree_compiles(src)
+  if (!comp$ok) {
+    testthat::fail(paste("iree-compile failed:", comp$log))
+  }
+  file.copy(comp$vmfb, vmfb)
+  res <- suppressWarnings(system2(
+    "iree-run-module",
+    c(
+      sprintf("--module=%s", shQuote(vmfb)),
+      "--function=main",
+      # shQuote: system2() pastes its arguments into a shell command without
+      # quoting, so an operand written `8xf32=1 2 3` would be split into
+      # `--input=8xf32=1` -- a splat of 1 -- plus stray positional arguments,
+      # and the program would silently run on the wrong data.
+      sprintf("--input=%s", shQuote(inputs)),
+      sprintf("--output=@%s", out_bin)
+    ),
+    stdout = TRUE,
+    stderr = TRUE
+  ))
+  status <- attr(res, "status")
+  if (!is.null(status) && status != 0L) {
+    testthat::fail(paste(
+      "iree-run-module failed:",
+      paste(res, collapse = "\n")
+    ))
+  }
+  n <- file.size(out_bin) / dtype_size
+  readBin(out_bin, what, n = n, size = dtype_size, endian = "little")
 }
 
 skip_if_no_refine <- function() {
