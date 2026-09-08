@@ -6,10 +6,31 @@
   constraint over an `NA` axis size is refused only when it is *certainly*
   violated and left to the runtime otherwise, and where one operand knows a
   size the other does not, the known size wins: `add(tensor<?xf32>,
-  tensor<3xf32>)` used to be an error and now infers `tensor<3xf32>`. Applied
-  to the elementwise and comparison ops, `select`, `reduce` and `concatenate`.
+  tensor<3xf32>)` used to be an error and now infers `tensor<3xf32>`.
   Type *identity* is deliberately unchanged -- `tensor<?xf32>` still does not
   equal `tensor<3xf32>` -- so buffer aliasing stays sound.
+
+  Applied to the elementwise and comparison ops, `select`, `reduce`,
+  `concatenate`, `reshape`, `broadcast_in_dim`, `clamp`, `sort`, `cholesky`,
+  `triangular_solve`, `slice`, `dynamic_slice`, `dynamic_update_slice`,
+  `dot_general`, `gather`, `scatter`, `convolution`, `top_k`,
+  `bitcast_convert` and `iota`. `transpose`, `reverse`, `convert`, `pad` and
+  `reduce_window` needed no change -- they only index axes or do arithmetic
+  that `NA` already propagates through correctly.
+
+* Control flow reasons about dynamic axis sizes in the two directions it has
+  to, which are not the same one the elementwise ops use:
+
+  - `if` and `case` take the *join* of their branches, not the meet. Only one
+    branch runs, so a result axis is known only where every branch knows it
+    and they agree; one branch returning `tensor<3xf32>` against another's
+    `tensor<?xf32>` yields `tensor<?xf32>`. Two branches with known but
+    different sizes remain an error rather than widening to `?`.
+  - `while` requires its body's output to be *at least as refined* as the
+    declared carried type, and returns the declared type. A loop carrying
+    `tensor<?xf32>` whose body produces `tensor<3xf32>` is fine (the loop
+    forgets it again); the reverse is refused, because a body that only
+    promises `?` cannot justify a carried `tensor<3xf32>`.
 * Added `hlo_get_dimension_size()` and `hlo_dynamic_broadcast_in_dim()`, the
   two ops a program needs to broadcast to a shape it only learns at run time.
   `Shape()` and `TensorType()` already accepted `NA` for a dynamic axis size;

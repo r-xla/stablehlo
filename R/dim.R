@@ -34,12 +34,34 @@ may <- function(x) is.na(x) | x
 # decision that is unsound unless a relation provably holds.
 must <- function(x) !is.na(x) & x
 
-# The equality and ordering predicates the checks need today. The rest of the
-# family (`may_ne`, `may_lt`, ...) is `may()` composed with the operator and is
-# a line each; they arrive with the ops that need them rather than sitting here
-# unused.
+# The relations in use, each `may()` or `must()` composed with an operator.
+# Only the ones with a call site live here: the rest of the family is a line
+# each and arrives with the op that needs it, so that reading this file tells
+# you which questions the inference functions actually ask.
+#
+# `must_ne` is the workhorse. Anything that reads "if these sizes differ, that
+# is an error" becomes `must_ne`, never `!may_eq`: the two are not complements,
+# because for `?` against `3` both "may be equal" and "may differ" are true.
 may_eq <- function(a, b) may(a == b)
 may_ge <- function(a, b) may(a >= b)
+must_eq <- function(a, b) must(a == b)
+must_ne <- function(a, b) must(a != b)
+must_gt <- function(a, b) must(a > b)
+
+# Element counts, for the ops that relate a shape to a *total size* rather than
+# axis by axis (reshape).
+#
+# `prod()` over a vector containing `NA` is already `NA`, which is the right
+# answer -- the count is unknown -- so the only thing needed is the comparison
+# discipline below: two counts are certainly unequal only when both are known
+# and they differ. A dynamic axis on either side defers the check to the
+# runtime.
+#
+# The empty shape is a scalar, whose element count is 1 (`prod(integer())`),
+# which is what reshape between `tensor<1xf32>` and `tensor<f32>` relies on.
+dim_nelts <- function(dims) prod(dims)
+
+must_nelts_ne <- function(a, b) must(dim_nelts(a) != dim_nelts(b))
 
 # The most-refined dimension vector consistent with both `a` and `b`, or an
 # error if no vector is. `?` meets a known size to that size, which is how a
@@ -127,6 +149,77 @@ vt_meet <- function(
   }
   dims <- if (length(a) == 0L) integer() else ifelse(is.na(a), b, a)
   ValueType(TensorType(dtype = x$type$dtype, shape = Shape(dims)))
+}
+
+# The two relations control flow needs, and they run in opposite directions to
+# `dim_meet`. Worth being explicit about why, because reaching for the meet
+# here would be unsound in one case and merely wrong in the other.
+#
+# `vt_refines(x, y)` -- "x says at least as much as y". Same dtype, same rank,
+# and every axis y knows, x knows and agrees on; where y is `?`, x may be
+# anything. This is what a `while` body's output must satisfy against the
+# declared carried type. The asymmetry is the point: a loop that declares
+# `tensor<?xf32>` and whose body produces `tensor<3xf32>` is fine, because the
+# loop simply forgets what one iteration happened to know. The reverse -- a
+# loop declaring `tensor<3xf32>` whose body produces `tensor<?xf32>` -- is not
+# fine, because the body may produce a 4 on some iteration and the declared
+# type would be a claim we cannot back. `may_eq` would accept both.
+vt_refines <- function(x, y) {
+  a <- shape(x)
+  b <- shape(y)
+  if (x$type$dtype != y$type$dtype || length(a) != length(b)) {
+    return(FALSE)
+  }
+  # Every axis known in `b` must be known and equal in `a`.
+  known_in_b <- !is.na(b)
+  !anyNA(a[known_in_b]) && all(a[known_in_b] == b[known_in_b])
+}
+
+# `dim_join()` -- the least-refined vector both `a` and `b` refine, i.e. what
+# is still true whichever of them a value came from. An axis survives only if
+# both agree on it; otherwise it widens to `?`.
+#
+# This is the *dual* of dim_meet, and `if` / `case` are where it belongs: only
+# one branch runs, so a result axis is known only when both branches know it
+# and say the same thing. Using the meet there would be plain wrong -- it would
+# report an axis as `3` on the strength of one branch alone.
+#
+# Two known-but-different sizes stay an error rather than widening to `?`:
+# StableHLO requires the branches to agree, and silently widening would turn a
+# program bug into a dynamic shape.
+dim_join <- function(
+  a,
+  b,
+  arg1 = "lhs",
+  arg2 = "rhs",
+  call = rlang::caller_env()
+) {
+  if (length(a) != length(b)) {
+    cli_abort(
+      c(
+        "{.arg {arg1}} and {.arg {arg2}} must have the same rank.",
+        x = "Got shapes {shapevec_repr(a)} and {shapevec_repr(b)}."
+      ),
+      call = call
+    )
+  }
+  if (length(a) == 0L) {
+    return(integer())
+  }
+  clash <- must_ne(a, b)
+  if (any(clash)) {
+    axis <- which(clash)[[1L]] - 1L
+    error_dim_size_mismatch(
+      arg1 = arg1,
+      arg2 = arg2,
+      dim1 = axis,
+      dim2 = axis,
+      shape1 = a,
+      shape2 = b,
+      call = call
+    )
+  }
+  ifelse(is.na(a) | is.na(b), NA_integer_, a)
 }
 
 # A shape vector that may carry dynamic axes. `assert_shapevec()` stays strict

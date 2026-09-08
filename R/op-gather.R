@@ -356,7 +356,14 @@ infer_types_gather <- function(
   }
 
   # (C21)
-  if (any(slice_sizes_vec < 0L) || any(slice_sizes_vec > operand_shape)) {
+  # slice_sizes must be non-negative and fit inside the operand. The lower
+  # bound is on slice_sizes alone (always static), so it is checked as before;
+  # the upper bound compares against the operand, where a dynamic axis makes it
+  # a run-time question. slice_sizes reaches the result, so a dynamic operand
+  # still gives a static result along those axes.
+  if (
+    any(slice_sizes_vec < 0L) || any(must_gt(slice_sizes_vec, operand_shape))
+  ) {
     cli_abort(c(
       "0 <= slice_sizes <= shape(operand).",
       x = "Got slice_sizes = {vec_repr(slice_sizes_vec)}, but operand shape is {shapevec_repr(operand_shape)}."

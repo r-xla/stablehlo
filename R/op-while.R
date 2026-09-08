@@ -52,8 +52,14 @@ infer_types_while <- function(..., cond, body) {
       x = "Got {length(body_out_types)} outputs and {length(value_types)} inputs."
     ))
   }
+  # The body's output must say *at least* as much as the carried type, not
+  # exactly as much. Inference refines, so a body given `tensor<?xf32>` can
+  # legitimately come back with `tensor<3xf32>` -- the loop forgets that again
+  # on the next iteration, which is sound. The reverse is not: a loop that
+  # declares `tensor<3xf32>` while its body produces `tensor<?xf32>` would be
+  # claiming a size no iteration guarantees, so `vt_refines` refuses it.
   for (i in seq_along(value_types)) {
-    if (body_out_types[[i]] != value_types[[i]]) {
+    if (!vt_refines(body_out_types[[i]], value_types[[i]])) {
       error_unequal_types(
         arg1 = "body output",
         arg2 = "input",
@@ -65,7 +71,9 @@ infer_types_while <- function(..., cond, body) {
     }
   }
 
-  # (C3)
+  # (C3) The declared carried types, never the body's refinement of them: what
+  # comes out of the loop is what goes around it, and after zero iterations
+  # that is the input.
   ValueTypes(value_types)
 }
 

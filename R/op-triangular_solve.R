@@ -69,8 +69,9 @@ infer_types_triangular_solve <- function(
     ))
   }
 
-  # (C3)
-  if (a_dims[rank_a] != a_dims[rank_a - 1]) {
+  # (C3) Square only when it is certainly not: a dynamic trailing axis may
+  # match at run time.
+  if (must_ne(a_dims[rank_a], a_dims[rank_a - 1L])) {
     cli_abort(c(
       "{.arg a} must be a square matrix (last two dimensions must be equal)",
       x = "Got shape {shapevec_repr(a_dims)}."
@@ -80,23 +81,39 @@ infer_types_triangular_solve <- function(
   if (rank_a > 2) {
     a_batch <- a_dims[seq_len(rank_a - 2)]
     b_batch <- b_dims[seq_len(rank_b - 2)]
-    if (!identical(a_batch, b_batch)) {
+    # Batch axes agree; each refines the other, so `batch` below is the most
+    # the two operands together know and is what the result carries.
+    if (any(must_ne(a_batch, b_batch))) {
       cli_abort(c(
         "Batch dimensions of {.arg a} and {.arg b} must match",
         x = "Got shapes {shapevec_repr(a_batch)} and {shapevec_repr(b_batch)}."
       ))
     }
+    b_dims[seq_len(rank_b - 2)] <- dim_meet(
+      a_batch,
+      b_batch,
+      arg1 = "a",
+      arg2 = "b"
+    )
   }
 
   # (C3)
   a_size <- a_dims[rank_a]
-  b_relevant_dim <- if (left_side) b_dims[rank_b - 1] else b_dims[rank_b]
-  if (a_size != b_relevant_dim) {
+  b_axis <- if (left_side) rank_b - 1L else rank_b
+  if (must_ne(a_size, b_dims[b_axis])) {
     cli_abort(c(
       "Dimension mismatch",
       x = "Got shapes {shapevec_repr(a_dims)} and {shapevec_repr(b_dims)}."
     ))
   }
+  # `a`'s square size and this axis of `b` are equal, so a dynamic one on
+  # either side is pinned by the other.
+  b_dims[b_axis] <- dim_meet(
+    a_size,
+    b_dims[b_axis],
+    arg1 = "a",
+    arg2 = "b"
+  )
 
   valid_transpose <- c("NO_TRANSPOSE", "TRANSPOSE", "ADJOINT")
   if (!test_choice(transpose_a, valid_transpose)) {

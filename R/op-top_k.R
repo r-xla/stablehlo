@@ -32,7 +32,10 @@ infer_types_top_k <- function(operand, k) {
     ))
   }
   last_dim <- operand_shape[[rank]]
-  if (k > last_dim) {
+  # `k` must fit along the last axis. Against a dynamic axis that is a run-time
+  # question -- and note the result's last axis is `k`, a known value, so the
+  # result stays static either way.
+  if (must_gt(k, last_dim)) {
     cli_abort(c(
       "{.arg k} must not exceed the size of the last dimension of {.arg operand}.",
       x = "Got k = {.val {k}} and last dimension size {.val {last_dim}}."

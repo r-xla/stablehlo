@@ -44,15 +44,20 @@ infer_types_rng_bit_generator <- function(
   # Validate algorithm-specific state size constraints
   algo <- as.character(rng_algorithm)
   state_size <- init_shape[[1L]]
+  # Each of these is refused only when the state size is known and wrong. Note
+  # the PHILOX check is not written with `%in%`: that never returns `NA`
+  # (`NA %in% c(2L, 3L)` is `FALSE`), so a dynamic state size would be
+  # *rejected* rather than deferred -- the one place in this file where R's
+  # own NA handling points the wrong way.
   if (algo == "THREE_FRY") {
-    if (state_size != 2L) {
+    if (must_ne(state_size, 2L)) {
       cli_abort(c(
         "THREE_FRY requires length(initial_state) = 2",
         x = "Got {.val {state_size}}."
       ))
     }
   } else if (algo == "PHILOX") {
-    if (!(state_size %in% c(2L, 3L))) {
+    if (must_ne(state_size, 2L) && must_ne(state_size, 3L)) {
       cli_abort(c(
         "PHILOX requires length(initial_state) to be 2 or 3",
         x = "Got {.val {state_size}}."

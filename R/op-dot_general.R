@@ -238,8 +238,11 @@ infer_types_dot_general <- function(
   dim_batch1 <- dim_lhs[lhs_batching + 1L]
   dim_batch2 <- dim_rhs[rhs_batching + 1L]
 
-  # (C10)
-  if (!identical(dim_merge1, dim_merge2)) {
+  # (C10) The contracted axes must have matching sizes. `identical()` would
+  # reject a dynamic axis against a known one; only a pair that is known on
+  # both sides can be certainly wrong. The sizes do not reach the result --
+  # contracting removes them -- so nothing needs refining here.
+  if (any(must_ne(dim_merge1, dim_merge2))) {
     error_dot_general_dim_mismatch(
       arg = "contracting_dims",
       shape_lhs = dim_lhs,
@@ -248,8 +251,10 @@ infer_types_dot_general <- function(
     )
   }
 
-  # (C9)
-  if (!identical(dim_batch1, dim_batch2)) {
+  # (C9) Batching axes likewise -- but these *do* reach the result, so they are
+  # met rather than merely checked: batching a dynamic axis against a known one
+  # gives a known batch size in the output.
+  if (any(must_ne(dim_batch1, dim_batch2))) {
     error_dot_general_dim_mismatch(
       arg = "batching_dims",
       shape_lhs = dim_lhs,
@@ -257,6 +262,7 @@ infer_types_dot_general <- function(
       dims = batching_dims
     )
   }
+  dim_batch <- dim_meet(dim_batch1, dim_batch2, arg1 = "lhs", arg2 = "rhs")
 
   ii1 <- c(lhs_contracting, lhs_batching)
   dim_lhs_remaining <- if (length(ii1)) {
@@ -271,7 +277,7 @@ infer_types_dot_general <- function(
     dim_rhs
   }
   # C12
-  out_dim <- c(dim_batch1, dim_lhs_remaining, dim_rhs_remaining)
+  out_dim <- c(dim_batch, dim_lhs_remaining, dim_rhs_remaining)
 
   ValueTypes(list(
     ValueType(TensorType(dtype = lhs$type$dtype, shape = Shape(out_dim)))

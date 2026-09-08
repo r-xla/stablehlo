@@ -467,18 +467,25 @@ infer_types_convolution <- function(
     lhs_size <- lhs_shape[lhs_dim + 1L]
     rhs_size <- rhs_shape[rhs_dim + 1L]
 
-    dilated_input <- if (lhs_size == 0L) {
+    # Each of these is `NA` as soon as its input axis is, and `NA` is the
+    # honest answer: the window count along a spatial axis of unknown size is
+    # unknown. The `if`s therefore have to be written so that an `NA` operand
+    # falls through to the arithmetic (which propagates it) rather than being
+    # branched on -- `if (NA == 0L)` is an error, not a FALSE.
+    dilated_input <- if (must_eq(lhs_size, 0L)) {
       0L
     } else {
       (lhs_size - 1L) * lhs_dil[sd] + 1L
     }
     padded_input <- pad[sd, 1L] + dilated_input + pad[sd, 2L]
-    dilated_window <- if (rhs_size == 0L) {
+    dilated_window <- if (must_eq(rhs_size, 0L)) {
       0L
     } else {
       (rhs_size - 1L) * rhs_dil[sd] + 1L
     }
-    num_windows <- if (padded_input == 0L || dilated_window > padded_input) {
+    num_windows <- if (
+      must_eq(padded_input, 0L) || must_gt(dilated_window, padded_input)
+    ) {
       0L
     } else {
       as.integer(floor((padded_input - dilated_window) / strides[sd]) + 1L)

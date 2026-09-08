@@ -181,17 +181,32 @@ infer_types_scatter <- function(
     ))
   }
 
-  # (C3)
-  for (i in seq_along(updates)[-1L]) {
-    if (!identical(shape(updates[[i]]), updates_shape)) {
-      # fmt: skip
-      shapes_str <- vapply(updates, function(u) shapevec_repr(shape(u)), character(1))
-      cli_abort(c(
+  # (C3) All updates share a shape. Folded with `dim_meet` rather than compared
+  # against the first: `may_eq` is not transitive, so a pairwise check would
+  # accept `(3, ?, 4)`. The fold also refines, so `updates_shape` below is the
+  # most any update knows.
+  update_shapes <- lapply(updates, shape)
+  error_updates_differ <- function(call = rlang::caller_env()) {
+    # fmt: skip
+    shapes_str <- vapply(updates, function(u) shapevec_repr(shape(u)), character(1))
+    cli_abort(
+      c(
         "All updates must have the same shape.",
         x = "Got shapes: {shapes_str}."
-      ))
-    }
+      ),
+      call = call
+    )
   }
+  if (!all(lengths(update_shapes) == length(updates_shape))) {
+    error_updates_differ()
+  }
+  infer_frame <- environment()
+  updates_shape <- withCallingHandlers(
+    shapes_meet(update_shapes, arg = "updates"),
+    ErrorDimSizeMismatch = function(cnd) {
+      error_updates_differ(call = infer_frame)
+    }
+  )
 
   # (C6)
   for (i in seq_len(num_inputs)) {

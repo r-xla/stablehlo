@@ -5,6 +5,7 @@ NULL
 #' @export
 infer_types_iota <- function(iota_dimension, dtype, shape) {
   assert_const(iota_dimension, dtype = "i64", shape = c())
+  assert_shapevec_dyn(shape)
   shape <- as.integer(shape)
 
   iota_dim <- as.integer(iota_dimension$data)

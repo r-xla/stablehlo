@@ -47,10 +47,15 @@ infer_types_broadcast_in_dim <- function(
 
   # (C5) For all d in axes(operand):
   #   shape(operand, d) = 1 OR shape(operand, d) = shape(result, broadcast_dimensions[d])
+  #
+  # Refused only when both readings are certainly false: the axis is known not
+  # to match *and* known not to be 1. A dynamic operand axis could be either at
+  # run time -- `tensor<?xf32>` broadcast to `tensor<4xf32>` is a stretch if it
+  # holds 1 and a pass-through if it holds 4 -- so it is left to the runtime.
   for (d in seq_along(bdims)) {
     op_dim <- operand_dims[d]
     out_dim <- result_dims[bdims[d] + 1L]
-    if ((op_dim != out_dim) && op_dim != 1L) {
+    if (must_ne(op_dim, out_dim) && must_ne(op_dim, 1L)) {
       error_dim_size_mismatch(
         arg1 = "operand",
         arg2 = "result",
