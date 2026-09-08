@@ -188,20 +188,36 @@ infer_types_gather <- function(
     )
   }
 
-  # (C17) makes the batch sizes equal, so meet them and let the refined sizes
-  # reach the result -- `batch_dim_sizes` below reads `start_indices_shape`,
-  # which is why this cannot wait until (C17)'s own check further down.
+  # (C17) makes the batch sizes equal, so check them here and meet them, which
+  # lets the refined sizes reach the result -- `batch_dim_sizes` below reads
+  # `start_indices_shape`, so this cannot wait for (C17)'s position further
+  # down.
   #
-  # Guarded on equal lengths: (C16) reports a count mismatch in its own words
-  # later, and without this guard `shape_meet()`'s rank abort would get there
-  # first and report the batch *projection* -- shapes the caller never passed.
-  if (
-    length(operand_batching_dims) &&
-      length(operand_batching_dims) == length(start_indices_batching_dims)
-  ) {
+  # Skipped unless the batching dims are equal in count and in range, so that
+  # (C11), (C13), (C14) and (C16) still report their own failures rather than
+  # being shadowed by an error about the batch *projection* -- shapes the
+  # caller never passed.
+  batch_dims_usable <- length(operand_batching_dims) > 0L &&
+    length(operand_batching_dims) == length(start_indices_batching_dims) &&
+    all(operand_batching_dims >= 0L & operand_batching_dims < operand_rank) &&
+    all(
+      start_indices_batching_dims >= 0L &
+        start_indices_batching_dims < start_indices_rank
+    )
+  if (batch_dims_usable) {
+    batch_shape_operand <- operand_shape[operand_batching_dims + 1L]
+    batch_shape_start_indices <- start_indices_shape[
+      start_indices_batching_dims + 1L
+    ]
+    if (any(must_ne(batch_shape_operand, batch_shape_start_indices))) {
+      cli_abort(c(
+        "Shape of batch dimensions of {.arg operand} and {.arg start_indices} must match.",
+        x = "Got {shapevec_repr(batch_shape_operand)} and {shapevec_repr(batch_shape_start_indices)}."
+      ))
+    }
     refined_batch <- shape_meet(
-      operand_shape[operand_batching_dims + 1L],
-      start_indices_shape[start_indices_batching_dims + 1L],
+      batch_shape_operand,
+      batch_shape_start_indices,
       arg1 = "operand",
       arg2 = "start_indices"
     )
@@ -333,22 +349,6 @@ infer_types_gather <- function(
       "length(operand_batching_dims) must equal length(start_indices_batching_dims).",
       x = "Got {length(operand_batching_dims)} and {length(start_indices_batching_dims)}."
     ))
-  }
-
-  # (C17)
-  if (length(operand_batching_dims)) {
-    batch_shape_operand <- operand_shape[operand_batching_dims + 1L]
-    batch_shape_start_indices <- start_indices_shape[
-      start_indices_batching_dims + 1L
-    ]
-    # Meeting rather than only checking: (C17) makes these equal, so a
-    # dynamic axis on one side takes the size the other knows.
-    if (any(must_ne(batch_shape_operand, batch_shape_start_indices))) {
-      cli_abort(c(
-        "Shape of batch dimensions of {.arg operand} and {.arg start_indices} must match.",
-        x = "Got {shapevec_repr(batch_shape_operand)} and {shapevec_repr(batch_shape_start_indices)}."
-      ))
-    }
   }
 
   # (C18)

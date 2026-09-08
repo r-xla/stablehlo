@@ -42,7 +42,21 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   # The fold validates and refines in one pass, so a dynamic input meeting a
   # static one gives the static result shape.
   input_shapes <- lapply(input_value_types, function(vt) shape(vt))
-  ref_shape <- shapes_meet(input_shapes, arg = "inputs")
+  infer_frame <- environment()
+  ref_shape <- withCallingHandlers(
+    shapes_meet(input_shapes, arg = "inputs"),
+    ErrorDimSizeMismatch = function(cnd) {
+      # fmt: skip
+      shapes_str <- paste(vapply(input_shapes, shapevec_repr, character(1)), collapse = ", ") # nolint
+      cli_abort(
+        c(
+          "All inputs to reduce must have the same shape.",
+          x = "Got shapes: {shapes_str}."
+        ),
+        call = infer_frame
+      )
+    }
+  )
 
   # (C2)
   for (i in seq_len(num_inputs)) {

@@ -42,7 +42,6 @@ must <- function(x) !is.na(x) & x
 # `must_ne` is the workhorse. Anything that reads "if these sizes differ, that
 # is an error" becomes `must_ne`, never `!may_eq`: the two are not complements,
 # because for `?` against `3` both "may be equal" and "may differ" are true.
-may_eq <- function(a, b) may(a == b)
 may_ge <- function(a, b) may(a >= b)
 must_eq <- function(a, b) must(a == b)
 must_ne <- function(a, b) must(a != b)

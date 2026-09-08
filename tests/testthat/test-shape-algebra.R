@@ -15,7 +15,7 @@ test_that("the truth table", {
   )
   for (row in tbl) {
     info <- sprintf("a=%s b=%s", row[[1L]], row[[2L]])
-    expect_equal(may_eq(row[[1L]], row[[2L]]), row[[3L]], info = info)
+    expect_equal(may(row[[1L]] == row[[2L]]), row[[3L]], info = info)
     expect_equal(may_ge(row[[1L]], row[[2L]]), row[[4L]], info = info)
     expect_equal(must_eq(row[[1L]], row[[2L]]), row[[5L]], info = info)
   }
@@ -25,9 +25,9 @@ test_that("must_ne is not the complement of may_eq", {
   # The distinction the whole design rests on: for `?` against `3`, both "may
   # be equal" and "may differ" are true, so a check that reads "if these
   # differ, error" must use must_ne, never !may_eq.
-  expect_true(may_eq(N, 3L))
+  expect_true(may(N == 3L))
   expect_false(must_ne(N, 3L))
-  expect_false(may_eq(3L, 4L))
+  expect_false(may(3L == 4L))
   expect_true(must_ne(3L, 4L))
   expect_false(must_ne(3L, 3L))
   expect_false(must_ne(N, N))

@@ -47,16 +47,30 @@ infer_types_clamp <- function(min, operand, max) {
 
   # (C4) The result takes the most refined shape the three operands agree on,
   # so a dynamic operand clamped by static bounds yields a static result.
+  #
+  # `check_bound()` above compares each bound to the operand, which leaves the
+  # bounds themselves unchecked against each other: with a dynamic operand,
+  # `min` of 3 and `max` of 5 pass both checks and only clash here. Reported
+  # in clamp's own words rather than `shape_meet()`'s, whose message would name
+  # an argument clamp does not have.
   result_shape <- operand_shape
-  for (bound_shape in list(min_shape, max_shape)) {
-    if (length(bound_shape) != 0L) {
-      result_shape <- shape_meet(
-        result_shape,
-        bound_shape,
-        arg1 = "operand",
-        arg2 = "bound"
-      )
+  for (nm in c("min", "max")) {
+    bound_shape <- if (identical(nm, "min")) min_shape else max_shape
+    if (length(bound_shape) == 0L) {
+      next
     }
+    if (any(must_ne(result_shape, bound_shape))) {
+      cli_abort(c(
+        "{.arg min}, {.arg max} and {.arg operand} must have the same shape.",
+        x = "Got {shapevec_repr(operand_shape)}, {shapevec_repr(min_shape)} and {shapevec_repr(max_shape)}."
+      ))
+    }
+    result_shape <- shape_meet(
+      result_shape,
+      bound_shape,
+      arg1 = "operand",
+      arg2 = nm
+    )
   }
 
   ValueTypes(list(

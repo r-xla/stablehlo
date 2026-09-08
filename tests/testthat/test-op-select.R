@@ -125,29 +125,43 @@ test_that("compare and select", {
 })
 
 test_that("select emits parseable MLIR when its operands' shapes differ", {
+  skip_if_no_iree_compile()
   # Inference *meets* the operands, so `on_true`, `on_false` and the result
   # need not share a type -- and the short assembly form names only two of
   # them. Emitting it then produces MLIR that does not parse, which no
   # assertion on the inferred type string would catch.
-  skip_if_not_installed("pjrt")
-  combos <- list(
-    list(p = N, t = N, f = 3L),
-    list(p = N, t = 3L, f = N),
-    list(p = 3L, t = N, f = N),
-    list(p = N, t = N, f = N),
-    list(p = 3L, t = 3L, f = 3L)
-  )
-  for (cb in combos) {
-    local_func(id = "main")
-    src <- repr(hlo_return(hlo_select(
-      dyn_input("p", "pred", cb$p),
-      dyn_input("t", "f32", cb$t),
-      dyn_input("q", "f32", cb$f)
-    )))
-    expect_no_error(
-      pjrt::pjrt_program(src),
-      message = paste("pred", cb$p, "on_true", cb$t, "on_false", cb$f)
-    )
+  #
+  # The oracle has to be a compiler. `pjrt::pjrt_program()` validates nothing
+  # -- it accepts the literal string "this is not mlir" -- so a test built on
+  # it would pass with the bug restored.
+  sizes <- c(N, 3L)
+  for (p_shape in sizes) {
+    for (t_shape in sizes) {
+      for (f_shape in sizes) {
+        local_func(id = "main")
+        src <- repr(hlo_return(hlo_select(
+          dyn_input("p", "pred", p_shape),
+          dyn_input("t", "f32", t_shape),
+          dyn_input("q", "f32", f_shape)
+        )))
+        res <- iree_compiles(src)
+        expect_true(
+          res$ok,
+          info = paste0(
+            "pred=",
+            p_shape,
+            " on_true=",
+            t_shape,
+            " on_false=",
+            f_shape,
+            "\n",
+            src,
+            "\n",
+            res$log
+          )
+        )
+      }
+    }
   }
 })
 
