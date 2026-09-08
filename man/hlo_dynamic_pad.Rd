@@ -3,10 +3,7 @@
 \name{infer_types_dynamic_pad}
 \alias{infer_types_dynamic_pad}
 \alias{hlo_dynamic_pad}
-\title{Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
-since the sizes it describes are data. Where StableHLO can constant-fold the
-size operands it will verify the claim itself and reject a wrong one
-downstream.}
+\title{DynamicPad Operator}
 \usage{
 infer_types_dynamic_pad(
   operand,
@@ -41,4 +38,10 @@ at run time. It cannot be inferred, because the paddings are data.}
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#dynamic_pad} for details.
+}
+\details{
+Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
+since the sizes it describes are data. Where StableHLO can constant-fold the
+size operands it will verify the claim itself and reject a wrong one
+downstream.
 }

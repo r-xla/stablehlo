@@ -177,6 +177,7 @@ expect_dynamic_op_runs <- function(
   types,
   args,
   expected,
+  refined_type,
   tolerance = 1e-6
 ) {
   local_func(id = "main")
@@ -184,6 +185,10 @@ expect_dynamic_op_runs <- function(
   testthat::expect_match(src, "?", fixed = TRUE)
 
   refined <- pjrt::pjrt_refine_shapes(src, types)
+  # `as_array()` below drops `dim`, so the result *shape* needs an assertion
+  # of its own -- otherwise an op returning the right numbers in the wrong
+  # shape would pass.
+  testthat::expect_equal(refined_result_type(refined), refined_type)
   exec <- pjrt::pjrt_compile(refined)
   out <- do.call(pjrt::pjrt_execute, c(list(exec), args))
   testthat::expect_equal(

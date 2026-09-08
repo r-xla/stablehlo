@@ -61,13 +61,16 @@
   check that does not depend on it still fires, the ones that do defer, and
   the result comes back with `?` exactly on the axes that operand determines.
 
-  A caveat on the whole family: most of these ops cannot be lowered by a
-  backend directly. `iree-compile` refuses all but `dynamic_reshape` and
-  `real_dynamic_slice` when their size operands are not constants, and XLA
-  refuses a `?` entry point outright. The supported route is to refine the
-  program back to concrete shapes with `pjrt::pjrt_refine_shapes()`, which
-  folds the dynamic op away; that is what the tests do, and it works for every
-  op in the family.
+  A caveat on the whole family: whether a backend can lower one of these
+  directly, with its size operands left non-constant, varies by op. IREE
+  compiles and runs `dynamic_broadcast_in_dim`, `dynamic_iota` and
+  `real_dynamic_slice`, and refuses `dynamic_reshape`, `dynamic_pad`,
+  `dynamic_gather` and `dynamic_conv`; XLA refuses a `?` entry point outright.
+  The route that works for every op is to refine the program back to concrete
+  shapes with `pjrt::pjrt_refine_shapes()`, which folds the dynamic op away --
+  that is what the tests do. `real_dynamic_slice` is the exception in the
+  other direction: its extent comes from data, so refinement cannot remove it
+  and only a backend that compiles dynamic shapes will run it.
 
 * Added `hlo_real_dynamic_slice()`, which is in the StableHLO dialect but not
   in SPEC.md. It is the only op that gives a result extent computed from the

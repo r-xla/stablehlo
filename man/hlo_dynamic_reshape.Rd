@@ -3,10 +3,7 @@
 \name{infer_types_dynamic_reshape}
 \alias{infer_types_dynamic_reshape}
 \alias{hlo_dynamic_reshape}
-\title{Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
-since the sizes it describes are data. Where StableHLO can constant-fold the
-size operands it will verify the claim itself and reject a wrong one
-downstream.}
+\title{DynamicReshape Operator}
 \usage{
 infer_types_dynamic_reshape(operand, output_shape, shape)
 
@@ -26,4 +23,10 @@ at run time.}
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#dynamic_reshape} for details.
+}
+\details{
+Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
+since the sizes it describes are data. Where StableHLO can constant-fold the
+size operands it will verify the claim itself and reject a wrong one
+downstream.
 }

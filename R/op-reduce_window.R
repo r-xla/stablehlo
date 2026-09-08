@@ -67,7 +67,7 @@ infer_types_reduce_window <- function(
   infer_frame <- environment()
   ref_shape <- withCallingHandlers(
     shapes_meet(input_shapes, arg = "inputs"),
-    ErrorStablehlo = function(cnd) {
+    ErrorDimSizeMismatch = function(cnd) {
       # fmt: skip
       shapes_str <- paste(vapply(input_shapes, shapevec_repr, character(1)), collapse = ", ") # nolint
       cli_abort(

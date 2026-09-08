@@ -40,13 +40,6 @@ infer_types_case <- function(index, ...) {
     get_branch_out_types(branches[[i]], i - 1L)
   })
 
-  # (C3) `unique()` compares the types structurally, which is too strict once a
-  # size can be dynamic: one branch returning `tensor<?xf32>` where another
-  # returns `tensor<3xf32>` is a legal `case`, and its result is `?`. So the
-  # branches only have to be *compatible*, and the result is the join of them
-  # all -- an axis is known only where every branch knows it and they agree.
-  # Folding the join is what makes that transitive; comparing each branch
-  # against the first would not be.
   error_branches_differ <- function(call = rlang::caller_env()) {
     # nolint next
     branch_types <- vapply(

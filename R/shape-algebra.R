@@ -115,11 +115,18 @@ shapes_meet <- function(shapes, arg = "inputs", call = rlang::caller_env()) {
   Reduce(
     function(acc, s) {
       if (length(acc) != length(s)) {
-        cli_abort(
-          c(
-            "All {.arg {arg}} must have the same rank.",
-            x = "Got shapes {shapevec_repr(acc)} and {shapevec_repr(s)}."
-          ),
+        # `error_dim_size_mismatch()` rather than a plain `cli_abort()`: the
+        # ops that fold with this catch `ErrorDimSizeMismatch` to restate the
+        # failure in their own words, and a rank mismatch is exactly the case
+        # they most need to restate -- the shapes reaching here may be a
+        # projection of the operands (concatenate folds the off-axis sizes).
+        error_dim_size_mismatch(
+          arg1 = arg,
+          arg2 = arg,
+          dim1 = 0L,
+          dim2 = 0L,
+          shape1 = acc,
+          shape2 = s,
           call = call
         )
       }

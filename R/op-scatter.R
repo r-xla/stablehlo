@@ -163,15 +163,19 @@ infer_types_scatter <- function(
   # so the checks that follow, and the result type, get the most any input
   # knows.
   input_shapes <- lapply(inputs, shape)
+  c1_frame <- environment()
   input_shape <- withCallingHandlers(
     shapes_meet(input_shapes, arg = "inputs"),
     ErrorDimSizeMismatch = function(e) {
       # fmt: skip
       shapes_str <- paste(vapply(inputs, function(x) shapevec_repr(shape(x)), character(1)), collapse = ", ") # nolint
-      cli_abort(c(
-        "All inputs must have the same shape.",
-        x = "Got shapes: {shapes_str}."
-      ))
+      cli_abort(
+        c(
+          "All inputs must have the same shape.",
+          x = "Got shapes: {shapes_str}."
+        ),
+        call = c1_frame
+      )
     }
   )
 
@@ -345,11 +349,23 @@ infer_types_scatter <- function(
   batch_shape_scatter <- scatter_indices_shape[
     scatter_indices_batching_dims + 1L
   ]
+  # As gather's (C17): meeting rather than only checking, so a dynamic axis on
+  # one side takes the size the other knows.
   if (any(must_ne(batch_shape_inputs, batch_shape_scatter))) {
-    cli_abort(
+    cli_abort(c(
       "Shape of batch dimensions of {.arg inputs} and {.arg scatter_indices} must match.",
       x = "Got {shapevec_repr(batch_shape_inputs)} and {shapevec_repr(batch_shape_scatter)}."
+    ))
+  }
+  if (length(input_batching_dims)) {
+    refined_batch <- shape_meet(
+      batch_shape_inputs,
+      batch_shape_scatter,
+      arg1 = "inputs",
+      arg2 = "scatter_indices"
     )
+    input_shape[input_batching_dims + 1L] <- refined_batch
+    scatter_indices_shape[scatter_indices_batching_dims + 1L] <- refined_batch
   }
 
   # (C19)

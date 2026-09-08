@@ -56,14 +56,14 @@ infer_types_dynamic_iota <- function(
 
 hlo_dynamic_iota_impl <- hlo_fn(OpDynamicIota, infer_types_dynamic_iota)
 
-#'
+#' @templateVar mnemonic dynamic_iota
+#' @templateVar not_func_variables iota_dimension,dtype,shape
+#' @template op
+#' @details
 #' Note that `shape` is a *claim*, not a check: nothing here can verify it,
 #' since the sizes it describes are data. Where StableHLO can constant-fold the
 #' size operands it will verify the claim itself and reject a wrong one
 #' downstream.
-#' @templateVar mnemonic dynamic_iota
-#' @templateVar not_func_variables iota_dimension,dtype,shape
-#' @template op
 #' @param iota_dimension (`integer(1)`)\cr
 #'   The axis along which to generate increasing values.
 #' @param dtype (`character(1)`)\cr

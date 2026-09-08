@@ -189,6 +189,17 @@ infer_types_gather <- function(
   }
 
   # Compute result rank for C5
+  if (length(operand_batching_dims)) {
+    refined_batch <- shape_meet(
+      operand_shape[operand_batching_dims + 1L],
+      start_indices_shape[start_indices_batching_dims + 1L],
+      arg1 = "operand",
+      arg2 = "start_indices"
+    )
+    operand_shape[operand_batching_dims + 1L] <- refined_batch
+    start_indices_shape[start_indices_batching_dims + 1L] <- refined_batch
+  }
+
   batch_dim_sizes <- if (index_vector_dim == start_indices_rank) {
     start_indices_shape
   } else {
@@ -320,6 +331,8 @@ infer_types_gather <- function(
     batch_shape_start_indices <- start_indices_shape[
       start_indices_batching_dims + 1L
     ]
+    # Meeting rather than only checking: (C17) makes these equal, so a
+    # dynamic axis on one side takes the size the other knows.
     if (any(must_ne(batch_shape_operand, batch_shape_start_indices))) {
       cli_abort(c(
         "Shape of batch dimensions of {.arg operand} and {.arg start_indices} must match.",

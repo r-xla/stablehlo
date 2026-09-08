@@ -3,10 +3,7 @@
 \name{infer_types_dynamic_broadcast_in_dim}
 \alias{infer_types_dynamic_broadcast_in_dim}
 \alias{hlo_dynamic_broadcast_in_dim}
-\title{Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
-since the sizes it describes are data. Where StableHLO can constant-fold the
-size operands it will verify the claim itself and reject a wrong one
-downstream.}
+\title{DynamicBroadcastInDim Operator}
 \usage{
 infer_types_dynamic_broadcast_in_dim(
   operand,
@@ -41,4 +38,10 @@ at run time. It cannot be inferred from the operands, because
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#dynamic_broadcast_in_dim} for details.
+}
+\details{
+Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
+since the sizes it describes are data. Where StableHLO can constant-fold the
+size operands it will verify the claim itself and reject a wrong one
+downstream.
 }

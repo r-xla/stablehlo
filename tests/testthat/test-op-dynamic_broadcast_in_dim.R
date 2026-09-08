@@ -55,3 +55,24 @@ test_that("broadcast_dimensions is checked", {
     )
   )
 })
+
+test_that("dynamic_broadcast_in_dim refines, compiles and runs", {
+  skip_if_no_refine()
+  expect_dynamic_op_runs(
+    build = function() {
+      a <- dyn_input("a", "f32", N)
+      size <- hlo_reshape(hlo_get_dimension_size(a, dimension = 0L), shape = 1L)
+      two <- hlo_dynamic_broadcast_in_dim(
+        hlo_scalar(2, dtype = "f32"),
+        size,
+        broadcast_dimensions = integer(),
+        shape = N
+      )
+      hlo_multiply(a, two)
+    },
+    types = "tensor<4xf32>",
+    args = list(pjrt::pjrt_buffer(c(1, 2, 3, 4), dtype = "f32")),
+    refined_type = "tensor<4xf32>",
+    expected = c(2, 4, 6, 8)
+  )
+})

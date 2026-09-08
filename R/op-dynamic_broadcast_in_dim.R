@@ -102,14 +102,14 @@ hlo_dynamic_broadcast_in_dim_impl <- hlo_fn(
   infer_types_dynamic_broadcast_in_dim
 )
 
-#'
+#' @templateVar mnemonic dynamic_broadcast_in_dim
+#' @templateVar not_func_variables broadcast_dimensions,shape
+#' @template op
+#' @details
 #' Note that `shape` is a *claim*, not a check: nothing here can verify it,
 #' since the sizes it describes are data. Where StableHLO can constant-fold the
 #' size operands it will verify the claim itself and reject a wrong one
 #' downstream.
-#' @templateVar mnemonic dynamic_broadcast_in_dim
-#' @templateVar not_func_variables broadcast_dimensions,shape
-#' @template op
 #' @export
 hlo_dynamic_broadcast_in_dim <- function(
   operand,

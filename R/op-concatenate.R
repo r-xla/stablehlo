@@ -97,7 +97,7 @@ infer_types_concatenate <- function(..., dimension) {
   infer_frame <- environment()
   off_axis <- withCallingHandlers(
     shapes_meet(dims_no_concat, arg = "inputs"),
-    ErrorStablehlo = function(cnd) {
+    ErrorDimSizeMismatch = function(cnd) {
       error_concatenate_shapes(
         dimensions = dimension,
         shapes = lapply(input_dims, Shape),

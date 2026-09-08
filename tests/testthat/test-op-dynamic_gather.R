@@ -77,6 +77,7 @@ test_that("dynamic_gather refines, compiles and runs", {
       pjrt::pjrt_buffer(matrix(1:12 + 0, nrow = 4L), dtype = "f32"),
       pjrt::pjrt_buffer(matrix(c(0L, 2L), ncol = 1L), dtype = "i32")
     ),
+    refined_type = "tensor<2x3xf32>",
     expected = as.vector(matrix(1:12 + 0, nrow = 4L)[c(1L, 3L), ])
   )
 })

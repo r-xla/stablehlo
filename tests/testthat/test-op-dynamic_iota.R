@@ -63,6 +63,7 @@ test_that("dynamic_iota refines, compiles and runs", {
     },
     types = "tensor<4xf32>",
     args = list(pjrt::pjrt_buffer(rep(10, 4), dtype = "f32")),
+    refined_type = "tensor<4xf32>",
     expected = c(10, 11, 12, 13)
   )
 })

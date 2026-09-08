@@ -3,10 +3,7 @@
 \name{infer_types_dynamic_iota}
 \alias{infer_types_dynamic_iota}
 \alias{hlo_dynamic_iota}
-\title{Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
-since the sizes it describes are data. Where StableHLO can constant-fold the
-size operands it will verify the claim itself and reject a wrong one
-downstream.}
+\title{DynamicIota Operator}
 \usage{
 infer_types_dynamic_iota(output_shape, iota_dimension, dtype, shape)
 
@@ -38,4 +35,10 @@ at run time. It cannot be inferred, because \code{output_shape} is data.}
 }
 \description{
 See \url{https://openxla.org/stablehlo/spec#dynamic_iota} for details.
+}
+\details{
+Note that \code{shape} is a \emph{claim}, not a check: nothing here can verify it,
+since the sizes it describes are data. Where StableHLO can constant-fold the
+size operands it will verify the claim itself and reject a wrong one
+downstream.
 }

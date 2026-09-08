@@ -51,14 +51,14 @@ hlo_dynamic_reshape_impl <- hlo_fn(
   infer_types_dynamic_reshape
 )
 
-#'
+#' @templateVar mnemonic dynamic_reshape
+#' @templateVar not_func_variables shape
+#' @template op
+#' @details
 #' Note that `shape` is a *claim*, not a check: nothing here can verify it,
 #' since the sizes it describes are data. Where StableHLO can constant-fold the
 #' size operands it will verify the claim itself and reject a wrong one
 #' downstream.
-#' @templateVar mnemonic dynamic_reshape
-#' @templateVar not_func_variables shape
-#' @template op
 #' @export
 hlo_dynamic_reshape <- function(
   operand,
