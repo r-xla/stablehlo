@@ -188,8 +188,17 @@ infer_types_gather <- function(
     )
   }
 
-  # Compute result rank for C5
-  if (length(operand_batching_dims)) {
+  # (C17) makes the batch sizes equal, so meet them and let the refined sizes
+  # reach the result -- `batch_dim_sizes` below reads `start_indices_shape`,
+  # which is why this cannot wait until (C17)'s own check further down.
+  #
+  # Guarded on equal lengths: (C16) reports a count mismatch in its own words
+  # later, and without this guard `shape_meet()`'s rank abort would get there
+  # first and report the batch *projection* -- shapes the caller never passed.
+  if (
+    length(operand_batching_dims) &&
+      length(operand_batching_dims) == length(start_indices_batching_dims)
+  ) {
     refined_batch <- shape_meet(
       operand_shape[operand_batching_dims + 1L],
       start_indices_shape[start_indices_batching_dims + 1L],
@@ -200,6 +209,7 @@ infer_types_gather <- function(
     start_indices_shape[start_indices_batching_dims + 1L] <- refined_batch
   }
 
+  # Compute result rank for C5
   batch_dim_sizes <- if (index_vector_dim == start_indices_rank) {
     start_indices_shape
   } else {

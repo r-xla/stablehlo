@@ -24,13 +24,13 @@
   size the other does not, the known size wins: `add(tensor<?xf32>,
   tensor<3xf32>)` used to be an error and now infers `tensor<3xf32>`.
 
-  Every op that can take a dynamic operand now does. Of the 85 that can be
-  driven with one, 78 carry a `?` through; the rest have a result whose
-  extents come from an attribute rather than an operand
-  (`broadcast_in_dim`, `reshape`, `slice`, `dynamic_slice`,
-  `get_dimension_size`, and the offset axes of `gather` and the second result
-  of `rng_bit_generator`), and they no longer refuse an operand whose size
-  they cannot check. `transpose`, `reverse`,
+  Every op that can take a dynamic operand now does, and none refuses an
+  operand whose size it cannot check. Most carry the `?` into their result.
+  The exceptions are the ops whose result extents come from an *attribute*
+  rather than an operand -- `broadcast_in_dim`, `reshape`, `slice`,
+  `dynamic_slice`, `get_dimension_size`, and the offset axes of `gather` and
+  the second result of `rng_bit_generator` -- whose results stay static even
+  from a dynamic operand. `transpose`, `reverse`,
   `convert` and `pad` needed no change -- they only index axes or do
   arithmetic that `NA` already propagates through correctly. `reduce_window`'s
   arithmetic likewise, but its "all inputs share a shape" check had to be
@@ -63,9 +63,12 @@
 
   A caveat on the whole family: whether a backend can lower one of these
   directly, with its size operands left non-constant, varies by op. IREE
-  compiles and runs `dynamic_broadcast_in_dim`, `dynamic_iota` and
-  `real_dynamic_slice`, and refuses `dynamic_reshape`, `dynamic_pad`,
-  `dynamic_gather` and `dynamic_conv`; XLA refuses a `?` entry point outright.
+  refuses `dynamic_reshape`, `dynamic_pad`, `dynamic_gather` and
+  `dynamic_conv` outright. It compiles and runs `real_dynamic_slice`, and
+  compiles `dynamic_broadcast_in_dim` and `dynamic_iota` when their size
+  operand is tied to an operand's own dimension (via
+  `hlo_get_dimension_size()`) but not when it is a free value. XLA refuses a
+  `?` entry point in every case.
   The route that works for every op is to refine the program back to concrete
   shapes with `pjrt::pjrt_refine_shapes()`, which folds the dynamic op away --
   that is what the tests do. `real_dynamic_slice` is the exception in the

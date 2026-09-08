@@ -1,16 +1,33 @@
 #' @include op.R hlo.R
 NULL
 
-# select always uses assembly format with two types: pred_type, value_type
+# `select`'s short assembly form names only two types -- pred's and
+# `on_true`'s -- so `on_true` stands in for `on_false` and for the result. That
+# holds only while all three are the same type. Since inference *meets* the
+# operands rather than requiring equality, they need not be: one may know an
+# axis the others leave dynamic, and emitting the short form then produces MLIR
+# that does not parse ("use of value expects different type than prior uses").
+# So fall back to the generic form, exactly as `render_op_default()` does when
+# its own types disagree.
 render_select <- function(ctx) {
+  value_strs <- c(ctx$in_type_strs[-1L], ctx$out_type_strs)
+  if (all(value_strs == value_strs[[1L]])) {
+    return(paste0(
+      ctx$outputs_str,
+      " = stablehlo.select ",
+      ctx$values_str,
+      " : ",
+      ctx$in_type_strs[[1L]],
+      ", ",
+      ctx$in_type_strs[[2L]]
+    ))
+  }
   paste0(
     ctx$outputs_str,
-    " = stablehlo.select ",
+    " = \"stablehlo.select\" (",
     ctx$values_str,
-    " : ",
-    ctx$in_type_strs[[1L]],
-    ", ",
-    ctx$in_type_strs[[2L]]
+    "): ",
+    ctx$sig_str
   )
 }
 

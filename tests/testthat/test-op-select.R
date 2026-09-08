@@ -123,3 +123,53 @@ test_that("compare and select", {
     )
   )
 })
+
+test_that("select emits parseable MLIR when its operands' shapes differ", {
+  # Inference *meets* the operands, so `on_true`, `on_false` and the result
+  # need not share a type -- and the short assembly form names only two of
+  # them. Emitting it then produces MLIR that does not parse, which no
+  # assertion on the inferred type string would catch.
+  skip_if_not_installed("pjrt")
+  combos <- list(
+    list(p = N, t = N, f = 3L),
+    list(p = N, t = 3L, f = N),
+    list(p = 3L, t = N, f = N),
+    list(p = N, t = N, f = N),
+    list(p = 3L, t = 3L, f = 3L)
+  )
+  for (cb in combos) {
+    local_func(id = "main")
+    src <- repr(hlo_return(hlo_select(
+      dyn_input("p", "pred", cb$p),
+      dyn_input("t", "f32", cb$t),
+      dyn_input("q", "f32", cb$f)
+    )))
+    expect_no_error(
+      pjrt::pjrt_program(src),
+      message = paste("pred", cb$p, "on_true", cb$t, "on_false", cb$f)
+    )
+  }
+})
+
+test_that("select refines, compiles and runs with a mixed operand set", {
+  skip_if_no_refine()
+  # The refine-and-run case next to this one uses all-dynamic operands, so all
+  # three types coincide and the renderer never leaves its short form.
+  expect_refines_and_runs(
+    build = function(shapes) {
+      a <- dyn_input("a", "f32", shapes[[1L]])
+      b <- dyn_input("b", "f32", shapes[[2L]])
+      gt <- hlo_compare(
+        a,
+        b,
+        comparison_direction = "GT",
+        compare_type = "FLOAT"
+      )
+      hlo_select(gt, a, b)
+    },
+    dyn_shapes = list(N, 4L),
+    runs = list(
+      list(shapes = list(4L, 4L), args = list(c(1, 5, 3, 7), c(2, 2, 9, 4)))
+    )
+  )
+})

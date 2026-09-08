@@ -27,7 +27,7 @@ infer_types_dynamic_broadcast_in_dim <- function(
   # spelled as, and the whole point of this op.
   assert_shapevec_dyn(shape)
 
-  # (C7) `size(output_dimensions) = rank(result)`, and I3's type is a rank-1
+  # (C7) `size(output_dimensions) = rank(result)`, and I2's type is a rank-1
   # tensor. Both are decidable here, so both are checked -- as every other op
   # in this family does.
   declared <- shape(output_dimensions)
