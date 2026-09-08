@@ -46,7 +46,6 @@ Collate:
     'shape.R'
     'types.R'
     'constant.R'
-    'dim.R'
     'format_double.R'
     'value_id.R'
     'func.R'
@@ -151,6 +150,7 @@ Collate:
     'op-xor.R'
     'reexports.R'
     'roxygen.R'
+    'shape-algebra.R'
     'zzz.R'
 Config/Needs/website: rmarkdown
 Config/roxygen2/version: 8.1.0

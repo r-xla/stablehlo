@@ -67,9 +67,13 @@ infer_types_slice <- function(
     )
   }
 
-  # An axis of unknown size cannot bound the limit here; the runtime does it.
-  if (any(must(limit_idx > operand_shape))) {
-    invalid_positions <- which(must(limit_idx > operand_shape))
+  # The slice must stay inside the operand. Only an axis whose size is known
+  # can put it out of bounds; against a dynamic axis the limit is legal exactly
+  # when the operand turns out to be at least that long, which is a run-time
+  # question. `may_ge` says "this axis could be long enough".
+  in_bounds <- may_ge(operand_shape, limit_idx)
+  if (!all(in_bounds)) {
+    invalid_positions <- which(!in_bounds)
     error_index_out_of_bounds(
       arg = "limit_indices",
       index = limit_idx[invalid_positions],

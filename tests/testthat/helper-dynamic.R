@@ -37,6 +37,76 @@ lt_region <- function(dtype = "f32") {
   f
 }
 
+# A stand-in for a Func, for the control-flow inference functions. They only
+# ever read `$inputs[[i]]$type` and `$outputs[[i]]$type` (see
+# func_output_types()), so building a real Func -- which would mean tracing a
+# body just to declare its result type -- buys nothing here.
+fake_func <- function(out, inputs = list()) {
+  structure(
+    list(
+      inputs = lapply(inputs, function(t) list(type = t)),
+      outputs = lapply(out, function(t) list(type = t))
+    ),
+    class = "Func"
+  )
+}
+
+# ---- conformance: does IREE accept and run what we infer? ------------------
+
+skip_if_no_iree_compile <- function() {
+  if (!nzchar(Sys.which("iree-compile"))) {
+    testthat::skip("iree-compile not found")
+  }
+}
+
+iree_compiles <- function(src) {
+  dir <- tempfile("shlo-dyn-")
+  dir.create(dir)
+  mlir <- file.path(dir, "m.mlir")
+  writeLines(src, mlir)
+  out <- suppressWarnings(system2(
+    "iree-compile",
+    c(
+      "--iree-hal-target-device=local",
+      "--iree-hal-local-target-device-backends=llvm-cpu",
+      "--iree-llvmcpu-link-embedded=false",
+      "--iree-input-demote-f64-to-f32=false",
+      shQuote(mlir),
+      "-o",
+      shQuote(file.path(dir, "m.vmfb"))
+    ),
+    stdout = TRUE,
+    stderr = TRUE
+  ))
+  status <- attr(out, "status")
+  list(ok = is.null(status) || status == 0L, log = paste(out, collapse = "\n"))
+}
+
+# Executing a dynamic program needs a backend that compiles one, which XLA does
+# not: it rejects a `?` entry point outright. So these tests run only against
+# the IREE plugin, pointed at by PJRT_PLUGIN_PATH_CPU. Everything above this
+# line checks *inference*; everything below checks that the types inference
+# produces survive a real compile and give right answers at run time. The
+# distinction matters -- an inferred type can be perfectly correct and the
+# backend still return the wrong numbers.
+skip_if_no_iree_runtime <- function() {
+  skip_if_not_installed("pjrt")
+  plugin <- Sys.getenv("PJRT_PLUGIN_PATH_CPU", "")
+  if (!nzchar(plugin) || !file.exists(plugin)) {
+    testthat::skip("PJRT_PLUGIN_PATH_CPU is not set to a plugin file")
+  }
+  if (!grepl("iree", basename(plugin), fixed = TRUE)) {
+    testthat::skip("PJRT_PLUGIN_PATH_CPU is not the IREE plugin")
+  }
+  # Creating the client warns once per session for each custom call pjrt tries
+  # to register, because the IREE plugin exposes no FFI extension. Expected on
+  # this backend, and nothing to do with what these tests assert -- so absorb
+  # it here, once, rather than let it surface as a warning on whichever test
+  # happens to touch the client first.
+  suppressWarnings(pjrt::pjrt_client())
+  invisible(NULL)
+}
+
 skip_if_no_refine <- function() {
   testthat::skip_if_not_installed("pjrt")
   # `pjrt_refine_shapes()` and the `stablehlo-opt` plumbing behind it are newer

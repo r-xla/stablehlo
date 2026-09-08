@@ -58,8 +58,11 @@ infer_types_dynamic_slice <- function(
   }
 
   # (C4)
-  # An axis of unknown size cannot bound the slice here; the runtime does it.
-  if (any(must(slice_sizes_data > shape(operand)))) {
+  # The slice must fit in the operand. Only an axis known on both sides can be
+  # certainly too small; against a dynamic operand axis this is a run-time
+  # question. The result shape is `slice_sizes`, which is always static, so a
+  # dynamic operand still yields a static result here.
+  if (any(must_gt(slice_sizes_data, shape(operand)))) {
     cli_abort(c(
       "{.arg slice_sizes} must not be greater than {.arg operand}'s shape.",
       x = "Got slice_sizes {shapevec_repr(slice_sizes_data)} and operand shape {shapevec_repr(shape(operand))}."

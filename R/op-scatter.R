@@ -151,32 +151,29 @@ infer_types_scatter <- function(
   scatter_dims_to_operand_dims <- scatter_dimension_numbers$scatter_dims_to_operand_dims
   index_vector_dim <- scatter_dimension_numbers$index_vector_dim
 
-  # The refined shape across all inputs: an input with a dynamic axis takes the
-  # size a sibling knows, so the checks below and the result type get the most
-  # that is known. `must()` is what makes the (C1) check refuse only a definite
-  # clash.
-  input_shapes <- lapply(inputs, shape)
-  input_shape <- Reduce(function(a, b) ifelse(is.na(a), b, a), input_shapes)
+  input_shape <- shape(inputs[[1L]])
   input_rank <- length(input_shape)
   scatter_indices_shape <- shape(scatter_indices)
   scatter_indices_rank <- length(scatter_indices_shape)
-  updates_shape <- Reduce(
-    function(a, b) ifelse(is.na(a), b, a),
-    lapply(updates, shape)
-  )
+  updates_shape <- shape(updates[[1L]])
   updates_rank <- length(updates_shape)
 
-  # (C1)
-  if (
-    any(vapply(input_shapes, \(d) any(must(input_shape != d)), logical(1L)))
-  ) {
-    # fmt: skip
-    shapes_str <- paste(vapply(inputs, function(x) shapevec_repr(shape(x)), character(1)), collapse = ", ") # nolint
-    cli_abort(c(
-      "All inputs must have the same shape.",
-      x = "Got shapes: {shapes_str}."
-    ))
-  }
+  # (C1) All inputs share a shape, folded rather than compared for identity --
+  # as (C3) does for the updates below. `input_shape` is reassigned to the fold
+  # so the checks that follow, and the result type, get the most any input
+  # knows.
+  input_shapes <- lapply(inputs, shape)
+  input_shape <- withCallingHandlers(
+    shapes_meet(input_shapes, arg = "inputs"),
+    ErrorDimSizeMismatch = function(e) {
+      # fmt: skip
+      shapes_str <- paste(vapply(inputs, function(x) shapevec_repr(shape(x)), character(1)), collapse = ", ") # nolint
+      cli_abort(c(
+        "All inputs must have the same shape.",
+        x = "Got shapes: {shapes_str}."
+      ))
+    }
+  )
 
   # (C2)
   expected_rank <- length(update_window_dims) +
@@ -190,17 +187,32 @@ infer_types_scatter <- function(
     ))
   }
 
-  # (C3)
-  for (i in seq_along(updates)[-1L]) {
-    if (any(must(shape(updates[[i]]) != updates_shape))) {
-      # fmt: skip
-      shapes_str <- vapply(updates, function(u) shapevec_repr(shape(u)), character(1))
-      cli_abort(c(
+  # (C3) All updates share a shape. Folded with `shape_meet` rather than compared
+  # against the first: `may_eq` is not transitive, so a pairwise check would
+  # accept `(3, ?, 4)`. The fold also refines, so `updates_shape` below is the
+  # most any update knows.
+  update_shapes <- lapply(updates, shape)
+  error_updates_differ <- function(call = rlang::caller_env()) {
+    # fmt: skip
+    shapes_str <- vapply(updates, function(u) shapevec_repr(shape(u)), character(1))
+    cli_abort(
+      c(
         "All updates must have the same shape.",
         x = "Got shapes: {shapes_str}."
-      ))
-    }
+      ),
+      call = call
+    )
   }
+  if (!all(lengths(update_shapes) == length(updates_shape))) {
+    error_updates_differ()
+  }
+  infer_frame <- environment()
+  updates_shape <- withCallingHandlers(
+    shapes_meet(update_shapes, arg = "updates"),
+    ErrorDimSizeMismatch = function(cnd) {
+      error_updates_differ(call = infer_frame)
+    }
+  )
 
   # (C6)
   for (i in seq_len(num_inputs)) {
@@ -333,8 +345,7 @@ infer_types_scatter <- function(
   batch_shape_scatter <- scatter_indices_shape[
     scatter_indices_batching_dims + 1L
   ]
-  # An axis of unknown size on either side is checked at run time.
-  if (any(must(batch_shape_inputs != batch_shape_scatter))) {
+  if (any(must_ne(batch_shape_inputs, batch_shape_scatter))) {
     cli_abort(
       "Shape of batch dimensions of {.arg inputs} and {.arg scatter_indices} must match.",
       x = "Got {shapevec_repr(batch_shape_inputs)} and {shapevec_repr(batch_shape_scatter)}."
@@ -521,6 +532,6 @@ hlo_scatter <- function(
         value = as.logical(indices_are_sorted)
       ),
       BoolAttr(name = "unique_indices", value = as.logical(unique_indices))
-    )
+    ),
   )
 }

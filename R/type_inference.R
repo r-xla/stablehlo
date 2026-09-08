@@ -62,8 +62,7 @@ infer_types_integerish_biv <- function(lhs, rhs) {
 infer_types_integer_biv <- function(lhs, rhs) {
   assert_vt_has_ttype(lhs, "int", "uint")
   assert_vt_has_ttype(rhs, "int", "uint")
-  assert_vt_equal(lhs, rhs)
-  ValueTypes(list(lhs))
+  ValueTypes(list(vt_meet(lhs, rhs)))
 }
 
 #' @title Infer types for unary operations

@@ -21,17 +21,17 @@ test_that("the truth table", {
   }
 })
 
-test_that("dim_meet refines toward the known side", {
-  expect_equal(dim_meet(c(N, 3L), c(2L, N)), c(2L, 3L))
-  expect_equal(dim_meet(c(N, N), c(N, N)), c(N, N))
-  expect_equal(dim_meet(c(2L, 3L), c(2L, 3L)), c(2L, 3L))
-  expect_equal(dim_meet(integer(), integer()), integer())
+test_that("shape_meet refines toward the known side", {
+  expect_equal(shape_meet(c(N, 3L), c(2L, N)), c(2L, 3L))
+  expect_equal(shape_meet(c(N, N), c(N, N)), c(N, N))
+  expect_equal(shape_meet(c(2L, 3L), c(2L, 3L)), c(2L, 3L))
+  expect_equal(shape_meet(integer(), integer()), integer())
 })
 
-test_that("dim_meet errors only on a definite clash", {
-  expect_error(dim_meet(c(2L, 3L), c(2L, 4L)), "dimension")
-  expect_no_error(dim_meet(c(2L, N), c(2L, 4L)))
-  expect_error(dim_meet(c(2L, 3L), 2L), "same rank")
+test_that("shape_meet errors only on a definite clash", {
+  expect_error(shape_meet(c(2L, 3L), c(2L, 4L)), "dimension")
+  expect_no_error(shape_meet(c(2L, N), c(2L, 4L)))
+  expect_error(shape_meet(c(2L, 3L), 2L), "same rank")
 })
 
 test_that("shapes_meet folds, so a set that cannot agree is caught", {
@@ -62,7 +62,7 @@ test_that("vt_meet still rejects a dtype, rank or definite size mismatch", {
   d <- ValueType(TensorType(as_dtype("f32"), Shape(3L)))
   e <- ValueType(TensorType(as_dtype("f32"), Shape(4L)))
   # A two-operand op reports the whole type, which says more than an axis
-  # index; `dim_meet()`'s per-axis message is for the fold sites.
+  # index; `shape_meet()`'s per-axis message is for the fold sites.
   expect_error(vt_meet(a, b), "same tensor type")
   expect_error(vt_meet(a, c2), "same tensor type")
   expect_error(vt_meet(d, e), "same tensor type")

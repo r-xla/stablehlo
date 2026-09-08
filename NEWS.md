@@ -2,35 +2,63 @@
 
 ## Breaking changes
 
-* A `Shape` is now represented as an integer.
-* `shape.Shape` was removed.
+* A `Shape` *is* its integer vector now, with a class attached, rather than a
+  list wrapping one. `length(shape)` is the rank, `shape[i]` is an axis size,
+  and `shape$dims` is gone -- read the sizes with `unclass()`.
+
+* `==` and `!=` on a `Shape` now raise an error rather than answering. Once an
+  axis size can be `NA`, "are these two shapes equal" is three questions that
+  disagree exactly where it matters, and an operator cannot say which was
+  meant; the error names them and points at the helper for each.
+
+* `shape()` has no `Shape` method any more, for the same reason as the first
+  point: a `Shape` already *is* its integer vector, so there is nothing to
+  extract. `shape()` keeps working on a `ValueType`, `TensorType` or
+  `Constant`.
 
 ## Features
 
-* Shape inference understands dimensions that are only known at run time. A
+* Shape inference understands axis sizes that are only known at run time. A
   constraint over an `NA` axis size is refused only when it is *certainly*
   violated and left to the runtime otherwise, and where one operand knows a
   size the other does not, the known size wins: `add(tensor<?xf32>,
   tensor<3xf32>)` used to be an error and now infers `tensor<3xf32>`.
-  Type *identity* is deliberately unchanged -- `tensor<?xf32>` still does not
-  equal `tensor<3xf32>` -- so buffer aliasing stays sound.
 
-  Every op that can take a dynamic operand now does: of the 85 that can be
-  driven with one, 78 carry a `?` through and 7 have a statically determined
-  result, because their extents come from an attribute rather than an operand.
-  `broadcast_in_dim`, `reshape`, `slice`, `dynamic_slice` and
-  `dynamic_update_slice` are in the second group -- they no longer refuse an
-  operand whose size they cannot check, and leave it to the runtime.
+  Every op that can take a dynamic operand now does. Of the 85 that can be
+  driven with one, 78 carry a `?` through; the other 7 have a statically
+  determined result because their extents come from an attribute rather than
+  an operand (`broadcast_in_dim`, `reshape`, `slice`, `dynamic_slice`,
+  `gather`, `get_dimension_size`, `rng_bit_generator`), and they no longer
+  refuse an operand whose size they cannot check. `transpose`, `reverse`,
+  `convert`, `pad` and `reduce_window` needed no change -- they only index
+  axes or do arithmetic that `NA` already propagates through correctly.
 
-  Dynamic programs are tested by refining them back to concrete shapes with
-  `pjrt::pjrt_refine_shapes()` and running them, which checks that the result
-  type the refinement pass derives is the one this package's inference derives
-  from the static shapes.
+* Control flow reasons about dynamic axis sizes in the two directions it has
+  to, which are not the same one the elementwise ops use:
+
+  - `if` and `case` take the *join* of their branches, not the meet. Only one
+    branch runs, so a result axis is known only where every branch knows it
+    and they agree; one branch returning `tensor<3xf32>` against another's
+    `tensor<?xf32>` yields `tensor<?xf32>`. Two branches with known but
+    different sizes remain an error rather than widening to `?`.
+  - `while` requires its body's output to be *at least as refined* as the
+    declared carried type, and returns the declared type. A loop carrying
+    `tensor<?xf32>` whose body produces `tensor<3xf32>` is fine (the loop
+    forgets it again); the reverse is refused, because a body that only
+    promises `?` cannot justify a carried `tensor<3xf32>`.
+
 * Added `hlo_get_dimension_size()` and `hlo_dynamic_broadcast_in_dim()`, the
   two ops a program needs to broadcast to a shape it only learns at run time.
   `Shape()` and `TensorType()` already accepted `NA` for a dynamic axis size;
-  these make one usable. XLA does not compile a dynamic shape, so they are for
-  backends that do (anvl's experimental IREE backend).
+  these make one usable.
+
+* Dynamic programs are checked two ways, because each catches what the other
+  cannot. One compiles the dynamic program directly and runs it at several
+  sizes, which needs a backend that accepts a `?` entry point. The other
+  refines it back to concrete shapes with `pjrt::pjrt_refine_shapes()` and
+  runs that, which additionally checks that the result type the refinement
+  pass derives is the one this package's inference derives from the static
+  shapes -- two independent derivations that must not disagree.
 
 ## Bug fixes
 

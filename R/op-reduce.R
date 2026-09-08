@@ -37,7 +37,7 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   })
 
   # (C1)
-  # Folding with `dim_meet` rather than checking each input against the first:
+  # Folding with `shape_meet` rather than checking each input against the first:
   # `may_eq` is not transitive, so a pairwise check would accept `(3, ?, 4)`.
   # The fold validates and refines in one pass, so a dynamic input meeting a
   # static one gives the static result shape.

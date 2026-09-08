@@ -88,7 +88,7 @@ infer_types_concatenate <- function(..., dimension) {
   }
 
   # (C2) Every axis but the concatenated one must agree. Folding with
-  # `dim_meet` refines as it checks, so an input with a dynamic off-axis size
+  # `shape_meet` refines as it checks, so an input with a dynamic off-axis size
   # takes the size a sibling knows.
   dims_no_concat <- lapply(input_dims, \(x) x[-dim_r])
   off_axis <- Reduce(function(a, b) ifelse(is.na(a), b, a), dims_no_concat)
