@@ -14,7 +14,12 @@ infer_types_case <- function(index, ...) {
   }
 
   # (C2)
-  get_branch_out_types <- function(branch, index) {
+  # `call = infer_frame` so a branch error is attributed to
+  # infer_types_case() -- not to this local helper, and not to the `lapply`
+  # lambda that `rlang::caller_env()` would find. anvl rewrites these errors
+  # and keys on the call.
+  infer_frame <- environment()
+  get_branch_out_types <- function(branch, index, call = infer_frame) {
     if (!inherits(branch, "Func")) {
       error_unexpected_list_type(
         arg = "branches",

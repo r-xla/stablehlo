@@ -52,7 +52,8 @@ test_that("broadcast_dimensions is checked", {
       size,
       broadcast_dimensions = c(0L, 0L),
       shape = c(NA_integer_, 3L)
-    )
+    ),
+    class = "ErrorDimensionUniqueness"
   )
 })
 
@@ -72,7 +73,45 @@ test_that("dynamic_broadcast_in_dim refines, compiles and runs", {
     },
     types = "tensor<4xf32>",
     args = list(pjrt::pjrt_buffer(c(1, 2, 3, 4), dtype = "f32")),
+    inferred_type = "tensor<?xf32>",
     refined_type = "tensor<4xf32>",
     expected = c(2, 4, 6, 8)
+  )
+})
+
+test_that("output_dimensions must be an integer tensor of static extent", {
+  local_func()
+  expect_error(
+    hlo_dynamic_broadcast_in_dim(
+      dyn_input("a", "f32", 1L),
+      dyn_input("s", "f32", 1L),
+      broadcast_dimensions = 0L,
+      shape = N
+    ),
+    "must have dtype int or uint"
+  )
+  local_func()
+  expect_error(
+    hlo_dynamic_broadcast_in_dim(
+      dyn_input("a", "f32", 1L),
+      dyn_input("s", "i64", N),
+      broadcast_dimensions = 0L,
+      shape = N
+    ),
+    "statically known number of elements"
+  )
+})
+
+test_that("the result takes the shape hint, not a blanket dynamic shape", {
+  expect_equal(
+    inferred(function() {
+      hlo_dynamic_broadcast_in_dim(
+        dyn_input("a", "f32", 1L),
+        dyn_input("s", "i64", 2L),
+        broadcast_dimensions = 0L,
+        shape = c(1L, 3L)
+      )
+    }),
+    "tensor<1x3xf32>"
   )
 })

@@ -98,6 +98,49 @@
 * `hlo_triangular_solve()` now rejects operands that are not of floating-point
   type, as required by the StableHLO spec.
 
+* `hlo_pad()`'s negative-padding check compared each axis's trimming against
+  the operand's *rank* rather than against that axis's size, so it refused
+  legal programs (a rank-1 operand of size 100 trimmed by 5) and accepted
+  illegal ones (a rank-3 operand whose axis is 2 trimmed by 3). It is now
+  (C4) applied per axis -- a shape cannot be negative -- and defers where the
+  axis is dynamic.
+
+* `hlo_slice()` accepted a zero stride, which (C4) forbids. It divided by zero
+  and turned the result axis into `?`.
+
+* `hlo_concatenate()` compared only the off-axis projections of its operands'
+  shapes, which agree across a rank mismatch, so mixing ranks fabricated a
+  dynamic result axis instead of reporting the error.
+
+* `hlo_scatter()` read an axis of `scatter_indices` at `index_vector_dim`
+  before bounding it, so an out-of-range `index_vector_dim` failed with an
+  internal R error instead of the bounds error.
+
+* The dynamic ops' size operands (`output_shape`, `slice_sizes`,
+  `edge_padding_low`, ...) are now required to be integer tensors, as the spec
+  types them, and -- for the ops StableHLO types statically shaped -- to have
+  a statically known number of elements. `hlo_real_dynamic_slice()`'s and
+  `hlo_dynamic_pad()`'s index operands must also share one identical type.
+  Each of these previously passed inference and was rejected by the StableHLO
+  verifier.
+
+* `hlo_if()` now rejects branches that declare inputs, as `hlo_case()` already
+  did, and `hlo_while()` checks its `body`'s inputs and not only its outputs.
+  Both previously emitted regions whose block arguments contradicted the op's
+  operands.
+
+* `Shape()` refuses an `NA` that `as.integer()` invented -- from a value out of
+  integer range, an `Inf`/`NaN`, or a non-numeric. `NA` means "dynamic", so a
+  conversion accident would otherwise become a plausible-looking dynamic
+  program that only failed at compile time.
+
+* A shape holding a known `0` beside a `?` now has a known element count of 0,
+  so `hlo_reshape()` and `hlo_dynamic_reshape()` still refuse an operand that
+  provably holds no elements.
+
+* An error from one of `hlo_case()`'s branches is attributed to
+  `infer_types_case()` rather than to `base::call`.
+
 # stablehlo 0.4.0
 
 ## Features

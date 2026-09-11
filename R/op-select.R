@@ -57,13 +57,16 @@ infer_types_select <- function(
         x = "Got shapes {shapevec_repr(pred_dims)} and {shapevec_repr(dims)}."
       ))
     }
-    if (any(must_ne(pred_dims, dims))) {
+    if (any(provably_ne(pred_dims, dims))) {
       cli_abort(c(
         "{.arg pred} must have the same shape as {.arg on_true}.",
         x = "Got shapes {shapevec_repr(pred_dims)} and {shapevec_repr(dims)}."
       ))
     }
-    dims <- ifelse(is.na(dims), pred_dims, dims)
+    # `shape_meet()` rather than a hand-rolled `ifelse()`: the rank and the
+    # definite clash were just checked in select's own words, so all this can
+    # still do is refine -- and the meet rule stays defined in one place.
+    dims <- shape_meet(dims, pred_dims, arg1 = "on_true", arg2 = "pred")
   }
 
   ValueTypes(list(

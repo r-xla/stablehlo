@@ -74,7 +74,7 @@ infer_types_triangular_solve <- function(
 
   # (C3) Square only when it is certainly not: a dynamic trailing axis may
   # match at run time.
-  if (must_ne(a_dims[rank_a], a_dims[rank_a - 1L])) {
+  if (provably_ne(a_dims[rank_a], a_dims[rank_a - 1L])) {
     cli_abort(c(
       "{.arg a} must be a square matrix (last two dimensions must be equal)",
       x = "Got shape {shapevec_repr(a_dims)}."
@@ -86,7 +86,7 @@ infer_types_triangular_solve <- function(
     b_batch <- b_dims[seq_len(rank_b - 2)]
     # Batch axes agree; each refines the other, so `batch` below is the most
     # the two operands together know and is what the result carries.
-    if (any(must_ne(a_batch, b_batch))) {
+    if (any(provably_ne(a_batch, b_batch))) {
       cli_abort(c(
         "Batch dimensions of {.arg a} and {.arg b} must match",
         x = "Got shapes {shapevec_repr(a_batch)} and {shapevec_repr(b_batch)}."
@@ -110,7 +110,7 @@ infer_types_triangular_solve <- function(
     arg2 = "a"
   )
   b_axis <- if (left_side) rank_b - 1L else rank_b
-  if (must_ne(a_size, b_dims[b_axis])) {
+  if (provably_ne(a_size, b_dims[b_axis])) {
     cli_abort(c(
       "Dimension mismatch",
       x = "Got shapes {shapevec_repr(a_dims)} and {shapevec_repr(b_dims)}."

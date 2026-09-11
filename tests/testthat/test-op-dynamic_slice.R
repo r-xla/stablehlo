@@ -106,7 +106,8 @@ test_that("dynamic_slice and dynamic_update_slice defer their bounds", {
       dyn_input("a", "f32", 3L),
       hlo_scalar(0L, dtype = "i32"),
       slice_sizes = 9L
-    )
+    ),
+    "must not be greater than"
   )
 })
 

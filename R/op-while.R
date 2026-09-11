@@ -44,7 +44,31 @@ infer_types_while <- function(..., cond, body) {
     arg = "output(condition)"
   )
 
-  # (C2)
+  # (C2) `body` has type `(T0, ..., TN-1) -> (T0, ..., TN-1)`, so its *inputs*
+  # are constrained too -- and by the same equality as its outputs. Unchecked,
+  # a body declaring a different number or type of inputs renders a region
+  # whose block arguments contradict the op's operands, and it is exactly the
+  # refinement the outputs are checked for, just on the side nothing looked at.
+  if (length(body$inputs) != length(value_types)) {
+    cli_abort(c(
+      "{.arg body} must have the same number of inputs as {.arg ...}",
+      x = "Got {length(body$inputs)} and {length(value_types)}."
+    ))
+  }
+  body_in_types <- lapply(body$inputs, function(x) x$type)
+  for (i in seq_along(value_types)) {
+    if (body_in_types[[i]] != value_types[[i]]) {
+      error_unequal_types(
+        arg1 = "body input",
+        arg2 = "input",
+        index = i - 1L,
+        expected = "must have the same type",
+        actual1 = body_in_types[[i]],
+        actual2 = value_types[[i]]
+      )
+    }
+  }
+
   body_out_types <- func_output_types(body)
   if (length(body_out_types) != length(value_types)) {
     cli_abort(c(

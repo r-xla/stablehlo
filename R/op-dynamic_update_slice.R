@@ -50,7 +50,7 @@ infer_types_dynamic_update_slice <- function( # nolint
 
   # (C6) The update must fit. Only a pair where both sizes are known can be
   # shown not to fit; a dynamic axis on either side defers to the runtime.
-  if (any(must_gt(shape(update), shape(operand)))) {
+  if (any(provably_gt(shape(update), shape(operand)))) {
     cli_abort(c(
       "shape(update) must not be greater than shape(operand).",
       x = "Got shape(update) {shapevec_repr(shape(update))} and shape(operand) {shapevec_repr(shape(operand))}."

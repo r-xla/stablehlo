@@ -115,3 +115,22 @@ test_that("if requires its branches to agree exactly", {
     "tensor<?xf32>"
   )
 })
+
+test_that("if's branches must not declare inputs", {
+  # (C1) `input_types(branches...) = []`. The op passes its branches nothing,
+  # so a branch declaring inputs renders `^bb0(%x: ...)` inside `stablehlo.if`
+  # and MLIR refuses the region. `case` already caught this.
+  pred <- vt("i1", integer())
+  out <- list(vt("f32", 3L))
+  with_input <- fake_func(inputs = list(vt("f32", 3L)), out = out)
+  no_input <- fake_func(out = out)
+  expect_error(
+    infer_types_if(pred, with_input, no_input),
+    "true_branch.*must not have inputs"
+  )
+  expect_error(
+    infer_types_if(pred, no_input, with_input),
+    "false_branch.*must not have inputs"
+  )
+  expect_no_error(infer_types_if(pred, no_input, no_input))
+})

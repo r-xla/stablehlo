@@ -48,20 +48,15 @@ infer_types_dynamic_pad <- function(
     interior_padding = interior_padding
   )
   for (nm in names(paddings)) {
-    declared <- shape(paddings[[nm]])
-    if (length(declared) != 1L) {
-      cli_abort(c(
-        "{.arg {nm}} must be a rank-1 tensor.",
-        x = "Got shape {shapevec_repr(declared)}."
-      ))
-    }
-    if (must_ne(declared, rank)) {
-      cli_abort(c(
-        "{.arg {nm}} must have one element per axis of {.arg operand}.",
-        x = "Got {vec_repr(declared)} elements for a rank-{rank} operand."
-      ))
-    }
+    assert_size_operand(
+      paddings[[nm]],
+      rank,
+      describes = "operand",
+      arg = nm
+    )
   }
+  # (C2) The three must be one identical type, which no per-operand check sees.
+  assert_size_operands_same_type(paddings)
 
   # (C4) `shape(result)` is a function of the paddings, which are data, so it
   # is taken from the hint rather than computed; only its rank is checkable.

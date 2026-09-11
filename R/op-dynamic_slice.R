@@ -62,7 +62,7 @@ infer_types_dynamic_slice <- function(
   # certainly too small; against a dynamic operand axis this is a run-time
   # question. The result shape is `slice_sizes`, which is always static, so a
   # dynamic operand still yields a static result here.
-  if (any(must_gt(slice_sizes_data, shape(operand)))) {
+  if (any(provably_gt(slice_sizes_data, shape(operand)))) {
     cli_abort(c(
       "{.arg slice_sizes} must not be greater than {.arg operand}'s shape.",
       x = "Got slice_sizes {shapevec_repr(slice_sizes_data)} and operand shape {shapevec_repr(shape(operand))}."

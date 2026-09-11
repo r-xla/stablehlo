@@ -35,21 +35,9 @@ infer_types_dynamic_gather <- function(
   indices_are_sorted
 ) {
   assert_vt_is_tensor(slice_sizes)
-  declared <- shape(slice_sizes)
-  if (length(declared) != 1L) {
-    cli_abort(c(
-      "{.arg slice_sizes} must be a rank-1 tensor.",
-      x = "Got shape {shapevec_repr(declared)}."
-    ))
-  }
   rank <- length(shape(operand))
-  # (C11) `size(slice_sizes) = rank(operand)`.
-  if (must_ne(declared, rank)) {
-    cli_abort(c(
-      "{.arg slice_sizes} must have one element per axis of {.arg operand}.",
-      x = "Got {vec_repr(declared)} elements for a rank-{rank} operand."
-    ))
-  }
+  # (C11) `size(slice_sizes) = rank(operand)`, plus I3's type.
+  assert_size_operand(slice_sizes, rank, describes = "operand")
 
   # Everything else this op constrains, `gather` already constrains the same
   # way -- the only difference is where `slice_sizes` comes from. So the static

@@ -69,7 +69,13 @@ iree_compiles <- function(src) {
     c(
       "--iree-hal-target-device=local",
       "--iree-hal-local-target-device-backends=llvm-cpu",
-      "--iree-llvmcpu-link-embedded=false",
+      # Embedded linking (the default) rather than `link_embedded=false`: the
+      # latter emits a system ELF, which the runtime can only load if it was
+      # built with the system library loader. A stock `iree-run-module` has
+      # only the embedded one, and then every `iree_run()` here dies with
+      # "HAL device `__device_0` not found or unavailable" -- the module
+      # compiles, so `iree_compiles()` still passes and only the tests that
+      # execute fail.
       "--iree-input-demote-f64-to-f32=false",
       shQuote(mlir),
       "-o",
@@ -178,11 +184,19 @@ expect_dynamic_op_runs <- function(
   args,
   expected,
   refined_type,
+  inferred_type,
   tolerance = 1e-6
 ) {
   local_func(id = "main")
-  src <- repr(hlo_return(build()))
-  testthat::expect_match(src, "?", fixed = TRUE)
+  out <- build()
+  # `inferred_type` is what *our* inference makes of the dynamic build, and it
+  # has to be asserted explicitly. A `?` anywhere in the module proves
+  # nothing: `dyn_input()` always writes one into `main`'s signature, so an op
+  # that ignored its `shape` hint entirely -- returning all-`?` -- would still
+  # match. And `refined_type` below is read back off `pjrt_refine_shapes()`,
+  # which derives result types itself, so it does not pin ours either.
+  testthat::expect_equal(repr(out$value_type$type), inferred_type)
+  src <- repr(hlo_return(out))
 
   refined <- pjrt::pjrt_refine_shapes(src, types)
   # `as_array()` below drops `dim`, so the result *shape* needs an assertion
@@ -256,7 +270,10 @@ expect_refines_and_runs <- function(
   dtypes <- rep_len(dtype, length(dyn_shapes))
   local_func(id = "main")
   src_dyn <- repr(hlo_return(build(dyn_shapes)))
-  testthat::expect_match(src_dyn, "?", fixed = TRUE)
+  # No `?`-anywhere assertion here: `dyn_input()` puts one in `main`'s
+  # signature regardless, so it would hold even for an op that inferred a
+  # fully static result. What pins our inference is the static twin below,
+  # whose type is derived by the same code and compared against the refiner's.
 
   for (run in runs) {
     shapes <- run$shapes

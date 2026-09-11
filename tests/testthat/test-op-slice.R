@@ -78,3 +78,20 @@ test_that("slice and dynamic_slice defer their bounds against a dynamic axis", {
     class = "ErrorIndexOutOfBounds"
   )
 })
+
+test_that("a zero stride is refused rather than turned into a dynamic axis", {
+  # (C4) is `0 < strides`. A zero stride would make (C5) divide by zero, and
+  # `Shape()` turns the resulting `Inf` into `NA` -- a `?` invented in a
+  # program with no dynamism, which `shape_meet()` would then treat as a size
+  # still to be learned.
+  local_func()
+  expect_error(
+    hlo_slice(
+      dyn_input("a", "f32", 4L),
+      start_indices = 0L,
+      limit_indices = 3L,
+      strides = 0L
+    ),
+    "must be positive"
+  )
+})

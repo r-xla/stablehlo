@@ -63,7 +63,32 @@ test_that("dynamic_iota refines, compiles and runs", {
     },
     types = "tensor<4xf32>",
     args = list(pjrt::pjrt_buffer(rep(10, 4), dtype = "f32")),
+    inferred_type = "tensor<?xf32>",
     refined_type = "tensor<4xf32>",
     expected = c(10, 11, 12, 13)
+  )
+})
+
+test_that("output_shape must be an integer tensor of static extent", {
+  local_func()
+  expect_error(
+    hlo_dynamic_iota(
+      dyn_input("s", "f32", 1L),
+      iota_dimension = 0L,
+      dtype = "f32",
+      shape = N
+    ),
+    "must have dtype int or uint"
+  )
+  # Its own extent is the result's rank, which is never dynamic.
+  local_func()
+  expect_error(
+    hlo_dynamic_iota(
+      dyn_input("s", "i64", N),
+      iota_dimension = 0L,
+      dtype = "f32",
+      shape = c(N, 3L)
+    ),
+    "statically known number of elements"
   )
 })

@@ -27,22 +27,8 @@ infer_types_dynamic_broadcast_in_dim <- function(
   # spelled as, and the whole point of this op.
   assert_shapevec_dyn(shape)
 
-  # (C7) `size(output_dimensions) = rank(result)`, and I2's type is a rank-1
-  # tensor. Both are decidable here, so both are checked -- as every other op
-  # in this family does.
-  declared <- shape(output_dimensions)
-  if (length(declared) != 1L) {
-    cli_abort(c(
-      "{.arg output_dimensions} must be a rank-1 tensor.",
-      x = "Got shape {shapevec_repr(declared)}."
-    ))
-  }
-  if (must_ne(declared, length(shape))) {
-    cli_abort(c(
-      "{.arg output_dimensions} must have one element per axis of the result.",
-      x = "Got {vec_repr(declared)} elements for a rank-{length(shape)} result."
-    ))
-  }
+  # (C7) `size(output_dimensions) = rank(result)`, plus I2's type.
+  assert_size_operand(output_dimensions, length(shape))
 
   operand_dims <- shape(operand)
   result_dims <- as.integer(shape)
@@ -76,7 +62,7 @@ infer_types_dynamic_broadcast_in_dim <- function(
   for (d in seq_along(bdims)) {
     op_dim <- operand_dims[d]
     out_dim <- result_dims[bdims[d] + 1L]
-    if (must_ne(op_dim, out_dim) && must_ne(op_dim, 1L)) {
+    if (provably_ne(op_dim, out_dim) && provably_ne(op_dim, 1L)) {
       error_dim_size_mismatch(
         arg1 = "operand",
         arg2 = "result",

@@ -232,3 +232,16 @@ test_that("c() shape is interpreted as scalar", {
 })
 
 # Errors are tested in test-assert.R (via assert_const)
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("a constant's shape attribute cannot be dynamic", {
+  # A constant is rendered as a static type, and there is nothing at run time
+  # to learn its shape from.
+  local_func()
+  expect_error(hlo_empty("f32", shape = c(N, 3L)), "Contains missing values")
+  expect_error(
+    hlo_tensor(1:6, dtype = "i32", shape = c(N, 3L)),
+    "Contains missing values"
+  )
+})

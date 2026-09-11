@@ -61,7 +61,7 @@ infer_types_bitcast_convert <- function(
         "{.arg operand} must have at least 1 dimension for this bitcast conversion.",
         x = "{.arg operand} is a scalar ({.val {operand$type$dtype}} -> {.val {as_dtype(dtype)}})."
       ))
-    } else if (must_ne(operand_dims[[length(operand_dims)]], cst_fct)) {
+    } else if (provably_ne(operand_dims[[length(operand_dims)]], cst_fct)) {
       # Widening drops the trailing axis, which must hold exactly `cst_fct`
       # elements. A dynamic trailing axis may hold that many at run time, so
       # the check defers -- but the axis disappears from the result either way,

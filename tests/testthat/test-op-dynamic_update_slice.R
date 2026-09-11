@@ -82,3 +82,22 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("dynamic_update_slice defers the fit check to the runtime", {
+  dus <- function(operand, update) {
+    hlo_dynamic_update_slice(
+      dyn_input("a", "f32", operand),
+      dyn_input("u", "f32", update),
+      hlo_scalar(0L, dtype = "i32")
+    )
+  }
+  # (C1) the result is the operand's type, dynamic axis and all.
+  expect_equal(inferred(function() dus(N, 2L)), "tensor<?xf32>")
+  # (C6) an update whose axis is dynamic may still fit at run time.
+  expect_equal(inferred(function() dus(3L, N)), "tensor<3xf32>")
+  # An update that certainly does not fit is refused.
+  local_func()
+  expect_error(dus(3L, 5L), "must not be greater than")
+})

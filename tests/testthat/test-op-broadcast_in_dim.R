@@ -138,3 +138,14 @@ test_that("broadcast_in_dim from an axis whose size is deferred", {
     runs = list(list(shapes = list(3L), args = list(c(1, 2, 3))))
   )
 })
+
+test_that("broadcast_in_dim rejects a dynamic shape attribute", {
+  # The result is rendered as a static type, so `NA` must not reach it --
+  # `hlo_dynamic_broadcast_in_dim()` is the escape hatch.
+  local_func()
+  x <- hlo_input("x", "f32", shape = c(2L, 3L))
+  expect_error(
+    hlo_broadcast_in_dim(x, broadcast_dimensions = c(0L, 1L), shape = c(N, 3L)),
+    "Contains missing values"
+  )
+})

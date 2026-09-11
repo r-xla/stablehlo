@@ -139,3 +139,52 @@ test_that("unique() is expressible", {
     )
   }
 })
+
+test_that("the index operands must be integers of one identical type", {
+  # SPEC types all three "1-dimensional tensor of integer type", and the ODS
+  # requires one identical type across them -- neither of which the static
+  # twin needed to state, because there the sizes were an i64 constant.
+  rds <- function(s, l, t) {
+    local_func()
+    hlo_real_dynamic_slice(
+      dyn_input("a", "f32", 8L),
+      dyn_input("s", s, 1L),
+      dyn_input("l", l, 1L),
+      dyn_input("t", t, 1L),
+      shape = N
+    )
+  }
+  expect_error(rds("f32", "i32", "i32"), "must have dtype int or uint")
+  expect_error(rds("i32", "i64", "i32"), "same type")
+  expect_no_error(rds("i32", "i32", "i32"))
+  # Unlike the rest of the family these are `HLO_DimensionTensor`, so their
+  # own extent is allowed to be dynamic.
+  local_func()
+  expect_equal(
+    repr(
+      hlo_real_dynamic_slice(
+        dyn_input("a", "f32", 8L),
+        dyn_input("s", "i32", N),
+        dyn_input("l", "i32", N),
+        dyn_input("t", "i32", N),
+        shape = N
+      )$value_type$type
+    ),
+    "tensor<?xf32>"
+  )
+})
+
+test_that("the result takes the shape hint, not a blanket dynamic shape", {
+  expect_equal(
+    inferred(function() {
+      hlo_real_dynamic_slice(
+        dyn_input("a", "f32", c(N, N)),
+        dyn_input("s", "i32", 2L),
+        dyn_input("l", "i32", 2L),
+        dyn_input("t", "i32", 2L),
+        shape = c(2L, 3L)
+      )
+    }),
+    "tensor<2x3xf32>"
+  )
+})

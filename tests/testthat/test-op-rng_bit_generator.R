@@ -121,3 +121,58 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("rng_bit_generator rejects a dynamic shape attribute", {
+  # The result is rendered as a static type, so `NA` must not reach it.
+  local_func()
+  expect_error(
+    hlo_rng_bit_generator(
+      hlo_input("s", "ui64", shape = 2L),
+      rng_algorithm = "PHILOX",
+      dtype = "f32",
+      shape = c(N, 2L)
+    ),
+    "Contains missing values"
+  )
+})
+
+test_that("rng_bit_generator defers the state-size check when it is dynamic", {
+  # PHILOX accepts a state of 2 or 3, written as two `provably_ne`s rather than
+  # `%in%`: `NA %in% c(2L, 3L)` is FALSE, which would reject a dynamic state
+  # size instead of deferring it.
+  expect_equal(
+    inferred(function() {
+      hlo_rng_bit_generator(
+        dyn_input("s", "ui64", N),
+        rng_algorithm = "PHILOX",
+        dtype = "f32",
+        shape = c(2L, 2L)
+      )
+    }),
+    "tensor<?xui64>"
+  )
+  expect_equal(
+    inferred(function() {
+      hlo_rng_bit_generator(
+        dyn_input("s", "ui64", N),
+        rng_algorithm = "THREE_FRY",
+        dtype = "f32",
+        shape = c(2L, 2L)
+      )
+    }),
+    "tensor<?xui64>"
+  )
+  # A known-wrong state size is still refused.
+  local_func()
+  expect_error(
+    hlo_rng_bit_generator(
+      dyn_input("s", "ui64", 4L),
+      rng_algorithm = "PHILOX",
+      dtype = "f32",
+      shape = c(2L, 2L)
+    ),
+    "PHILOX requires"
+  )
+})

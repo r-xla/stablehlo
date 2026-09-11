@@ -12,13 +12,38 @@ NULL
 #' @return `Shape`
 #' @export
 Shape <- function(dims = integer()) {
-  dims <- as.integer(dims)
+  sizes <- suppressWarnings(as.integer(dims))
 
-  if (any(dims[!is.na(dims)] < 0L)) {
+  # `NA` here *means* dynamic, and every check downstream is built to accept it
+  # and defer. So an `NA` that `as.integer()` invented -- from a value out of
+  # integer range, an `Inf`/`NaN` produced by inference arithmetic, or a
+  # non-numeric -- would not fail: it would quietly become a plausible-looking
+  # dynamic program that only breaks at compile time. Catching it costs one
+  # `anyNA()` on the way past, and nothing at all for a shape with no `NA`.
+  if (anyNA(sizes)) {
+    # Which `NA`s were asked for. `is.na()` is TRUE for `NaN` too, and `NaN`
+    # is a conversion accident (inference arithmetic that divided by zero),
+    # not a dynamic axis -- so it has to be excluded here.
+    asked_for <- is.na(dims)
+    if (is.double(dims)) {
+      asked_for <- asked_for & !is.nan(dims)
+    }
+    invented <- is.na(sizes) & !asked_for
+    if (any(invented)) {
+      cli_abort(c(
+        "{.arg dims} must be axis sizes representable as integers.",
+        i = "{.val {NA}} is how a dynamic axis is spelled, so it cannot also
+             stand for a size that could not be converted.",
+        x = "Got {.val {dims[invented]}}."
+      ))
+    }
+  }
+
+  if (any(sizes[!is.na(sizes)] < 0L)) {
     cli_abort("Dimensions must be >= 0")
   }
 
-  structure(dims, class = "Shape")
+  structure(sizes, class = "Shape")
 }
 
 # Comparing shapes with an operator is refused rather than answered. Once an
@@ -27,12 +52,14 @@ Shape <- function(dims = integer()) {
 # cannot say which one was meant:
 #
 #   identity        Is `?` the same *type* as `?`, and a different type from
-#                   `3`? This is what buffer aliasing and donation need.
+#                   `3`? This is what buffer aliasing and donation need, and
+#                   `identical()` is what answers it.
 #   satisfiability  Could `?` be `3` at run time? This is what a constraint
-#                   check needs -- refuse only what is certainly wrong.
+#                   check needs -- refuse only what is certainly wrong -- and
+#                   `possibly()` and its relations answer it.
 #   provability     Is `?` *provably* `3`? No -- and two dynamic axes are not
 #                   provably equal to each other either, since they may hold
-#                   different sizes.
+#                   different sizes. `provably()` and its relations answer it.
 #
 # So the caller has to pick one, in writing, at the call site.
 #

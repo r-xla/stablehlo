@@ -100,7 +100,7 @@ test_that("triangular_solve meets a's trailing axes and its batch axes", {
   expect_equal(repr(ts(c(N, N), c(3L, 2L))$value_type$type), "tensor<3x2xf32>")
   expect_equal(repr(ts(c(N, N), c(N, 2L))$value_type$type), "tensor<?x2xf32>")
   # A definite clash is still refused.
-  expect_error(ts(c(3L, N), c(2L, 2L)))
+  expect_error(ts(c(3L, N), c(2L, 2L)), "Dimension mismatch")
   # Batch axes meet too.
   expect_equal(
     repr(ts(c(N, 3L, N), c(5L, N, 2L))$value_type$type),

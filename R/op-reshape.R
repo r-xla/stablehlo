@@ -22,7 +22,7 @@ infer_types_reshape <- function(
   # whether the counts match is a run-time question: reshaping `tensor<?xf32>`
   # to `tensor<3xf32>` is legal exactly when the operand turns out to hold 3
   # elements, which is not knowable here.
-  if (must_nelts_ne(shape(operand), result_dims)) {
+  if (provably_nelts_ne(shape(operand), result_dims)) {
     cli_abort(
       "Size of output must equal to size of {.arg operand}",
       # fmt: skip

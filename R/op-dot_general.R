@@ -242,7 +242,7 @@ infer_types_dot_general <- function(
   # reject a dynamic axis against a known one; only a pair that is known on
   # both sides can be certainly wrong. The sizes do not reach the result --
   # contracting removes them -- so nothing needs refining here.
-  if (any(must_ne(dim_merge1, dim_merge2))) {
+  if (any(provably_ne(dim_merge1, dim_merge2))) {
     error_dot_general_dim_mismatch(
       arg = "contracting_dims",
       shape_lhs = dim_lhs,
@@ -254,7 +254,7 @@ infer_types_dot_general <- function(
   # (C9) Batching axes likewise -- but these *do* reach the result, so they are
   # met rather than merely checked: batching a dynamic axis against a known one
   # gives a known batch size in the output.
-  if (any(must_ne(dim_batch1, dim_batch2))) {
+  if (any(provably_ne(dim_batch1, dim_batch2))) {
     error_dot_general_dim_mismatch(
       arg = "batching_dims",
       shape_lhs = dim_lhs,

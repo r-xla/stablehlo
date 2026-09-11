@@ -33,20 +33,8 @@ infer_types_dynamic_iota <- function(
     )
   }
 
-  # (C2) `rank(result) = size(output_shape)`.
-  declared <- shape(output_shape)
-  if (length(declared) != 1L) {
-    cli_abort(c(
-      "{.arg output_shape} must be a rank-1 tensor.",
-      x = "Got shape {shapevec_repr(declared)}."
-    ))
-  }
-  if (must_ne(declared, length(shape))) {
-    cli_abort(c(
-      "{.arg output_shape} must have one element per axis of the result.",
-      x = "Got {vec_repr(declared)} elements for a rank-{length(shape)} result."
-    ))
-  }
+  # (C2) `rank(result) = size(output_shape)`, plus I1's type.
+  assert_size_operand(output_shape, length(shape))
 
   dtype <- as_dtype(dtype)
   assert_dtype_one_of(dtype, c("int", "uint", "float"))

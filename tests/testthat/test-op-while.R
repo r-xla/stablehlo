@@ -86,7 +86,7 @@ test_that("while requires its body's type to equal the carried type", {
     infer_types_while(
       dyn,
       cond = fake_func(inputs = list(dyn), out = list(vt("i1", integer()))),
-      body = fake_func(out = list(vt("f32", 3L)))
+      body = fake_func(inputs = list(dyn), out = list(vt("f32", 3L)))
     ),
     class = "ErrorUnequalTypes"
   )
@@ -96,7 +96,7 @@ test_that("while requires its body's type to equal the carried type", {
     infer_types_while(
       static,
       cond = fake_func(inputs = list(static), out = list(vt("i1", integer()))),
-      body = fake_func(out = list(vt("f32", N)))
+      body = fake_func(inputs = list(static), out = list(vt("f32", N)))
     ),
     class = "ErrorUnequalTypes"
   )
@@ -107,9 +107,35 @@ test_that("while requires its body's type to equal the carried type", {
       infer_types_while(
         dyn,
         cond = fake_func(inputs = list(dyn), out = list(vt("i1", integer()))),
-        body = fake_func(out = list(vt("f32", N)))
+        body = fake_func(inputs = list(dyn), out = list(vt("f32", N)))
       )[[1L]]$type
     ),
     "tensor<?xf32>"
+  )
+})
+
+test_that("while constrains the body's inputs as well as its outputs", {
+  # (C2) is `(T0, ..., TN-1) -> (T0, ..., TN-1)`. The output half was checked;
+  # the input half is the same equality on the side the op's operands feed, and
+  # a body whose block arguments disagree renders a region MLIR refuses.
+  dyn <- vt("f32", N)
+  cond <- fake_func(inputs = list(dyn), out = list(vt("i1", integer())))
+  expect_error(
+    infer_types_while(
+      dyn,
+      cond = cond,
+      body = fake_func(inputs = list(), out = list(dyn))
+    ),
+    "same number of inputs"
+  )
+  # A body input that refines the carried `?` is refused, exactly as the
+  # matching output would be.
+  expect_error(
+    infer_types_while(
+      dyn,
+      cond = cond,
+      body = fake_func(inputs = list(vt("f32", 3L)), out = list(dyn))
+    ),
+    class = "ErrorUnequalTypes"
   )
 })

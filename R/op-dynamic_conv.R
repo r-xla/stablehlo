@@ -51,7 +51,10 @@ infer_types_dynamic_conv <- function(
   assert_vt_is_tensor(padding)
   n_spatial <- length(dimension_numbers$input_spatial_dimensions)
 
-  # (C4) `padding` is `(n_spatial, 2)`.
+  # (C4) `padding` is `(n_spatial, 2)`, and I4's type is a statically shaped
+  # 2-dimensional integer tensor -- a dynamic extent there could not be
+  # satisfied at any run-time size.
+  assert_vt_has_ttype(padding, "int", "uint")
   declared <- shape(padding)
   if (length(declared) != 2L) {
     cli_abort(c(
@@ -59,7 +62,16 @@ infer_types_dynamic_conv <- function(
       x = "Got shape {shapevec_repr(declared)}."
     ))
   }
-  if (any(must_ne(declared, c(n_spatial, 2L)))) {
+  if (anyNA(declared)) {
+    cli_abort(c(
+      "{.arg padding} must have a statically known shape.",
+      i = "StableHLO types it a statically shaped tensor, so its own extents
+           cannot be the thing that is only known at run time -- only the
+           padding values it carries can.",
+      x = "Got shape {shapevec_repr(declared)}."
+    ))
+  }
+  if (any(provably_ne(declared, c(n_spatial, 2L)))) {
     cli_abort(c(
       "{.arg padding} must have shape ({n_spatial}, 2), one row per spatial axis.",
       x = "Got shape {shapevec_repr(declared)}."

@@ -55,7 +55,7 @@ infer_types_broadcast_in_dim <- function(
   for (d in seq_along(bdims)) {
     op_dim <- operand_dims[d]
     out_dim <- result_dims[bdims[d] + 1L]
-    if (must_ne(op_dim, out_dim) && must_ne(op_dim, 1L)) {
+    if (provably_ne(op_dim, out_dim) && provably_ne(op_dim, 1L)) {
       error_dim_size_mismatch(
         arg1 = "operand",
         arg2 = "result",

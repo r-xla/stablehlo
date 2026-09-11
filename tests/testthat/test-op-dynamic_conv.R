@@ -131,6 +131,7 @@ test_that("dynamic_conv refines, compiles and runs", {
       pjrt::pjrt_buffer(x, dtype = "f32"),
       pjrt::pjrt_buffer(array(c(1, 1), dim = c(1L, 1L, 2L)), dtype = "f32")
     ),
+    inferred_type = "tensor<?x1x?xf32>",
     refined_type = "tensor<2x1x3xf32>",
     expected = as.vector(vapply(
       seq_len(3L),

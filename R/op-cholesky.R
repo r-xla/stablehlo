@@ -24,7 +24,7 @@ infer_types_cholesky <- function(
 
   # (C3) dim(a, -2) = dim(a, -1). Refused only when both sizes are known and
   # differ; if either is dynamic the matrix may well be square at run time.
-  if (must_ne(operand_dims[rank], operand_dims[rank - 1L])) {
+  if (provably_ne(operand_dims[rank], operand_dims[rank - 1L])) {
     cli_abort(c(
       "{.arg operand} must be symmetric in the last two dimensions",
       x = "Got shape {shapevec_repr(operand_dims)}."

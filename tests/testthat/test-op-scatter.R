@@ -562,5 +562,44 @@ test_that("scatter defers the checks it cannot decide", {
     "tensor<4x3xf32>"
   )
   # A definitely-wrong update window is still refused.
-  expect_error(scat(c(4L, 3L), c(2L, 1L), c(2L, 9L)))
+  expect_error(
+    scat(c(4L, 3L), c(2L, 1L), c(2L, 9L)),
+    "must not exceed input dimensions"
+  )
+})
+
+test_that("an out-of-range index_vector_dim is reported, not crashed on", {
+  # (C19) indexes `scatter_indices_shape` at `index_vector_dim`, which yields
+  # a zero- or multi-element vector when it is out of range -- and `if` then
+  # fails on its own "argument is of length zero" instead of this error.
+  dn <- function(ivd) {
+    ScatterDimensionNumbers(
+      update_window_dims = 1L,
+      inserted_window_dims = 0L,
+      scatter_dims_to_operand_dims = 0L,
+      index_vector_dim = ivd
+    )
+  }
+  reg <- function() {
+    f <- local_func(id = "")
+    l <- hlo_input("l", "f32", shape = integer())
+    r <- hlo_input("r", "f32", shape = integer())
+    hlo_return(hlo_add(l, r))
+    f
+  }
+  scat <- function(ivd) {
+    local_func()
+    hlo_scatter(
+      list(hlo_input("a", "f32", shape = c(4L, 3L))),
+      hlo_input("i", "i32", shape = c(2L, 1L)),
+      list(hlo_input("u", "f32", shape = c(2L, 3L))),
+      update_computation = reg(),
+      scatter_dimension_numbers = dn(ivd),
+      indices_are_sorted = FALSE,
+      unique_indices = FALSE
+    )
+  }
+  expect_error(scat(-1L), class = "ErrorIndexOutOfBounds")
+  expect_error(scat(-5L), class = "ErrorIndexOutOfBounds")
+  expect_error(scat(3L), class = "ErrorIndexOutOfBounds")
 })

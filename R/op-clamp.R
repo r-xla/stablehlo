@@ -30,7 +30,7 @@ infer_types_clamp <- function(min, operand, max) {
       return(invisible(NULL)) # a scalar bound broadcasts
     }
     same <- length(bound_shape) == length(operand_shape) &&
-      !any(must_ne(bound_shape, operand_shape))
+      !any(provably_ne(bound_shape, operand_shape))
     if (!same) {
       cli_abort(
         c(
@@ -59,7 +59,7 @@ infer_types_clamp <- function(min, operand, max) {
     if (length(bound_shape) == 0L) {
       next
     }
-    if (any(must_ne(result_shape, bound_shape))) {
+    if (any(provably_ne(result_shape, bound_shape))) {
       cli_abort(c(
         "{.arg min}, {.arg max} and {.arg operand} must have the same shape.",
         x = "Got {shapevec_repr(operand_shape)}, {shapevec_repr(min_shape)} and {shapevec_repr(max_shape)}."

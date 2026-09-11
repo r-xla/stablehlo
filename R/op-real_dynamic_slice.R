@@ -33,20 +33,19 @@ infer_types_real_dynamic_slice <- function(
     strides = strides
   )
   for (nm in names(index_args)) {
-    declared <- shape(index_args[[nm]])
-    if (length(declared) != 1L) {
-      cli_abort(c(
-        "{.arg {nm}} must be a rank-1 tensor.",
-        x = "Got shape {shapevec_repr(declared)}."
-      ))
-    }
-    if (must_ne(declared, rank)) {
-      cli_abort(c(
-        "{.arg {nm}} must have one element per axis of {.arg operand}.",
-        x = "Got {vec_repr(declared)} elements for a rank-{rank} operand."
-      ))
-    }
+    # `static_extent = FALSE`: these are `HLO_DimensionTensor`, the one place
+    # in the family where the operand's own extent may be dynamic, so the
+    # element-count check is what defers.
+    assert_size_operand(
+      index_args[[nm]],
+      rank,
+      describes = "operand",
+      arg = nm,
+      static_extent = FALSE
+    )
   }
+  # The three must be one identical type, which no per-operand check sees.
+  assert_size_operands_same_type(index_args)
 
   # The extents come from the index tensors, which are data, so the result
   # shape is the hint. Its rank is still the operand's.

@@ -47,7 +47,29 @@ test_that("dynamic_reshape refines, compiles and runs", {
     },
     types = "tensor<2x3xf32>",
     args = list(pjrt::pjrt_buffer(1:6 + 0, dtype = "f32", shape = c(2L, 3L))),
+    inferred_type = "tensor<6xf32>",
     refined_type = "tensor<6xf32>",
     expected = c(1, 3, 5, 2, 4, 6)
+  )
+})
+
+test_that("output_shape must be an integer tensor of static extent", {
+  local_func()
+  expect_error(
+    hlo_dynamic_reshape(
+      dyn_input("a", "f32", 6L),
+      dyn_input("s", "f32", 2L),
+      shape = c(2L, 3L)
+    ),
+    "must have dtype int or uint"
+  )
+  local_func()
+  expect_error(
+    hlo_dynamic_reshape(
+      dyn_input("a", "f32", 6L),
+      dyn_input("s", "i32", N),
+      shape = c(2L, 3L)
+    ),
+    "statically known number of elements"
   )
 })

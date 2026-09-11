@@ -167,7 +167,7 @@ infer_types_gather <- function(
   } else {
     1L
   }
-  if (must_ne(expected_start_index_map_size, length(start_index_map))) {
+  if (provably_ne(expected_start_index_map_size, length(start_index_map))) {
     cli_abort(c(
       "length(start_index_map) must equal the index vector size.",
       x = "Got {length(start_index_map)}, but expected {expected_start_index_map_size}."
@@ -212,7 +212,7 @@ infer_types_gather <- function(
     batch_shape_start_indices <- start_indices_shape[
       start_indices_batching_dims + 1L
     ]
-    if (any(must_ne(batch_shape_operand, batch_shape_start_indices))) {
+    if (any(provably_ne(batch_shape_operand, batch_shape_start_indices))) {
       cli_abort(c(
         "Shape of batch dimensions of {.arg operand} and {.arg start_indices} must match.",
         x = "Got {shapevec_repr(batch_shape_operand)} and {shapevec_repr(batch_shape_start_indices)}."
@@ -280,7 +280,7 @@ infer_types_gather <- function(
   # (C9)
   if (length(collapsed_slice_dims)) {
     collapsed_sizes <- slice_sizes_vec[collapsed_slice_dims + 1L]
-    if (any(must_gt(collapsed_sizes, 1L))) {
+    if (any(provably_gt(collapsed_sizes, 1L))) {
       # fmt: skip
       cli_abort(c(
         "slice_sizes[collapsed_slice_dims...] must be <= 1.",
@@ -310,7 +310,7 @@ infer_types_gather <- function(
   # (C12)
   if (length(operand_batching_dims)) {
     batching_sizes <- slice_sizes_vec[operand_batching_dims + 1L]
-    if (any(must_gt(batching_sizes, 1L))) {
+    if (any(provably_gt(batching_sizes, 1L))) {
       cli_abort(c(
         "slice_sizes[operand_batching_dims...] must be <= 1.",
         x = "Got slice_sizes at operand_batching_dims: {vec_repr(batching_sizes)}."
@@ -388,8 +388,8 @@ infer_types_gather <- function(
   # a run-time question. slice_sizes reaches the result, so a dynamic operand
   # still gives a static result along those axes.
   if (
-    any(must_gt(0L, slice_sizes_vec)) ||
-      any(must_gt(slice_sizes_vec, operand_shape))
+    any(provably_gt(0L, slice_sizes_vec)) ||
+      any(provably_gt(slice_sizes_vec, operand_shape))
   ) {
     cli_abort(c(
       "0 <= slice_sizes <= shape(operand).",

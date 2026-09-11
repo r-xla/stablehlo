@@ -22,7 +22,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
   }
 
   # (C3) Every input has the same shape. Folded with `shape_meet` rather than
-  # compared pairwise against the first: `may_eq` is not transitive, so a
+  # compared pairwise against the first: "may be equal" is not transitive, so a
   # pairwise check would accept `(3, ?, 4)` because each shape may match the
   # first. The fold refuses that, and it refines as it goes, so the result
   # shape below is the most any input knows.

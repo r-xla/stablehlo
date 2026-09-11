@@ -527,7 +527,9 @@ test_that("gather defers the checks it cannot decide", {
       dyn_input("i", "i32", c(2L, 1L)),
       gather_dimension_numbers = dn,
       slice_sizes = c(1L, 9L)
-    )
+    ),
+    "0 <= slice_sizes <= shape(operand)",
+    fixed = TRUE
   )
 })
 

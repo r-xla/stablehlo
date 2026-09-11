@@ -30,6 +30,19 @@ describe("Shape", {
     expect_equal(repr(shape), "1x2x?")
   })
 
+  it("rejects an NA that as.integer() invented, since NA means dynamic", {
+    # Out of integer range, `Inf`/`NaN` from inference arithmetic, and
+    # non-numerics all coerce to `NA` -- which every check downstream is built
+    # to accept and defer, so an accident would become a plausible dynamic
+    # program instead of an error.
+    expect_error(Shape(c(2, 3e9)), "representable as integers")
+    expect_error(Shape(c(2, Inf)), "representable as integers")
+    expect_error(Shape(c(2, NaN)), "representable as integers")
+    expect_error(Shape("a"), "representable as integers")
+    # A deliberate `NA` is still a dynamic axis.
+    expect_equal(repr(Shape(c(2, NA))), "2x?")
+  })
+
   it("rejects negative axis sizes", {
     expect_error(Shape(c(2, -1)), "must be >= 0")
   })
