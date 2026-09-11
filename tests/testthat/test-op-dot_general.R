@@ -222,3 +222,59 @@ test_that("error messages", {
   # C10: contracting_dims sizes don't match
   check(c(2, 3), c(1, 4), list(1L, 1L))
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("dot_general defers contracted sizes and unifies batch sizes", {
+  # A dynamic contracted axis: the sizes may agree at run time, and neither
+  # reaches the result.
+  expect_equal(
+    inferred(function() {
+      hlo_dot_general(
+        dyn_input("a", "f32", c(2L, N)),
+        dyn_input("b", "f32", c(3L, 4L)),
+        contracting_dims = list(1L, 0L)
+      )
+    }),
+    "tensor<2x4xf32>"
+  )
+  # Both known and different: still refused.
+  local_func()
+  expect_error(
+    hlo_dot_general(
+      dyn_input("a", "f32", c(2L, 5L)),
+      dyn_input("b", "f32", c(3L, 4L)),
+      contracting_dims = list(1L, 0L)
+    ),
+    class = "ErrorDotGeneralDimMismatch"
+  )
+  # A batch axis *does* reach the result, so it is refined rather than copied
+  # from the lhs: `?` on the left unifies with `5` on the right.
+  expect_equal(
+    inferred(function() {
+      hlo_dot_general(
+        dyn_input("a", "f32", c(N, 2L, 3L)),
+        dyn_input("b", "f32", c(5L, 3L, 4L)),
+        contracting_dims = list(2L, 1L),
+        batching_dims = list(0L, 0L)
+      )
+    }),
+    "tensor<5x2x4xf32>"
+  )
+})
+
+test_that("dot_general with a dynamic batch axis", {
+  skip_if_no_refine()
+  expect_refines_and_runs(
+    build = function(shapes) {
+      a <- dyn_input("a", "f32", shapes[[1L]])
+      b <- dyn_input("b", "f32", shapes[[2L]])
+      hlo_dot_general(a, b, contracting_dims = list(1L, 0L))
+    },
+    dyn_shapes = list(c(N, 3L), c(3L, 2L)),
+    runs = list(
+      list(shapes = list(c(2L, 3L), c(3L, 2L)), args = list(1:6 + 0, 1:6 + 0)),
+      list(shapes = list(c(4L, 3L), c(3L, 2L)), args = list(1:12 + 0, 1:6 + 0))
+    )
+  )
+})

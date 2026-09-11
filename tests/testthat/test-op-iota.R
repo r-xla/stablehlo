@@ -23,3 +23,15 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("iota rejects a dynamic shape attribute", {
+  # The result is rendered as a static type, so `NA` must not reach it --
+  # `hlo_dynamic_iota()` is the escape hatch.
+  local_func()
+  expect_error(
+    hlo_iota(iota_dimension = 0L, dtype = "f32", shape = N),
+    "Contains missing values"
+  )
+})

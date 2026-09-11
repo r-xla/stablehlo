@@ -35,3 +35,25 @@ test_that("errors", {
   # (C3) last two dimensions not equal
   check(vt("f32", c(3L, 4L)))
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("cholesky pins a dynamic trailing axis against its partner", {
+  expect_equal(
+    inferred(function() {
+      hlo_cholesky(dyn_input("a", "f32", c(N, 4L)), lower = TRUE)
+    }),
+    "tensor<4x4xf32>"
+  )
+  expect_equal(
+    inferred(function() {
+      hlo_cholesky(dyn_input("a", "f32", c(N, N)), lower = TRUE)
+    }),
+    "tensor<?x?xf32>"
+  )
+  local_func()
+  expect_error(
+    hlo_cholesky(dyn_input("a", "f32", c(3L, 4L)), lower = TRUE),
+    "must be symmetric"
+  )
+})

@@ -87,19 +87,41 @@ infer_types_concatenate <- function(..., dimension) {
     )
   }
 
-  # (C2)
-  dims_no_concat <- lapply(input_dims, \(x) x[-dim_r])
-  if (
-    !all(vapply(dims_no_concat, identical, logical(1), dims_no_concat[[1]]))
-  ) {
+  # (C2) Every axis but the concatenated one must agree. Folding with
+  # `unify_all_shapes()` refines as it checks, so an input with a dynamic off-axis
+  # size takes the size a sibling knows -- and, unlike a hand-rolled `ifelse`
+  # fold, it compares ranks instead of recycling them.
+  # Rank first, and on the operands rather than on the projections below:
+  # dropping the concatenated axis from a shape that does not have it removes
+  # nothing, so two operands of different rank produce projections that agree,
+  # and the fold would pass. The concatenated axis is then read out of bounds
+  # as `NA` and summed into a dynamic result axis -- a `?` manufactured in a
+  # program that contains no dynamism at all.
+  if (!all(lengths(input_dims) == num_dims)) {
     error_concatenate_shapes(
       dimensions = dimension,
       shapes = lapply(input_dims, Shape)
     )
   }
+  dims_no_concat <- lapply(input_dims, \(x) x[-dim_r])
+  # `call = infer_frame` so the condition is attributed to this function and
+  # not to the handler it is raised from.
+  infer_frame <- environment()
+  off_axis <- withCallingHandlers(
+    unify_all_shapes(dims_no_concat, arg = "inputs"),
+    ErrorDimSizeMismatch = function(cnd) {
+      error_concatenate_shapes(
+        dimensions = dimension,
+        shapes = lapply(input_dims, Shape),
+        call = infer_frame
+      )
+    }
+  )
 
-  # (C6)
-  result_dims <- input_dims[[1]]
+  # (C6) The concatenated axis is the sum of the parts, which is unknown as
+  # soon as any part is: `sum(c(3L, NA))` is `NA`, which is the answer we want.
+  result_dims <- integer(length(input_dims[[1]]))
+  result_dims[-dim_r] <- off_axis
   result_dims[dim_r] <- sum(vapply(
     input_dims,
     \(x) x[dim_r],

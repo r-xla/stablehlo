@@ -433,3 +433,136 @@ test_that("errors", {
     c(1L, 4L, 1L)
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("gather takes a dynamic operand, result from slice_sizes", {
+  expect_equal(
+    inferred(function() {
+      hlo_gather(
+        dyn_input("a", "f32", c(N, 3L)),
+        dyn_input("i", "i32", c(2L, 1L)),
+        gather_dimension_numbers = GatherDimensionNumbers(
+          offset_dims = 1L,
+          collapsed_slice_dims = 0L,
+          start_index_map = 0L,
+          index_vector_dim = 1L
+        ),
+        slice_sizes = c(1L, 3L)
+      )
+    }),
+    "tensor<2x3xf32>"
+  )
+})
+
+test_that("gather over a dynamic operand", {
+  skip_if_no_refine()
+  expect_refines_and_runs(
+    build = function(shapes) {
+      hlo_gather(
+        dyn_input("a", "f32", shapes[[1L]]),
+        dyn_input("i", "i32", shapes[[2L]]),
+        gather_dimension_numbers = GatherDimensionNumbers(
+          offset_dims = 1L,
+          collapsed_slice_dims = 0L,
+          start_index_map = 0L,
+          index_vector_dim = 1L
+        ),
+        slice_sizes = c(1L, 3L)
+      )
+    },
+    dyn_shapes = list(c(N, 3L), c(2L, 1L)),
+    dtype = c("f32", "i32"),
+    runs = list(
+      list(
+        shapes = list(c(4L, 3L), c(2L, 1L)),
+        args = list(1:12 + 0, c(0L, 2L))
+      ),
+      list(
+        shapes = list(c(6L, 3L), c(2L, 1L)),
+        args = list(1:18 + 0, c(1L, 4L))
+      )
+    )
+  )
+})
+
+test_that("gather defers the checks it cannot decide", {
+  dn <- GatherDimensionNumbers(
+    offset_dims = 1L,
+    collapsed_slice_dims = 0L,
+    start_index_map = 0L,
+    index_vector_dim = 1L
+  )
+  # (C3) reads an axis of `start_indices`; dynamic means run time.
+  local_func()
+  expect_equal(
+    repr(
+      hlo_gather(
+        dyn_input("a", "f32", c(4L, 3L)),
+        dyn_input("i", "i32", c(2L, N)),
+        gather_dimension_numbers = dn,
+        slice_sizes = c(1L, 3L)
+      )$value_type$type
+    ),
+    "tensor<2x3xf32>"
+  )
+  # (C12) `slice_sizes <= shape(operand)` against a dynamic axis.
+  local_func()
+  expect_equal(
+    repr(
+      hlo_gather(
+        dyn_input("a", "f32", c(N, 3L)),
+        dyn_input("i", "i32", c(2L, 1L)),
+        gather_dimension_numbers = dn,
+        slice_sizes = c(1L, 3L)
+      )$value_type$type
+    ),
+    "tensor<2x3xf32>"
+  )
+  # A slice that certainly overruns a known axis is still refused.
+  local_func()
+  expect_error(
+    hlo_gather(
+      dyn_input("a", "f32", c(4L, 3L)),
+      dyn_input("i", "i32", c(2L, 1L)),
+      gather_dimension_numbers = dn,
+      slice_sizes = c(1L, 9L)
+    ),
+    "0 <= slice_sizes <= shape(operand)",
+    fixed = TRUE
+  )
+})
+
+test_that("gather's batch-size check and refinement are both live", {
+  dn <- function(...) {
+    GatherDimensionNumbers(
+      offset_dims = 1L,
+      collapsed_slice_dims = 1L,
+      operand_batching_dims = 0L,
+      start_indices_batching_dims = 0L,
+      start_index_map = 1L,
+      index_vector_dim = 1L,
+      ...
+    )
+  }
+  g <- function(operand, indices) {
+    local_func()
+    hlo_gather(
+      dyn_input("a", "f32", operand),
+      dyn_input("i", "i32", indices),
+      gather_dimension_numbers = dn(),
+      slice_sizes = c(1L, 1L, 2L)
+    )
+  }
+  # (C17): batch sizes known and different.
+  expect_error(g(c(4L, 5L, 6L), c(3L, 1L)), "batch dimensions")
+  # ... and the unification, in both directions.
+  expect_equal(
+    repr(g(c(4L, 5L, 6L), c(N, 1L))$value_type$type),
+    "tensor<4x2xf32>"
+  )
+  expect_equal(
+    repr(g(c(N, 5L, 6L), c(3L, 1L))$value_type$type),
+    "tensor<3x2xf32>"
+  )
+})

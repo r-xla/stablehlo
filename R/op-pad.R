@@ -32,15 +32,6 @@ infer_types_pad <- function(
   high <- edge_padding_high$data
   interior <- interior_padding$data
 
-  lowhigh <- rbind(low, high)
-  lowhigh[lowhigh > 0] <- 0
-  if (any(colSums(abs(lowhigh)) > operand_rank)) {
-    cli_abort(c(
-      "negative padding values can't exceed dimension",
-      x = "edge_padding_low: {vec_repr(low)}, edge_padding_high: {vec_repr(high)}, operand_rank: {operand_rank}"
-    ))
-  }
-
   # (C3)
   if (any(interior < 0)) {
     cli_abort(c(
@@ -66,6 +57,18 @@ infer_types_pad <- function(
     low +
     pmax(operand_shape - 1L, 0L) * interior +
     high
+
+  # A shape cannot be negative, so (C4) is also the negative-padding check --
+  # per axis, against that axis's size, and deferred where the axis is dynamic
+  # (a `?` may well be large enough to absorb the trimming). It has to come
+  # after (C2) so the four vectors line up.
+  if (any(provably_gt(0L, result_shape))) {
+    axes <- which(provably_gt(0L, result_shape))
+    cli_abort(c(
+      "Negative padding must not remove more than an axis holds.",
+      x = "Axis {axes - 1L} of {.arg operand} has size {operand_shape[axes]}, and the padding leaves {result_shape[axes]}."
+    ))
+  }
 
   ValueTypes(list(
     ValueType(

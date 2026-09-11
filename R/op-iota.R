@@ -5,6 +5,10 @@ NULL
 #' @export
 infer_types_iota <- function(iota_dimension, dtype, shape) {
   assert_const(iota_dimension, dtype = "i64", shape = c())
+  # Static for the same reason as `reshape`: the shape is an attribute, and
+  # StableHLO requires the result to be statically shaped. Use
+  # `hlo_dynamic_iota()` for a shape the program computes.
+  assert_shapevec(shape)
   shape <- as.integer(shape)
 
   iota_dim <- as.integer(iota_dimension$data)

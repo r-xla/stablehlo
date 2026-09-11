@@ -167,7 +167,7 @@ infer_types_gather <- function(
   } else {
     1L
   }
-  if (length(start_index_map) != expected_start_index_map_size) {
+  if (provably_ne(expected_start_index_map_size, length(start_index_map))) {
     cli_abort(c(
       "length(start_index_map) must equal the index vector size.",
       x = "Got {length(start_index_map)}, but expected {expected_start_index_map_size}."
@@ -186,6 +186,46 @@ infer_types_gather <- function(
       arg = "offset_dims",
       indices = offset_dims
     )
+  }
+
+  # (C17) makes the batch sizes equal, so check them here and unify them, which
+  # lets the refined sizes reach the result -- `batch_dim_sizes` below reads
+  # `start_indices_shape`, so this cannot wait for (C17)'s position further
+  # down.
+  #
+  # Skipped unless the batching dims are equal in count and in range, so that
+  # (C6), (C11), (C13), (C14) and (C16) still report their own failures rather
+  # than
+  # being shadowed by an error about the batch *projection* -- shapes the
+  # caller never passed.
+  batch_dims_usable <- length(operand_batching_dims) > 0L &&
+    length(operand_batching_dims) == length(start_indices_batching_dims) &&
+    all(operand_batching_dims >= 0L & operand_batching_dims < operand_rank) &&
+    all(
+      start_indices_batching_dims >= 0L &
+        start_indices_batching_dims < start_indices_rank
+    ) &&
+    !anyDuplicated(operand_batching_dims) &&
+    !anyDuplicated(start_indices_batching_dims)
+  if (batch_dims_usable) {
+    batch_shape_operand <- operand_shape[operand_batching_dims + 1L]
+    batch_shape_start_indices <- start_indices_shape[
+      start_indices_batching_dims + 1L
+    ]
+    if (any(provably_ne(batch_shape_operand, batch_shape_start_indices))) {
+      cli_abort(c(
+        "Shape of batch dimensions of {.arg operand} and {.arg start_indices} must match.",
+        x = "Got {shapevec_repr(batch_shape_operand)} and {shapevec_repr(batch_shape_start_indices)}."
+      ))
+    }
+    refined_batch <- unify_shapes(
+      batch_shape_operand,
+      batch_shape_start_indices,
+      arg_a = "operand",
+      arg_b = "start_indices"
+    )
+    operand_shape[operand_batching_dims + 1L] <- refined_batch
+    start_indices_shape[start_indices_batching_dims + 1L] <- refined_batch
   }
 
   # Compute result rank for C5
@@ -240,7 +280,7 @@ infer_types_gather <- function(
   # (C9)
   if (length(collapsed_slice_dims)) {
     collapsed_sizes <- slice_sizes_vec[collapsed_slice_dims + 1L]
-    if (any(collapsed_sizes > 1L)) {
+    if (any(provably_gt(collapsed_sizes, 1L))) {
       # fmt: skip
       cli_abort(c(
         "slice_sizes[collapsed_slice_dims...] must be <= 1.",
@@ -270,7 +310,7 @@ infer_types_gather <- function(
   # (C12)
   if (length(operand_batching_dims)) {
     batching_sizes <- slice_sizes_vec[operand_batching_dims + 1L]
-    if (any(batching_sizes > 1L)) {
+    if (any(provably_gt(batching_sizes, 1L))) {
       cli_abort(c(
         "slice_sizes[operand_batching_dims...] must be <= 1.",
         x = "Got slice_sizes at operand_batching_dims: {vec_repr(batching_sizes)}."
@@ -314,20 +354,6 @@ infer_types_gather <- function(
     ))
   }
 
-  # (C17)
-  if (length(operand_batching_dims)) {
-    batch_shape_operand <- operand_shape[operand_batching_dims + 1L]
-    batch_shape_start_indices <- start_indices_shape[
-      start_indices_batching_dims + 1L
-    ]
-    if (!identical(batch_shape_operand, batch_shape_start_indices)) {
-      cli_abort(c(
-        "Shape of batch dimensions of {.arg operand} and {.arg start_indices} must match.",
-        x = "Got {shapevec_repr(batch_shape_operand)} and {shapevec_repr(batch_shape_start_indices)}."
-      ))
-    }
-  }
-
   # (C18)
   combined_index_batch <- c(start_index_map, operand_batching_dims)
   if (anyDuplicated(combined_index_batch)) {
@@ -356,7 +382,15 @@ infer_types_gather <- function(
   }
 
   # (C21)
-  if (any(slice_sizes_vec < 0L) || any(slice_sizes_vec > operand_shape)) {
+  # slice_sizes must be non-negative and fit inside the operand. The lower
+  # bound is on slice_sizes alone (always static), so it is checked as before;
+  # the upper bound compares against the operand, where a dynamic axis makes it
+  # a run-time question. slice_sizes reaches the result, so a dynamic operand
+  # still gives a static result along those axes.
+  if (
+    any(provably_gt(0L, slice_sizes_vec)) ||
+      any(provably_gt(slice_sizes_vec, operand_shape))
+  ) {
     cli_abort(c(
       "0 <= slice_sizes <= shape(operand).",
       x = "Got slice_sizes = {vec_repr(slice_sizes_vec)}, but operand shape is {shapevec_repr(operand_shape)}."

@@ -85,3 +85,62 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("sort folds its inputs' shapes instead of comparing pairwise", {
+  local_func("comparator")
+  cmp <- hlo_compare(
+    hlo_input("x", "i32"),
+    hlo_input("y", "i32"),
+    comparison_direction = "LT",
+    compare_type = "SIGNED"
+  )
+  comparator <- hlo_return(cmp)
+
+  # (3, ?, 4) must be refused: a pairwise check against the first input would
+  # accept it, because each of the others may match `?`.
+  expect_error(
+    infer_types_sort(
+      vt("i32", 3L),
+      vt("i32", N),
+      vt("i32", 4L),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = comparator
+    ),
+    "same shape"
+  )
+  # A set that can agree infers the refined shape.
+  expect_equal(
+    repr(
+      infer_types_sort(
+        vt("i32", N),
+        vt("i32", 4L),
+        dimension = scnst(0L, "i64"),
+        is_stable = scnst(TRUE, "pred"),
+        comparator = comparator
+      )[[1L]]$type
+    ),
+    "tensor<4xi32>"
+  )
+})
+
+test_that("sort over a dynamic axis", {
+  skip_if_no_refine()
+  expect_refines_and_runs(
+    build = function(shapes) {
+      hlo_sort(
+        dyn_input("x", "f32", shapes[[1L]]),
+        dimension = 0L,
+        is_stable = TRUE,
+        comparator = lt_region()
+      )[[1L]]
+    },
+    dyn_shapes = list(N),
+    runs = list(
+      list(shapes = list(4L), args = list(c(3, 1, 4, 2))),
+      list(shapes = list(6L), args = list(c(9, 2, 7, 1, 8, 3)))
+    )
+  )
+})

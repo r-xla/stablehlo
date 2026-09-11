@@ -158,16 +158,26 @@ infer_types_scatter <- function(
   updates_shape <- shape(updates[[1L]])
   updates_rank <- length(updates_shape)
 
-  # (C1)
+  # (C1) All inputs share a shape, folded rather than compared for identity --
+  # as (C3) does for the updates below. `input_shape` is reassigned to the fold
+  # so the checks that follow, and the result type, get the most any input
+  # knows.
   input_shapes <- lapply(inputs, shape)
-  if (length(unique(input_shapes)) != 1L) {
-    # fmt: skip
-    shapes_str <- paste(vapply(inputs, function(x) shapevec_repr(shape(x)), character(1)), collapse = ", ") # nolint
-    cli_abort(c(
-      "All inputs must have the same shape.",
-      x = "Got shapes: {shapes_str}."
-    ))
-  }
+  c1_frame <- environment()
+  input_shape <- withCallingHandlers(
+    unify_all_shapes(input_shapes, arg = "inputs"),
+    ErrorDimSizeMismatch = function(e) {
+      # fmt: skip
+      shapes_str <- paste(vapply(inputs, function(x) shapevec_repr(shape(x)), character(1)), collapse = ", ") # nolint
+      cli_abort(
+        c(
+          "All inputs must have the same shape.",
+          x = "Got shapes: {shapes_str}."
+        ),
+        call = c1_frame
+      )
+    }
+  )
 
   # (C2)
   expected_rank <- length(update_window_dims) +
@@ -181,17 +191,32 @@ infer_types_scatter <- function(
     ))
   }
 
-  # (C3)
-  for (i in seq_along(updates)[-1L]) {
-    if (!identical(shape(updates[[i]]), updates_shape)) {
-      # fmt: skip
-      shapes_str <- vapply(updates, function(u) shapevec_repr(shape(u)), character(1))
-      cli_abort(c(
+  # (C3) All updates share a shape. Folded with `unify_shapes` rather than compared
+  # against the first: "may be equal" is not transitive, so a pairwise check would
+  # accept `(3, ?, 4)`. The fold also refines, so `updates_shape` below is the
+  # most any update knows.
+  update_shapes <- lapply(updates, shape)
+  error_updates_differ <- function(call = rlang::caller_env()) {
+    # fmt: skip
+    shapes_str <- vapply(updates, function(u) shapevec_repr(shape(u)), character(1))
+    cli_abort(
+      c(
         "All updates must have the same shape.",
         x = "Got shapes: {shapes_str}."
-      ))
-    }
+      ),
+      call = call
+    )
   }
+  if (!all(lengths(update_shapes) == length(updates_shape))) {
+    error_updates_differ()
+  }
+  infer_frame <- environment()
+  updates_shape <- withCallingHandlers(
+    unify_all_shapes(update_shapes, arg = "updates"),
+    ErrorDimSizeMismatch = function(cnd) {
+      error_updates_differ(call = infer_frame)
+    }
+  )
 
   # (C6)
   for (i in seq_len(num_inputs)) {
@@ -324,24 +349,23 @@ infer_types_scatter <- function(
   batch_shape_scatter <- scatter_indices_shape[
     scatter_indices_batching_dims + 1L
   ]
-  if (!identical(batch_shape_inputs, batch_shape_scatter)) {
-    cli_abort(
+  # As gather's (C17): meeting rather than only checking, so a dynamic axis on
+  # one side takes the size the other knows.
+  if (any(provably_ne(batch_shape_inputs, batch_shape_scatter))) {
+    cli_abort(c(
       "Shape of batch dimensions of {.arg inputs} and {.arg scatter_indices} must match.",
       x = "Got {shapevec_repr(batch_shape_inputs)} and {shapevec_repr(batch_shape_scatter)}."
-    )
-  }
-
-  # (C19)
-  expected_scatter_dims_size <- if (index_vector_dim < scatter_indices_rank) {
-    scatter_indices_shape[index_vector_dim + 1L]
-  } else {
-    1L
-  }
-  if (length(scatter_dims_to_operand_dims) != expected_scatter_dims_size) {
-    cli_abort(c(
-      "length(scatter_dims_to_operand_dims) must equal the index vector size.",
-      x = "Got {length(scatter_dims_to_operand_dims)}, but expected {expected_scatter_dims_size}."
     ))
+  }
+  if (length(input_batching_dims)) {
+    refined_batch <- unify_shapes(
+      batch_shape_inputs,
+      batch_shape_scatter,
+      arg_a = "inputs",
+      arg_b = "scatter_indices"
+    )
+    input_shape[input_batching_dims + 1L] <- refined_batch
+    scatter_indices_shape[scatter_indices_batching_dims + 1L] <- refined_batch
   }
 
   # (C20)
@@ -363,7 +387,10 @@ infer_types_scatter <- function(
     )
   }
 
-  # (C22)
+  # (C22) Before (C19), which indexes `scatter_indices_shape` at
+  # `index_vector_dim`: out of bounds that subscript yields a zero- or
+  # multi-element vector, and the `provably_ne()` below would then fail on
+  # `if`'s own "argument is of length zero" instead of reporting this.
   if (index_vector_dim < 0L || (index_vector_dim > scatter_indices_rank)) {
     error_index_out_of_bounds(
       arg = "index_vector_dim",
@@ -371,6 +398,24 @@ infer_types_scatter <- function(
       lower = 0L,
       upper = scatter_indices_rank + 1L # if it's equal to scatter_indices_rank, the last dim is implicit
     )
+  }
+
+  # (C19)
+  expected_scatter_dims_size <- if (index_vector_dim < scatter_indices_rank) {
+    scatter_indices_shape[index_vector_dim + 1L]
+  } else {
+    1L
+  }
+  if (
+    provably_ne(
+      expected_scatter_dims_size,
+      length(scatter_dims_to_operand_dims)
+    )
+  ) {
+    cli_abort(c(
+      "length(scatter_dims_to_operand_dims) must equal the index vector size.",
+      x = "Got {length(scatter_dims_to_operand_dims)}, but expected {expected_scatter_dims_size}."
+    ))
   }
 
   update_scatter_dims <- setdiff(
@@ -419,7 +464,7 @@ infer_types_scatter <- function(
 
   # (C4) - window dimensions part
   actual_window_sizes <- updates_shape[update_window_dims + 1L]
-  if (any(actual_window_sizes > update_window_dim_sizes)) {
+  if (any(provably_gt(actual_window_sizes, update_window_dim_sizes))) {
     cli_abort(c(
       "update_window_dim_sizes must not exceed input dimensions.",
       # nolint next
@@ -430,7 +475,7 @@ infer_types_scatter <- function(
   # (C4) - scatter dimensions part
   if (length(update_scatter_dims) > 0L) {
     actual_scatter_sizes <- updates_shape[update_scatter_dims + 1L]
-    if (!identical(actual_scatter_sizes, update_scatter_dim_sizes)) {
+    if (any(provably_ne(actual_scatter_sizes, update_scatter_dim_sizes))) {
       cli_abort(c(
         "Update scatter dimension sizes must match scatter_indices shape (excluding index_vector_dim).",
         x = "Got {vec_repr(actual_scatter_sizes)}, but expected {vec_repr(update_scatter_dim_sizes)}."

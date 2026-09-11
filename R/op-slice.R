@@ -67,8 +67,13 @@ infer_types_slice <- function(
     )
   }
 
-  if (any(limit_idx > operand_shape)) {
-    invalid_positions <- which(limit_idx > operand_shape)
+  # The slice must stay inside the operand. Only an axis whose size is known
+  # can put it out of bounds; against a dynamic axis the limit is legal exactly
+  # when the operand turns out to be at least that long, which is a run-time
+  # question. `possibly_ge` says "this axis could be long enough".
+  in_bounds <- possibly_ge(operand_shape, limit_idx)
+  if (!all(in_bounds)) {
+    invalid_positions <- which(!in_bounds)
     error_index_out_of_bounds(
       arg = "limit_indices",
       index = limit_idx[invalid_positions],
@@ -77,9 +82,12 @@ infer_types_slice <- function(
     )
   }
 
-  # (C4)
-  if (any(stride_vals < 0)) {
-    cli_abort("{.arg strides} must be non-negative")
+  # (C4) `0 < strides`. A zero stride is not merely degenerate: it makes the
+  # (C5) division below `Inf`/`NaN`, which `Shape()` turns into `NA` -- a
+  # fabricated dynamic axis that every downstream `unify_shapes()` would then
+  # treat as a size still to be learned.
+  if (any(stride_vals < 1L)) {
+    cli_abort("{.arg strides} must be positive")
   }
 
   # (C5)

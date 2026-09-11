@@ -175,3 +175,41 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("reduce_window folds its inputs' shapes", {
+  rw <- function(shapes) {
+    local_func()
+    n <- length(shapes)
+    rank <- length(shapes[[1L]])
+    ins <- lapply(
+      seq_along(shapes),
+      function(i) dyn_input(paste0("x", i), "f32", shapes[[i]])
+    )
+    body <- local_func(id = "")
+    args <- lapply(
+      seq_len(2L * n),
+      function(i) hlo_input(paste0("b", i), "f32", shape = integer())
+    )
+    do.call(
+      hlo_return,
+      lapply(seq_len(n), function(i) hlo_add(args[[i]], args[[i + n]]))
+    )
+    hlo_reduce_window(
+      ins,
+      lapply(seq_len(n), function(i) hlo_scalar(0, dtype = "f32")),
+      body = body,
+      window_dimensions = rep(1L, rank),
+      window_strides = rep(1L, rank),
+      base_dilations = rep(1L, rank),
+      window_dilations = rep(1L, rank),
+      padding = matrix(0L, rank, 2L)
+    )
+  }
+  out <- rw(list(N, 4L))
+  expect_equal(repr(out[[1L]]$value_type$type), "tensor<4xf32>")
+  expect_error(rw(list(N, 3L, 4L)), "same shape")
+  # A rank mismatch is refused rather than recycled.
+  expect_error(rw(list(c(2L, 3L, 2L, 3L), c(2L, 3L))), "same shape")
+})

@@ -14,7 +14,12 @@ infer_types_case <- function(index, ...) {
   }
 
   # (C2)
-  get_branch_out_types <- function(branch, index) {
+  # `call = infer_frame` so a branch error is attributed to
+  # infer_types_case() -- not to this local helper, and not to the `lapply`
+  # lambda that `rlang::caller_env()` would find. anvl rewrites these errors
+  # and keys on the call.
+  infer_frame <- environment()
+  get_branch_out_types <- function(branch, index, call = infer_frame) {
     if (!inherits(branch, "Func")) {
       error_unexpected_list_type(
         arg = "branches",
@@ -40,20 +45,39 @@ infer_types_case <- function(index, ...) {
     get_branch_out_types(branches[[i]], i - 1L)
   })
 
-  # (C3)
-  if (length(unique(out_types_list)) != 1L) {
+  error_branches_differ <- function(call = rlang::caller_env()) {
     # nolint next
     branch_types <- vapply(
       out_types_list,
       function(types) {
-        vapply(types, repr, character(1))
+        paste(vapply(types, repr, character(1)), collapse = ", ")
       },
       character(1)
     )
-    cli_abort(c(
-      "All branch functions must have the same output types.",
-      x = "Got {branch_types}."
-    ))
+    cli_abort(
+      c(
+        "All branch functions must have the same output types.",
+        x = "Got {branch_types}."
+      ),
+      call = call
+    )
+  }
+
+  n_out <- length(out_types_list[[1L]])
+  if (!all(lengths(out_types_list) == n_out)) {
+    error_branches_differ()
+  }
+  # (C3) `same(output_types(branches...))` -- equality across every branch,
+  # not a join of them. See the note in `infer_types_if()`: widening a branch
+  # that knows a size against one that does not is both a spec violation and
+  # something IREE cannot lower.
+  for (k in seq_len(n_out)) {
+    reference <- out_types_list[[1L]][[k]]
+    for (ts in out_types_list[-1L]) {
+      if (ts[[k]] != reference) {
+        error_branches_differ()
+      }
+    }
   }
 
   # (C4)

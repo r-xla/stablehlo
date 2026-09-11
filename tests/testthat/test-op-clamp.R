@@ -65,3 +65,66 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("clamp accepts a dynamic bound and refines from it", {
+  expect_equal(
+    inferred(function() {
+      hlo_clamp(
+        dyn_input("lo", "f32", N),
+        dyn_input("x", "f32", 3L),
+        dyn_input("hi", "f32", N)
+      )
+    }),
+    "tensor<3xf32>"
+  )
+  # The operand is dynamic but a bound is not, so the result is static.
+  expect_equal(
+    inferred(function() {
+      hlo_clamp(
+        dyn_input("lo", "f32", 4L),
+        dyn_input("x", "f32", N),
+        dyn_input("hi", "f32", integer())
+      )
+    }),
+    "tensor<4xf32>"
+  )
+  local_func()
+  expect_error(
+    hlo_clamp(
+      dyn_input("lo", "f32", 4L),
+      dyn_input("x", "f32", 3L),
+      dyn_input("hi", "f32", integer())
+    ),
+    "same shape as"
+  )
+})
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("clamp compares its bounds to each other, not just to the operand", {
+  # Each bound agrees with a dynamic operand, so only a bound-vs-bound check
+  # catches this.
+  local_func()
+  expect_error(
+    hlo_clamp(
+      hlo_input("lo", "f32", shape = 3L),
+      hlo_input("x", "f32", shape = NA_integer_),
+      hlo_input("hi", "f32", shape = 5L)
+    ),
+    "same shape"
+  )
+  # Agreeing bounds refine the operand.
+  local_func()
+  expect_equal(
+    repr(
+      hlo_clamp(
+        hlo_input("lo", "f32", shape = 3L),
+        hlo_input("x", "f32", shape = NA_integer_),
+        hlo_input("hi", "f32", shape = NA_integer_)
+      )$value_type$type
+    ),
+    "tensor<3xf32>"
+  )
+})

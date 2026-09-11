@@ -78,3 +78,112 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("concatenate: off-axis unifies, on-axis sums to unknown", {
+  expect_equal(
+    inferred(function() {
+      hlo_concatenate(
+        dyn_input("a", "f32", c(N, 3L)),
+        dyn_input("b", "f32", c(N, 3L)),
+        dimension = 0L
+      )
+    }),
+    "tensor<?x3xf32>"
+  )
+  # A known part does not make the sum known while another part is unknown.
+  expect_equal(
+    inferred(function() {
+      hlo_concatenate(
+        dyn_input("a", "f32", c(2L, N)),
+        dyn_input("b", "f32", c(N, 4L)),
+        dimension = 0L
+      )
+    }),
+    "tensor<?x4xf32>"
+  )
+  # Off-axis sizes that cannot agree are still refused.
+  local_func()
+  expect_error(
+    hlo_concatenate(
+      dyn_input("a", "f32", c(N, 3L)),
+      dyn_input("b", "f32", c(N, 4L)),
+      dimension = 0L
+    ),
+    class = "ErrorConcatenateShapes"
+  )
+})
+
+test_that("concatenate: the refiner derives the sum we could not", {
+  skip_if_no_refine()
+  # Our inference says `?` for the concatenated axis; the refiner proves 2n.
+  # This is the case where the two disagree in strength but must not disagree
+  # in fact.
+  expect_refines_and_runs(
+    build = function(shapes) {
+      a <- dyn_input("a", "f32", shapes[[1L]])
+      hlo_concatenate(a, a, dimension = 0L)
+    },
+    dyn_shapes = list(N),
+    runs = list(
+      list(shapes = list(3L), args = list(c(1, 2, 3))),
+      list(shapes = list(6L), args = list(1:6 + 0))
+    )
+  )
+})
+
+test_that("a dynamic axis survives a chain of ops and reaches the right size", {
+  skip_if_no_iree_compile()
+
+  # concatenate is the interesting one: its on-axis size is the *sum*, so a
+  # dynamic input gives a dynamic output, and only the runtime knows the
+  # result is 2n long.
+  local_func(id = "main")
+  a <- dyn_input("a", "f32", N)
+  b <- dyn_input("b", "f32", N)
+  sum <- hlo_add(a, b)
+  gt <- hlo_compare(sum, a, comparison_direction = "GT", compare_type = "FLOAT")
+  sel <- hlo_select(gt, sum, a)
+  src <- repr(hlo_return(hlo_concatenate(sel, a, dimension = 0L)))
+  expect_match(src, "tensor<?xf32>", fixed = TRUE)
+
+  for (n in c(2L, 4L)) {
+    x <- as.double(seq_len(n))
+    y <- rep(1, n)
+    got <- iree_run(
+      src,
+      c(
+        sprintf("%dxf32=%s", n, paste(x, collapse = " ")),
+        sprintf("%dxf32=%s", n, paste(y, collapse = " "))
+      )
+    )
+    # select(x + y > x, x + y, x) is x + y wherever y > 0, i.e. everywhere.
+    expect_equal(got, c(x + y, x), tolerance = 1e-6, info = paste("n =", n))
+  }
+})
+
+test_that("concatenate compares operand ranks, not just their projections", {
+  # Dropping the concatenated axis from a shape that does not have it removes
+  # nothing, so the off-axis fold agrees across a rank mismatch. Unguarded,
+  # the concatenated axis then reads out of bounds as `NA` and the result
+  # carries a `?` that no operand justifies.
+  local_func()
+  expect_error(
+    hlo_concatenate(
+      hlo_input("a", "f32", shape = c(2L, 3L)),
+      hlo_input("b", "f32", shape = 2L),
+      dimension = 1L
+    ),
+    class = "ErrorConcatenateShapes"
+  )
+  local_func()
+  expect_error(
+    hlo_concatenate(
+      hlo_input("a", "f32", shape = 3L),
+      hlo_scalar(1, dtype = "f32"),
+      dimension = 0L
+    ),
+    class = "ErrorConcatenateShapes"
+  )
+})

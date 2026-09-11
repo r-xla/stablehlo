@@ -75,3 +75,31 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("transpose carries a dynamic axis through the permutation", {
+  expect_equal(
+    inferred(function() {
+      hlo_transpose(dyn_input("a", "f32", c(N, 3L)), permutation = c(1L, 0L))
+    }),
+    "tensor<3x?xf32>"
+  )
+})
+
+test_that("transpose", {
+  skip_if_no_refine()
+  expect_refines_and_runs(
+    build = function(shapes) {
+      hlo_transpose(
+        dyn_input("a", "f32", shapes[[1L]]),
+        permutation = c(1L, 0L)
+      )
+    },
+    dyn_shapes = list(c(N, 3L)),
+    runs = list(
+      list(shapes = list(c(2L, 3L)), args = list(1:6 + 0)),
+      list(shapes = list(c(4L, 3L)), args = list(1:12 + 0))
+    )
+  )
+})

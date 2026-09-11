@@ -44,7 +44,31 @@ infer_types_while <- function(..., cond, body) {
     arg = "output(condition)"
   )
 
-  # (C2)
+  # (C2) `body` has type `(T0, ..., TN-1) -> (T0, ..., TN-1)`, so its *inputs*
+  # are constrained too -- and by the same equality as its outputs. Unchecked,
+  # a body declaring a different number or type of inputs renders a region
+  # whose block arguments contradict the op's operands, and it is exactly the
+  # refinement the outputs are checked for, just on the side nothing looked at.
+  if (length(body$inputs) != length(value_types)) {
+    cli_abort(c(
+      "{.arg body} must have the same number of inputs as {.arg ...}",
+      x = "Got {length(body$inputs)} and {length(value_types)}."
+    ))
+  }
+  body_in_types <- lapply(body$inputs, function(x) x$type)
+  for (i in seq_along(value_types)) {
+    if (body_in_types[[i]] != value_types[[i]]) {
+      error_unequal_types(
+        arg1 = "body input",
+        arg2 = "input",
+        index = i - 1L,
+        expected = "must have the same type",
+        actual1 = body_in_types[[i]],
+        actual2 = value_types[[i]]
+      )
+    }
+  }
+
   body_out_types <- func_output_types(body)
   if (length(body_out_types) != length(value_types)) {
     cli_abort(c(
@@ -52,6 +76,13 @@ infer_types_while <- function(..., cond, body) {
       x = "Got {length(body_out_types)} outputs and {length(value_types)} inputs."
     ))
   }
+  # (C2) The body's type must *equal* the carried type. Accepting a body that
+  # merely refines it -- `tensor<3xf32>` where the loop carries
+  # `tensor<?xf32>` -- looks sound, since the loop forgets the extra knowledge
+  # next iteration, but SPEC (C2) says `body` has type
+  # `(T0, ..., TN-1) -> (T0, ..., TN-1)` with `Ti = type(operand[i])`, and IREE
+  # cannot lower it: `scf.while` requires the yielded type to match the
+  # region's input type.
   for (i in seq_along(value_types)) {
     if (body_out_types[[i]] != value_types[[i]]) {
       error_unequal_types(
@@ -65,7 +96,9 @@ infer_types_while <- function(..., cond, body) {
     }
   }
 
-  # (C3)
+  # (C3) The declared carried types, never the body's refinement of them: what
+  # comes out of the loop is what goes around it, and after zero iterations
+  # that is the input.
   ValueTypes(value_types)
 }
 

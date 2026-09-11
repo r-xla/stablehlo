@@ -155,6 +155,10 @@ hlo_tensor.PJRTBuffer <- function(value, ..., func = NULL) {
 #' @export
 hlo_empty <- function(dtype, shape, func = NULL) {
   func <- func %??% .current_func()
+  # Before the zero-axis guard below, which would otherwise branch on `NA`.
+  # A constant's shape is a rendered attribute and must be static; see
+  # `impl_hlo_constant()`.
+  assert_shapevec(shape)
   shape <- as.integer(shape)
   data <- if (dtype == "pred") {
     logical()
@@ -177,6 +181,12 @@ hlo_empty <- function(dtype, shape, func = NULL) {
 }
 
 impl_hlo_constant <- function(value, dtype, func, shape) {
+  # A constant's shape is rendered as an attribute, and StableHLO requires the
+  # literal's type to be statically shaped. This is the single gate for every
+  # constant builder -- `hlo_scalar()`, `hlo_tensor()`, `hlo_empty()`,
+  # `hlo_constant()` -- so no `NA` can reach a rendered attribute from any of
+  # them, which is the invariant R/shape-algebra.R states.
+  assert_shapevec(shape)
   dtype <- if (is.null(dtype)) {
     if (is.integer(value)) {
       "i32"

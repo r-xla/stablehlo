@@ -68,5 +68,5 @@
         "i64", length(strides)))
     Condition
       Error in `infer_types_slice()`:
-      ! `strides` must be non-negative
+      ! `strides` must be positive
 

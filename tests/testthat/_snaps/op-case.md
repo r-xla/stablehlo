@@ -34,7 +34,7 @@
     Code
       infer_types_case(index, branch_with_input)
     Condition
-      Error:
+      Error in `infer_types_case()`:
       ! `branches[0]` must not have inputs.
       x Got 1 input.
 

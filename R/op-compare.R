@@ -46,7 +46,7 @@ infer_types_compare <- function(
   }
 
   # (C1), (C2)
-  assert_vt_equal(lhs, rhs)
+  operand <- unify_vt(lhs, rhs)
 
   # (C3)
   dtype <- lhs$type$dtype
@@ -74,7 +74,7 @@ infer_types_compare <- function(
     ValueType(
       TensorType(
         dtype = as_dtype("bool"),
-        shape = Shape(shape(lhs))
+        shape = Shape(shape(operand))
       )
     )
   ))

@@ -102,27 +102,6 @@ test_that("assert_vts_are_tensors", {
   )
 })
 
-test_that("assert_vt_equal", {
-  x <- make_vt("i32", integer())
-  y <- make_vt("i32", integer())
-  z1 <- make_vt("i32", 1L)
-  z2 <- make_vt("f32", integer())
-
-  expect_snapshot(
-    assert_vt_equal(x, z1),
-    error = TRUE
-  )
-  expect_snapshot(
-    assert_vt_equal(x, z2),
-    error = TRUE
-  )
-
-  expect_error(
-    assert_vt_equal(x, y),
-    NA
-  )
-})
-
 test_that("assert_vts_have_same_dtype", {
   x <- make_vt("i32", integer())
   y <- make_vt("f32", integer())

@@ -48,14 +48,92 @@ in the same order of magnitude as `pjrt_compile()`):
   `infer_types_*` functions. Prefer `inherits()` over `checkmate` helpers in
   per-op code paths.
 
+### Dynamic axis sizes
+
+A `Shape` *is* an integer vector of axis sizes with a class attached (not a
+list wrapping one), and `NA_integer_` in it means *dynamic*: a size the program
+only learns at run time, rendered as `?` in the MLIR type. `length(shape)` is
+the rank, which is never dynamic -- unranked tensors are not supported, so a
+rank mismatch stays a hard error everywhere.
+
+`R/shape-algebra.R` holds the reasoning that makes this work, and the point of
+it is that "are these sizes equal" splits into three questions that must not be
+spelled the same way:
+
+* `possibly_*()` / `provably_*()` -- could this hold at run time, and does it
+  provably hold. Constraint checks use `provably_*()`: refuse only what is
+  *certainly* wrong, and leave anything a `?` could satisfy to the runtime,
+  which can see the sizes. `provably_ne()` is the workhorse. The two are duals,
+  not complements -- `possibly(x)` is `!provably(!x)` -- so "possibly equal" is
+  the negation of *provably unequal*, never of "possibly unequal"; for `?`
+  against `3` both of those hold at once.
+* `identical()` -- type identity, for buffer aliasing and `output_types`, where
+  `?` must *not* match a known size.
+* `unify_shapes()` / `unify_all_shapes()` / `unify_vt()` -- the most specific
+  shape or type consistent with every input, or an error when there is none.
+  These build result shapes: a definite clash and a rank mismatch both abort,
+  and otherwise a `?` unified with a known size gives the known size, so
+  `add(tensor<?xf32>, tensor<3xf32>)` has type `tensor<3xf32>`. Unify a "these
+  must all agree" set with `unify_all_shapes()` rather than comparing each
+  against the first -- "possibly equal" is not transitive, so folding it would
+  accept `(3, ?, 4)`, whereas unification is associative and so folds
+  correctly.
+
+Two consequences for inference code. `==` and `!=` on a `Shape` raise rather
+than answer, so a check has to name which of the three it means. And an `if`
+must never branch on a possibly-`NA` comparison (`if (NA == 0L)` is an error,
+not a `FALSE`) -- write the guard as `provably_*()` so an unknown operand falls
+through to arithmetic, which propagates `NA` and gives the honest `?`.
+
+Where StableHLO lets a size come from *data* rather than from a shape it does
+so with a separate op that takes the sizes as an operand
+(`hlo_dynamic_reshape()`, `hlo_dynamic_iota()`, `hlo_dynamic_pad()`,
+`hlo_real_dynamic_slice()`, ...). So `NA` reaches an inference function only as
+a result-type hint, never as a rendered attribute: `assert_shapevec()` stays
+strict at every one of its call sites, and only those ops use
+`assert_shapevec_dyn()`. `assert_size_operand()` is the shared boundary check
+for those operands -- rank-1, integer dtype, one element per axis, and (for
+the ops StableHLO types statically shaped) a static extent of its own.
+
 ## Testing
 
 You can compare PJRTBuffers using `expect_equal()`, so you don't need to use `as_array()`.
+
+### The dynamism tests that need more than the package
+
+Each op's dynamism tests live in its own `test-op-<name>.R`, under a
+`# ---- dynamic axis sizes` banner. Most are pure inference and always run, but
+two kinds need something extra and **skip silently** without it -- so a green
+run does not mean they passed. Check the skip count.
+
+* `expect_refines_and_runs()` and `expect_dynamic_op_runs()` need
+  `pjrt::pjrt_refine_shapes()` and the `stablehlo-opt` binary behind it. Point
+  `PJRT_STABLEHLO_OPT_PATH` at a local binary to skip the download (the build
+  is at `r-xla/pjrt-builds`, release tag `stablehlo`, and unpacks to ~3 GB), or
+  set `PJRT_INSTALL=1` and let pjrt fetch it into its cache. These are the
+  tests that check our inferred type against what stablehlo's own refinement
+  pass derives.
+* `iree_compiles()` and `iree_run()` need `iree-compile` and `iree-run-module`
+  on `PATH`. They cover the one thing refinement structurally cannot: an
+  extent that comes from the *data*, which XLA refuses outright ("can't be
+  translated to XLA HLO").
+
+`iree_compiles()` deliberately does not pass `--iree-llvmcpu-link-embedded=false`.
+That flag emits a system ELF, which only a runtime built with the system
+library loader can execute; a stock `iree-run-module` has just the embedded
+one, and every `iree_run()` then fails with "HAL device `__device_0` not found
+or unavailable" while `iree_compiles()` keeps passing.
 
 ## Adding New Operations
 
 When implementing a new operation, closely follow the specification described in SPEC.md.
 Also, annotate each check in the inference function with the corresponding requirement from the specification (C1, C2, C3, etc.).
+
+Each such check also has to decide what it does with a dynamic axis size -- see
+"Dynamic axis sizes" above. A constraint the spec states as an equality becomes
+`provably_ne()` plus a `unify_shapes()` that records the refinement; one the spec
+states as an inequality (scatter's window sizes, say) becomes `provably_gt()` and
+refines nothing, because an inequality cannot pin a size.
 
 ## Error Messages
 

@@ -325,3 +325,71 @@ test_that("error: lhs and rhs different dtypes", {
     )
   })
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("convolution carries a dynamic batch or spatial axis", {
+  conv <- function(lhs_shape) {
+    hlo_convolution(
+      dyn_input("a", "f32", lhs_shape),
+      dyn_input("k", "f32", c(1L, 1L, 2L)),
+      dimension_numbers = ConvDimensionNumbers(
+        0L,
+        1L,
+        2L,
+        1L,
+        0L,
+        2L,
+        0L,
+        1L,
+        2L
+      ),
+      window_strides = 1L,
+      padding = matrix(0L, 1L, 2L),
+      lhs_dilation = 1L,
+      rhs_dilation = 1L
+    )
+  }
+  # A dynamic batch axis stays dynamic; the spatial extent is still computed.
+  expect_equal(inferred(function() conv(c(N, 1L, 4L))), "tensor<?x1x3xf32>")
+  # A dynamic spatial axis makes the window count unknown.
+  expect_equal(inferred(function() conv(c(2L, 1L, N))), "tensor<2x1x?xf32>")
+})
+
+test_that("convolution over a dynamic batch axis", {
+  skip_if_no_refine()
+  expect_refines_and_runs(
+    build = function(shapes) {
+      hlo_convolution(
+        dyn_input("a", "f32", shapes[[1L]]),
+        dyn_input("k", "f32", shapes[[2L]]),
+        dimension_numbers = ConvDimensionNumbers(
+          0L,
+          1L,
+          2L,
+          1L,
+          0L,
+          2L,
+          0L,
+          1L,
+          2L
+        ),
+        window_strides = 1L,
+        padding = matrix(0L, 1L, 2L),
+        lhs_dilation = 1L,
+        rhs_dilation = 1L
+      )
+    },
+    dyn_shapes = list(c(N, 1L, 4L), c(1L, 1L, 2L)),
+    runs = list(
+      list(
+        shapes = list(c(2L, 1L, 4L), c(1L, 1L, 2L)),
+        args = list(1:8 + 0, c(1, 1))
+      ),
+      list(
+        shapes = list(c(3L, 1L, 4L), c(1L, 1L, 2L)),
+        args = list(1:12 + 0, c(1, -1))
+      )
+    )
+  )
+})

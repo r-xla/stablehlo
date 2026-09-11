@@ -58,19 +58,27 @@ infer_types_reduce_window <- function(
     }
   })
 
-  # (C2)
+  # (C2) Folded with `unify_all_shapes()` rather than compared against the first, as
+  # `reduce` does: a pairwise check is not transitive, and the fold also
+  # refines, so `ref_shape` below is the most any input knows. It must be the
+  # real fold and not a hand-rolled `ifelse` one -- that recycles instead of
+  # comparing ranks, so a rank mismatch reads as agreement.
   input_shapes <- lapply(input_value_types, function(vt) shape(vt))
-  ref_shape <- input_shapes[[1L]]
-  if (
-    !all(vapply(input_shapes, function(s) identical(s, ref_shape), logical(1L)))
-  ) {
-    # fmt: skip
-    shapes_str <- paste(vapply(input_shapes, shapevec_repr, character(1)), collapse = ", ") # nolint
-    cli_abort(c(
-      "All inputs to reduce_window must have the same shape.",
-      x = "Got shapes: {shapes_str}."
-    ))
-  }
+  infer_frame <- environment()
+  ref_shape <- withCallingHandlers(
+    unify_all_shapes(input_shapes, arg = "inputs"),
+    ErrorDimSizeMismatch = function(cnd) {
+      # fmt: skip
+      shapes_str <- paste(vapply(input_shapes, shapevec_repr, character(1)), collapse = ", ") # nolint
+      cli_abort(
+        c(
+          "All inputs to reduce_window must have the same shape.",
+          x = "Got shapes: {shapes_str}."
+        ),
+        call = infer_frame
+      )
+    }
+  )
 
   # (C3) Each input must have the same dtype as its corresponding init_value
   for (i in seq_len(num_inputs)) {
@@ -167,6 +175,10 @@ infer_types_reduce_window <- function(
     ))
   }
 
+  # `ifelse()` and `|` propagate `NA` rather than branching on it, so a dynamic
+  # input axis gives a dynamic window count -- the honest answer, and the
+  # reason this arithmetic needed no change. Written with `if` it would have
+  # errored, as `convolution`'s did.
   dilated_input <- ifelse(ref_shape == 0L, 0L, (ref_shape - 1L) * base_dil + 1L)
   padded_input <- pad[, 1L] + dilated_input + pad[, 2L]
   dilated_window <- (window_dims - 1L) * window_dil + 1L

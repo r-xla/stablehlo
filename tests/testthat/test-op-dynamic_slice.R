@@ -75,3 +75,55 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("dynamic_slice and dynamic_update_slice defer their bounds", {
+  expect_equal(
+    inferred(function() {
+      hlo_dynamic_slice(
+        dyn_input("a", "f32", N),
+        hlo_scalar(0L, dtype = "i32"),
+        slice_sizes = 2L
+      )
+    }),
+    "tensor<2xf32>"
+  )
+  expect_equal(
+    inferred(function() {
+      hlo_dynamic_update_slice(
+        dyn_input("a", "f32", N),
+        dyn_input("u", "f32", 2L),
+        hlo_scalar(0L, dtype = "i32")
+      )
+    }),
+    "tensor<?xf32>"
+  )
+  # A slice that certainly overruns a known axis is still refused.
+  local_func()
+  expect_error(
+    hlo_dynamic_slice(
+      dyn_input("a", "f32", 3L),
+      hlo_scalar(0L, dtype = "i32"),
+      slice_sizes = 9L
+    ),
+    "must not be greater than"
+  )
+})
+
+test_that("dynamic_slice of a dynamic operand", {
+  skip_if_no_refine()
+  expect_refines_and_runs(
+    build = function(shapes) {
+      a <- dyn_input("a", "f32", shapes[[1L]])
+      s <- dyn_input("s", "i32", shapes[[2L]])
+      hlo_dynamic_slice(a, s, slice_sizes = 2L)
+    },
+    dyn_shapes = list(N, integer()),
+    dtype = c("f32", "i32"),
+    runs = list(
+      list(shapes = list(5L, integer()), args = list(1:5 + 0, 1L)),
+      list(shapes = list(8L, integer()), args = list(1:8 + 0, 3L))
+    )
+  )
+})

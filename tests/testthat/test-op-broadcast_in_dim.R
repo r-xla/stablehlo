@@ -98,3 +98,54 @@ test_that("errors", {
   # (C5) operand dim != 1 and != result dim
   check(vt("f32", c(2L, 3L)), c(0L, 1L), c(4L, 5L))
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("broadcast_in_dim leaves a dynamic axis to the runtime", {
+  # A dynamic operand axis may be 1 (stretch) or 4 (pass through) at run time.
+  expect_equal(
+    inferred(function() {
+      hlo_broadcast_in_dim(
+        dyn_input("a", "f32", N),
+        shape = c(2L, 4L),
+        broadcast_dimensions = 1L
+      )
+    }),
+    "tensor<2x4xf32>"
+  )
+  # Known, not 1, and not equal: certainly wrong.
+  local_func()
+  expect_error(
+    hlo_broadcast_in_dim(
+      dyn_input("a", "f32", 3L),
+      shape = c(2L, 4L),
+      broadcast_dimensions = 1L
+    ),
+    class = "ErrorDimSizeMismatch"
+  )
+})
+
+test_that("broadcast_in_dim from an axis whose size is deferred", {
+  skip_if_no_refine()
+  # Our inference cannot check the operand's axis against the target, so it
+  # defers; refinement resolves it and XLA compiles the result.
+  expect_refines_and_runs(
+    build = function(shapes) {
+      a <- dyn_input("a", "f32", shapes[[1L]])
+      hlo_broadcast_in_dim(a, broadcast_dimensions = 1L, shape = c(2L, 3L))
+    },
+    dyn_shapes = list(N),
+    runs = list(list(shapes = list(3L), args = list(c(1, 2, 3))))
+  )
+})
+
+test_that("broadcast_in_dim rejects a dynamic shape attribute", {
+  # The result is rendered as a static type, so `NA` must not reach it --
+  # `hlo_dynamic_broadcast_in_dim()` is the escape hatch.
+  local_func()
+  x <- hlo_input("x", "f32", shape = c(2L, 3L))
+  expect_error(
+    hlo_broadcast_in_dim(x, broadcast_dimensions = c(0L, 1L), shape = c(N, 3L)),
+    "Contains missing values"
+  )
+})
