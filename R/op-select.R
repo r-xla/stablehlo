@@ -3,7 +3,7 @@ NULL
 
 # `select`'s short assembly form names only two types -- pred's and
 # `on_true`'s -- so `on_true` stands in for `on_false` and for the result. That
-# holds only while all three are the same type. Since inference *meets* the
+# holds only while all three are the same type. Since inference *unifies* the
 # operands rather than requiring equality, they need not be: one may know an
 # axis the others leave dynamic, and emitting the short form then produces MLIR
 # that does not parse ("use of value expects different type than prior uses").
@@ -42,7 +42,7 @@ infer_types_select <- function(
 ) {
   # (C2)
   assert_vts_are_tensors(on_true = on_true, on_false = on_false)
-  result <- vt_meet(on_true, on_false)
+  result <- unify_vt(on_true, on_false)
   assert_vt_has_ttype(pred, "bool")
 
   # (C1) A scalar `pred` broadcasts; any other rank must be the result's, and
@@ -63,10 +63,10 @@ infer_types_select <- function(
         x = "Got shapes {shapevec_repr(pred_dims)} and {shapevec_repr(dims)}."
       ))
     }
-    # `shape_meet()` rather than a hand-rolled `ifelse()`: the rank and the
+    # `unify_shapes()` rather than a hand-rolled `ifelse()`: the rank and the
     # definite clash were just checked in select's own words, so all this can
-    # still do is refine -- and the meet rule stays defined in one place.
-    dims <- shape_meet(dims, pred_dims, arg1 = "on_true", arg2 = "pred")
+    # still do is refine -- and unification stays defined in one place.
+    dims <- unify_shapes(dims, pred_dims, arg_a = "on_true", arg_b = "pred")
   }
 
   ValueTypes(list(

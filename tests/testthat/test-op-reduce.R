@@ -195,7 +195,7 @@ test_that("reduce: the fold refines and rejects an impossible set", {
 
   # Every shape may match the first, but the last two cannot match each other.
   # A pairwise check against input 1 would accept this; the fold does not.
-  # Reported in reduce's own words, not `shape_meet()`'s.
+  # Reported in reduce's own words, not `unify_shapes()`'s.
   expect_error(reduce_of(list(N, 3L, 4L)), "same shape")
 })
 

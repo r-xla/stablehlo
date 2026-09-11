@@ -92,22 +92,22 @@ infer_types_triangular_solve <- function(
         x = "Got shapes {shapevec_repr(a_batch)} and {shapevec_repr(b_batch)}."
       ))
     }
-    b_dims[seq_len(rank_b - 2)] <- shape_meet(
+    b_dims[seq_len(rank_b - 2)] <- unify_shapes(
       a_batch,
       b_batch,
-      arg1 = "a",
-      arg2 = "b"
+      arg_a = "a",
+      arg_b = "b"
     )
   }
 
-  # (C3) `a`'s two trailing axes were just required to be equal, so meet them:
+  # (C3) `a`'s two trailing axes were just required to be equal, so unify them:
   # with `a = tensor<3x?xf32>` the square size is provably 3, and reading
   # `a_dims[rank_a]` alone would report `?` and defer a decidable check.
-  a_size <- shape_meet(
+  a_size <- unify_shapes(
     a_dims[rank_a - 1L],
     a_dims[rank_a],
-    arg1 = "a",
-    arg2 = "a"
+    arg_a = "a",
+    arg_b = "a"
   )
   b_axis <- if (left_side) rank_b - 1L else rank_b
   if (provably_ne(a_size, b_dims[b_axis])) {
@@ -118,11 +118,11 @@ infer_types_triangular_solve <- function(
   }
   # `a`'s square size and this axis of `b` are equal, so a dynamic one on
   # either side is pinned by the other.
-  b_dims[b_axis] <- shape_meet(
+  b_dims[b_axis] <- unify_shapes(
     a_size,
     b_dims[b_axis],
-    arg1 = "a",
-    arg2 = "b"
+    arg_a = "a",
+    arg_b = "b"
   )
 
   valid_transpose <- c("NO_TRANSPOSE", "TRANSPOSE", "ADJOINT")

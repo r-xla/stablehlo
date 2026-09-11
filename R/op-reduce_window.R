@@ -58,7 +58,7 @@ infer_types_reduce_window <- function(
     }
   })
 
-  # (C2) Folded with `shapes_meet()` rather than compared against the first, as
+  # (C2) Folded with `unify_all_shapes()` rather than compared against the first, as
   # `reduce` does: a pairwise check is not transitive, and the fold also
   # refines, so `ref_shape` below is the most any input knows. It must be the
   # real fold and not a hand-rolled `ifelse` one -- that recycles instead of
@@ -66,7 +66,7 @@ infer_types_reduce_window <- function(
   input_shapes <- lapply(input_value_types, function(vt) shape(vt))
   infer_frame <- environment()
   ref_shape <- withCallingHandlers(
-    shapes_meet(input_shapes, arg = "inputs"),
+    unify_all_shapes(input_shapes, arg = "inputs"),
     ErrorDimSizeMismatch = function(cnd) {
       # fmt: skip
       shapes_str <- paste(vapply(input_shapes, shapevec_repr, character(1)), collapse = ", ") # nolint

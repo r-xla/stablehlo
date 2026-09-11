@@ -227,18 +227,48 @@ refined_result_type <- function(program) {
   trimws(sub("^.*\\)\\s*->\\s*(.*?)\\s*\\{?\\s*$", "\\1", line))
 }
 
+# Memoised: the probe below shells out to a very large binary, and 20-odd
+# tests ask this question.
+refine_usable <- local({
+  answer <- NULL
+  function() {
+    if (!is.null(answer)) {
+      return(answer)
+    }
+    # `pjrt_refine_shapes()` is the only entry point pjrt exports for this, so
+    # the only way to find out whether it works is to run it. `PJRT_INSTALL=0`
+    # so a missing `stablehlo-opt` is an error we skip on rather than a
+    # several-hundred-megabyte download in the middle of the suite.
+    answer <<- withr::with_envvar(c(PJRT_INSTALL = "0"), {
+      tryCatch(
+        {
+          pjrt::pjrt_refine_shapes(
+            "func.func @main(%a: tensor<?xf32>) -> tensor<?xf32> {
+               return %a : tensor<?xf32>
+             }",
+            "tensor<1xf32>"
+          )
+          TRUE
+        },
+        error = function(e) FALSE
+      )
+    })
+    answer
+  }
+})
+
 skip_if_no_refine <- function() {
   testthat::skip_if_not_installed("pjrt")
-  # `pjrt_refine_shapes()` and the `stablehlo-opt` plumbing behind it are newer
-  # than the pjrt this package requires, so check for them rather than assume.
-  if (!("stablehlo_opt_available" %in% getNamespaceExports("pjrt"))) {
+  # `pjrt_refine_shapes()` is newer than the pjrt this package requires, so
+  # check for it rather than assume.
+  if (!("pjrt_refine_shapes" %in% getNamespaceExports("pjrt"))) {
     testthat::skip("this pjrt has no shape refinement")
-  }
-  if (!pjrt::stablehlo_opt_available()) {
-    testthat::skip("the stablehlo-opt binary is not available")
   }
   if (!pjrt::plugins_downloaded("cpu")) {
     testthat::skip("no PJRT CPU plugin")
+  }
+  if (!refine_usable()) {
+    testthat::skip("the stablehlo-opt binary is not available")
   }
 }
 

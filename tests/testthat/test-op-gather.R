@@ -556,7 +556,7 @@ test_that("gather's batch-size check and refinement are both live", {
   }
   # (C17): batch sizes known and different.
   expect_error(g(c(4L, 5L, 6L), c(3L, 1L)), "batch dimensions")
-  # ... and the meet, in both directions.
+  # ... and the unification, in both directions.
   expect_equal(
     repr(g(c(4L, 5L, 6L), c(N, 1L))$value_type$type),
     "tensor<4x2xf32>"

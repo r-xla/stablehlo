@@ -6,7 +6,7 @@ test_that("basic tests", {
 
 # ---- dynamic axis sizes ----------------------------------------------------
 
-test_that("dynamic and static axis sizes meet axis by axis", {
+test_that("dynamic and static axis sizes unify axis by axis", {
   expect_equal(
     inferred(function() {
       hlo_multiply(

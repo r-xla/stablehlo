@@ -51,7 +51,7 @@ infer_types_clamp <- function(min, operand, max) {
   # `check_bound()` above compares each bound to the operand, which leaves the
   # bounds themselves unchecked against each other: with a dynamic operand,
   # `min` of 3 and `max` of 5 pass both checks and only clash here. Reported
-  # in clamp's own words rather than `shape_meet()`'s, whose message would name
+  # in clamp's own words rather than `unify_shapes()`'s, whose message would name
   # an argument clamp does not have.
   result_shape <- operand_shape
   for (nm in c("min", "max")) {
@@ -65,11 +65,11 @@ infer_types_clamp <- function(min, operand, max) {
         x = "Got {shapevec_repr(operand_shape)}, {shapevec_repr(min_shape)} and {shapevec_repr(max_shape)}."
       ))
     }
-    result_shape <- shape_meet(
+    result_shape <- unify_shapes(
       result_shape,
       bound_shape,
-      arg1 = "operand",
-      arg2 = nm
+      arg_a = "operand",
+      arg_b = nm
     )
   }
 

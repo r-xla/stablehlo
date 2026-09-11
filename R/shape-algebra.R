@@ -21,7 +21,7 @@ NULL
 #   identical()  Are these the same type?  Used for type identity (buffer
 #              aliasing, `output_types`), where `?` must *not* match a known
 #              size.
-#   shape_meet() What is the most we know?  Used to build result shapes: it
+#   unify_shapes() What is the most we know?  Used to build result shapes: it
 #              errors on a definite clash and otherwise returns the refined
 #              shape, so a dynamic operand meeting a static one yields the
 #              static size.
@@ -73,25 +73,28 @@ shape_nelts <- function(shape) {
 
 provably_nelts_ne <- function(a, b) provably(shape_nelts(a) != shape_nelts(b))
 
-# The most-refined shape consistent with both `a` and `b`, or an
-# error if no vector is. `?` meets a known size to that size, which is how a
+# The most-refined shape consistent with both `a` and `b`, or an error if no
+# shape is. `?` unifies with a known size to give that size, which is how a
 # program that mixes a dynamic operand with a static one keeps a static result
 # type.
 #
-# Rank is never part of the meet: a shape's `length()` is a compile-time constant
+# Rank is never unified: a shape's `length()` is a compile-time constant
 # everywhere (we do not support unranked tensors), so a rank mismatch is a hard
 # error rather than something to defer.
-shape_meet <- function(
+#
+# Unification is associative, commutative and idempotent, which is what lets
+# `unify_all_shapes()` fold it over a whole set.
+unify_shapes <- function(
   a,
   b,
-  arg1 = "lhs",
-  arg2 = "rhs",
+  arg_a = "lhs",
+  arg_b = "rhs",
   call = rlang::caller_env()
 ) {
   if (length(a) != length(b)) {
     cli_abort(
       c(
-        "{.arg {arg1}} and {.arg {arg2}} must have the same rank.",
+        "{.arg {arg_a}} and {.arg {arg_b}} must have the same rank.",
         x = "Got shapes {shapevec_repr(a)} and {shapevec_repr(b)}."
       ),
       call = call
@@ -104,8 +107,8 @@ shape_meet <- function(
   if (any(clash)) {
     axis <- which(clash)[[1L]] - 1L
     error_dim_size_mismatch(
-      arg1 = arg1,
-      arg2 = arg2,
+      arg1 = arg_a,
+      arg2 = arg_b,
       dim1 = axis,
       dim2 = axis,
       shape1 = a,
@@ -116,12 +119,16 @@ shape_meet <- function(
   ifelse(is.na(a), b, a)
 }
 
-# The meet of a list of shapes. This -- not a pairwise "may be equal" --
-# is what a "these must all agree" check becomes: "may be equal" is not
-# transitive, so folding it would accept `(3, ?, 4)` because each shape may
-# match the first. `shape_meet` is associative, so the fold both validates and produces the
+# Unify a whole set of shapes. This -- not a pairwise "may be equal" -- is what
+# a "these must all agree" check becomes: "may be equal" is not transitive, so
+# folding it would accept `(3, ?, 4)` because each shape may match the first.
+# Unification is associative, so the fold both validates and produces the
 # result shape.
-shapes_meet <- function(shapes, arg = "inputs", call = rlang::caller_env()) {
+unify_all_shapes <- function(
+  shapes,
+  arg = "inputs",
+  call = rlang::caller_env()
+) {
   Reduce(
     function(acc, s) {
       if (length(acc) != length(s)) {
@@ -140,21 +147,21 @@ shapes_meet <- function(shapes, arg = "inputs", call = rlang::caller_env()) {
           call = call
         )
       }
-      shape_meet(acc, s, arg1 = arg, arg2 = arg, call = call)
+      unify_shapes(acc, s, arg_a = arg, arg_b = arg, call = call)
     },
     shapes
   )
 }
 
-# The meet of two tensor ValueTypes: same dtype, same rank, axis sizes met.
+# Unify two tensor ValueTypes: same dtype, same rank, axis sizes unified.
 # The refined type is returned, so `add(tensor<?xf32>, tensor<3xf32>)` has type
 # `tensor<3xf32>`.
 #
 # A mismatch is reported as a whole-type error rather than a per-axis one:
-# `shape_meet()`'s per-axis message earns its keep where many shapes are folded
+# `unify_shapes()`'s per-axis message earns its keep where many shapes are folded
 # together (reduce, concatenate), but for a two-operand op showing both types
 # says more, and it is the wording anvl rewrites into its own vocabulary.
-vt_meet <- function(
+unify_vt <- function(
   x,
   y,
   arg_x = rlang::caller_arg(x),
@@ -179,12 +186,14 @@ vt_meet <- function(
   ValueType(TensorType(dtype = x$type$dtype, shape = Shape(sizes)))
 }
 
-# There is deliberately no join, and no refinement relation, even though
-# control flow looks like it wants them.
+# There is deliberately no dual of this -- no operation giving the *least*
+# specific type that every branch satisfies -- even though control flow looks
+# like it wants one.
 #
 # The reasoning that suggests them is sound as far as it goes: only one branch
 # of an `if` runs, so a result axis is known only where every branch knows it
-# and they agree -- the join, not the meet; and a `while` body may legitimately
+# and they agree -- the widening, not the unification; and a `while` body may
+# legitimately
 # produce a type more refined than the carried one, since the loop forgets the
 # extra knowledge next iteration.
 #

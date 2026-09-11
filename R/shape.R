@@ -76,7 +76,7 @@ error_shape_comparison <- function(op, call = rlang::caller_env()) {
       i = "For type identity, compare the axis sizes:
            {.code identical(unclass(x), unclass(y))}.",
       i = "For satisfiability, which is what an inference constraint wants,
-           fold the axis sizes with {.fun shape_meet}: it refuses only a
+           unify the axis sizes with {.fun unify_shapes}: it refuses only a
            definite clash and returns the most-refined shape otherwise."
     ),
     call = call

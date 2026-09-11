@@ -82,7 +82,7 @@ test_that("errors", {
 
 # ---- dynamic axis sizes ----------------------------------------------------
 
-test_that("triangular_solve meets a's trailing axes and its batch axes", {
+test_that("triangular_solve unifies a's trailing axes and its batch axes", {
   ts <- function(a, b) {
     local_func()
     hlo_triangular_solve(
@@ -101,7 +101,7 @@ test_that("triangular_solve meets a's trailing axes and its batch axes", {
   expect_equal(repr(ts(c(N, N), c(N, 2L))$value_type$type), "tensor<?x2xf32>")
   # A definite clash is still refused.
   expect_error(ts(c(3L, N), c(2L, 2L)), "Dimension mismatch")
-  # Batch axes meet too.
+  # Batch axes unify too.
   expect_equal(
     repr(ts(c(N, 3L, N), c(5L, N, 2L))$value_type$type),
     "tensor<5x3x2xf32>"

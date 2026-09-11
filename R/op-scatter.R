@@ -165,7 +165,7 @@ infer_types_scatter <- function(
   input_shapes <- lapply(inputs, shape)
   c1_frame <- environment()
   input_shape <- withCallingHandlers(
-    shapes_meet(input_shapes, arg = "inputs"),
+    unify_all_shapes(input_shapes, arg = "inputs"),
     ErrorDimSizeMismatch = function(e) {
       # fmt: skip
       shapes_str <- paste(vapply(inputs, function(x) shapevec_repr(shape(x)), character(1)), collapse = ", ") # nolint
@@ -191,7 +191,7 @@ infer_types_scatter <- function(
     ))
   }
 
-  # (C3) All updates share a shape. Folded with `shape_meet` rather than compared
+  # (C3) All updates share a shape. Folded with `unify_shapes` rather than compared
   # against the first: "may be equal" is not transitive, so a pairwise check would
   # accept `(3, ?, 4)`. The fold also refines, so `updates_shape` below is the
   # most any update knows.
@@ -212,7 +212,7 @@ infer_types_scatter <- function(
   }
   infer_frame <- environment()
   updates_shape <- withCallingHandlers(
-    shapes_meet(update_shapes, arg = "updates"),
+    unify_all_shapes(update_shapes, arg = "updates"),
     ErrorDimSizeMismatch = function(cnd) {
       error_updates_differ(call = infer_frame)
     }
@@ -358,11 +358,11 @@ infer_types_scatter <- function(
     ))
   }
   if (length(input_batching_dims)) {
-    refined_batch <- shape_meet(
+    refined_batch <- unify_shapes(
       batch_shape_inputs,
       batch_shape_scatter,
-      arg1 = "inputs",
-      arg2 = "scatter_indices"
+      arg_a = "inputs",
+      arg_b = "scatter_indices"
     )
     input_shape[input_batching_dims + 1L] <- refined_batch
     scatter_indices_shape[scatter_indices_batching_dims + 1L] <- refined_batch

@@ -34,11 +34,11 @@ infer_types_cholesky <- function(
   # The two trailing axes are equal by (C3), so each refines the other: a
   # `tensor<?x4xf32>` operand has a `tensor<4x4xf32>` result.
   result_dims <- operand_dims
-  square <- shape_meet(
+  square <- unify_shapes(
     operand_dims[rank - 1L],
     operand_dims[rank],
-    arg1 = "operand",
-    arg2 = "operand"
+    arg_a = "operand",
+    arg_b = "operand"
   )
   result_dims[c(rank - 1L, rank)] <- square
 

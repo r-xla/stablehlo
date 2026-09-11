@@ -37,14 +37,14 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   })
 
   # (C1)
-  # Folding with `shape_meet` rather than checking each input against the first:
+  # Folding with `unify_shapes` rather than checking each input against the first:
   # "may be equal" is not transitive, so a pairwise check would accept `(3, ?, 4)`.
   # The fold validates and refines in one pass, so a dynamic input meeting a
   # static one gives the static result shape.
   input_shapes <- lapply(input_value_types, function(vt) shape(vt))
   infer_frame <- environment()
   ref_shape <- withCallingHandlers(
-    shapes_meet(input_shapes, arg = "inputs"),
+    unify_all_shapes(input_shapes, arg = "inputs"),
     ErrorDimSizeMismatch = function(cnd) {
       # fmt: skip
       shapes_str <- paste(vapply(input_shapes, shapevec_repr, character(1)), collapse = ", ") # nolint

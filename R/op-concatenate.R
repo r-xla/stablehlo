@@ -88,7 +88,7 @@ infer_types_concatenate <- function(..., dimension) {
   }
 
   # (C2) Every axis but the concatenated one must agree. Folding with
-  # `shapes_meet()` refines as it checks, so an input with a dynamic off-axis
+  # `unify_all_shapes()` refines as it checks, so an input with a dynamic off-axis
   # size takes the size a sibling knows -- and, unlike a hand-rolled `ifelse`
   # fold, it compares ranks instead of recycling them.
   # Rank first, and on the operands rather than on the projections below:
@@ -108,7 +108,7 @@ infer_types_concatenate <- function(..., dimension) {
   # not to the handler it is raised from.
   infer_frame <- environment()
   off_axis <- withCallingHandlers(
-    shapes_meet(dims_no_concat, arg = "inputs"),
+    unify_all_shapes(dims_no_concat, arg = "inputs"),
     ErrorDimSizeMismatch = function(cnd) {
       error_concatenate_shapes(
         dimensions = dimension,

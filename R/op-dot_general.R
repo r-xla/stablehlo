@@ -252,7 +252,7 @@ infer_types_dot_general <- function(
   }
 
   # (C9) Batching axes likewise -- but these *do* reach the result, so they are
-  # met rather than merely checked: batching a dynamic axis against a known one
+  # unified rather than merely checked: batching a dynamic axis against a known one
   # gives a known batch size in the output.
   if (any(provably_ne(dim_batch1, dim_batch2))) {
     error_dot_general_dim_mismatch(
@@ -262,7 +262,12 @@ infer_types_dot_general <- function(
       dims = batching_dims
     )
   }
-  dim_batch <- shape_meet(dim_batch1, dim_batch2, arg1 = "lhs", arg2 = "rhs")
+  dim_batch <- unify_shapes(
+    dim_batch1,
+    dim_batch2,
+    arg_a = "lhs",
+    arg_b = "rhs"
+  )
 
   ii1 <- c(lhs_contracting, lhs_batching)
   dim_lhs_remaining <- if (length(ii1)) {

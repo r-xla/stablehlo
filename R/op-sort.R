@@ -21,7 +21,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
     cli_abort("provide at least one input")
   }
 
-  # (C3) Every input has the same shape. Folded with `shape_meet` rather than
+  # (C3) Every input has the same shape. Folded with `unify_shapes` rather than
   # compared pairwise against the first: "may be equal" is not transitive, so a
   # pairwise check would accept `(3, ?, 4)` because each shape may match the
   # first. The fold refuses that, and it refines as it goes, so the result
@@ -39,7 +39,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
     )
   }
   # Rank first, with this op's own wording: it is a compile-time constant, so
-  # unlike a size it is never deferred, and `shape_meet` would report it in its
+  # unlike a size it is never deferred, and `unify_shapes` would report it in its
   # own words.
   rank <- length(input_dims[[1L]])
   if (!all(lengths(input_dims) == rank)) {
@@ -47,7 +47,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
   }
   infer_frame <- environment()
   result_dims <- withCallingHandlers(
-    shapes_meet(input_dims, arg = "input"),
+    unify_all_shapes(input_dims, arg = "input"),
     ErrorDimSizeMismatch = function(cnd) error_shapes_differ(call = infer_frame)
   )
 
@@ -62,7 +62,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
     )
   }
 
-  # (C2), (C3) Each output keeps its input's dtype but takes the met shape, so
+  # (C2), (C3) Each output keeps its input's dtype but takes the unified shape, so
   # sorting a dynamic input alongside a static one gives static results.
   ValueTypes(lapply(
     dots,

@@ -60,20 +60,24 @@ rank mismatch stays a hard error everywhere.
 it is that "are these sizes equal" splits into three questions that must not be
 spelled the same way:
 
-* `possibly_*()` / `provably_*()` -- could this hold at run time, and does it provably
-  hold. Constraint checks use `provably_*()`: refuse only what is *certainly*
-  wrong, and leave anything a `?` could satisfy to the runtime, which can see
-  the sizes. `provably_ne()` is the workhorse; write it directly rather than as
-  `!possibly_eq()`, which is not its complement (for `?` against `3`, both "may be
-  equal" and "may differ" are true).
+* `possibly_*()` / `provably_*()` -- could this hold at run time, and does it
+  provably hold. Constraint checks use `provably_*()`: refuse only what is
+  *certainly* wrong, and leave anything a `?` could satisfy to the runtime,
+  which can see the sizes. `provably_ne()` is the workhorse. The two are duals,
+  not complements -- `possibly(x)` is `!provably(!x)` -- so "possibly equal" is
+  the negation of *provably unequal*, never of "possibly unequal"; for `?`
+  against `3` both of those hold at once.
 * `identical()` -- type identity, for buffer aliasing and `output_types`, where
-  `?` must *not* match a known size. Deliberately unchanged.
-* `shape_meet()` / `shapes_meet()` / `vt_meet()` -- the most that is known.
-  These build result shapes: a definite clash is an error, and otherwise a `?`
-  meeting a known size yields the known size, so `add(tensor<?xf32>,
-  tensor<3xf32>)` has type `tensor<3xf32>`. Fold a "these must all agree" set
-  with `shapes_meet()` rather than comparing each against the first --
-  `possibly_eq()` is not transitive, so folding it would accept `(3, ?, 4)`.
+  `?` must *not* match a known size.
+* `unify_shapes()` / `unify_all_shapes()` / `unify_vt()` -- the most specific
+  shape or type consistent with every input, or an error when there is none.
+  These build result shapes: a definite clash and a rank mismatch both abort,
+  and otherwise a `?` unified with a known size gives the known size, so
+  `add(tensor<?xf32>, tensor<3xf32>)` has type `tensor<3xf32>`. Unify a "these
+  must all agree" set with `unify_all_shapes()` rather than comparing each
+  against the first -- "possibly equal" is not transitive, so folding it would
+  accept `(3, ?, 4)`, whereas unification is associative and so folds
+  correctly.
 
 Two consequences for inference code. `==` and `!=` on a `Shape` raise rather
 than answer, so a check has to name which of the three it means. And an `if`
@@ -127,7 +131,7 @@ Also, annotate each check in the inference function with the corresponding requi
 
 Each such check also has to decide what it does with a dynamic axis size -- see
 "Dynamic axis sizes" above. A constraint the spec states as an equality becomes
-`provably_ne()` plus a `shape_meet()` that records the refinement; one the spec
+`provably_ne()` plus a `unify_shapes()` that records the refinement; one the spec
 states as an inequality (scatter's window sizes, say) becomes `provably_gt()` and
 refines nothing, because an inequality cannot pin a size.
 

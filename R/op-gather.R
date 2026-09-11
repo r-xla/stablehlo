@@ -188,7 +188,7 @@ infer_types_gather <- function(
     )
   }
 
-  # (C17) makes the batch sizes equal, so check them here and meet them, which
+  # (C17) makes the batch sizes equal, so check them here and unify them, which
   # lets the refined sizes reach the result -- `batch_dim_sizes` below reads
   # `start_indices_shape`, so this cannot wait for (C17)'s position further
   # down.
@@ -218,11 +218,11 @@ infer_types_gather <- function(
         x = "Got {shapevec_repr(batch_shape_operand)} and {shapevec_repr(batch_shape_start_indices)}."
       ))
     }
-    refined_batch <- shape_meet(
+    refined_batch <- unify_shapes(
       batch_shape_operand,
       batch_shape_start_indices,
-      arg1 = "operand",
-      arg2 = "start_indices"
+      arg_a = "operand",
+      arg_b = "start_indices"
     )
     operand_shape[operand_batching_dims + 1L] <- refined_batch
     start_indices_shape[start_indices_batching_dims + 1L] <- refined_batch

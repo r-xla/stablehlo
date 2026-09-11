@@ -6,7 +6,7 @@ test_that("basic tests", {
 
 # ---- dynamic axis sizes ----------------------------------------------------
 
-test_that("a dynamic operand meets a static one", {
+test_that("a dynamic operand unifies with a static one", {
   expect_equal(
     inferred(function() {
       hlo_add(dyn_input("a", "f32", N), dyn_input("b", "f32", N))

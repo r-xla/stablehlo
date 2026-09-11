@@ -11,7 +11,7 @@
 #' @export
 infer_types_generic_biv <- function(lhs, rhs) {
   assert_vts_are_tensors(lhs = lhs, rhs = rhs)
-  ValueTypes(list(vt_meet(lhs, rhs)))
+  ValueTypes(list(unify_vt(lhs, rhs)))
 }
 
 #' @title Infer types for float binary operations
@@ -27,7 +27,7 @@ infer_types_generic_biv <- function(lhs, rhs) {
 infer_types_float_biv <- function(lhs, rhs) {
   assert_vts_are_tensors(lhs = lhs, rhs = rhs)
   assert_vt_has_ttype(lhs, "float")
-  ValueTypes(list(vt_meet(lhs, rhs)))
+  ValueTypes(list(unify_vt(lhs, rhs)))
 }
 
 #' @title Infer types for boolean integerish operations
@@ -43,7 +43,7 @@ infer_types_float_biv <- function(lhs, rhs) {
 infer_types_integerish_biv <- function(lhs, rhs) {
   assert_vt_has_ttype(lhs, "bool", "int", "uint")
   assert_vt_has_ttype(rhs, "bool", "int", "uint")
-  ValueTypes(list(vt_meet(lhs, rhs)))
+  ValueTypes(list(unify_vt(lhs, rhs)))
 }
 
 #' @title Infer types for integer binary operations
@@ -62,7 +62,7 @@ infer_types_integerish_biv <- function(lhs, rhs) {
 infer_types_integer_biv <- function(lhs, rhs) {
   assert_vt_has_ttype(lhs, "int", "uint")
   assert_vt_has_ttype(rhs, "int", "uint")
-  ValueTypes(list(vt_meet(lhs, rhs)))
+  ValueTypes(list(unify_vt(lhs, rhs)))
 }
 
 #' @title Infer types for unary operations
@@ -143,5 +143,5 @@ infer_types_numeric_uni <- function(operand) {
 #' @export
 infer_types_numeric_biv <- function(lhs, rhs) {
   assert_vt_has_ttype(lhs, "float", "int", "uint")
-  ValueTypes(list(vt_meet(lhs, rhs)))
+  ValueTypes(list(unify_vt(lhs, rhs)))
 }

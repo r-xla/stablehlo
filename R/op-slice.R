@@ -84,7 +84,7 @@ infer_types_slice <- function(
 
   # (C4) `0 < strides`. A zero stride is not merely degenerate: it makes the
   # (C5) division below `Inf`/`NaN`, which `Shape()` turns into `NA` -- a
-  # fabricated dynamic axis that every downstream `shape_meet()` would then
+  # fabricated dynamic axis that every downstream `unify_shapes()` would then
   # treat as a size still to be learned.
   if (any(stride_vals < 1L)) {
     cli_abort("{.arg strides} must be positive")

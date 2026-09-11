@@ -225,7 +225,7 @@ test_that("error messages", {
 
 # ---- dynamic axis sizes ----------------------------------------------------
 
-test_that("dot_general defers contracted sizes and meets batch sizes", {
+test_that("dot_general defers contracted sizes and unifies batch sizes", {
   # A dynamic contracted axis: the sizes may agree at run time, and neither
   # reaches the result.
   expect_equal(
@@ -249,7 +249,7 @@ test_that("dot_general defers contracted sizes and meets batch sizes", {
     class = "ErrorDotGeneralDimMismatch"
   )
   # A batch axis *does* reach the result, so it is refined rather than copied
-  # from the lhs: `?` on the left meets `5` on the right.
+  # from the lhs: `?` on the left unifies with `5` on the right.
   expect_equal(
     inferred(function() {
       hlo_dot_general(

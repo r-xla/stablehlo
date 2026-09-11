@@ -79,7 +79,7 @@ test_that("errors", {
 
 # ---- dynamic axis sizes ----------------------------------------------------
 
-test_that("select: meets its operands, scalar pred still exempt", {
+test_that("select: unifies its operands, scalar pred still exempt", {
   expect_equal(
     inferred(function() {
       hlo_select(
@@ -126,7 +126,7 @@ test_that("compare and select", {
 
 test_that("select emits parseable MLIR when its operands' shapes differ", {
   skip_if_no_iree_compile()
-  # Inference *meets* the operands, so `on_true`, `on_false` and the result
+  # Inference *unifies* the operands, so `on_true`, `on_false` and the result
   # need not share a type -- and the short assembly form names only two of
   # them. Emitting it then produces MLIR that does not parse, which no
   # assertion on the inferred type string would catch.

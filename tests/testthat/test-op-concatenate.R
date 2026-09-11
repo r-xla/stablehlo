@@ -81,7 +81,7 @@ test_that("errors", {
 
 # ---- dynamic axis sizes ----------------------------------------------------
 
-test_that("concatenate: off-axis meets, on-axis sums to unknown", {
+test_that("concatenate: off-axis unifies, on-axis sums to unknown", {
   expect_equal(
     inferred(function() {
       hlo_concatenate(

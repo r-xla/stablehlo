@@ -121,7 +121,7 @@ test_that("errors", {
 
 # ---- dynamic axis sizes ----------------------------------------------------
 
-test_that("compare: result is bool over the met shape", {
+test_that("compare: result is bool over the unified shape", {
   expect_equal(
     inferred(function() {
       hlo_compare(

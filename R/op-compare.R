@@ -46,7 +46,7 @@ infer_types_compare <- function(
   }
 
   # (C1), (C2)
-  operand <- vt_meet(lhs, rhs)
+  operand <- unify_vt(lhs, rhs)
 
   # (C3)
   dtype <- lhs$type$dtype
