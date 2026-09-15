@@ -25,6 +25,8 @@ infer_types_dynamic_update_slice <- function( # nolint
         actual = paste("shape", shapevec_repr(shape(vt)))
       )
     }
+    # (I3) `start_indices` are 0-dimensional tensors of integer type.
+    assert_vt_has_ttype(vt, "int", "uint", arg = sprintf("start_indices[[%d]]", i))
   }
 
   operand_rank <- length(shape(operand))

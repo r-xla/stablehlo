@@ -81,4 +81,14 @@ test_that("errors", {
     ),
     error = TRUE
   )
+  # (I3) start_indices are of integer type
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(2L, 3L)),
+      vt("f32", integer()),
+      vt("i32", integer())
+    ),
+    error = TRUE
+  )
 })

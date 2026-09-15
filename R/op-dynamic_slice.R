@@ -43,9 +43,16 @@ infer_types_dynamic_slice <- function(
       ))
     }
 
-    # Check that all start_indices are 0-dimensional tensors
+    # Check that all start_indices are 0-dimensional tensors of integer type
     for (i in seq_along(start_indices)) {
       assert_vt_is_tensor(start_indices[[i]])
+      # (I2) `start_indices` are 0-dimensional tensors of integer type.
+      assert_vt_has_ttype(
+        start_indices[[i]],
+        "int",
+        "uint",
+        arg = sprintf("start_indices[[%d]]", i)
+      )
       if (length(shape(start_indices[[i]])) != 0) {
         error_unexpected_list_type(
           arg = "start_indices",
