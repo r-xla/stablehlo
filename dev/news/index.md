@@ -12,6 +12,16 @@
 - [`hlo_triangular_solve()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_triangular_solve.md)
   now rejects operands that are not of floating-point type, as required
   by the StableHLO spec.
+- [`infer_types_slice()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_slice.md)
+  rejects a stride of `0`. The spec’s (C4) is `0 < strides`, but the
+  check read `0 <= strides`.
+- [`infer_types_dynamic_slice()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_dynamic_slice.md),
+  [`infer_types_dynamic_update_slice()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_dynamic_update_slice.md)
+  and
+  [`infer_types_gather()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_gather.md)
+  reject `start_indices` that are not of integer type, as the spec
+  requires. A float one used to reach MLIR and come back as a raw parse
+  error.
 
 ## stablehlo 0.4.0
 
