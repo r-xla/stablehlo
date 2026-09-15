@@ -45,3 +45,13 @@
       ! `slice_sizes` must not be greater than `operand`'s shape.
       x Got slice_sizes (5x3) and operand shape (4x5).
 
+---
+
+    Code
+      infer_types_dynamic_slice(vt("f32", c(4L, 5L)), vt("f32", integer()), vt("f32",
+        integer()), slice_sizes = cnst(c(2L, 3L), "i64", 2L))
+    Condition
+      Error in `infer_types_dynamic_slice()`:
+      ! `start_indices[[1]]` must have dtype int or uint.
+      x Got f32.
+
