@@ -18,15 +18,6 @@
 ---
 
     Code
-      infer_types_reverse(vt("f32", c(2L, 3L)), dimensions = cnst(integer(), "i64",
-      0L))
-    Condition
-      Error in `infer_types_reverse()`:
-      ! at least one dimension needs to be provided
-
----
-
-    Code
       infer_types_reverse(vt("f32", c(2L, 3L)), dimensions = cnst(5L, "i64", 1L))
     Condition
       Error in `infer_types_reverse()`:

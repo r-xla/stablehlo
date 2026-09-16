@@ -15,6 +15,8 @@
   `infer_types_gather()` reject `start_indices` that are not of integer type,
   as the spec requires. A float one used to reach MLIR and come back as a raw
   parse error.
+* Corrected some checks in the inference functions.
+* Added some missing checks in the inference functions.
 
 # stablehlo 0.4.0
 

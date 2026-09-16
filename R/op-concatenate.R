@@ -76,9 +76,12 @@ infer_types_concatenate <- function(..., dimension) {
   # Convert 0-based dimension to 1-based for R indexing
   dim_r <- dimension + 1L
 
-  # (C4)
+  # (C4) `0 <= dimension < rank(inputs[0])`. The lower bound matters as much as
+  # the upper one: a negative `dimension` makes `dim_r` negative, and
+  # `x[-dim_r]` then flips from dropping that axis to keeping only it, so a
+  # wrong result type comes out with no error at all.
   num_dims <- length(shape(dots[[1]]))
-  if (dimension >= num_dims) {
+  if (dimension < 0L || dimension >= num_dims) {
     error_index_out_of_bounds(
       arg = "dimension",
       index = dimension,

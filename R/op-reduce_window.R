@@ -159,8 +159,10 @@ infer_types_reduce_window <- function(
       x = "Got {shapevec_repr(base_dil)}"
     ))
   }
-  # (C11)
-  if (any(window_dil < 0)) {
+  # (C11) `0 < window_dilations`, so a zero is refused as well as a negative:
+  # it would otherwise flow into `dilated_window` below and collapse every
+  # window to width 1.
+  if (any(window_dil <= 0)) {
     cli_abort(c(
       "{.arg window_dilations} must be positive.",
       x = "Got {shapevec_repr(window_dil)}"

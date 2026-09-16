@@ -7,10 +7,10 @@
 \usage{
 infer_types_after_all(...)
 
-hlo_after_all(..., output_types = NULL)
+hlo_after_all(..., func = NULL, output_types = NULL)
 }
 \arguments{
-\item{...}{(\code{\link{FuncValue}})\cr}
+\item{..., func}{(\code{\link{FuncValue}})\cr}
 
 \item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }

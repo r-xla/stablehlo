@@ -78,3 +78,24 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+test_that("a negative dimension is rejected", {
+  # (C4) is `0 <= dimension < rank`. Unguarded on the low side, `dim_r` goes
+  # negative and `x[-dim_r]` flips from dropping that axis to keeping only it,
+  # so a wrong result type came out with no error at all.
+  expect_snapshot(
+    infer_types_concatenate(
+      vt("f32", c(2L, 3L)),
+      vt("f32", c(2L, 3L)),
+      dimension = scnst(-2L, "i64")
+    ),
+    error = TRUE
+  )
+})
+
+test_that("no inputs reports concatenate's own error", {
+  # (C3) `0 < N`. The op has no value operands to take a func from, and used to
+  # die with `subscript out of bounds` before reaching this check.
+  local_func()
+  expect_error(hlo_concatenate(dimension = 0L), "at least one input")
+})
