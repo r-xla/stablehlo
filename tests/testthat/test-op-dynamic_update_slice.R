@@ -92,3 +92,17 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+test_that("start_indices must all have the same type", {
+  # (C5) `same(type(start_indices...))`, which no per-operand check sees.
+  # `dynamic_slice` checks the identical constraint for its own indices.
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(2L, 3L)),
+      vt("i32", integer()),
+      vt("i64", integer())
+    ),
+    error = TRUE
+  )
+})

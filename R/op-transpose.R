@@ -17,8 +17,10 @@ infer_types_transpose <- function(
 
   perm_values <- permutation$data
 
-  # (C2)
-  if (!setequal(perm_values, seq_len(num_dims) - 1L)) {
+  # (C2) `permutation` is a permutation of `range(rank(operand))`. `setequal()`
+  # is not that: sets ignore multiplicity and length, so `c(0, 1, 1)` on a
+  # rank-2 operand passed and (C3) below built a rank-3 result out of it.
+  if (!test_permutation(perm_values, seq_len(num_dims) - 1L)) {
     error_permute_index(
       arg = "permutation",
       permutation = perm_values,
