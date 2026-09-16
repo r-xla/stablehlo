@@ -85,3 +85,46 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+test_that("the comparator's type is checked against (C5)", {
+  # (C5) is `(tensor<E0>, tensor<E0>, ..., tensor<EN-1>, tensor<EN-1>) ->
+  # tensor<i1>` -- interleaved per input, unlike reduce's two groups. Only
+  # `assert_func()` was checked, so a one-argument comparator returning an
+  # `f32` was accepted and rendered.
+  cmp <- function(dtypes, out = NULL, shape = integer()) {
+    f <- local_func(id = "")
+    args <- lapply(
+      seq_along(dtypes),
+      function(i) hlo_input(paste0("a", i), dtypes[[i]], shape = shape)
+    )
+    hlo_return(
+      if (is.null(out)) {
+        hlo_compare(
+          args[[1L]],
+          args[[2L]],
+          comparison_direction = "LT",
+          compare_type = "SIGNED"
+        )
+      } else {
+        hlo_add(args[[1L]], args[[2L]])
+      }
+    )
+    f
+  }
+  srt <- function(comparator) {
+    infer_types_sort(
+      vt("i32", 4L),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "i1"),
+      comparator = comparator
+    )
+  }
+  # Wrong arity: one pair is required per input.
+  expect_snapshot(srt(cmp(rep("i32", 4L))), error = TRUE)
+  # Wrong element type.
+  expect_snapshot(srt(cmp(rep("i64", 2L))), error = TRUE)
+  # A dynamic or non-scalar argument must never reach a region.
+  expect_snapshot(srt(cmp(rep("i32", 2L), shape = 3L)), error = TRUE)
+  # The comparator returns a scalar `i1`.
+  expect_snapshot(srt(cmp(rep("i32", 2L), out = "add")), error = TRUE)
+})

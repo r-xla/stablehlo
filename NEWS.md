@@ -15,6 +15,15 @@
   `infer_types_gather()` reject `start_indices` that are not of integer type,
   as the spec requires. A float one used to reach MLIR and come back as a raw
   parse error.
+* `infer_types_reduce()`, `infer_types_reduce_window()`,
+  `infer_types_scatter()` and `infer_types_sort()` check their region's
+  arguments. Only the region's outputs were read, so a body with the wrong
+  arity, a non-scalar argument, or the wrong element type passed inference --
+  a one-argument `sort` comparator returning an `f32` was accepted and
+  rendered.
+* `infer_types_reduce()` accepts a body that accumulates into a wider element
+  type. (C6) is `is_promotable(element_type(inputs[i]), Ei)`, not an equality,
+  so summing an `i8` into an `i32` is legal; it used to be refused.
 
 # stablehlo 0.4.0
 
