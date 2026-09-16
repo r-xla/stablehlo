@@ -29,14 +29,6 @@ test_that("errors", {
     ),
     error = TRUE
   )
-  # empty dimensions
-  expect_snapshot(
-    infer_types_reverse(
-      vt("f32", c(2L, 3L)),
-      dimensions = cnst(integer(), "i64", 0L)
-    ),
-    error = TRUE
-  )
   # (C3) dimension out of bounds
   expect_snapshot(
     infer_types_reverse(
@@ -44,5 +36,20 @@ test_that("errors", {
       dimensions = cnst(5L, "i64", 1L)
     ),
     error = TRUE
+  )
+})
+
+test_that("an empty dimensions is accepted", {
+  # (C2) `is_unique(dimensions)` and (C3) `0 <= dimensions < rank(result)` are
+  # both vacuous for the empty set, and StableHLO accepts the program, so a
+  # lowering that computes the set and finds none must not be refused.
+  expect_equal(
+    repr(
+      infer_types_reverse(
+        vt("f32", c(2L, 3L)),
+        dimensions = cnst(integer(), "i64", 0L)
+      )[[1L]]$type
+    ),
+    "tensor<2x3xf32>"
   )
 })

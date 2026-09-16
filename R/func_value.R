@@ -30,6 +30,14 @@ print.FuncValue <- function(x, ...) {
 }
 
 merge_funcs <- function(funcs) {
+  # An op with no value operands has no func to take from its inputs, so fall
+  # back to the one being built. Without this every such op dies with
+  # `subscript out of bounds` before its own check runs -- `after_all` with no
+  # inputs is legal and is the only way to produce a token, and concatenate
+  # (C3), sort (C1) and reduce (C3) never got to report their own message.
+  if (length(funcs) == 0L) {
+    return(.current_func())
+  }
   if (length(funcs) == 1L) {
     return(funcs[[1L]])
   }
