@@ -55,3 +55,13 @@
       ! `start_indices[[1]]` must have dtype int or uint.
       x Got f32.
 
+# start_indices must all have the same type
+
+    Code
+      infer_types_dynamic_update_slice(vt("f32", c(4L, 5L)), vt("f32", c(2L, 3L)), vt(
+        "i32", integer()), vt("i64", integer()))
+    Condition
+      Error in `infer_types_dynamic_update_slice()`:
+      ! All `start_indices` must have the same type.
+      x Got types: tensor<i32>, tensor<i64>.
+

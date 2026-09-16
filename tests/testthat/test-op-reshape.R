@@ -27,3 +27,44 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("reshape defers the element-count check when either side is dynamic", {
+  # Both known and unequal: still refused.
+  local_func()
+  expect_error(
+    hlo_reshape(dyn_input("a", "f32", c(2L, 3L)), shape = c(4L, 2L)),
+    "Size of output must equal"
+  )
+  # Dynamic operand: whether the counts match is a run-time question.
+  expect_equal(
+    inferred(function() {
+      hlo_reshape(dyn_input("a", "f32", c(N, 3L)), shape = c(6L, 1L))
+    }),
+    "tensor<6x1xf32>"
+  )
+})
+
+test_that("reshape rejects a dynamic shape attribute", {
+  # The result is rendered as a static type, so `NA` must not reach it --
+  # `hlo_dynamic_reshape()` is the escape hatch.
+  local_func()
+  x <- hlo_input("x", "f32", shape = c(2L, 3L))
+  expect_error(hlo_reshape(x, shape = c(N, 2L)), "Contains missing values")
+})
+
+test_that("reshape still refuses an operand that provably holds 0 elements", {
+  # A `?` beside a 0 does not make the element count unknown, so this is
+  # decidable and must not be deferred.
+  local_func()
+  expect_error(
+    hlo_reshape(dyn_input("a", "f32", c(N, 0L)), shape = 5L),
+    "Size of output must equal"
+  )
+  local_func()
+  expect_error(
+    hlo_reshape(dyn_input("a", "f32", c(0L, N)), shape = integer()),
+    "Size of output must equal"
+  )
+})

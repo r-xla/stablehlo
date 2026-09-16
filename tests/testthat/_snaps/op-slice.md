@@ -36,7 +36,7 @@
     Condition
       Error in `infer_types_slice()`:
       ! `start_indices` contains index outside the valid range.
-      x Got -1, but valid range is [0, 4).
+      x Got -1, but valid range is [0, 2).
 
 ---
 

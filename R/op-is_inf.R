@@ -1,7 +1,7 @@
 #' @include op.R hlo.R type_inference.R
 NULL
 
-OpIsInf <- new_Op("OpIsInf", "is_inf", dialect = "chlo")
+OpIsInf <- new_Op("OpIsInf", "is_inf", dialect = "chlo", same_type_form = FALSE)
 
 #' @rdname hlo_is_inf
 #' @export

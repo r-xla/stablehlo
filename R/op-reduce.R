@@ -37,13 +37,26 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   })
 
   # (C1)
+  # Folding with `unify_shapes` rather than checking each input against the first:
+  # "may be equal" is not transitive, so a pairwise check would accept `(3, ?, 4)`.
+  # The fold validates and refines in one pass, so a dynamic input meeting a
+  # static one gives the static result shape.
   input_shapes <- lapply(input_value_types, function(vt) shape(vt))
-  ref_shape <- input_shapes[[1L]]
-  if (
-    !all(vapply(input_shapes, function(s) identical(s, ref_shape), logical(1L)))
-  ) {
-    cli_abort("All inputs to reduce must have the same shape")
-  }
+  infer_frame <- environment()
+  ref_shape <- withCallingHandlers(
+    unify_all_shapes(input_shapes, arg = "inputs"),
+    ErrorDimSizeMismatch = function(cnd) {
+      # fmt: skip
+      shapes_str <- paste(vapply(input_shapes, shapevec_repr, character(1)), collapse = ", ") # nolint
+      cli_abort(
+        c(
+          "All inputs to reduce must have the same shape.",
+          x = "Got shapes: {shapes_str}."
+        ),
+        call = infer_frame
+      )
+    }
+  )
 
   # (C2)
   for (i in seq_len(num_inputs)) {
@@ -81,13 +94,19 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
       x = "Body returns {length(body_out_types)} tensors, but {num_inputs} are required."
     ))
   }
-  for (i in seq_len(num_inputs)) {
-    if (body_out_types[[i]]$type$dtype != input_value_types[[i]]$type$dtype) {
-      cli_abort(c(
-        "{.arg body} must return tensors with the same data type as the inputs"
-      ))
-    }
-  }
+  # (C6) `is_promotable(element_type(inputs[i]), Ei)`, where `Ei` is the
+  # accumulator the body reduces into -- a widening, not an equality, so an
+  # `i8` input may be summed into an `i32`.
+  accumulator_dtypes <- lapply(body_out_types, function(x) x$type$dtype)
+  assert_accumulator_dtypes(
+    lapply(input_value_types, function(x) x$type$dtype),
+    accumulator_dtypes,
+    arg = "body"
+  )
+  # (C6) The other half of the body's type: its arguments. Unchecked, a body
+  # declaring a dynamic or differently-typed argument renders that straight
+  # into the region's block arguments.
+  assert_region_inputs(body, accumulator_dtypes, arg = "body")
 
   # (C7)
   result_dims <- if (length(dims0) == 0L) {

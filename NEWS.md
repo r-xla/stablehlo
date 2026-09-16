@@ -2,8 +2,40 @@
 
 ## Breaking changes
 
-* A `Shape` is now represented as an integer.
-* `shape.Shape` was removed.
+* A `Shape` *is* its integer vector now, with a class attached, rather than a
+  list wrapping one. `length(shape)` is the rank and `shape[i]` an axis size;
+  `shape$dims` is gone -- read the sizes with `unclass()`.
+
+* Comparison operators on a `Shape` (`==`, `!=`, `<`, `>`, `<=`, `>=`) now
+  raise. Once an axis size can be `NA`, "equal" is three different questions
+  and an operator cannot say which was meant.
+
+* `shape()` has no `Shape` method any more; a `Shape` already is its integer
+  vector. It keeps working on a `ValueType`, `TensorType` or `Constant`.
+
+## Features
+
+* Shape inference understands axis sizes known only at run time, written `NA`
+  in a `Shape` and `?` in MLIR. A constraint is refused only when *certainly*
+  violated, and a known size wins over a dynamic one, so
+  `add(tensor<?xf32>, tensor<3xf32>)` infers `tensor<3xf32>`.
+
+* Added the ops that take their sizes as operands rather than attributes:
+  `hlo_dynamic_broadcast_in_dim()`, `hlo_dynamic_iota()`,
+  `hlo_dynamic_reshape()`, `hlo_dynamic_pad()`, `hlo_dynamic_gather()` and
+  `hlo_dynamic_conv()`. Each takes a `shape` argument giving the result's
+  static shape with `NA` where a size is only known at run time; it is a
+  claim, not a check.
+
+* Added `hlo_get_dimension_size()`, which reads an axis size out as a value.
+
+* Added `hlo_real_dynamic_slice()`, in the StableHLO dialect but not in
+  SPEC.md. It is the only op whose result extent comes from the data, so it
+  needs a backend that compiles dynamic shapes -- XLA refuses it and shape
+  refinement cannot remove it.
+
+* `hlo_dynamic_broadcast_in_dim()` gained the optional
+  `known_expanding_dimensions` and `known_nonexpanding_dimensions` attributes.
 
 ## Bug fixes
 
@@ -15,6 +47,38 @@
   `infer_types_gather()` reject `start_indices` that are not of integer type,
   as the spec requires. A float one used to reach MLIR and come back as a raw
   parse error.
+* Corrected some checks in the inference functions.
+* Added some missing checks in the inference functions.
+
+* `hlo_pad()`'s negative-padding check compared each axis's trimming against
+  the operand's *rank* rather than that axis's size, so it refused legal
+  programs and accepted illegal ones. It is now (C4) applied per axis.
+
+* `hlo_reduce()`, `hlo_reduce_window()`, `hlo_scatter()` and `hlo_sort()` now
+  check their region's arguments -- `2 * N` scalar tensors -- and `hlo_sort()`
+  checks its comparator returns a scalar `i1`. A dynamic axis could previously
+  reach a region's block arguments.
+
+* `hlo_reduce()`, `hlo_reduce_window()` and `hlo_scatter()` accept a body that
+  accumulates into a wider element type, as (C6)/(C13)/(C23) allow; `reduce`
+  previously required the body's type to equal its inputs'.
+
+* The dynamic ops' size operands (`output_shape`, `slice_sizes`,
+  `edge_padding_low`, ...) must be integer tensors, and those StableHLO types
+  statically shaped must have a statically known number of elements.
+
+* `hlo_scatter()` read an axis of `scatter_indices` at `index_vector_dim`
+  before bounding it, so an out-of-range value failed with an internal R error.
+
+* `hlo_if()` now rejects branches that declare inputs, as `hlo_case()` already
+  did, and `hlo_while()` checks its `body`'s inputs and not only its outputs.
+
+* `Shape()` refuses an `NA` that `as.integer()` invented -- a value out of
+  integer range, an `Inf`/`NaN`, or a non-numeric -- since `NA` means dynamic.
+
+* A shape holding a known `0` beside a `?` now has a known element count of 0,
+  so `hlo_reshape()` and `hlo_dynamic_reshape()` still refuse an operand that
+  provably holds no elements.
 
 # stablehlo 0.4.0
 

@@ -157,3 +157,37 @@ test_that("errors", {
   # last dimension must match ratio for upcast
   check(vt("i8", c(2L, 3L)), "i32")
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("bitcast_convert defers the trailing-axis check when it is dynamic", {
+  # Widening drops the trailing axis, which must hold exactly
+  # output_bits / operand_bits elements. A dynamic one may hold that many at
+  # run time, and the axis is gone from the result either way.
+  expect_equal(
+    inferred(function() {
+      hlo_bitcast_convert(dyn_input("x", "i8", c(2L, N)), dtype = "i32")
+    }),
+    "tensor<2xi32>"
+  )
+  # A trailing axis that is known and wrong is still refused.
+  local_func()
+  expect_error(
+    hlo_bitcast_convert(dyn_input("x", "i8", c(2L, 3L)), dtype = "i32"),
+    "last dimension of"
+  )
+  # Narrowing appends a static axis, so a dynamic one ahead of it survives.
+  expect_equal(
+    inferred(function() {
+      hlo_bitcast_convert(dyn_input("x", "i32", N), dtype = "i8")
+    }),
+    "tensor<?x4xi8>"
+  )
+  # Equal widths pass the shape through untouched.
+  expect_equal(
+    inferred(function() {
+      hlo_bitcast_convert(dyn_input("x", "i32", c(N, 2L)), dtype = "f32")
+    }),
+    "tensor<?x2xf32>"
+  )
+})

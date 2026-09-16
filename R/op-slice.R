@@ -49,11 +49,21 @@ infer_types_slice <- function(
 
   if (any(start_idx < 0)) {
     invalid_positions <- which(start_idx < 0)
+    # C3 chains `0 <= start_indices <= limit_indices <= shape(operand)`, so
+    # either of the two may be the binding upper bound. Take whichever is
+    # smaller among those that are known: the operand's axis may be `?`, and
+    # `limit_indices` has not been validated against it yet, so quoting either
+    # one alone can print a nonsense range.
+    upper <- pmin(
+      limit_idx[invalid_positions],
+      operand_shape[invalid_positions],
+      na.rm = TRUE
+    )
     error_index_out_of_bounds(
       arg = "start_indices",
       index = start_idx[invalid_positions],
       lower = 0L,
-      upper = operand_shape[invalid_positions]
+      upper = pmax(upper, 0L)
     )
   }
 
@@ -67,8 +77,13 @@ infer_types_slice <- function(
     )
   }
 
-  if (any(limit_idx > operand_shape)) {
-    invalid_positions <- which(limit_idx > operand_shape)
+  # The slice must stay inside the operand. Only an axis whose size is known
+  # can put it out of bounds; against a dynamic axis the limit is legal exactly
+  # when the operand turns out to be at least that long, which is a run-time
+  # question. `possibly_ge` says "this axis could be long enough".
+  in_bounds <- possibly_ge(operand_shape, limit_idx)
+  if (!all(in_bounds)) {
+    invalid_positions <- which(!in_bounds)
     error_index_out_of_bounds(
       arg = "limit_indices",
       index = limit_idx[invalid_positions],

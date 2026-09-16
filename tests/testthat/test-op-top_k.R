@@ -105,3 +105,20 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("top_k defers k against a dynamic last axis", {
+  # The result's last axis is k, which is known, so the result stays static.
+  expect_equal(
+    inferred(function() {
+      hlo_top_k(dyn_input("a", "f32", c(2L, N)), k = 3L)[[1L]]
+    }),
+    "tensor<2x3xf32>"
+  )
+  local_func()
+  expect_error(
+    hlo_top_k(dyn_input("a", "f32", c(2L, 2L)), k = 3L),
+    "must not exceed"
+  )
+})

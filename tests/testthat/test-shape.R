@@ -30,6 +30,19 @@ describe("Shape", {
     expect_equal(repr(shape), "1x2x?")
   })
 
+  it("rejects an NA that as.integer() invented, since NA means dynamic", {
+    # Out of integer range, `Inf`/`NaN` from inference arithmetic, and
+    # non-numerics all coerce to `NA` -- which every check downstream is built
+    # to accept and defer, so an accident would become a plausible dynamic
+    # program instead of an error.
+    expect_error(Shape(c(2, 3e9)), "representable as integers")
+    expect_error(Shape(c(2, Inf)), "representable as integers")
+    expect_error(Shape(c(2, NaN)), "representable as integers")
+    expect_error(Shape("a"), "representable as integers")
+    # A deliberate `NA` is still a dynamic axis.
+    expect_equal(repr(Shape(c(2, NA))), "2x?")
+  })
+
   it("rejects negative axis sizes", {
     expect_error(Shape(c(2, -1)), "must be >= 0")
   })
@@ -49,4 +62,18 @@ describe("Shape", {
     expect_error(Shape(c(2, 3)) == c(2L, 3L), "not defined for a")
     expect_error(c(2L, 3L) == Shape(c(2, 3)), "not defined for a")
   })
+})
+
+test_that("Shape refuses an NA that only a conversion could have produced", {
+  expect_error(Shape(NA_character_), "representable as integers")
+  expect_error(Shape(list(1, NA)), "representable as integers")
+  expect_equal(unclass(Shape(NA)), NA_integer_)
+})
+
+test_that("Shape refuses the ordering operators as well as == and !=", {
+  s <- Shape(c(2L, NA))
+  expect_error(s > 1L, "not defined for a")
+  expect_error(s < 1L, "not defined for a")
+  expect_error(s >= 1L, "not defined for a")
+  expect_error(s <= 1L, "not defined for a")
 })

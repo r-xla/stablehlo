@@ -22,20 +22,32 @@ infer_types_cholesky <- function(
     ))
   }
 
-  # (C3) dim(a, -2) = dim(a, -1)
-  if (operand_dims[rank] != operand_dims[rank - 1]) {
+  # (C3) dim(a, -2) = dim(a, -1). Refused only when both sizes are known and
+  # differ; if either is dynamic the matrix may well be square at run time.
+  if (provably_ne(operand_dims[rank], operand_dims[rank - 1L])) {
     cli_abort(c(
       "{.arg operand} must be symmetric in the last two dimensions",
       x = "Got shape {shapevec_repr(operand_dims)}."
     ))
   }
 
+  # The two trailing axes are equal by (C3), so each refines the other: a
+  # `tensor<?x4xf32>` operand has a `tensor<4x4xf32>` result.
+  result_dims <- operand_dims
+  square <- unify_shapes(
+    operand_dims[rank - 1L],
+    operand_dims[rank],
+    arg_a = "operand",
+    arg_b = "operand"
+  )
+  result_dims[c(rank - 1L, rank)] <- square
+
   # (C1)
   ValueTypes(list(
     ValueType(
       TensorType(
         dtype = operand$type$dtype,
-        shape = Shape(operand_dims)
+        shape = Shape(result_dims)
       )
     )
   ))

@@ -15,3 +15,12 @@
       ! `permutation` must be a permutation of c(0, 1, 2).
       x Got c(0, 2, 1, 3).
 
+# a permutation with duplicates is rejected
+
+    Code
+      infer_types_transpose(vt("f32", c(2L, 3L)), cnst(c(0L, 1L, 1L), "i64", 3L))
+    Condition
+      Error in `infer_types_transpose()`:
+      ! `permutation` must be a permutation of c(0, 1).
+      x Got c(0, 1, 1).
+

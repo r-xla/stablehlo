@@ -94,3 +94,44 @@ test_that("errors", {
     c(0L, 0L)
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("pad and transpose carry a dynamic axis through arithmetic", {
+  # NA propagates through pad's result arithmetic, so a padded dynamic axis
+  # stays dynamic while the static one is computed.
+  expect_equal(
+    inferred(function() {
+      hlo_pad(
+        dyn_input("a", "f32", c(N, 3L)),
+        dyn_input("v", "f32", integer()),
+        edge_padding_low = c(1L, 1L),
+        edge_padding_high = c(1L, 1L),
+        interior_padding = c(0L, 0L)
+      )
+    }),
+    "tensor<?x5xf32>"
+  )
+})
+
+test_that("negative padding is checked per axis, against that axis's size", {
+  pad <- function(shape, low, high = NULL, interior = NULL) {
+    local_func()
+    zeros <- rep(0L, length(low))
+    hlo_pad(
+      dyn_input("x", "f32", shape),
+      hlo_scalar(0, dtype = "f32"),
+      edge_padding_low = low,
+      edge_padding_high = high %||% zeros,
+      interior_padding = interior %||% zeros
+    )
+  }
+  # A shape cannot be negative, so (C4) is the negative-padding check.
+  expect_error(pad(4L, -5L), "Negative padding")
+  # An axis long enough to absorb the trimming is fine -- the old guard
+  # compared against the *rank*, so it refused this and accepted the reverse.
+  expect_equal(repr(pad(100L, -5L)$value_type$type), "tensor<95xf32>")
+  expect_error(pad(c(2L, 2L, 2L), c(-3L, 0L, 0L)), "Negative padding")
+  # A dynamic axis may well be large enough, so the check defers.
+  expect_equal(repr(pad(N, -5L)$value_type$type), "tensor<?xf32>")
+})

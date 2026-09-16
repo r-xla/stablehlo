@@ -495,3 +495,208 @@ test_that("errors", {
     )
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("scatter folds its inputs and updates", {
+  expect_equal(
+    inferred(function() {
+      hlo_scatter(
+        list(dyn_input("a", "f32", c(N, 3L))),
+        dyn_input("i", "i32", c(2L, 1L)),
+        list(dyn_input("u", "f32", c(2L, 3L))),
+        update_computation = add_region(),
+        scatter_dimension_numbers = ScatterDimensionNumbers(
+          update_window_dims = 1L,
+          inserted_window_dims = 0L,
+          scatter_dims_to_operand_dims = 0L,
+          index_vector_dim = 1L
+        ),
+        indices_are_sorted = FALSE,
+        unique_indices = FALSE
+      )
+    }),
+    "tensor<?x3xf32>"
+  )
+})
+
+test_that("scatter defers the checks it cannot decide", {
+  reg <- function() {
+    f <- local_func(id = "")
+    l <- hlo_input("l", "f32", shape = integer())
+    r <- hlo_input("r", "f32", shape = integer())
+    hlo_return(hlo_add(l, r))
+    f
+  }
+  dn <- ScatterDimensionNumbers(
+    update_window_dims = 1L,
+    inserted_window_dims = 0L,
+    scatter_dims_to_operand_dims = 0L,
+    index_vector_dim = 1L
+  )
+  scat <- function(operand, indices, updates) {
+    local_func()
+    hlo_scatter(
+      list(dyn_input("a", "f32", operand)),
+      dyn_input("i", "i32", indices),
+      list(dyn_input("u", "f32", updates)),
+      update_computation = reg(),
+      scatter_dimension_numbers = dn,
+      indices_are_sorted = FALSE,
+      unique_indices = FALSE
+    )
+  }
+  # (C19) reads an axis of `scatter_indices`; dynamic means run time.
+  expect_equal(
+    repr(scat(c(4L, 3L), c(2L, N), c(2L, 3L))$value_type$type),
+    "tensor<4x3xf32>"
+  )
+  # (C4) window part compares two shape-derived vectors.
+  expect_equal(
+    repr(scat(c(3L, N), c(2L, 1L), c(2L, 3L))$value_type$type),
+    "tensor<3x?xf32>"
+  )
+  # (C4) scatter part: `?` may be the expected size at run time.
+  expect_equal(
+    repr(scat(c(4L, 3L), c(2L, 1L), c(N, 3L))$value_type$type),
+    "tensor<4x3xf32>"
+  )
+  # A definitely-wrong update window is still refused.
+  expect_error(
+    scat(c(4L, 3L), c(2L, 1L), c(2L, 9L)),
+    "must not exceed input dimensions"
+  )
+})
+
+test_that("an out-of-range index_vector_dim is reported, not crashed on", {
+  # (C19) indexes `scatter_indices_shape` at `index_vector_dim`, which yields
+  # a zero- or multi-element vector when it is out of range -- and `if` then
+  # fails on its own "argument is of length zero" instead of this error.
+  dn <- function(ivd) {
+    ScatterDimensionNumbers(
+      update_window_dims = 1L,
+      inserted_window_dims = 0L,
+      scatter_dims_to_operand_dims = 0L,
+      index_vector_dim = ivd
+    )
+  }
+  reg <- function() {
+    f <- local_func(id = "")
+    l <- hlo_input("l", "f32", shape = integer())
+    r <- hlo_input("r", "f32", shape = integer())
+    hlo_return(hlo_add(l, r))
+    f
+  }
+  scat <- function(ivd) {
+    local_func()
+    hlo_scatter(
+      list(hlo_input("a", "f32", shape = c(4L, 3L))),
+      hlo_input("i", "i32", shape = c(2L, 1L)),
+      list(hlo_input("u", "f32", shape = c(2L, 3L))),
+      update_computation = reg(),
+      scatter_dimension_numbers = dn(ivd),
+      indices_are_sorted = FALSE,
+      unique_indices = FALSE
+    )
+  }
+  expect_error(scat(-1L), class = "ErrorIndexOutOfBounds")
+  expect_error(scat(-5L), class = "ErrorIndexOutOfBounds")
+  expect_error(scat(3L), class = "ErrorIndexOutOfBounds")
+})
+
+test_that("scatter unifies the batch dimensions of inputs and scatter_indices", {
+  # (C18) makes the batch sizes equal, so it refines as well as checks -- the
+  # mirror image of gather's (C17), which has its own test. A dynamic batch
+  # axis on the input takes the size `scatter_indices` knows, and that reaches
+  # the result type.
+  scat <- function(input_shape, indices_shape) {
+    hlo_scatter(
+      list(dyn_input("a", "f32", input_shape)),
+      dyn_input("i", "i32", indices_shape),
+      list(dyn_input("u", "f32", c(indices_shape[[1L]], 1L))),
+      update_computation = add_region(),
+      scatter_dimension_numbers = ScatterDimensionNumbers(
+        update_window_dims = 1L,
+        inserted_window_dims = integer(),
+        input_batching_dims = 0L,
+        scatter_indices_batching_dims = 0L,
+        scatter_dims_to_operand_dims = 1L,
+        index_vector_dim = 1L
+      ),
+      indices_are_sorted = FALSE,
+      unique_indices = FALSE
+    )
+  }
+  expect_equal(
+    inferred(function() scat(c(N, 5L), c(3L, 1L))),
+    "tensor<3x5xf32>"
+  )
+  # A definite clash on the batch axis is still refused.
+  local_func()
+  expect_error(scat(c(2L, 5L), c(3L, 1L)), "batch dimensions")
+})
+
+test_that("scatter checks its update_computation", {
+  dn <- ScatterDimensionNumbers(
+    update_window_dims = 1L,
+    inserted_window_dims = 0L,
+    scatter_dims_to_operand_dims = 0L,
+    index_vector_dim = 1L
+  )
+  scat <- function(region = add_region()) {
+    local_func()
+    hlo_scatter(
+      list(hlo_input("a", "f32", shape = c(4L, 3L))),
+      hlo_input("i", "i32", shape = c(2L, 1L)),
+      list(hlo_input("u", "f32", shape = c(2L, 3L))),
+      update_computation = region,
+      scatter_dimension_numbers = dn,
+      indices_are_sorted = FALSE,
+      unique_indices = FALSE
+    )
+  }
+  # (C23) the region takes 2 * N scalar arguments.
+  four_args <- local({
+    f <- local_func(id = "")
+    args <- lapply(1:4, function(i) hlo_input(paste0("a", i), "f32"))
+    hlo_return(hlo_add(args[[1L]], args[[2L]]))
+    f
+  })
+  expect_error(scat(region = four_args), "two arguments per input")
+  # ... none of which may carry a dynamic axis.
+  dyn_region <- local({
+    f <- local_func(id = "")
+    hlo_return(hlo_add(
+      hlo_input("l", "f32", shape = N),
+      hlo_input("r", "f32", shape = N)
+    ))
+    f
+  })
+  expect_error(scat(region = dyn_region), "0-dimensional tensors")
+})
+
+test_that("scatter_indices must be an integer tensor", {
+  # (I2) types `scatter_indices` a "tensor of integer type"; a float index
+  # tensor passed inference and only MLIR refused it.
+  update_func <- local_func("update")
+  a <- hlo_input("a", "f32", integer())
+  b <- hlo_input("b", "f32", integer())
+  update_func <- hlo_return(hlo_add(a, b))
+  expect_snapshot(
+    infer_types_scatter(
+      inputs = list(vt("f32", c(4L, 3L))),
+      scatter_indices = vt("f32", c(2L, 1L)),
+      updates = list(vt("f32", c(2L, 3L))),
+      update_computation = update_func,
+      scatter_dimension_numbers = ScatterDimensionNumbers(
+        update_window_dims = 1L,
+        inserted_window_dims = 0L,
+        scatter_dims_to_operand_dims = 0L,
+        index_vector_dim = 1L
+      ),
+      indices_are_sorted = scnst(FALSE, "i1"),
+      unique_indices = scnst(FALSE, "i1")
+    ),
+    error = TRUE
+  )
+})

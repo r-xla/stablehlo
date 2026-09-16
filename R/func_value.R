@@ -30,6 +30,13 @@ print.FuncValue <- function(x, ...) {
 }
 
 merge_funcs <- function(funcs) {
+  # An op with no value operands (an empty variadic) has no func to take from
+  # its inputs, so fall back to the one being built. Without this the ops that
+  # check their own operand count -- concatenate (C3), sort (C1), reduce (C3)
+  # -- never reach that check and fail with `subscript out of bounds`.
+  if (length(funcs) == 0L) {
+    return(.current_func())
+  }
   if (length(funcs) == 1L) {
     return(funcs[[1L]])
   }

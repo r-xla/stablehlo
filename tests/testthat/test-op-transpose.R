@@ -75,3 +75,50 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("transpose carries a dynamic axis through the permutation", {
+  expect_equal(
+    inferred(function() {
+      hlo_transpose(dyn_input("a", "f32", c(N, 3L)), permutation = c(1L, 0L))
+    }),
+    "tensor<3x?xf32>"
+  )
+})
+
+test_that("transpose", {
+  skip_if_no_refine()
+  expect_refines_and_runs(
+    build = function(shapes) {
+      hlo_transpose(
+        dyn_input("a", "f32", shapes[[1L]]),
+        permutation = c(1L, 0L)
+      )
+    },
+    dyn_shapes = list(c(N, 3L)),
+    runs = list(
+      list(shapes = list(c(2L, 3L)), args = list(1:6 + 0)),
+      list(shapes = list(c(4L, 3L)), args = list(1:12 + 0))
+    )
+  )
+})
+
+test_that("a permutation with duplicates is rejected", {
+  # (C2) `permutation` is a permutation of `range(rank(operand))`. Compared as
+  # a set, `c(0, 1, 1)` passed on a rank-2 operand and (C3) then built a rank-3
+  # result type, which MLIR refuses.
+  expect_snapshot(
+    infer_types_transpose(vt("f32", c(2L, 3L)), cnst(c(0L, 1L, 1L), "i64", 3L)),
+    error = TRUE
+  )
+  # A valid permutation given as doubles still works.
+  expect_equal(
+    repr(
+      infer_types_transpose(vt("f32", c(2L, 3L)), cnst(c(1, 0), "i64", 2L))[[
+        1L
+      ]]$type
+    ),
+    "tensor<3x2xf32>"
+  )
+})

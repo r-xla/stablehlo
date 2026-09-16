@@ -74,3 +74,68 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("while requires its body's type to equal the carried type", {
+  dyn <- vt("f32", N)
+  # A body that refines `?` to `3` looks sound -- the loop forgets it next
+  # iteration -- but SPEC (C2) requires `(T...) -> (T...)`, and `scf.while`
+  # requires the yielded type to match the region's input type.
+  expect_error(
+    infer_types_while(
+      dyn,
+      cond = fake_func(inputs = list(dyn), out = list(vt("i1", integer()))),
+      body = fake_func(inputs = list(dyn), out = list(vt("f32", 3L)))
+    ),
+    class = "ErrorUnequalTypes"
+  )
+  # And the other direction likewise.
+  static <- vt("f32", 3L)
+  expect_error(
+    infer_types_while(
+      static,
+      cond = fake_func(inputs = list(static), out = list(vt("i1", integer()))),
+      body = fake_func(inputs = list(static), out = list(vt("f32", N)))
+    ),
+    class = "ErrorUnequalTypes"
+  )
+  # A dynamic axis carried consistently is fine, and (C3) returns the carried
+  # type.
+  expect_equal(
+    repr(
+      infer_types_while(
+        dyn,
+        cond = fake_func(inputs = list(dyn), out = list(vt("i1", integer()))),
+        body = fake_func(inputs = list(dyn), out = list(vt("f32", N)))
+      )[[1L]]$type
+    ),
+    "tensor<?xf32>"
+  )
+})
+
+test_that("while constrains the body's inputs as well as its outputs", {
+  # (C2) is `(T0, ..., TN-1) -> (T0, ..., TN-1)`. The output half was checked;
+  # the input half is the same equality on the side the op's operands feed, and
+  # a body whose block arguments disagree renders a region MLIR refuses.
+  dyn <- vt("f32", N)
+  cond <- fake_func(inputs = list(dyn), out = list(vt("i1", integer())))
+  expect_error(
+    infer_types_while(
+      dyn,
+      cond = cond,
+      body = fake_func(inputs = list(), out = list(dyn))
+    ),
+    "same number of inputs"
+  )
+  # A body input that refines the carried `?` is refused, exactly as the
+  # matching output would be.
+  expect_error(
+    infer_types_while(
+      dyn,
+      cond = cond,
+      body = fake_func(inputs = list(vt("f32", 3L)), out = list(dyn))
+    ),
+    class = "ErrorUnequalTypes"
+  )
+})

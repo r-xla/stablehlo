@@ -85,3 +85,98 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("sort folds its inputs' shapes instead of comparing pairwise", {
+  # (3, ?, 4) must be refused: a pairwise check against the first input would
+  # accept it, because each of the others may match `?`.
+  expect_error(
+    infer_types_sort(
+      vt("i32", 3L),
+      vt("i32", N),
+      vt("i32", 4L),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = n_input_comparator(3L)
+    ),
+    "same shape"
+  )
+  # A set that can agree infers the refined shape.
+  expect_equal(
+    repr(
+      infer_types_sort(
+        vt("i32", N),
+        vt("i32", 4L),
+        dimension = scnst(0L, "i64"),
+        is_stable = scnst(TRUE, "pred"),
+        comparator = n_input_comparator(2L)
+      )[[1L]]$type
+    ),
+    "tensor<4xi32>"
+  )
+})
+
+test_that("sort checks its comparator against (C5)", {
+  # Before this was checked, a one-argument comparator returning an f32 was
+  # accepted and rendered into the region.
+  expect_error(
+    infer_types_sort(
+      vt("i32", 4L),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = n_input_comparator(2L)
+    ),
+    "two arguments per input"
+  )
+  expect_error(
+    infer_types_sort(
+      vt("i32", 4L),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = lt_region("f32")
+    ),
+    "inputs' element types"
+  )
+  # A dynamic axis must never reach a region argument.
+  dyn_arg <- local({
+    f <- local_func(id = "")
+    a <- hlo_input("a", "i32", shape = N)
+    b <- hlo_input("b", "i32", shape = N)
+    hlo_return(hlo_compare(
+      a,
+      b,
+      comparison_direction = "LT",
+      compare_type = "SIGNED"
+    ))
+    f
+  })
+  expect_error(
+    infer_types_sort(
+      vt("i32", 4L),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = dyn_arg
+    ),
+    "0-dimensional tensors"
+  )
+})
+
+test_that("sort over a dynamic axis", {
+  skip_if_no_refine()
+  expect_refines_and_runs(
+    build = function(shapes) {
+      hlo_sort(
+        dyn_input("x", "f32", shapes[[1L]]),
+        dimension = 0L,
+        is_stable = TRUE,
+        comparator = lt_region()
+      )[[1L]]
+    },
+    dyn_shapes = list(N),
+    runs = list(
+      list(shapes = list(4L), args = list(c(3, 1, 4, 2))),
+      list(shapes = list(6L), args = list(c(9, 2, 7, 1, 8, 3)))
+    )
+  )
+})

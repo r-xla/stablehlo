@@ -7,6 +7,23 @@ OpIf <- new_Op("OpIf", "if")
 #' @export
 infer_types_if <- function(pred, true_branch, false_branch) {
   assert_vt_has_ttype(pred, "bool", shape = integer())
+
+  # (C1) `input_types(branches...) = []`. The op passes the branches nothing,
+  # so a branch declaring inputs renders `^bb0(%x: ...)` inside `stablehlo.if`
+  # and MLIR refuses the region ("expected 0 arguments"). Nothing downstream
+  # catches it -- `pjrt_program()` does not validate the text -- so it has to
+  # be caught here, as `infer_types_case()` does.
+  for (nm in c("true_branch", "false_branch")) {
+    branch <- if (nm == "true_branch") true_branch else false_branch
+    n <- length(branch$inputs)
+    if (n != 0L) {
+      cli_abort(c(
+        "{.arg {nm}} must not have inputs.",
+        x = "Got {n} input{?s}."
+      ))
+    }
+  }
+
   out_types1 <- ValueTypes(func_output_types(true_branch))
   out_types2 <- ValueTypes(func_output_types(false_branch))
   if (length(out_types1) != length(out_types2)) {
@@ -15,6 +32,14 @@ infer_types_if <- function(pred, true_branch, false_branch) {
       x = "Got {length(out_types1)} and {length(out_types2)}."
     ))
   }
+  # (C2) The branches must have the *same* type -- equality, not compatibility
+  # and not a join. It is tempting to widen a `tensor<3xf32>` branch against a
+  # `tensor<?xf32>` one to `tensor<?xf32>`, since only one branch runs; but
+  # SPEC (C2) says `output_types(true_branch) = output_types(false_branch)`
+  # and (C3) makes the result *a branch's* type, and IREE cannot lower the
+  # widened form at all: `scf.if` requires the yielded type to match the
+  # region's declared result type. A program that needs the widening must do
+  # it explicitly, inside the branch.
   for (i in seq_along(out_types1)) {
     if (out_types1[[i]] != out_types2[[i]]) {
       error_unequal_types(
@@ -27,7 +52,9 @@ infer_types_if <- function(pred, true_branch, false_branch) {
       )
     }
   }
-  out_types1
+
+  # (C3)
+  ValueTypes(out_types1)
 }
 
 hlo_if_impl <- hlo_fn(OpIf, infer_types_if)

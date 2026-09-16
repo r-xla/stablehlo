@@ -175,3 +175,103 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("reduce_window folds its inputs' shapes", {
+  rw <- function(shapes) {
+    local_func()
+    n <- length(shapes)
+    rank <- length(shapes[[1L]])
+    ins <- lapply(
+      seq_along(shapes),
+      function(i) dyn_input(paste0("x", i), "f32", shapes[[i]])
+    )
+    body <- local_func(id = "")
+    args <- lapply(
+      seq_len(2L * n),
+      function(i) hlo_input(paste0("b", i), "f32", shape = integer())
+    )
+    do.call(
+      hlo_return,
+      lapply(seq_len(n), function(i) hlo_add(args[[i]], args[[i + n]]))
+    )
+    hlo_reduce_window(
+      ins,
+      lapply(seq_len(n), function(i) hlo_scalar(0, dtype = "f32")),
+      body = body,
+      window_dimensions = rep(1L, rank),
+      window_strides = rep(1L, rank),
+      base_dilations = rep(1L, rank),
+      window_dilations = rep(1L, rank),
+      padding = matrix(0L, rank, 2L)
+    )
+  }
+  out <- rw(list(N, 4L))
+  expect_equal(repr(out[[1L]]$value_type$type), "tensor<4xf32>")
+  expect_error(rw(list(N, 3L, 4L)), "same shape")
+  # A rank mismatch is refused rather than recycled.
+  expect_error(rw(list(c(2L, 3L, 2L, 3L), c(2L, 3L))), "same shape")
+})
+
+test_that("reduce_window's window arithmetic propagates a dynamic axis", {
+  # The identity window (all ones, no padding) exercises none of this. With a
+  # real window the `dilated_input`/`padded_input` chain has to propagate `NA`
+  # rather than branch on it.
+  rw <- function(operand, window) {
+    hlo_reduce_window(
+      list(dyn_input("a", "f32", operand)),
+      list(hlo_scalar(0, dtype = "f32")),
+      window_dimensions = window,
+      window_strides = rep(1L, length(window)),
+      base_dilations = rep(1L, length(window)),
+      window_dilations = rep(1L, length(window)),
+      padding = matrix(0L, nrow = length(window), ncol = 2L),
+      body = add_region()
+    )
+  }
+  # Only the dynamic axis stays dynamic; the static one gets its window count.
+  expect_equal(inferred(function() rw(c(N, 4L), c(1L, 2L))), "tensor<?x3xf32>")
+  expect_equal(inferred(function() rw(c(5L, 4L), c(2L, 2L))), "tensor<4x3xf32>")
+})
+
+test_that("reduce_window accumulates into a promoted element type", {
+  # (C13), like reduce's (C6), is stated with `is_promotable`.
+  rw <- function(in_dtype, acc_dtype) {
+    hlo_reduce_window(
+      list(dyn_input("x", in_dtype, c(4L, 4L))),
+      list(hlo_scalar(0, dtype = in_dtype)),
+      window_dimensions = c(2L, 2L),
+      window_strides = c(2L, 2L),
+      base_dilations = c(1L, 1L),
+      window_dilations = c(1L, 1L),
+      padding = matrix(0L, nrow = 2L, ncol = 2L),
+      body = add_region(acc_dtype)
+    )
+  }
+  expect_equal(inferred(function() rw("f32", "f64")), "tensor<2x2xf64>")
+  local_func()
+  expect_error(rw("f64", "f32"), "promotes to")
+})
+test_that("a zero window dilation is rejected", {
+  # (C11) is `0 < window_dilations`. A zero flowed into
+  # `(window_dimensions - 1) * window_dilations + 1` and collapsed every window
+  # to width 1.
+  body <- local_func("body")
+  x <- hlo_input("x", "f32")
+  y <- hlo_input("y", "f32")
+  body <- hlo_return(hlo_add(x, y))
+  expect_snapshot(
+    infer_types_reduce_window(
+      vt("f32", c(4L, 4L)),
+      vt("f32", integer()),
+      body = body,
+      window_dimensions = cnst(c(2L, 2L), "i64", 2L),
+      window_strides = cnst(c(1L, 1L), "i64", 2L),
+      base_dilations = cnst(c(1L, 1L), "i64", 2L),
+      window_dilations = cnst(c(0L, 1L), "i64", 2L),
+      padding = cnst(c(0L, 0L, 0L, 0L), "i64", c(2L, 2L))
+    ),
+    error = TRUE
+  )
+})

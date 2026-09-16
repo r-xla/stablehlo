@@ -92,3 +92,36 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+test_that("start_indices must all have the same type", {
+  # (C5) `same(type(start_indices...))`, which no per-operand check sees.
+  # `dynamic_slice` checks the identical constraint for its own indices.
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(2L, 3L)),
+      vt("i32", integer()),
+      vt("i64", integer())
+    ),
+    error = TRUE
+  )
+})
+
+# ---- dynamic axis sizes ----------------------------------------------------
+
+test_that("dynamic_update_slice defers the fit check to the runtime", {
+  dus <- function(operand, update) {
+    hlo_dynamic_update_slice(
+      dyn_input("a", "f32", operand),
+      dyn_input("u", "f32", update),
+      hlo_scalar(0L, dtype = "i32")
+    )
+  }
+  # (C1) the result is the operand's type, dynamic axis and all.
+  expect_equal(inferred(function() dus(N, 2L)), "tensor<?xf32>")
+  # (C6) an update whose axis is dynamic may still fit at run time.
+  expect_equal(inferred(function() dus(3L, N)), "tensor<3xf32>")
+  # An update that certainly does not fit is refused.
+  local_func()
+  expect_error(dus(3L, 5L), "must not be greater than")
+})
