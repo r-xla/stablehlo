@@ -83,7 +83,7 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   }
   # (C6) `is_promotable(element_type(inputs[i]), Ei)`, where `Ei` is the
   # accumulator the body reduces into -- a widening, not an equality, so an
-  # `i8` input may be summed into an `i32`. This used to require equality.
+  # `i8` input may be summed into an `i32`.
   accumulator_dtypes <- lapply(body_out_types, function(x) x$type$dtype)
   assert_accumulator_dtypes(
     lapply(input_value_types, function(x) x$type$dtype),

@@ -48,8 +48,7 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
   # `(tensor<E0>, tensor<E0>, ..., tensor<EN-1>, tensor<EN-1>) -> tensor<i1>`,
   # so its arguments are interleaved per input, not grouped as reduce's are,
   # and `Ei` is the input's element type outright -- no accumulator, so no
-  # promotion. Only `assert_func()` was checked, so a one-argument comparator
-  # returning an `f32` was accepted and rendered.
+  # promotion.
   assert_region_inputs(
     comparator,
     lapply(dots, function(x) x$type$dtype),
