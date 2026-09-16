@@ -15,6 +15,13 @@
   `infer_types_gather()` reject `start_indices` that are not of integer type,
   as the spec requires. A float one used to reach MLIR and come back as a raw
   parse error.
+* `hlo_custom_call()` validates its attributes. `call_target_name` is quoted
+  when it is not a bare MLIR identifier, so a target like `"foo-bar"` emits
+  text that parses; `api_version` must be one of the five the ODS defines; a
+  dictionary `backend_config` requires `api_version` 4 (typed FFI); and
+  `operand_layouts`/`result_layouts` must be given together, one entry per
+  value, each a permutation of that value's axes. All of these previously
+  passed inference and were rejected by the StableHLO verifier.
 
 # stablehlo 0.4.0
 
