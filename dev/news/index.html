@@ -61,6 +61,8 @@
 <code><a href="../reference/hlo_slice.html">infer_types_slice()</a></code> rejects a stride of <code>0</code>. The spec’s (C4) is <code>0 &lt; strides</code>, but the check read <code>0 &lt;= strides</code>.</li>
 <li>
 <code><a href="../reference/hlo_dynamic_slice.html">infer_types_dynamic_slice()</a></code>, <code><a href="../reference/hlo_dynamic_update_slice.html">infer_types_dynamic_update_slice()</a></code> and <code><a href="../reference/hlo_gather.html">infer_types_gather()</a></code> reject <code>start_indices</code> that are not of integer type, as the spec requires. A float one used to reach MLIR and come back as a raw parse error.</li>
+<li>Corrected some checks in the inference functions.</li>
+<li>Added some missing checks in the inference functions.</li>
 </ul></div>
 </div>
     <div class="section level2">

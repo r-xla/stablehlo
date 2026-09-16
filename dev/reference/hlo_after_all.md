@@ -7,12 +7,12 @@ See <https://openxla.org/stablehlo/spec#after_all> for details.
 ``` r
 infer_types_after_all(...)
 
-hlo_after_all(..., output_types = NULL)
+hlo_after_all(..., func = NULL, output_types = NULL)
 ```
 
 ## Arguments
 
-- ...:
+- ..., func:
 
   ([`FuncValue`](https://r-xla.github.io/stablehlo/dev/reference/FuncValue.md))  
 
