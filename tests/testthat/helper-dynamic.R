@@ -37,6 +37,24 @@ lt_region <- function(dtype = "f32") {
   f
 }
 
+# (C5) makes a sort comparator's arity `2 * N`, so a multi-input sort needs one
+# built for that many inputs. Scoped like `add_region()`, so `local_func()`'s
+# deferred restore has run before the caller emits its op.
+n_input_comparator <- function(n, dtype = "i32") {
+  f <- local_func(id = "")
+  args <- lapply(
+    seq_len(2L * n),
+    function(i) hlo_input(paste0("a", i), dtype)
+  )
+  hlo_return(hlo_compare(
+    args[[1L]],
+    args[[2L]],
+    comparison_direction = "LT",
+    compare_type = if (startsWith(dtype, "f")) "FLOAT" else "SIGNED"
+  ))
+  f
+}
+
 # A stand-in for a Func, for the control-flow inference functions. They only
 # ever read `$inputs[[i]]$type` and `$outputs[[i]]$type` (see
 # func_output_types()), so building a real Func -- which would mean tracing a
@@ -59,23 +77,32 @@ skip_if_no_iree_compile <- function() {
   }
 }
 
+# `iree_run()` needs the runtime as well as the compiler, and the two ship
+# separately. Without this a machine with only `iree-compile` turns every
+# execution test into a `testthat::fail()` from inside `iree_run()` rather
+# than a skip.
+skip_if_no_iree_run <- function() {
+  skip_if_no_iree_compile()
+  if (!nzchar(Sys.which("iree-run-module"))) {
+    testthat::skip("iree-run-module not found")
+  }
+}
+
 iree_compiles <- function(src) {
-  dir <- tempfile("shlo-dyn-")
-  dir.create(dir)
+  dir <- withr::local_tempdir("shlo-dyn-", .local_envir = parent.frame())
   mlir <- file.path(dir, "m.mlir")
   writeLines(src, mlir)
+  # Embedded linking (the default) rather than `link_embedded=false`: the
+  # latter emits a system ELF, which the runtime can only load if it was built
+  # with the system library loader. A stock `iree-run-module` has only the
+  # embedded one, and then every `iree_run()` here dies with "HAL device
+  # `__device_0` not found or unavailable" -- the module compiles, so
+  # `iree_compiles()` still passes and only the tests that execute fail.
   out <- suppressWarnings(system2(
     "iree-compile",
     c(
       "--iree-hal-target-device=local",
       "--iree-hal-local-target-device-backends=llvm-cpu",
-      # Embedded linking (the default) rather than `link_embedded=false`: the
-      # latter emits a system ELF, which the runtime can only load if it was
-      # built with the system library loader. A stock `iree-run-module` has
-      # only the embedded one, and then every `iree_run()` here dies with
-      # "HAL device `__device_0` not found or unavailable" -- the module
-      # compiles, so `iree_compiles()` still passes and only the tests that
-      # execute fail.
       "--iree-input-demote-f64-to-f32=false",
       shQuote(mlir),
       "-o",
@@ -94,8 +121,9 @@ iree_compiles <- function(src) {
 
 # The two-operand comparator `unique()` needs: keep-flag descending first, then
 # value ascending, so the kept values migrate to the front of the sort in the
-# order they already had. A multi-operand sort's comparator takes the operands'
-# left halves first, then their right halves.
+# order they already had. A multi-operand sort's comparator interleaves its
+# arguments per operand -- `(k_left, k_right, v_left, v_right)` -- which is
+# what SPEC (C5) asks for, unlike reduce's two groups.
 keep_desc_value_asc_region <- function() {
   f <- local_func(id = "")
   kl <- hlo_input("kl", "i32", shape = integer())
@@ -131,17 +159,13 @@ keep_desc_value_asc_region <- function() {
 #
 # `inputs` are the `NxTxdtype=v` operand strings iree-run-module takes.
 iree_run <- function(src, inputs, dtype_size = 4L, what = "double") {
-  dir <- tempfile("shlo-run-")
-  dir.create(dir)
-  mlir <- file.path(dir, "m.mlir")
-  vmfb <- file.path(dir, "m.vmfb")
+  dir <- withr::local_tempdir("shlo-run-")
   out_bin <- file.path(dir, "out.bin")
-  writeLines(src, mlir)
   comp <- iree_compiles(src)
   if (!comp$ok) {
     testthat::fail(paste("iree-compile failed:", comp$log))
   }
-  file.copy(comp$vmfb, vmfb)
+  vmfb <- comp$vmfb
   res <- suppressWarnings(system2(
     "iree-run-module",
     c(
@@ -164,8 +188,37 @@ iree_run <- function(src, inputs, dtype_size = 4L, what = "double") {
       paste(res, collapse = "\n")
     ))
   }
-  n <- file.size(out_bin) / dtype_size
-  readBin(out_bin, what, n = n, size = dtype_size, endian = "little")
+  # `readBin()` coerces `n` with `as.integer()`, so a file that is not a whole
+  # number of elements would silently lose the trailing partial one.
+  bytes <- file.size(out_bin)
+  if (bytes %% dtype_size != 0L) {
+    testthat::fail(sprintf(
+      "iree-run-module wrote %d bytes, not a multiple of %d",
+      bytes,
+      dtype_size
+    ))
+  }
+  readBin(
+    out_bin,
+    what,
+    n = bytes / dtype_size,
+    size = dtype_size,
+    endian = "little"
+  )
+}
+
+# A readable label for the `list(dtype, shape)` type lists that
+# `pjrt_refine_shapes()` takes, for test messages. Rendered with stablehlo's
+# own type printer, so a message reads in the same vocabulary as the IR.
+type_label <- function(types) {
+  paste(
+    vapply(
+      types,
+      function(t) repr(TensorType(as_dtype(t[[1L]]), Shape(t[[2L]]))),
+      character(1)
+    ),
+    collapse = ", "
+  )
 }
 
 # For the dynamic-op family: build the program once, refine its argument
@@ -239,6 +292,15 @@ refine_usable <- local({
     # the only way to find out whether it works is to run it. `PJRT_INSTALL=0`
     # so a missing `stablehlo-opt` is an error we skip on rather than a
     # several-hundred-megabyte download in the middle of the suite.
+    #
+    # Only a *missing binary* may become a skip. A bare
+    # `error = function(e) FALSE` here would turn every other failure -- a
+    # broken `stablehlo-opt`, a refinement regression, this probe calling
+    # `pjrt_refine_shapes()` with the wrong argument types -- into "the
+    # stablehlo-opt binary is not available", silencing all 21 refinement
+    # tests while blaming a binary that is present and fine. The answer is
+    # memoised, so one swallowed error would silence them for the whole
+    # session.
     answer <<- withr::with_envvar(c(PJRT_INSTALL = "0"), {
       tryCatch(
         {
@@ -246,11 +308,16 @@ refine_usable <- local({
             "func.func @main(%a: tensor<?xf32>) -> tensor<?xf32> {
                return %a : tensor<?xf32>
              }",
-            "tensor<1xf32>"
+            list(list("f32", 1L))
           )
           TRUE
         },
-        error = function(e) FALSE
+        error = function(e) {
+          if (grepl("stablehlo-opt", conditionMessage(e), fixed = TRUE)) {
+            return(FALSE)
+          }
+          stop(e)
+        }
       )
     })
     answer
@@ -308,11 +375,10 @@ expect_refines_and_runs <- function(
   for (run in runs) {
     shapes <- run$shapes
     types <- .mapply(
-      function(s, dt) repr(TensorType(as_dtype(dt), Shape(as.integer(s)))),
+      function(s, dt) list(dt, as.integer(s)),
       list(shapes, dtypes),
       NULL
     )
-    types <- unlist(types)
 
     # What the statically built program infers, for comparison with what the
     # refiner derives from the dynamic one.
@@ -325,7 +391,7 @@ expect_refines_and_runs <- function(
     testthat::expect_equal(
       refined_result_type(refined),
       static_type,
-      info = paste("refined result type for", paste(types, collapse = ", "))
+      info = paste("refined result type for", type_label(types))
     )
 
     buffers <- .mapply(
@@ -347,7 +413,7 @@ expect_refines_and_runs <- function(
       as_array(out_dyn),
       as_array(out_static),
       tolerance = tolerance,
-      info = paste("result for", paste(types, collapse = ", "))
+      info = paste("result for", type_label(types))
     )
   }
   invisible(NULL)

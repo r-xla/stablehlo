@@ -101,8 +101,6 @@ test_that("clamp accepts a dynamic bound and refines from it", {
   )
 })
 
-# ---- dynamic axis sizes ----------------------------------------------------
-
 test_that("clamp compares its bounds to each other, not just to the operand", {
   # Each bound agrees with a dynamic operand, so only a bound-vs-bound check
   # catches this.

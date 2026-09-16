@@ -126,7 +126,7 @@ test_that("dynamic_conv refines, compiles and runs", {
         )
       )
     },
-    types = c("tensor<2x1x4xf32>", "tensor<1x1x2xf32>"),
+    types = list(list("f32", c(2, 1, 4)), list("f32", c(1, 1, 2))),
     args = list(
       pjrt::pjrt_buffer(x, dtype = "f32"),
       pjrt::pjrt_buffer(array(c(1, 1), dim = c(1L, 1L, 2L)), dtype = "f32")
@@ -138,5 +138,40 @@ test_that("dynamic_conv refines, compiles and runs", {
       function(j) x[, 1L, j] + x[, 1L, j + 1L],
       numeric(2L)
     ))
+  )
+})
+
+test_that("dynamic_conv takes the spatial rank from lhs, not dimension_numbers", {
+  # (C4) `shape(padding) = [N - 2, 2]` with `N = rank(lhs)` per (C1). Deriving
+  # `N - 2` from `dimension_numbers` instead only agrees once (C12) holds, so
+  # a malformed `dimension_numbers` was reported as a `padding` error.
+  dn3 <- ConvDimensionNumbers(
+    input_batch_dimension = 0L,
+    input_feature_dimension = 1L,
+    input_spatial_dimensions = c(1L, 2L, 3L),
+    kernel_input_feature_dimension = 2L,
+    kernel_output_feature_dimension = 3L,
+    kernel_spatial_dimensions = c(0L, 1L),
+    output_batch_dimension = 0L,
+    output_feature_dimension = 1L,
+    output_spatial_dimensions = c(1L, 2L, 3L)
+  )
+  local_func()
+  # `padding` is (2, 2), which matches rank(lhs) - 2; the error must therefore
+  # name `input_spatial_dimensions`, not `padding`.
+  expect_error(
+    hlo_dynamic_conv(
+      hlo_input("lhs", "f32", shape = c(1L, 4L, 4L, 1L)),
+      hlo_input("rhs", "f32", shape = c(3L, 3L, 1L, 1L)),
+      dimension_numbers = dn3,
+      padding = hlo_input("p", "i64", shape = c(2L, 2L)),
+      window_strides = c(1L, 1L),
+      lhs_dilation = c(1L, 1L),
+      rhs_dilation = c(1L, 1L),
+      window_reversal = c(FALSE, FALSE),
+      feature_group_count = 1L,
+      batch_group_count = 1L
+    ),
+    "input_spatial_dimensions"
   )
 })

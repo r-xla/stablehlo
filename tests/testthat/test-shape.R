@@ -63,3 +63,17 @@ describe("Shape", {
     expect_error(c(2L, 3L) == Shape(c(2, 3)), "not defined for a")
   })
 })
+
+test_that("Shape refuses an NA that only a conversion could have produced", {
+  expect_error(Shape(NA_character_), "representable as integers")
+  expect_error(Shape(list(1, NA)), "representable as integers")
+  expect_equal(unclass(Shape(NA)), NA_integer_)
+})
+
+test_that("Shape refuses the ordering operators as well as == and !=", {
+  s <- Shape(c(2L, NA))
+  expect_error(s > 1L, "not defined for a")
+  expect_error(s < 1L, "not defined for a")
+  expect_error(s >= 1L, "not defined for a")
+  expect_error(s <= 1L, "not defined for a")
+})

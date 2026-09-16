@@ -47,7 +47,7 @@ test_that("a dynamic operand mixed with a static one refines and runs", {
 })
 
 test_that("one dynamic executable runs at more than one size", {
-  skip_if_no_iree_compile()
+  skip_if_no_iree_run()
 
   # The whole point of the feature, as one assertion: compile *once* against
   # `tensor<?xf32>`, then run the same executable at three different sizes.
@@ -66,7 +66,7 @@ test_that("one dynamic executable runs at more than one size", {
 })
 
 test_that("a refined type still runs, and inference did not lie", {
-  skip_if_no_iree_compile()
+  skip_if_no_iree_run()
 
   # `add(tensor<?xf32>, tensor<3xf32>)` infers `tensor<3xf32>`: inference
   # claims the dynamic side must be 3. Check the claim against a runtime that

@@ -9,7 +9,9 @@ infer_types_dynamic_broadcast_in_dim(
   operand,
   output_dimensions,
   broadcast_dimensions,
-  shape
+  shape,
+  known_expanding_dimensions = NULL,
+  known_nonexpanding_dimensions = NULL
 )
 
 hlo_dynamic_broadcast_in_dim(
@@ -17,6 +19,8 @@ hlo_dynamic_broadcast_in_dim(
   output_dimensions,
   broadcast_dimensions,
   shape,
+  known_expanding_dimensions = NULL,
+  known_nonexpanding_dimensions = NULL,
   output_types = NULL
 )
 }
@@ -30,6 +34,13 @@ Maps each axis of \code{operand} to an axis of the result.}
 The result's static shape, with \code{NA} at each axis whose size is only known
 at run time. It cannot be inferred from the operands, because
 \code{output_dimensions} is data.}
+
+\item{known_expanding_dimensions, known_nonexpanding_dimensions}{(\code{integer()} | \code{NULL})\cr
+Optional static knowledge about which axes of \code{operand} are broadcast
+(size 1 expanded to the result's size) and which are carried through
+unchanged. \code{NULL} -- the default -- leaves the attribute off, which
+StableHLO reads as "every axis is possibly expanding". The two sets must
+be disjoint and within \code{operand}'s axes.}
 
 \item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }

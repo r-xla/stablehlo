@@ -603,3 +603,76 @@ test_that("an out-of-range index_vector_dim is reported, not crashed on", {
   expect_error(scat(-5L), class = "ErrorIndexOutOfBounds")
   expect_error(scat(3L), class = "ErrorIndexOutOfBounds")
 })
+
+test_that("scatter unifies the batch dimensions of inputs and scatter_indices", {
+  # (C18) makes the batch sizes equal, so it refines as well as checks -- the
+  # mirror image of gather's (C17), which has its own test. A dynamic batch
+  # axis on the input takes the size `scatter_indices` knows, and that reaches
+  # the result type.
+  scat <- function(input_shape, indices_shape) {
+    hlo_scatter(
+      list(dyn_input("a", "f32", input_shape)),
+      dyn_input("i", "i32", indices_shape),
+      list(dyn_input("u", "f32", c(indices_shape[[1L]], 1L))),
+      update_computation = add_region(),
+      scatter_dimension_numbers = ScatterDimensionNumbers(
+        update_window_dims = 1L,
+        inserted_window_dims = integer(),
+        input_batching_dims = 0L,
+        scatter_indices_batching_dims = 0L,
+        scatter_dims_to_operand_dims = 1L,
+        index_vector_dim = 1L
+      ),
+      indices_are_sorted = FALSE,
+      unique_indices = FALSE
+    )
+  }
+  expect_equal(
+    inferred(function() scat(c(N, 5L), c(3L, 1L))),
+    "tensor<3x5xf32>"
+  )
+  # A definite clash on the batch axis is still refused.
+  local_func()
+  expect_error(scat(c(2L, 5L), c(3L, 1L)), "batch dimensions")
+})
+
+test_that("scatter checks its scatter_indices and update_computation", {
+  dn <- ScatterDimensionNumbers(
+    update_window_dims = 1L,
+    inserted_window_dims = 0L,
+    scatter_dims_to_operand_dims = 0L,
+    index_vector_dim = 1L
+  )
+  scat <- function(index_dtype = "i32", region = add_region()) {
+    local_func()
+    hlo_scatter(
+      list(hlo_input("a", "f32", shape = c(4L, 3L))),
+      hlo_input("i", index_dtype, shape = c(2L, 1L)),
+      list(hlo_input("u", "f32", shape = c(2L, 3L))),
+      update_computation = region,
+      scatter_dimension_numbers = dn,
+      indices_are_sorted = FALSE,
+      unique_indices = FALSE
+    )
+  }
+  # I2 types `scatter_indices` a "tensor of integer type".
+  expect_error(scat(index_dtype = "f32"), "dtype int or uint")
+  # (C23) the region takes 2 * N scalar arguments.
+  four_args <- local({
+    f <- local_func(id = "")
+    args <- lapply(1:4, function(i) hlo_input(paste0("a", i), "f32"))
+    hlo_return(hlo_add(args[[1L]], args[[2L]]))
+    f
+  })
+  expect_error(scat(region = four_args), "two arguments per input")
+  # ... none of which may carry a dynamic axis.
+  dyn_region <- local({
+    f <- local_func(id = "")
+    hlo_return(hlo_add(
+      hlo_input("l", "f32", shape = N),
+      hlo_input("r", "f32", shape = N)
+    ))
+    f
+  })
+  expect_error(scat(region = dyn_region), "0-dimensional tensors")
+})

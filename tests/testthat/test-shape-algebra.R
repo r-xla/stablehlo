@@ -133,3 +133,46 @@ test_that("type identity is NOT satisfiability", {
   expect_true(dyn == TensorType(as_dtype("f32"), Shape(N)))
   expect_false(dyn == sta)
 })
+
+test_that("unify_shapes is associative, commutative and idempotent", {
+  # This is what lets `unify_all_shapes()` fold rather than compare pairwise.
+  a <- c(N, 3L, N)
+  b <- c(2L, N, N)
+  c3 <- c(N, N, 4L)
+  expect_equal(unify_shapes(a, b), c(2L, 3L, NA_integer_))
+  expect_equal(unify_shapes(b, a), unify_shapes(a, b))
+  expect_equal(unify_shapes(a, a), a)
+  expect_equal(
+    unify_shapes(unify_shapes(a, b), c3),
+    unify_shapes(a, unify_shapes(b, c3))
+  )
+})
+
+test_that("unify_shapes returns a bare integer, not a Shape", {
+  # Every caller relies on this, feeding the result back into `Shape()` or
+  # assigning it into an integer vector.
+  out <- unify_shapes(c(N, 3L), c(2L, 3L))
+  expect_identical(out, c(2L, 3L))
+  expect_false(inherits(out, "Shape"))
+  expect_type(out, "integer")
+})
+
+test_that("unify_all_shapes refuses an empty set rather than answering rank 0", {
+  expect_error(unify_all_shapes(list()), "must not be empty")
+})
+
+test_that("unify_vt refuses a non-tensor operand", {
+  # Without this the dtype comparison collapses to `NA` and `if` dies on it.
+  tok <- ValueType(TokenType())
+  vt <- ValueType(TensorType(as_dtype("f32"), Shape(3L)))
+  expect_error(unify_vt(tok, tok), "TensorType")
+  expect_error(unify_vt(vt, tok), "TensorType")
+})
+
+test_that("assert_shapevec_dyn accepts NA but refuses a NaN", {
+  # `as.integer()` at the call sites would make the two indistinguishable
+  # before `Shape()`'s own guard could see them.
+  expect_silent(assert_shapevec_dyn(c(2L, NA_integer_)))
+  expect_error(assert_shapevec_dyn(c(2, NaN)), "representable as integers")
+  expect_error(assert_shapevec_dyn(c(2, Inf)))
+})

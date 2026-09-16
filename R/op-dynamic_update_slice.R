@@ -25,6 +25,23 @@ infer_types_dynamic_update_slice <- function( # nolint
         actual = paste("shape", shapevec_repr(shape(vt)))
       )
     }
+    # I3 types these `tensor of integer type` (`HLO_ScalarIntTensor` in the
+    # ODS), which nothing downstream re-checks.
+    assert_vt_has_ttype(vt, "int", "uint", arg = "start_indices")
+  }
+
+  # (C5) `same(type(start_indices...))`, as `dynamic_slice` checks for its own
+  # indices: no per-operand check can see it.
+  if (length(start_indices) > 0L) {
+    start_types <- lapply(start_indices, function(x) x$type)
+    if (length(unique(start_types)) != 1L) {
+      # fmt: skip
+      type_strs <- vapply(start_types, repr, character(1)) # nolint
+      cli_abort(c(
+        "All {.arg start_indices} must have the same type.",
+        x = "Got types: {paste0(type_strs, collapse = ', ')}."
+      ))
+    }
   }
 
   operand_rank <- length(shape(operand))

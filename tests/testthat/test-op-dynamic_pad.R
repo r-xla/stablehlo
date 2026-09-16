@@ -58,7 +58,7 @@ test_that("dynamic_pad refines, compiles and runs", {
         shape = 5L
       )
     },
-    types = "tensor<3xf32>",
+    types = list(list("f32", 3)),
     args = list(pjrt::pjrt_buffer(c(1, 2, 3), dtype = "f32")),
     inferred_type = "tensor<5xf32>",
     refined_type = "tensor<5xf32>",

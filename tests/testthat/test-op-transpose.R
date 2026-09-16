@@ -103,3 +103,17 @@ test_that("transpose", {
     )
   )
 })
+
+test_that("transpose rejects a permutation with duplicates", {
+  # (C2) `permutation` is a permutation of `range(rank(operand))`. Compared as
+  # a set, `c(0, 1, 1)` passed on a rank-2 operand and produced a rank-3
+  # result type over a rank-2 operand, which MLIR refuses.
+  local_func()
+  expect_error(
+    hlo_transpose(
+      hlo_input("a", "f32", shape = c(2L, 3L)),
+      permutation = c(0L, 1L, 1L)
+    ),
+    class = "ErrorPermuteIndex"
+  )
+})

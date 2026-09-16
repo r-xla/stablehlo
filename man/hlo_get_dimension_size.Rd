@@ -10,7 +10,10 @@ infer_types_get_dimension_size(operand, dimension)
 hlo_get_dimension_size(operand, dimension, output_types = NULL)
 }
 \arguments{
-\item{operand, dimension}{(\code{\link{FuncValue}})\cr}
+\item{operand}{(\code{\link{FuncValue}})\cr}
+
+\item{dimension}{(\code{integer(1)})\cr
+The axis whose size to read, 0-based.}
 
 \item{output_types}{(\code{list()} of \code{\link{ValueType}} | \code{NULL})\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped.}
 }

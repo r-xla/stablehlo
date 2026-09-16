@@ -85,6 +85,19 @@ must never branch on a possibly-`NA` comparison (`if (NA == 0L)` is an error,
 not a `FALSE`) -- write the guard as `provably_*()` so an unknown operand falls
 through to arithmetic, which propagates `NA` and gives the honest `?`.
 
+A region is the one place a `?` must never reach: SPEC types every reducer,
+comparator and update computation over *scalar* tensors (reduce (C6),
+reduce_window (C13), scatter (C23), sort (C5)). `assert_region_inputs()` is
+the shared check -- `2 * N` arguments, each 0-dimensional, grouped as
+`E0..EN-1, E0..EN-1` except for sort, which interleaves them per input.
+
+`Ei` is the *accumulator* element type, not the input's: reduce, reduce_window
+and scatter only require `is_promotable(element_type(inputs[i]), Ei)`, so a
+body may accumulate an `i8` into an `i32`. `assert_accumulator_dtypes()`
+checks that half, and `assert_region_inputs()` is passed the accumulator
+dtypes. Sort is the exception -- its (C5) says `Ei = element_type(inputs[i])`
+outright -- so it passes the input dtypes and gets equality.
+
 Where StableHLO lets a size come from *data* rather than from a shape it does
 so with a separate op that takes the sizes as an operand
 (`hlo_dynamic_reshape()`, `hlo_dynamic_iota()`, `hlo_dynamic_pad()`,
@@ -94,6 +107,10 @@ strict at every one of its call sites, and only those ops use
 `assert_shapevec_dyn()`. `assert_size_operand()` is the shared boundary check
 for those operands -- rank-1, integer dtype, one element per axis, and (for
 the ops StableHLO types statically shaped) a static extent of its own.
+`assert_shapevec_dyn()` admits `NA` but still refuses a `NaN`: the call sites
+apply `as.integer()` before `Shape()` sees the vector, so a `NaN` would
+otherwise arrive as an indistinguishable `NA_integer_` and pass for an axis
+the caller meant to leave dynamic.
 
 ## Testing
 

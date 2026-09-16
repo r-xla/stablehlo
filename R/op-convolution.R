@@ -421,6 +421,10 @@ infer_types_convolution <- function(
     ))
   }
   # (C15)
+  # Divisibility against a `?` is `NA`, so it defers rather than rejecting.
+  # Checked but not unified: the result's feature axis is
+  # `kernel_output_feature_size` itself, so there is nothing a refinement here
+  # would add.
   if (provably_ne(kernel_output_feature_size %% bg_count, 0L)) {
     cli_abort(c(
       "dim(rhs, kernel_output_feature_dimension) must be divisible by {.arg batch_group_count}.",

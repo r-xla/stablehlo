@@ -35,7 +35,10 @@ hlo_get_dimension_size_impl <- hlo_fn(
 )
 
 #' @templateVar mnemonic get_dimension_size
+#' @templateVar not_func_variables dimension
 #' @template op
+#' @param dimension (`integer(1)`)\cr
+#'   The axis whose size to read, 0-based.
 #' @export
 hlo_get_dimension_size <- function(operand, dimension, output_types = NULL) {
   hlo_get_dimension_size_impl(

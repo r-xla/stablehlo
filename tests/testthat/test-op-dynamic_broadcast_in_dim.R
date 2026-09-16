@@ -71,7 +71,7 @@ test_that("dynamic_broadcast_in_dim refines, compiles and runs", {
       )
       hlo_multiply(a, two)
     },
-    types = "tensor<4xf32>",
+    types = list(list("f32", 4)),
     args = list(pjrt::pjrt_buffer(c(1, 2, 3, 4), dtype = "f32")),
     inferred_type = "tensor<?xf32>",
     refined_type = "tensor<4xf32>",
@@ -113,5 +113,93 @@ test_that("the result takes the shape hint, not a blanket dynamic shape", {
       )
     }),
     "tensor<1x3xf32>"
+  )
+})
+
+test_that("dynamic_broadcast_in_dim pins a result axis its operand determines", {
+  # (C5) is a disjunction: once `dim(operand, d)` is known and provably not 1,
+  # the "operand dim is 1" branch is out and the result axis must equal it. So
+  # a `?` in the hint becomes the operand's size rather than surviving into
+  # the result type.
+  expect_equal(
+    inferred(function() {
+      hlo_dynamic_broadcast_in_dim(
+        dyn_input("a", "f32", 3L),
+        dyn_input("s", "i64", 1L),
+        broadcast_dimensions = 0L,
+        shape = N
+      )
+    }),
+    "tensor<3xf32>"
+  )
+  # An operand axis of 1 may expand to anything, so it pins nothing.
+  expect_equal(
+    inferred(function() {
+      hlo_dynamic_broadcast_in_dim(
+        dyn_input("a", "f32", 1L),
+        dyn_input("s", "i64", 1L),
+        broadcast_dimensions = 0L,
+        shape = N
+      )
+    }),
+    "tensor<?xf32>"
+  )
+  # Nor does a dynamic operand axis, which could turn out to be 1.
+  expect_equal(
+    inferred(function() {
+      hlo_dynamic_broadcast_in_dim(
+        dyn_input("a", "f32", N),
+        dyn_input("s", "i64", 1L),
+        broadcast_dimensions = 0L,
+        shape = N
+      )
+    }),
+    "tensor<?xf32>"
+  )
+})
+
+test_that("dynamic_broadcast_in_dim validates the known-expanding attributes", {
+  bcast <- function(...) {
+    hlo_dynamic_broadcast_in_dim(
+      dyn_input("a", "f32", c(1L, 3L)),
+      dyn_input("s", "i64", 2L),
+      broadcast_dimensions = c(0L, 1L),
+      shape = c(N, 3L),
+      ...
+    )
+  }
+  # Both are optional, and omitting them leaves the attribute off entirely --
+  # `OptionalAttr` in the ODS, and "absent" does not mean "empty".
+  local_func()
+  expect_false(grepl("known_expanding", repr(hlo_return(bcast()))))
+
+  src <- local({
+    local_func()
+    repr(hlo_return(bcast(
+      known_expanding_dimensions = 0L,
+      known_nonexpanding_dimensions = 1L
+    )))
+  })
+  expect_match(src, "known_expanding_dimensions = array<i64: 0>", fixed = TRUE)
+  expect_match(
+    src,
+    "known_nonexpanding_dimensions = array<i64: 1>",
+    fixed = TRUE
+  )
+
+  # (C9)/(C10) `0 <= known_*_dimensions < rank(operand)`.
+  local_func()
+  expect_error(
+    bcast(known_expanding_dimensions = 2L),
+    class = "ErrorIndexOutOfBounds"
+  )
+  # (C8) the two sets are disjoint and each free of repeats.
+  local_func()
+  expect_error(
+    bcast(
+      known_expanding_dimensions = 0L,
+      known_nonexpanding_dimensions = 0L
+    ),
+    "disjoint axes"
   )
 })

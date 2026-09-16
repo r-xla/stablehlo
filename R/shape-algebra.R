@@ -68,7 +68,11 @@ provably_gt <- function(a, b) provably(a > b)
 # turns out to be, where `prod(c(NA, 0L))` answers `NA` and defers a decidable
 # check.
 shape_nelts <- function(shape) {
-  if (any(shape == 0L, na.rm = TRUE)) 0L else prod(shape)
+  # `unclass()` is defensive: both callers pass an already-unclassed vector,
+  # but this is the one place in the file that spells a comparison with a bare
+  # operator, and `==` on a `Shape` raises rather than answers.
+  sizes <- unclass(shape)
+  if (any(sizes == 0L, na.rm = TRUE)) 0 else prod(sizes)
 }
 
 provably_nelts_ne <- function(a, b) provably(shape_nelts(a) != shape_nelts(b))
@@ -129,6 +133,14 @@ unify_all_shapes <- function(
   arg = "inputs",
   call = rlang::caller_env()
 ) {
+  # `Reduce()` answers `NULL` for an empty set, which `Shape()` would then take
+  # for a rank-0 shape -- a silently wrong answer from a function whose
+  # contract is "the most specific shape consistent with every input". Every
+  # caller rejects an empty operand list first, so this only ever fires on a
+  # programming error.
+  if (length(shapes) == 0L) {
+    cli_abort("{.arg {arg}} must not be empty.", call = call)
+  }
   Reduce(
     function(acc, s) {
       if (length(acc) != length(s)) {
@@ -168,6 +180,11 @@ unify_vt <- function(
   arg_y = rlang::caller_arg(y),
   call = rlang::caller_env()
 ) {
+  # `assert_vt_equal()`, which this replaced, guarded this itself. Without it a
+  # non-tensor operand reaches `x$type$dtype`, which is `NULL` for a token, and
+  # the comparison below collapses to `NA` rather than to a message.
+  assert_vt_is_tensor(x, arg = arg_x, call = call)
+  assert_vt_is_tensor(y, arg = arg_y, call = call)
   a <- shape(x)
   b <- shape(y)
   compatible <- x$type$dtype == y$type$dtype &&
@@ -210,8 +227,22 @@ unify_vt <- function(
 # at every one of its call sites: where StableHLO lets a size vary it does so
 # with a separate op that takes the sizes as an *operand*, so `NA` reaches an
 # inference function only as a result-type hint, never as a rendered attribute.
-assert_shapevec_dyn <- function(x) {
-  assert_integerish(x, lower = 0)
+assert_shapevec_dyn <- function(x, arg = rlang::caller_arg(x)) {
+  assert_integerish(x, lower = 0, .var.name = arg)
+  # `NA` is permitted here -- it *is* the dynamic axis -- which makes `NaN` the
+  # one value that has to be refused separately: checkmate counts it as
+  # missing, and the `as.integer()` these call sites apply next would turn it
+  # into an indistinguishable `NA_integer_`, so `Shape()`'s guard against an
+  # invented `NA` never gets to see it. An `Inf` is already refused as out of
+  # integer range.
+  if (is.double(x) && any(is.nan(x))) {
+    cli_abort(c(
+      "{.arg {arg}} must be axis sizes representable as integers.",
+      i = "{.val {NA}} is how a dynamic axis is spelled, so {.val {NaN}}
+           cannot also stand for one.",
+      x = "Got {.val {NaN}} at axis {vec_repr(which(is.nan(x)) - 1L)}."
+    ))
+  }
 }
 
 # The size operand of the dynamic-op family: `output_shape`, `slice_sizes`,
@@ -273,9 +304,14 @@ assert_size_operand <- function(
   invisible(NULL)
 }
 
-# The dynamic-op family's index operands must share one identical type
-# (`AllTypesMatch` in the ODS; SPEC (C2) for dynamic_pad), which no per-operand
-# check can see. `xs` is a named list, so the message can say which ones.
+# The dynamic-op family's index operands must share one identical type, which
+# no per-operand check can see. `xs` is a named list, so the message can say
+# which ones.
+#
+# This is stricter than SPEC, and deliberately so: SPEC asks only for equal
+# *sizes* (dynamic_pad (C2)), while `AllTypesMatch` in the ODS asks for one
+# identical type, dtype included. The verifier is what the program has to get
+# past, so the check follows the ODS.
 assert_size_operands_same_type <- function(xs, call = rlang::caller_env()) {
   strs <- vapply(xs, function(x) x$type$str, character(1))
   if (length(unique(strs)) > 1L) {

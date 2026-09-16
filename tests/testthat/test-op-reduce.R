@@ -238,3 +238,25 @@ test_that("reduce over a static axis of a dynamic operand", {
     )
   )
 })
+
+test_that("reduce accumulates into a promoted element type", {
+  # (C6) is `is_promotable(element_type(inputs[i]), Ei)`, not an equality, so
+  # summing an `i8` into an `i32` accumulator is legal -- and StableHLO's own
+  # verifier accepts it. Requiring equality here rejected it.
+  red <- function(in_dtype, acc_dtype) {
+    hlo_reduce(
+      list(dyn_input("x", in_dtype, c(4L, 4L))),
+      list(hlo_scalar(0L, dtype = in_dtype)),
+      dimensions = 1L,
+      body = add_region(acc_dtype)
+    )
+  }
+  expect_equal(inferred(function() red("i8", "i32")), "tensor<4xi32>")
+  expect_equal(inferred(function() red("i32", "i32")), "tensor<4xi32>")
+  # Narrowing is not promotion.
+  local_func()
+  expect_error(red("i32", "i8"), "promotes to")
+  # Nor is crossing type classes.
+  local_func()
+  expect_error(red("i32", "f32"), "promotes to")
+})

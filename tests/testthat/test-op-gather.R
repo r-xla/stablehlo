@@ -566,3 +566,23 @@ test_that("gather's batch-size check and refinement are both live", {
     "tensor<3x2xf32>"
   )
 })
+
+test_that("gather requires integer start_indices", {
+  # I2 types `start_indices` a "tensor of integer type"; a float index tensor
+  # used to pass inference and only be refused by MLIR.
+  local_func()
+  expect_error(
+    hlo_gather(
+      hlo_input("a", "f32", shape = c(3L, 4L)),
+      hlo_input("i", "f32", shape = c(2L, 1L)),
+      gather_dimension_numbers = GatherDimensionNumbers(
+        offset_dims = 1L,
+        collapsed_slice_dims = 0L,
+        start_index_map = 0L,
+        index_vector_dim = 1L
+      ),
+      slice_sizes = c(1L, 4L)
+    ),
+    "dtype int or uint"
+  )
+})

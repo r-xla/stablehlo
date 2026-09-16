@@ -121,6 +121,9 @@ infer_types_gather <- function(
 
   assert_vt_is_tensor(operand)
   assert_vt_is_tensor(start_indices)
+  # I2 types `start_indices` a `tensor of integer type`; without this a float
+  # index tensor passes inference and only MLIR refuses the program.
+  assert_vt_has_ttype(start_indices, "int", "uint")
 
   offset_dims <- gather_dimension_numbers$offset_dims
   collapsed_slice_dims <- gather_dimension_numbers$collapsed_slice_dims
@@ -167,6 +170,8 @@ infer_types_gather <- function(
   } else {
     1L
   }
+  # Checked but not unified: `batch_dim_sizes` below drops the
+  # `index_vector_dim` axis, so a size refined here would reach nothing.
   if (provably_ne(expected_start_index_map_size, length(start_index_map))) {
     cli_abort(c(
       "length(start_index_map) must equal the index vector size.",

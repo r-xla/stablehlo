@@ -12,6 +12,10 @@ infer_types_broadcast_in_dim <- function(
 ) {
   assert_vt_is_tensor(operand)
   assert_const(broadcast_dimensions, dtype = "i64", naxes = 1L)
+  # Strict, because the ODS types this op's result
+  # `HLO_StaticShapeTensorPerAxisQuantizedTensorOrBoundedTensor` -- a `?` there
+  # is refused by the verifier at any run-time size. `dynamic_broadcast_in_dim`
+  # is the op that takes the sizes as an operand instead.
   assert_shapevec(shape)
 
   operand_dims <- shape(operand)

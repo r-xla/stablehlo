@@ -134,7 +134,7 @@ test_that("concatenate: the refiner derives the sum we could not", {
 })
 
 test_that("a dynamic axis survives a chain of ops and reaches the right size", {
-  skip_if_no_iree_compile()
+  skip_if_no_iree_run()
 
   # concatenate is the interesting one: its on-axis size is the *sum*, so a
   # dynamic input gives a dynamic output, and only the runtime knows the
@@ -182,6 +182,37 @@ test_that("concatenate compares operand ranks, not just their projections", {
     hlo_concatenate(
       hlo_input("a", "f32", shape = 3L),
       hlo_scalar(1, dtype = "f32"),
+      dimension = 0L
+    ),
+    class = "ErrorConcatenateShapes"
+  )
+})
+
+test_that("concatenate rejects a negative dimension", {
+  # (C4) is `0 <= dimension < rank`. Unguarded on the low side, `dim_r` goes
+  # negative and `x[-dim_r]` flips from dropping that axis to keeping only it,
+  # so both the projection and the summed axis are taken over the wrong axes
+  # and a wrong result type comes out with no error at all.
+  local_func()
+  expect_error(
+    hlo_concatenate(
+      hlo_input("a", "f32", shape = c(2L, 3L)),
+      hlo_input("b", "f32", shape = c(2L, 3L)),
+      dimension = -2L
+    ),
+    class = "ErrorIndexOutOfBounds"
+  )
+})
+
+test_that("concatenate folds off-axis sizes instead of comparing pairwise", {
+  # `(3, ?, 4)` on the off axis: each shape may match the first, so a pairwise
+  # check would accept it. The fold is what refuses it.
+  local_func()
+  expect_error(
+    hlo_concatenate(
+      hlo_input("a", "f32", shape = c(1L, 3L)),
+      hlo_input("b", "f32", shape = c(1L, N)),
+      hlo_input("c", "f32", shape = c(1L, 4L)),
       dimension = 0L
     ),
     class = "ErrorConcatenateShapes"

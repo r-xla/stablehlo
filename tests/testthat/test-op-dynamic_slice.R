@@ -127,3 +127,18 @@ test_that("dynamic_slice of a dynamic operand", {
     )
   )
 })
+
+test_that("dynamic_slice requires integer start_indices", {
+  # I2 types them "0-dimensional tensors of integer type"
+  # (`HLO_ScalarIntTensor` in the ODS, which excludes `i1`).
+  local_func()
+  expect_error(
+    hlo_dynamic_slice(
+      hlo_input("a", "f32", shape = c(4L, 3L)),
+      hlo_scalar(0, dtype = "f32"),
+      hlo_scalar(0, dtype = "f32"),
+      slice_sizes = c(2L, 2L)
+    ),
+    "dtype int or uint"
+  )
+})

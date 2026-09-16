@@ -213,3 +213,63 @@ test_that("reduce_window folds its inputs' shapes", {
   # A rank mismatch is refused rather than recycled.
   expect_error(rw(list(c(2L, 3L, 2L, 3L), c(2L, 3L))), "same shape")
 })
+
+test_that("reduce_window's window arithmetic propagates a dynamic axis", {
+  # The identity window (all ones, no padding) exercises none of this. With a
+  # real window the `dilated_input`/`padded_input` chain has to propagate `NA`
+  # rather than branch on it.
+  rw <- function(operand, window) {
+    hlo_reduce_window(
+      list(dyn_input("a", "f32", operand)),
+      list(hlo_scalar(0, dtype = "f32")),
+      window_dimensions = window,
+      window_strides = rep(1L, length(window)),
+      base_dilations = rep(1L, length(window)),
+      window_dilations = rep(1L, length(window)),
+      padding = matrix(0L, nrow = length(window), ncol = 2L),
+      body = add_region()
+    )
+  }
+  # Only the dynamic axis stays dynamic; the static one gets its window count.
+  expect_equal(inferred(function() rw(c(N, 4L), c(1L, 2L))), "tensor<?x3xf32>")
+  expect_equal(inferred(function() rw(c(5L, 4L), c(2L, 2L))), "tensor<4x3xf32>")
+})
+
+test_that("reduce_window rejects a zero window dilation", {
+  # (C11) is `0 < window_dilations`. A zero would flow into
+  # `(window_dimensions - 1) * window_dilations + 1` and collapse every window
+  # to width 1.
+  local_func()
+  expect_error(
+    hlo_reduce_window(
+      list(hlo_input("a", "f32", shape = 4L)),
+      list(hlo_scalar(0, dtype = "f32")),
+      window_dimensions = 2L,
+      window_strides = 1L,
+      base_dilations = 1L,
+      window_dilations = 0L,
+      padding = matrix(0L, nrow = 1L, ncol = 2L),
+      body = add_region()
+    ),
+    "must be positive"
+  )
+})
+
+test_that("reduce_window accumulates into a promoted element type", {
+  # (C13), like reduce's (C6), is stated with `is_promotable`.
+  rw <- function(in_dtype, acc_dtype) {
+    hlo_reduce_window(
+      list(dyn_input("x", in_dtype, c(4L, 4L))),
+      list(hlo_scalar(0, dtype = in_dtype)),
+      window_dimensions = c(2L, 2L),
+      window_strides = c(2L, 2L),
+      base_dilations = c(1L, 1L),
+      window_dilations = c(1L, 1L),
+      padding = matrix(0L, nrow = 2L, ncol = 2L),
+      body = add_region(acc_dtype)
+    )
+  }
+  expect_equal(inferred(function() rw("f32", "f64")), "tensor<2x2xf64>")
+  local_func()
+  expect_error(rw("f64", "f32"), "promotes to")
+})

@@ -330,3 +330,122 @@ assert_dtype_one_of <- function(
     call = call
   )
 }
+
+# SPEC's `is_promotable(x, y)`: `y` is `x` widened. Same type class, and for
+# everything but bool a bit width that does not shrink.
+#
+# This is what a reducer's *accumulator* element type has to satisfy against
+# its input's, which is why `reduce`, `reduce_window` and `scatter` may sum an
+# `i8` input into an `i32` and must not be made to require equality.
+#
+# Note this follows SPEC rather than the MLIR verifier, which passes
+# `ignoreFpPrecision = true` and so also accepts a *narrower* float
+# accumulator. SPEC says `bitwidth(x) <= bitwidth(y)` with no exception for
+# floats, so `f64` reduced into an `f32` is refused here although XLA and IREE
+# would take it.
+is_promotable_dtype <- function(x, y) {
+  same_class <- (is_dtype_bool(x) && is_dtype_bool(y)) ||
+    ((is_dtype_int(x) || is_dtype_uint(x)) &&
+      (is_dtype_int(y) || is_dtype_uint(y))) ||
+    (is_dtype_float(x) && is_dtype_float(y))
+  if (!same_class) {
+    return(FALSE)
+  }
+  if (is_dtype_bool(x)) {
+    return(TRUE)
+  }
+  dtype_width(x) <= dtype_width(y)
+}
+
+# The reducer/comparator/update regions of `reduce`, `reduce_window`,
+# `scatter` and `sort` are all constrained the same way: SPEC states each as a
+# function type over *scalar* tensors -- reduce (C6), reduce_window (C13),
+# scatter (C23), sort (C5). Two things follow that no other check in those ops
+# sees.
+#
+# The arity and the dtypes: `2 * N` arguments, one pair per operand. The pair
+# is spelled differently in the two families -- reduce, reduce_window and
+# scatter take all the left arguments and then all the right ones
+# (`E0, ..., EN-1, E0, ..., EN-1`), while sort interleaves them per operand
+# (`E0, E0, E1, E1, ...`) -- so `interleaved` picks which.
+#
+# `dtypes` is what every argument must be, and for the reducer family that is
+# the *accumulator* element type `Ei` -- the body's own result type -- not the
+# input's. SPEC only asks that `is_promotable(element_type(inputs[i]), Ei)`,
+# which `assert_accumulator_dtypes()` checks separately; requiring the
+# arguments to match the inputs would refuse accumulating an `i8` into an
+# `i32`, which StableHLO's verifier accepts. `sort` is the exception: its (C5)
+# says `Ei = element_type(inputs[i])` outright, so there `dtypes` is the
+# inputs'.
+#
+# And the ranks: every argument is `tensor<Ei>`, a 0-dimensional tensor. That
+# is what keeps a dynamic axis out of a region, where it would otherwise be
+# rendered straight into the block arguments and only be refused by MLIR.
+assert_region_inputs <- function(
+  region,
+  dtypes,
+  arg = "body",
+  interleaved = FALSE,
+  dtype_label = "the accumulator's element types",
+  call = rlang::caller_env()
+) {
+  n <- length(dtypes)
+  in_types <- lapply(region$inputs, function(x) x$type)
+  if (length(in_types) != 2L * n) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must take two arguments per input.",
+        x = "Expected {2L * n} argument{?s}, got {length(in_types)}."
+      ),
+      call = call
+    )
+  }
+  expected <- if (interleaved) rep(dtypes, each = 2L) else rep(dtypes, 2L)
+  for (i in seq_along(expected)) {
+    vt <- in_types[[i]]
+    if (!inherits(vt$type, "TensorType") || length(shape(vt)) != 0L) {
+      cli_abort(
+        c(
+          "{.arg {arg}} arguments must be 0-dimensional tensors.",
+          x = "Argument {i - 1L} has type {.val {vt$type}}."
+        ),
+        call = call
+      )
+    }
+    if (vt$type$dtype != expected[[i]]) {
+      cli_abort(
+        c(
+          "{.arg {arg}} arguments must have {dtype_label}.",
+          x = "Argument {i - 1L} has type {.val {vt$type$dtype}}, expected
+               {.val {expected[[i]]}}."
+        ),
+        call = call
+      )
+    }
+  }
+  invisible(NULL)
+}
+
+# reduce (C6) / reduce_window (C13) / scatter (C23): the accumulator element
+# type `Ei` the body reduces into must be a widening of the input's, not
+# necessarily equal to it.
+assert_accumulator_dtypes <- function(
+  input_dtypes,
+  accumulator_dtypes,
+  arg = "body",
+  call = rlang::caller_env()
+) {
+  for (i in seq_along(input_dtypes)) {
+    if (!is_promotable_dtype(input_dtypes[[i]], accumulator_dtypes[[i]])) {
+      cli_abort(
+        c(
+          "{.arg {arg}} must reduce into a type its input promotes to.",
+          x = "Input {i - 1L} has type {.val {input_dtypes[[i]]}}, which does
+               not promote to {.val {accumulator_dtypes[[i]]}}."
+        ),
+        call = call
+      )
+    }
+  }
+  invisible(NULL)
+}

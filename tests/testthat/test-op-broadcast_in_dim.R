@@ -140,8 +140,10 @@ test_that("broadcast_in_dim from an axis whose size is deferred", {
 })
 
 test_that("broadcast_in_dim rejects a dynamic shape attribute", {
-  # The result is rendered as a static type, so `NA` must not reach it --
-  # `hlo_dynamic_broadcast_in_dim()` is the escape hatch.
+  # The ODS types this op's result a static-shape tensor, so a `?` there cannot
+  # be satisfied at any run-time size -- `hlo_dynamic_broadcast_in_dim()` is
+  # the escape hatch. (The `shape` argument itself is a `custom_attr` and is
+  # never rendered; what must stay static is the result *type*.)
   local_func()
   x <- hlo_input("x", "f32", shape = c(2L, 3L))
   expect_error(

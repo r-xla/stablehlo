@@ -48,12 +48,28 @@ infer_types_dynamic_conv <- function(
   batch_group_count
 ) {
   assert_class(dimension_numbers, "ConvDimensionNumbers")
+  assert_vt_is_tensor(lhs)
   assert_vt_is_tensor(padding)
-  n_spatial <- length(dimension_numbers$input_spatial_dimensions)
 
-  # (C4) `padding` is `(n_spatial, 2)`, and I4's type is a statically shaped
-  # 2-dimensional integer tensor -- a dynamic extent there could not be
-  # satisfied at any run-time size.
+  # (C4) `shape(padding) = [N - 2, 2]`, where (C1) makes `N` the *operand's*
+  # rank. Taking `N - 2` from `dimension_numbers` instead would only agree once
+  # (C12) `size(input_spatial_dimensions) = N - 2` holds -- and that is checked
+  # further down, inside `infer_types_convolution()`. A malformed
+  # `dimension_numbers` would then be reported here as a `padding` error.
+  lhs_rank <- length(shape(lhs))
+  if (lhs_rank < 2L) {
+    cli_abort(c(
+      "{.arg lhs} must have rank >= 2.",
+      x = "Got shape {shapevec_repr(shape(lhs))}."
+    ))
+  }
+  n_spatial <- lhs_rank - 2L
+
+  # I3's type is a statically shaped 2-dimensional integer tensor, so a
+  # dynamic extent there could not be satisfied at any run-time size. That
+  # makes both extents known, and the shape check below decidable outright --
+  # it is written with `provably_ne()` only to stay uniform with the rest of
+  # the family.
   assert_vt_has_ttype(padding, "int", "uint")
   declared <- shape(padding)
   if (length(declared) != 2L) {

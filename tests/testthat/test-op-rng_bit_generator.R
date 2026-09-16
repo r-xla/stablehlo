@@ -153,6 +153,9 @@ test_that("rng_bit_generator defers the state-size check when it is dynamic", {
     }),
     "tensor<?xui64>"
   )
+  # THREE_FRY defers too, even though (C2) fixes its state size at 2: the
+  # refinement could only be recorded on `output_state`, and (C1) requires
+  # that to have the same type as `initial_state`.
   expect_equal(
     inferred(function() {
       hlo_rng_bit_generator(

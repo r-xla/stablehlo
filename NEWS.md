@@ -3,136 +3,97 @@
 ## Breaking changes
 
 * A `Shape` *is* its integer vector now, with a class attached, rather than a
-  list wrapping one. `length(shape)` is the rank, `shape[i]` is an axis size,
-  and `shape$dims` is gone -- read the sizes with `unclass()`.
+  list wrapping one. `length(shape)` is the rank and `shape[i]` an axis size;
+  `shape$dims` is gone -- read the sizes with `unclass()`.
 
-* `==` and `!=` on a `Shape` now raise an error rather than answering. Once an
-  axis size can be `NA`, "are these two shapes equal" is three questions that
-  disagree exactly where it matters, and an operator cannot say which was
-  meant; the error says so and points at the helper for each of the two a
-  caller can act on.
+* Comparison operators on a `Shape` (`==`, `!=`, `<`, `>`, `<=`, `>=`) now
+  raise. Once an axis size can be `NA`, "equal" is three different questions
+  and an operator cannot say which was meant.
 
-* `shape()` has no `Shape` method any more, for the same reason as the first
-  point: a `Shape` already *is* its integer vector, so there is nothing to
-  extract. `shape()` keeps working on a `ValueType`, `TensorType` or
-  `Constant`.
+* `shape()` has no `Shape` method any more; a `Shape` already is its integer
+  vector. It keeps working on a `ValueType`, `TensorType` or `Constant`.
 
 ## Features
 
-* Shape inference understands axis sizes that are only known at run time. A
-  constraint over an `NA` axis size is refused only when it is *certainly*
-  violated and left to the runtime otherwise, and where one operand knows a
-  size the other does not, the known size wins: `add(tensor<?xf32>,
-  tensor<3xf32>)` used to be an error and now infers `tensor<3xf32>`.
+* Shape inference understands axis sizes known only at run time, written `NA`
+  in a `Shape` and `?` in MLIR. A constraint is refused only when *certainly*
+  violated, and a known size wins over a dynamic one, so
+  `add(tensor<?xf32>, tensor<3xf32>)` infers `tensor<3xf32>`.
 
-  Every op that can take a dynamic operand now does, and none refuses an
-  operand whose size it cannot check. Most carry the `?` into their result.
-  The exceptions are the ops whose result extents come from an *attribute*
-  rather than an operand -- `broadcast_in_dim`, `reshape`, `slice`,
-  `dynamic_slice`, `get_dimension_size`, and the offset axes of `gather` and
-  the second result of `rng_bit_generator` -- whose results stay static even
-  from a dynamic operand. `transpose`, `reverse`,
-  `convert` and `pad` needed no change -- they only index axes or do
-  arithmetic that `NA` already propagates through correctly. `reduce_window`'s
-  arithmetic likewise, but its "all inputs share a shape" check had to be
-  folded like `reduce`'s.
-
-* Control flow -- `if`, `case`, `while` -- keeps requiring its branch and
-  carried types to match *exactly*, and now says so deliberately rather than
-  by omission. Widening a branch that knows an axis size against one that does
-  not is tempting, since only one branch runs; SPEC forbids it (`if` (C2),
-  `case` (C3), `while` (C2) are all equalities) and IREE cannot lower the
-  widened form at all, because it maps these to `scf.if`/`scf.while`, whose
-  yielded type must match the region's declared type. A program that needs the
-  widening has to do it explicitly, inside the branch.
-
-* The dynamic-op family is complete: every op SPEC.md documents as taking its
-  sizes as *operands* rather than attributes is now available --
+* Added the ops that take their sizes as operands rather than attributes:
   `hlo_dynamic_broadcast_in_dim()`, `hlo_dynamic_iota()`,
-  `hlo_dynamic_reshape()`, `hlo_dynamic_pad()`, `hlo_dynamic_gather()`,
-  `hlo_dynamic_conv()`, alongside the `hlo_dynamic_slice()` and
-  `hlo_dynamic_update_slice()` that were already here, plus
-  `hlo_get_dimension_size()` for reading an axis size as a value. Each op
-  whose *result* extents are data takes a `shape` argument giving the result's
-  static shape with `NA` where a size is only known at run time, since such a
-  result cannot be inferred; it is a claim rather than a check.
+  `hlo_dynamic_reshape()`, `hlo_dynamic_pad()`, `hlo_dynamic_gather()` and
+  `hlo_dynamic_conv()`. Each takes a `shape` argument giving the result's
+  static shape with `NA` where a size is only known at run time; it is a
+  claim, not a check.
 
-  `hlo_dynamic_gather()` and `hlo_dynamic_conv()` share their static
-  counterpart's inference, run with the moved operand marked unknown: every
-  check that does not depend on it still fires, the ones that do defer, and
-  the result comes back with `?` exactly on the axes that operand determines.
+* Added `hlo_get_dimension_size()`, which reads an axis size out as a value.
 
-  A caveat on the whole family: whether a backend can lower one of these
-  directly, with its size operands left non-constant, varies by op. IREE
-  refuses `dynamic_reshape`, `dynamic_pad`, `dynamic_gather` and
-  `dynamic_conv` outright. It compiles and runs `real_dynamic_slice`, and
-  compiles `dynamic_broadcast_in_dim` and `dynamic_iota` when their size
-  operand is tied to an operand's own dimension (via
-  `hlo_get_dimension_size()`) but not when it is a free value. XLA refuses a
-  `?` entry point in every case.
-  The route that works for every op is to refine the program back to concrete
-  shapes with `pjrt::pjrt_refine_shapes()`, which folds the dynamic op away --
-  that is what the tests do. `real_dynamic_slice` is the exception in the
-  other direction: its extent comes from data, so refinement cannot remove it
-  and only a backend that compiles dynamic shapes will run it.
+* Added `hlo_real_dynamic_slice()`, in the StableHLO dialect but not in
+  SPEC.md. It is the only op whose result extent comes from the data, so it
+  needs a backend that compiles dynamic shapes -- XLA refuses it and shape
+  refinement cannot remove it.
 
-* Added `hlo_real_dynamic_slice()`, which is in the StableHLO dialect but not
-  in SPEC.md. It is the only op that gives a result extent computed from the
-  *data* rather than from a shape, which is what a program needs to return
-  just the live part of a buffer -- the distinct elements of a vector, the rows
-  passing a filter. Note that XLA cannot compile it at all ("can't be
-  translated to XLA HLO"), and shape refinement cannot remove it, since no
-  shape in the program determines the extent; it needs a backend that compiles
-  dynamic shapes natively.
-
-* Dynamic programs are checked two ways, because each catches what the other
-  cannot. One compiles the dynamic program directly and runs it at several
-  sizes, which needs a backend that accepts a `?` entry point. The other
-  refines it back to concrete shapes with `pjrt::pjrt_refine_shapes()` and
-  runs that, which additionally checks that the result type the refinement
-  pass derives is the one this package's inference derives from the static
-  shapes -- two independent derivations that must not disagree.
+* `hlo_dynamic_broadcast_in_dim()` gained the optional
+  `known_expanding_dimensions` and `known_nonexpanding_dimensions` attributes.
 
 ## Bug fixes
 
 * `hlo_triangular_solve()` now rejects operands that are not of floating-point
-  type, as required by the StableHLO spec.
+  type, as required by the spec.
 
 * `hlo_pad()`'s negative-padding check compared each axis's trimming against
-  the operand's *rank* rather than against that axis's size, so it refused
-  legal programs (a rank-1 operand of size 100 trimmed by 5) and accepted
-  illegal ones (a rank-3 operand whose axis is 2 trimmed by 3). It is now
-  (C4) applied per axis -- a shape cannot be negative -- and defers where the
-  axis is dynamic.
+  the operand's *rank* rather than that axis's size, so it refused legal
+  programs and accepted illegal ones. It is now (C4) applied per axis.
 
-* `hlo_slice()` accepted a zero stride, which (C4) forbids. It divided by zero
+* `hlo_slice()` accepted a zero stride, which (C4) forbids; it divided by zero
   and turned the result axis into `?`.
 
-* `hlo_concatenate()` compared only the off-axis projections of its operands'
-  shapes, which agree across a rank mismatch, so mixing ranks fabricated a
-  dynamic result axis instead of reporting the error.
+* `hlo_concatenate()` accepted a negative `dimension`, which (C4) forbids, and
+  silently produced a wrong result type.
 
-* `hlo_scatter()` read an axis of `scatter_indices` at `index_vector_dim`
-  before bounding it, so an out-of-range `index_vector_dim` failed with an
-  internal R error instead of the bounds error.
+* `hlo_reduce_window()` accepted a zero `window_dilations`, which (C11)
+  forbids; it collapsed every window to width 1.
+
+* `hlo_gather()`, `hlo_scatter()`, `hlo_dynamic_slice()` and
+  `hlo_dynamic_update_slice()` now require integer index operands, as the spec
+  types them, and `hlo_dynamic_update_slice()` requires its `start_indices` to
+  share one type (C5).
+
+* `hlo_reduce()`, `hlo_reduce_window()`, `hlo_scatter()` and `hlo_sort()` now
+  check their region's arguments -- `2 * N` scalar tensors -- and `hlo_sort()`
+  checks its comparator returns a scalar `i1`. A dynamic axis could previously
+  reach a region's block arguments.
+
+* `hlo_reduce()`, `hlo_reduce_window()` and `hlo_scatter()` accept a body that
+  accumulates into a wider element type, as (C6)/(C13)/(C23) allow; `reduce`
+  previously required the body's type to equal its inputs'.
 
 * The dynamic ops' size operands (`output_shape`, `slice_sizes`,
-  `edge_padding_low`, ...) are now required to be integer tensors, as the spec
-  types them, and -- for the ops StableHLO types statically shaped -- to have
-  a statically known number of elements. `hlo_real_dynamic_slice()`'s and
-  `hlo_dynamic_pad()`'s index operands must also share one identical type.
-  Each of these previously passed inference and was rejected by the StableHLO
-  verifier.
+  `edge_padding_low`, ...) must be integer tensors, and those StableHLO types
+  statically shaped must have a statically known number of elements.
+
+* `hlo_transpose()` rejected a `permutation` with duplicates only when its
+  length was wrong, so `c(0, 1, 1)` on a rank-2 operand produced a rank-3
+  result type.
+
+* `hlo_abs()` rejects unsigned operands, which SPEC excludes.
+
+* `hlo_after_all()` requires its inputs to be tokens, and accepts none.
+
+* `hlo_reverse()` accepts an empty `dimensions`, which SPEC allows.
+
+* An op with no value operands reports its own "at least one input" error
+  instead of failing with `subscript out of bounds`.
+
+* `hlo_scatter()` read an axis of `scatter_indices` at `index_vector_dim`
+  before bounding it, so an out-of-range value failed with an internal R error.
 
 * `hlo_if()` now rejects branches that declare inputs, as `hlo_case()` already
   did, and `hlo_while()` checks its `body`'s inputs and not only its outputs.
-  Both previously emitted regions whose block arguments contradicted the op's
-  operands.
 
-* `Shape()` refuses an `NA` that `as.integer()` invented -- from a value out of
-  integer range, an `Inf`/`NaN`, or a non-numeric. `NA` means "dynamic", so a
-  conversion accident would otherwise become a plausible-looking dynamic
-  program that only failed at compile time.
+* `Shape()` refuses an `NA` that `as.integer()` invented -- a value out of
+  integer range, an `Inf`/`NaN`, or a non-numeric -- since `NA` means dynamic.
 
 * A shape holding a known `0` beside a `?` now has a known element count of 0,
   so `hlo_reshape()` and `hlo_dynamic_reshape()` still refuse an operand that

@@ -89,15 +89,6 @@ test_that("errors", {
 # ---- dynamic axis sizes ----------------------------------------------------
 
 test_that("sort folds its inputs' shapes instead of comparing pairwise", {
-  local_func("comparator")
-  cmp <- hlo_compare(
-    hlo_input("x", "i32"),
-    hlo_input("y", "i32"),
-    comparison_direction = "LT",
-    compare_type = "SIGNED"
-  )
-  comparator <- hlo_return(cmp)
-
   # (3, ?, 4) must be refused: a pairwise check against the first input would
   # accept it, because each of the others may match `?`.
   expect_error(
@@ -107,7 +98,7 @@ test_that("sort folds its inputs' shapes instead of comparing pairwise", {
       vt("i32", 4L),
       dimension = scnst(0L, "i64"),
       is_stable = scnst(TRUE, "pred"),
-      comparator = comparator
+      comparator = n_input_comparator(3L)
     ),
     "same shape"
   )
@@ -119,10 +110,55 @@ test_that("sort folds its inputs' shapes instead of comparing pairwise", {
         vt("i32", 4L),
         dimension = scnst(0L, "i64"),
         is_stable = scnst(TRUE, "pred"),
-        comparator = comparator
+        comparator = n_input_comparator(2L)
       )[[1L]]$type
     ),
     "tensor<4xi32>"
+  )
+})
+
+test_that("sort checks its comparator against (C5)", {
+  # Before this was checked, a one-argument comparator returning an f32 was
+  # accepted and rendered into the region.
+  expect_error(
+    infer_types_sort(
+      vt("i32", 4L),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = n_input_comparator(2L)
+    ),
+    "two arguments per input"
+  )
+  expect_error(
+    infer_types_sort(
+      vt("i32", 4L),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = lt_region("f32")
+    ),
+    "inputs' element types"
+  )
+  # A dynamic axis must never reach a region argument.
+  dyn_arg <- local({
+    f <- local_func(id = "")
+    a <- hlo_input("a", "i32", shape = N)
+    b <- hlo_input("b", "i32", shape = N)
+    hlo_return(hlo_compare(
+      a,
+      b,
+      comparison_direction = "LT",
+      compare_type = "SIGNED"
+    ))
+    f
+  })
+  expect_error(
+    infer_types_sort(
+      vt("i32", 4L),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "pred"),
+      comparator = dyn_arg
+    ),
+    "0-dimensional tensors"
   )
 })
 

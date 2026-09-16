@@ -21,13 +21,17 @@ Shape <- function(dims = integer()) {
   # dynamic program that only breaks at compile time. Catching it costs one
   # `anyNA()` on the way past, and nothing at all for a shape with no `NA`.
   if (anyNA(sizes)) {
-    # Which `NA`s were asked for. `is.na()` is TRUE for `NaN` too, and `NaN`
-    # is a conversion accident (inference arithmetic that divided by zero),
-    # not a dynamic axis -- so it has to be excluded here.
-    asked_for <- is.na(dims)
+    # Which `NA`s were asked for. Only a number can carry one: in a character
+    # vector or a list, an `NA` element is a value that could not be converted,
+    # not a dynamic axis, and after `as.integer()` the two are
+    # indistinguishable. `is.na()` is TRUE for `NaN` too, and `NaN` is a
+    # conversion accident (inference arithmetic that divided by zero), not a
+    # dynamic axis -- so it has to be excluded as well.
+    asked_for <- is.na(dims) & (is.numeric(dims) | is.logical(dims))
     if (is.double(dims)) {
       asked_for <- asked_for & !is.nan(dims)
     }
+
     invented <- is.na(sizes) & !asked_for
     if (any(invented)) {
       cli_abort(c(
@@ -76,8 +80,8 @@ error_shape_comparison <- function(op, call = rlang::caller_env()) {
       i = "For type identity, compare the axis sizes:
            {.code identical(unclass(x), unclass(y))}.",
       i = "For satisfiability, which is what an inference constraint wants,
-           unify the axis sizes with {.fun unify_shapes}: it refuses only a
-           definite clash and returns the most-refined shape otherwise."
+           compare the axis sizes and treat {.val {NA}} as satisfying anything:
+           {.code !isTRUE(any(unclass(x) != unclass(y)))}."
     ),
     call = call
   )
@@ -91,6 +95,31 @@ error_shape_comparison <- function(op, call = rlang::caller_env()) {
 #' @export
 `!=.Shape` <- function(e1, e2) {
   error_shape_comparison("!=")
+}
+
+# The ordering operators are refused for the same reason as `==`: `(2x?) > 1`
+# answers `c(TRUE, NA)`, a vector carrying the very `NA` the design says must
+# never be branched on, and "greater" splits into `provably_gt()` and a
+# possibility question exactly as "equal" does.
+
+#' @export
+`<.Shape` <- function(e1, e2) {
+  error_shape_comparison("<")
+}
+
+#' @export
+`>.Shape` <- function(e1, e2) {
+  error_shape_comparison(">")
+}
+
+#' @export
+`<=.Shape` <- function(e1, e2) {
+  error_shape_comparison("<=")
+}
+
+#' @export
+`>=.Shape` <- function(e1, e2) {
+  error_shape_comparison(">=")
 }
 
 #' @export

@@ -61,7 +61,7 @@ infer_types_clamp <- function(min, operand, max) {
     }
     if (any(provably_ne(result_shape, bound_shape))) {
       cli_abort(c(
-        "{.arg min}, {.arg max} and {.arg operand} must have the same shape.",
+        "{.arg operand}, {.arg min} and {.arg max} must have the same shape.",
         x = "Got {shapevec_repr(operand_shape)}, {shapevec_repr(min_shape)} and {shapevec_repr(max_shape)}."
       ))
     }

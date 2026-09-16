@@ -141,6 +141,8 @@ infer_types_scatter <- function(
 
   lapply(inputs, assert_vt_is_tensor)
   assert_vt_is_tensor(scatter_indices)
+  # I2 types `scatter_indices` a `tensor of integer type`.
+  assert_vt_has_ttype(scatter_indices, "int", "uint")
   lapply(updates, assert_vt_is_tensor)
 
   num_inputs <- length(inputs)
@@ -435,13 +437,6 @@ infer_types_scatter <- function(
     c(inserted_window_dims, input_batching_dims) + 1L
   )
 
-  expected_updates_shape <- integer(updates_rank)
-  if (length(update_scatter_dims) > 0L) {
-    expected_updates_shape[update_scatter_dims + 1L] <- update_scatter_dim_sizes
-  }
-  if (length(update_window_dims) > 0L) {
-    expected_updates_shape[update_window_dims + 1L] <- update_window_dim_sizes
-  }
   # (C4) - rank part
   expanded_scatter_indices_rank <- if (
     index_vector_dim == scatter_indices_rank
@@ -475,6 +470,8 @@ infer_types_scatter <- function(
   # (C4) - scatter dimensions part
   if (length(update_scatter_dims) > 0L) {
     actual_scatter_sizes <- updates_shape[update_scatter_dims + 1L]
+    # Checked but not unified: the result is `shape(inputs...)`, so a size
+    # refined here would reach nothing.
     if (any(provably_ne(actual_scatter_sizes, update_scatter_dim_sizes))) {
       cli_abort(c(
         "Update scatter dimension sizes must match scatter_indices shape (excluding index_vector_dim).",
@@ -483,7 +480,6 @@ infer_types_scatter <- function(
     }
   }
 
-  # (C23)
   body_out_types <- ValueTypes(func_output_types(update_computation))
   if (length(body_out_types) != num_inputs) {
     cli_abort(c(
@@ -491,6 +487,20 @@ infer_types_scatter <- function(
       x = "Got {length(body_out_types)} outputs."
     ))
   }
+  # (C23) `is_promotable(element_type(inputs[i]), Ei)` for the accumulator, and
+  # the computation's arguments, which nothing else here looks at. Both are
+  # stated against `Ei` rather than the input's element type.
+  accumulator_dtypes <- lapply(body_out_types, function(x) x$type$dtype)
+  assert_accumulator_dtypes(
+    lapply(inputs, function(x) x$type$dtype),
+    accumulator_dtypes,
+    arg = "update_computation"
+  )
+  assert_region_inputs(
+    update_computation,
+    accumulator_dtypes,
+    arg = "update_computation"
+  )
 
   for (i in seq_len(num_inputs)) {
     out_type <- body_out_types[[i]]

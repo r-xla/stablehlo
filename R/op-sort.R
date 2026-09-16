@@ -62,6 +62,34 @@ infer_types_sort <- function(..., dimension, is_stable, comparator) {
     )
   }
 
+  # (C5) `comparator` has type
+  # `(tensor<E0>, tensor<E0>, ..., tensor<EN-1>, tensor<EN-1>) -> tensor<i1>`,
+  # so its arguments are interleaved per input, not grouped as reduce's are.
+  # Without this the whole of (C5) went unchecked: a one-argument comparator
+  # returning an f32 was accepted and rendered.
+  assert_region_inputs(
+    comparator,
+    lapply(dots, function(x) x$type$dtype),
+    arg = "comparator",
+    interleaved = TRUE,
+    # (C5) says `Ei = element_type(inputs[i])` outright -- no accumulator, and
+    # so no promotion, unlike the reducer family.
+    dtype_label = "the inputs' element types"
+  )
+  cmp_out_types <- func_output_types(comparator)
+  if (length(cmp_out_types) != 1L) {
+    cli_abort(c(
+      "{.arg comparator} must return exactly one value.",
+      x = "Got {length(cmp_out_types)}."
+    ))
+  }
+  assert_vt_has_ttype(
+    cmp_out_types[[1L]],
+    "bool",
+    shape = integer(),
+    arg = "output(comparator)"
+  )
+
   # (C2), (C3) Each output keeps its input's dtype but takes the unified shape, so
   # sorting a dynamic input alongside a static one gives static results.
   ValueTypes(lapply(

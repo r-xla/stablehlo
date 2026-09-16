@@ -40,7 +40,7 @@ test_that("real_dynamic_slice", {
 })
 
 test_that("a result extent can come from the data itself", {
-  skip_if_no_iree_compile()
+  skip_if_no_iree_run()
   # `a[0:n]`, where `n` is an *input value*, not a shape. Nothing in the
   # program determines the result's extent, so the type is `tensor<?xf32>` and
   # stays that way through refinement -- XLA refuses it, IREE runs it.
@@ -69,7 +69,7 @@ test_that("a result extent can come from the data itself", {
 })
 
 test_that("unique() is expressible", {
-  skip_if_no_iree_compile()
+  skip_if_no_iree_run()
   # sort, mark the first of each run, sort again by (keep desc, value asc) so
   # the survivors move to the front, then slice to a count that is itself a
   # reduction over the data. No scatter, and the output extent is data -- which

@@ -45,7 +45,7 @@ test_that("dynamic_reshape refines, compiles and runs", {
         shape = 6L
       )
     },
-    types = "tensor<2x3xf32>",
+    types = list(list("f32", c(2, 3))),
     args = list(pjrt::pjrt_buffer(1:6 + 0, dtype = "f32", shape = c(2L, 3L))),
     inferred_type = "tensor<6xf32>",
     refined_type = "tensor<6xf32>",

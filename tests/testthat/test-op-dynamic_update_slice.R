@@ -101,3 +101,28 @@ test_that("dynamic_update_slice defers the fit check to the runtime", {
   local_func()
   expect_error(dus(3L, 5L), "must not be greater than")
 })
+
+test_that("dynamic_update_slice checks its start_indices", {
+  # (C5) `same(type(start_indices...))` -- no per-operand check sees it, and
+  # `dynamic_slice` checks the identical constraint for its own indices.
+  local_func()
+  expect_error(
+    hlo_dynamic_update_slice(
+      hlo_input("a", "f32", shape = c(3L, 3L)),
+      hlo_input("u", "f32", shape = c(2L, 2L)),
+      hlo_scalar(0L, dtype = "i32"),
+      hlo_scalar(0L, dtype = "i64")
+    ),
+    "same type"
+  )
+  # I3 types them `tensor of integer type`.
+  local_func()
+  expect_error(
+    hlo_dynamic_update_slice(
+      hlo_input("a", "f32", shape = 3L),
+      hlo_input("u", "f32", shape = 2L),
+      hlo_scalar(0, dtype = "f32")
+    ),
+    "dtype int or uint"
+  )
+})

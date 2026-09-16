@@ -187,3 +187,24 @@ test_that("select refines, compiles and runs with a mixed operand set", {
     )
   )
 })
+
+test_that("select falls back to the generic form when its types differ", {
+  # The short assembly form names only pred's type and `on_true`'s, so it can
+  # only be emitted while `on_false` and the result share the latter. Since
+  # inference *unifies* rather than requiring equality, they need not -- and
+  # the short form would then produce MLIR that does not parse. The IREE test
+  # below is the real oracle, but it skips without a compiler; this pins the
+  # branch itself and always runs.
+  src <- function(p, t, f) {
+    local_func(id = "main")
+    repr(hlo_return(hlo_select(
+      dyn_input("p", "pred", p),
+      dyn_input("t", "f32", t),
+      dyn_input("q", "f32", f)
+    )))
+  }
+  expect_match(src(3L, 3L, 3L), "= stablehlo.select ", fixed = TRUE)
+  expect_match(src(N, N, N), "= stablehlo.select ", fixed = TRUE)
+  expect_match(src(3L, N, 3L), "\"stablehlo.select\"", fixed = TRUE)
+  expect_match(src(3L, 3L, N), "\"stablehlo.select\"", fixed = TRUE)
+})

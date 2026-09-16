@@ -167,8 +167,10 @@ infer_types_reduce_window <- function(
       x = "Got {shapevec_repr(base_dil)}"
     ))
   }
-  # (C11)
-  if (any(window_dil < 0)) {
+  # (C11) `0 < window_dilations`, so a zero is refused as well as a negative:
+  # it would otherwise flow into `dilated_window` below and collapse every
+  # window to width 1.
+  if (any(window_dil <= 0)) {
     cli_abort(c(
       "{.arg window_dilations} must be positive.",
       x = "Got {shapevec_repr(window_dil)}"
@@ -196,6 +198,17 @@ infer_types_reduce_window <- function(
       x = "Expected {num_inputs} output{?s}, got {length(body_out_types)}."
     ))
   }
+  # (C13) `is_promotable(element_type(inputs[i]), Ei)` for the accumulator the
+  # body reduces into, and the body's arguments, which nothing else here looks
+  # at. Both are stated against `Ei`, not against the input's element type, so
+  # accumulating into a wider type stays legal.
+  accumulator_dtypes <- lapply(body_out_types, function(x) x$type$dtype)
+  assert_accumulator_dtypes(
+    lapply(input_value_types, function(x) x$type$dtype),
+    accumulator_dtypes,
+    arg = "body"
+  )
+  assert_region_inputs(body, accumulator_dtypes, arg = "body")
 
   out_vts <- lapply(seq_len(num_inputs), function(i) {
     out_elem_vt <- body_out_types[[i]]

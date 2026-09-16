@@ -61,7 +61,7 @@ test_that("dynamic_iota refines, compiles and runs", {
       )
       hlo_add(a, iota)
     },
-    types = "tensor<4xf32>",
+    types = list(list("f32", 4)),
     args = list(pjrt::pjrt_buffer(rep(10, 4), dtype = "f32")),
     inferred_type = "tensor<?xf32>",
     refined_type = "tensor<4xf32>",

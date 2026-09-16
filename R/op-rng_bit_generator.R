@@ -56,6 +56,12 @@ infer_types_rng_bit_generator <- function(
         x = "Got {.val {state_size}}."
       ))
     }
+    # (C2) pins the size at 2 for this algorithm, so it is tempting to refine
+    # a `tensor<?xui64>` state to `tensor<2xui64>`. Deliberately not done: the
+    # refinement can only be recorded on `output_state`, and (C1) says
+    # `type(initial_state) = type(output_state)` -- so refining one side would
+    # emit an op whose two types differ, violating the constraint it came
+    # from. A caller who knows the size declares it on the operand.
   } else if (algo == "PHILOX") {
     if (provably_ne(state_size, 2L) && provably_ne(state_size, 3L)) {
       cli_abort(c(
