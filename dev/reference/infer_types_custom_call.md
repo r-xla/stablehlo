@@ -10,10 +10,10 @@ infer_types_custom_call(
   call_target_name,
   api_version,
   has_side_effect,
-  backend_config,
-  output_types,
-  operand_layouts,
-  result_layouts
+  backend_config = NULL,
+  output_types = NULL,
+  operand_layouts = NULL,
+  result_layouts = NULL
 )
 ```
 
