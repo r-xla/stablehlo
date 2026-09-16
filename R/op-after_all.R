@@ -27,6 +27,10 @@ hlo_after_all_impl <- hlo_fn(OpAfterAll, infer_types_after_all)
 #' @templateVar mnemonic after_all
 #' @template op
 #' @export
-hlo_after_all <- function(..., output_types = NULL) {
-  hlo_after_all_impl(values = list(...), output_types = output_types)
+hlo_after_all <- function(..., func = NULL, output_types = NULL) {
+  hlo_after_all_impl(
+    values = list(...),
+    output_types = output_types,
+    func = func
+  )
 }
