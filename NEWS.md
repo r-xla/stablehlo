@@ -15,27 +15,8 @@
   `infer_types_gather()` reject `start_indices` that are not of integer type,
   as the spec requires. A float one used to reach MLIR and come back as a raw
   parse error.
-* `infer_types_scatter()` rejects `scatter_indices` that are not of integer
-  type (I2), as `gather` already did.
-* `infer_types_transpose()` rejects a `permutation` with duplicates. (C2) asks
-  for a permutation of the operand's axes, but the check compared sets, so
-  `c(0, 1, 1)` on a rank-2 operand passed and produced a rank-3 result type.
-* `hlo_abs()` rejects unsigned operands. (I1) is signed-only, but the op used
-  the shared `infer_types_numeric_uni()`, leaving its own `infer_types_abs()`
-  unused.
-* `infer_types_after_all()` requires its inputs to be tokens (I1), and accepts
-  none -- which is how a token is produced.
-* `infer_types_concatenate()` rejects a negative `dimension`. (C4) is
-  `0 <= dimension < rank`, but only the upper bound was checked, and a
-  negative one silently produced a wrong result type.
-* `infer_types_reduce_window()` rejects a `window_dilations` of `0`, which
-  (C11) forbids; it collapsed every window to width 1.
-* `infer_types_dynamic_update_slice()` requires its `start_indices` to share
-  one type (C5), as `dynamic_slice` already did.
-* `infer_types_reverse()` accepts an empty `dimensions`, which (C2) and (C3)
-  satisfy vacuously and StableHLO accepts.
-* An op with no value operands reports its own error instead of failing with
-  `subscript out of bounds`.
+* Corrected some checks in the inference functions.
+* Added some missing checks in the inference functions.
 
 # stablehlo 0.4.0
 

@@ -22,6 +22,7 @@ infer_types_transpose <- function(
   # length, so `c(0, 1, 1)` on a rank-2 operand passed, and (C3) below then
   # built a rank-3 result out of a rank-2 operand. `as.integer()` because
   # `identical()` compares storage type too.
+  # REVIEW: Use checkmate::test_permutation
   if (!identical(sort(as.integer(perm_values)), seq_len(num_dims) - 1L)) {
     error_permute_index(
       arg = "permutation",

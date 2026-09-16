@@ -35,6 +35,7 @@ merge_funcs <- function(funcs) {
   # `subscript out of bounds` before its own check runs -- `after_all` with no
   # inputs is legal and is the only way to produce a token, and concatenate
   # (C3), sort (C1) and reduce (C3) never got to report their own message.
+  # REVIEW: Hmm, I am not sure I like this. THise ops should get a `func` argument like hlo_tensor?
   if (length(funcs) == 0L) {
     return(.current_func())
   }
