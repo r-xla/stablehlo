@@ -4,13 +4,10 @@ test_that("basic tests", {
 
 # error tests for infer_types_numeric_uni are in test-type_inference.R
 
-test_that("abs rejects unsigned operands", {
+test_that("unsigned operands are rejected", {
   # (I1) is "signed integer, floating-point, ..." -- `HLO_SInt` in the ODS, so
-  # unsigned is out. It used to be accepted and only MLIR refused it.
-  local_func()
-  expect_error(hlo_abs(hlo_input("a", "ui32", shape = 3L)), "must have dtype")
-  expect_equal(
-    inferred(function() hlo_abs(dyn_input("a", "i32", 3L))),
-    "tensor<3xi32>"
-  )
+  # unsigned is out. `hlo_abs()` used the shared `infer_types_numeric_uni()`,
+  # which admits `uint`, leaving its own `infer_types_abs()` unused.
+  expect_snapshot(infer_types_abs(vt("ui32", 3L)), error = TRUE)
+  expect_equal(repr(infer_types_abs(vt("i32", 3L))[[1L]]$type), "tensor<3xi32>")
 })

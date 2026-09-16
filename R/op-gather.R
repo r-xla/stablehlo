@@ -121,8 +121,7 @@ infer_types_gather <- function(
 
   assert_vt_is_tensor(operand)
   assert_vt_is_tensor(start_indices)
-  # I2 types `start_indices` a `tensor of integer type`; without this a float
-  # index tensor passes inference and only MLIR refuses the program.
+  # (I2) `start_indices` is a tensor of integer type.
   assert_vt_has_ttype(start_indices, "int", "uint")
 
   offset_dims <- gather_dimension_numbers$offset_dims

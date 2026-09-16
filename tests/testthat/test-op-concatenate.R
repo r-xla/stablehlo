@@ -188,22 +188,6 @@ test_that("concatenate compares operand ranks, not just their projections", {
   )
 })
 
-test_that("concatenate rejects a negative dimension", {
-  # (C4) is `0 <= dimension < rank`. Unguarded on the low side, `dim_r` goes
-  # negative and `x[-dim_r]` flips from dropping that axis to keeping only it,
-  # so both the projection and the summed axis are taken over the wrong axes
-  # and a wrong result type comes out with no error at all.
-  local_func()
-  expect_error(
-    hlo_concatenate(
-      hlo_input("a", "f32", shape = c(2L, 3L)),
-      hlo_input("b", "f32", shape = c(2L, 3L)),
-      dimension = -2L
-    ),
-    class = "ErrorIndexOutOfBounds"
-  )
-})
-
 test_that("concatenate folds off-axis sizes instead of comparing pairwise", {
   # `(3, ?, 4)` on the off axis: each shape may match the first, so a pairwise
   # check would accept it. The fold is what refuses it.
@@ -217,4 +201,25 @@ test_that("concatenate folds off-axis sizes instead of comparing pairwise", {
     ),
     class = "ErrorConcatenateShapes"
   )
+})
+
+test_that("a negative dimension is rejected", {
+  # (C4) is `0 <= dimension < rank`. Unguarded on the low side, `dim_r` goes
+  # negative and `x[-dim_r]` flips from dropping that axis to keeping only it,
+  # so a wrong result type came out with no error at all.
+  expect_snapshot(
+    infer_types_concatenate(
+      vt("f32", c(2L, 3L)),
+      vt("f32", c(2L, 3L)),
+      dimension = scnst(-2L, "i64")
+    ),
+    error = TRUE
+  )
+})
+
+test_that("no inputs reports concatenate's own error", {
+  # (C3) `0 < N`. The op has no value operands to take a func from, and used to
+  # die with `subscript out of bounds` before reaching this check.
+  local_func()
+  expect_error(hlo_concatenate(dimension = 0L), "at least one input")
 })

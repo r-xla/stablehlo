@@ -49,3 +49,14 @@
       ! length(slice_sizes) must equal rank(operand).
       x Got 3, but expected 2.
 
+---
+
+    Code
+      infer_types_gather(operand, start_indices, gather_dimension_numbers = gdn,
+        slice_sizes = cnst(slice_sizes, "i64", length(slice_sizes)),
+        indices_are_sorted = scnst(FALSE, "pred"))
+    Condition
+      Error in `infer_types_gather()`:
+      ! `start_indices` must have dtype int or uint.
+      x Got f32.
+

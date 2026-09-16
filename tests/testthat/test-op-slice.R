@@ -47,8 +47,11 @@ test_that("errors", {
   check(vt("f32", c(4L, 5L)), c(3L, 0L), c(2L, 3L), c(1L, 1L))
   # (C3) limit > operand_shape
   check(vt("f32", c(4L, 5L)), c(0L, 0L), c(4L, 6L), c(1L, 1L))
-  # (C4) strides must be non-negative
+  # (C4) `0 < strides`
   check(vt("f32", c(4L, 5L)), c(0L, 0L), c(2L, 3L), c(-1L, 1L))
+  # A stride of 0 is not a degenerate slice: it used to pass here and make the
+  # result shape infinite, surfacing much later as an MLIR error.
+  check(vt("f32", c(4L, 5L)), c(0L, 0L), c(2L, 3L), c(0L, 1L))
 })
 
 # ---- dynamic axis sizes ----------------------------------------------------

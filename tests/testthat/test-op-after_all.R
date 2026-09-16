@@ -9,10 +9,10 @@ test_that("basic tests", {
   expect_snapshot(repr(result_func))
 })
 
-test_that("after_all rejects a non-token input", {
-  # (I1) types `inputs` a "variadic number of token". A tensor here used to be
+test_that("a non-token input is rejected", {
+  # (I1) types `inputs` a "variadic number of token". A tensor here was
   # accepted and rendered, and only MLIR refused the program.
   local_func()
   x <- hlo_input("x", "f32", shape = c(2L, 2L))
-  expect_error(hlo_after_all(x), "must be tokens")
+  expect_snapshot(hlo_after_all(x), error = TRUE)
 })

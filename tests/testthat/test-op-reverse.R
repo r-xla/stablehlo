@@ -39,9 +39,9 @@ test_that("errors", {
   )
 })
 
-test_that("reverse accepts an empty dimensions", {
-  # (C2) `is_unique(dimensions)` and (C3) `0 <= dimensions < rank(result)` both
-  # hold vacuously for the empty set, and StableHLO accepts the program, so a
+test_that("an empty dimensions is accepted", {
+  # (C2) `is_unique(dimensions)` and (C3) `0 <= dimensions < rank(result)` are
+  # both vacuous for the empty set, and StableHLO accepts the program, so a
   # lowering that computes the set and finds none must not be refused.
   expect_equal(
     repr(

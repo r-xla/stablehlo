@@ -34,7 +34,8 @@ hlo_fn <- function(
     attrs = NULL,
     custom_attrs = NULL,
     simplify = TRUE,
-    output_types = NULL
+    output_types = NULL,
+    func = NULL
   ) {
     if (length(value_list_names) == 0L) {
       for (x in values) {
@@ -76,7 +77,14 @@ hlo_fn <- function(
       }
     }
 
-    func <- merge_funcs(lapply(flat_values, function(x) x$func))
+    # An op with no value operands has no func to take from its operands, so it
+    # names one itself -- `func = NULL` meaning the one being built, the same
+    # convention `hlo_tensor()` uses.
+    func <- if (length(flat_values) == 0L) {
+      func %??% .current_func()
+    } else {
+      merge_funcs(lapply(flat_values, function(x) x$func))
+    }
 
     # When the caller already knows the output types (e.g. a lowering that
     # ran type inference at trace time), it can pass them via `output_types`

@@ -68,5 +68,17 @@
         "i64", length(strides)))
     Condition
       Error in `infer_types_slice()`:
-      ! `strides` must be positive
+      ! `strides` must be positive.
+      x Got -1 and 1.
+
+---
+
+    Code
+      infer_types_slice(operand, start_indices = cnst(start, "i64", length(start)),
+      limit_indices = cnst(limit, "i64", length(limit)), strides = cnst(strides,
+        "i64", length(strides)))
+    Condition
+      Error in `infer_types_slice()`:
+      ! `strides` must be positive.
+      x Got 0 and 1.
 

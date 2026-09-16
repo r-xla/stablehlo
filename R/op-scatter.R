@@ -141,7 +141,7 @@ infer_types_scatter <- function(
 
   lapply(inputs, assert_vt_is_tensor)
   assert_vt_is_tensor(scatter_indices)
-  # I2 types `scatter_indices` a `tensor of integer type`.
+  # (I2) `scatter_indices` is a tensor of integer type.
   assert_vt_has_ttype(scatter_indices, "int", "uint")
   lapply(updates, assert_vt_is_tensor)
 

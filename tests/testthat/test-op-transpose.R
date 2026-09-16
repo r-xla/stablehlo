@@ -104,16 +104,21 @@ test_that("transpose", {
   )
 })
 
-test_that("transpose rejects a permutation with duplicates", {
+test_that("a permutation with duplicates is rejected", {
   # (C2) `permutation` is a permutation of `range(rank(operand))`. Compared as
-  # a set, `c(0, 1, 1)` passed on a rank-2 operand and produced a rank-3
-  # result type over a rank-2 operand, which MLIR refuses.
-  local_func()
-  expect_error(
-    hlo_transpose(
-      hlo_input("a", "f32", shape = c(2L, 3L)),
-      permutation = c(0L, 1L, 1L)
+  # a set, `c(0, 1, 1)` passed on a rank-2 operand and (C3) then built a rank-3
+  # result type, which MLIR refuses.
+  expect_snapshot(
+    infer_types_transpose(vt("f32", c(2L, 3L)), cnst(c(0L, 1L, 1L), "i64", 3L)),
+    error = TRUE
+  )
+  # A valid permutation given as doubles still works.
+  expect_equal(
+    repr(
+      infer_types_transpose(vt("f32", c(2L, 3L)), cnst(c(1, 0), "i64", 2L))[[
+        1L
+      ]]$type
     ),
-    class = "ErrorPermuteIndex"
+    "tensor<3x2xf32>"
   )
 })

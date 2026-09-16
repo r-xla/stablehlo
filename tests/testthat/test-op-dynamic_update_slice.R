@@ -81,6 +81,30 @@ test_that("errors", {
     ),
     error = TRUE
   )
+  # (I3) start_indices are of integer type
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(2L, 3L)),
+      vt("f32", integer()),
+      vt("i32", integer())
+    ),
+    error = TRUE
+  )
+})
+
+test_that("start_indices must all have the same type", {
+  # (C5) `same(type(start_indices...))`, which no per-operand check sees.
+  # `dynamic_slice` checks the identical constraint for its own indices.
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(2L, 3L)),
+      vt("i32", integer()),
+      vt("i64", integer())
+    ),
+    error = TRUE
+  )
 })
 
 # ---- dynamic axis sizes ----------------------------------------------------
@@ -100,29 +124,4 @@ test_that("dynamic_update_slice defers the fit check to the runtime", {
   # An update that certainly does not fit is refused.
   local_func()
   expect_error(dus(3L, 5L), "must not be greater than")
-})
-
-test_that("dynamic_update_slice checks its start_indices", {
-  # (C5) `same(type(start_indices...))` -- no per-operand check sees it, and
-  # `dynamic_slice` checks the identical constraint for its own indices.
-  local_func()
-  expect_error(
-    hlo_dynamic_update_slice(
-      hlo_input("a", "f32", shape = c(3L, 3L)),
-      hlo_input("u", "f32", shape = c(2L, 2L)),
-      hlo_scalar(0L, dtype = "i32"),
-      hlo_scalar(0L, dtype = "i64")
-    ),
-    "same type"
-  )
-  # I3 types them `tensor of integer type`.
-  local_func()
-  expect_error(
-    hlo_dynamic_update_slice(
-      hlo_input("a", "f32", shape = 3L),
-      hlo_input("u", "f32", shape = 2L),
-      hlo_scalar(0, dtype = "f32")
-    ),
-    "dtype int or uint"
-  )
 })

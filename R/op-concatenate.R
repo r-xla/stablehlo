@@ -77,10 +77,9 @@ infer_types_concatenate <- function(..., dimension) {
   dim_r <- dimension + 1L
 
   # (C4) `0 <= dimension < rank(inputs[0])`. The lower bound matters as much as
-  # the upper one: a negative `dimension` makes `dim_r` negative, and `x[-dim_r]`
-  # then flips from dropping that axis to keeping only it, so the projection and
-  # the summed axis are both taken over the wrong axes and a wrong result type
-  # comes out without any error.
+  # the upper one: a negative `dimension` makes `dim_r` negative, and
+  # `x[-dim_r]` then flips from dropping that axis to keeping only it, so a
+  # wrong result type comes out with no error at all.
   num_dims <- length(shape(dots[[1]]))
   if (dimension < 0L || dimension >= num_dims) {
     error_index_out_of_bounds(

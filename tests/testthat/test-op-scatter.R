@@ -636,18 +636,18 @@ test_that("scatter unifies the batch dimensions of inputs and scatter_indices", 
   expect_error(scat(c(2L, 5L), c(3L, 1L)), "batch dimensions")
 })
 
-test_that("scatter checks its scatter_indices and update_computation", {
+test_that("scatter checks its update_computation", {
   dn <- ScatterDimensionNumbers(
     update_window_dims = 1L,
     inserted_window_dims = 0L,
     scatter_dims_to_operand_dims = 0L,
     index_vector_dim = 1L
   )
-  scat <- function(index_dtype = "i32", region = add_region()) {
+  scat <- function(region = add_region()) {
     local_func()
     hlo_scatter(
       list(hlo_input("a", "f32", shape = c(4L, 3L))),
-      hlo_input("i", index_dtype, shape = c(2L, 1L)),
+      hlo_input("i", "i32", shape = c(2L, 1L)),
       list(hlo_input("u", "f32", shape = c(2L, 3L))),
       update_computation = region,
       scatter_dimension_numbers = dn,
@@ -655,8 +655,6 @@ test_that("scatter checks its scatter_indices and update_computation", {
       unique_indices = FALSE
     )
   }
-  # I2 types `scatter_indices` a "tensor of integer type".
-  expect_error(scat(index_dtype = "f32"), "dtype int or uint")
   # (C23) the region takes 2 * N scalar arguments.
   four_args <- local({
     f <- local_func(id = "")
@@ -675,4 +673,30 @@ test_that("scatter checks its scatter_indices and update_computation", {
     f
   })
   expect_error(scat(region = dyn_region), "0-dimensional tensors")
+})
+
+test_that("scatter_indices must be an integer tensor", {
+  # (I2) types `scatter_indices` a "tensor of integer type"; a float index
+  # tensor passed inference and only MLIR refused it.
+  update_func <- local_func("update")
+  a <- hlo_input("a", "f32", integer())
+  b <- hlo_input("b", "f32", integer())
+  update_func <- hlo_return(hlo_add(a, b))
+  expect_snapshot(
+    infer_types_scatter(
+      inputs = list(vt("f32", c(4L, 3L))),
+      scatter_indices = vt("f32", c(2L, 1L)),
+      updates = list(vt("f32", c(2L, 3L))),
+      update_computation = update_func,
+      scatter_dimension_numbers = ScatterDimensionNumbers(
+        update_window_dims = 1L,
+        inserted_window_dims = 0L,
+        scatter_dims_to_operand_dims = 0L,
+        index_vector_dim = 1L
+      ),
+      indices_are_sorted = scnst(FALSE, "i1"),
+      unique_indices = scnst(FALSE, "i1")
+    ),
+    error = TRUE
+  )
 })

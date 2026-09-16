@@ -74,6 +74,18 @@ test_that("errors", {
     ),
     error = TRUE
   )
+  # (I2) start_indices are of integer type. A float one used to pass here and
+  # reach MLIR, which reports it as `operand #1 must be variadic of 0D tensor
+  # of 2/4/8/16/...-bit integer values`.
+  expect_snapshot(
+    infer_types_dynamic_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", integer()),
+      vt("f32", integer()),
+      slice_sizes = cnst(c(2L, 3L), "i64", 2L)
+    ),
+    error = TRUE
+  )
 })
 
 # ---- dynamic axis sizes ----------------------------------------------------

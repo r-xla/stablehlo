@@ -92,12 +92,14 @@ infer_types_slice <- function(
     )
   }
 
-  # (C4) `0 < strides`. A zero stride is not merely degenerate: it makes the
-  # (C5) division below `Inf`/`NaN`, which `Shape()` turns into `NA` -- a
-  # fabricated dynamic axis that every downstream `unify_shapes()` would then
-  # treat as a size still to be learned.
-  if (any(stride_vals < 1L)) {
-    cli_abort("{.arg strides} must be positive")
+  # (C4) `0 < strides` -- a stride of 0 is not a degenerate slice, it makes
+  # the result shape infinite, and MLIR rejects it much later with a raw
+  # message plus an R coercion warning from `ceiling(x / 0)`.
+  if (any(stride_vals < 1)) {
+    cli_abort(c(
+      "{.arg strides} must be positive.",
+      x = "Got {.val {stride_vals}}."
+    ))
   }
 
   # (C5)

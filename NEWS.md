@@ -40,25 +40,19 @@
 ## Bug fixes
 
 * `hlo_triangular_solve()` now rejects operands that are not of floating-point
-  type, as required by the spec.
+  type, as required by the StableHLO spec.
+* `infer_types_slice()` rejects a stride of `0`. The spec's (C4) is
+  `0 < strides`, but the check read `0 <= strides`.
+* `infer_types_dynamic_slice()`, `infer_types_dynamic_update_slice()` and
+  `infer_types_gather()` reject `start_indices` that are not of integer type,
+  as the spec requires. A float one used to reach MLIR and come back as a raw
+  parse error.
+* Corrected some checks in the inference functions.
+* Added some missing checks in the inference functions.
 
 * `hlo_pad()`'s negative-padding check compared each axis's trimming against
   the operand's *rank* rather than that axis's size, so it refused legal
   programs and accepted illegal ones. It is now (C4) applied per axis.
-
-* `hlo_slice()` accepted a zero stride, which (C4) forbids; it divided by zero
-  and turned the result axis into `?`.
-
-* `hlo_concatenate()` accepted a negative `dimension`, which (C4) forbids, and
-  silently produced a wrong result type.
-
-* `hlo_reduce_window()` accepted a zero `window_dilations`, which (C11)
-  forbids; it collapsed every window to width 1.
-
-* `hlo_gather()`, `hlo_scatter()`, `hlo_dynamic_slice()` and
-  `hlo_dynamic_update_slice()` now require integer index operands, as the spec
-  types them, and `hlo_dynamic_update_slice()` requires its `start_indices` to
-  share one type (C5).
 
 * `hlo_reduce()`, `hlo_reduce_window()`, `hlo_scatter()` and `hlo_sort()` now
   check their region's arguments -- `2 * N` scalar tensors -- and `hlo_sort()`
@@ -73,19 +67,6 @@
   `edge_padding_low`, ...) must be integer tensors, and those StableHLO types
   statically shaped must have a statically known number of elements.
 
-* `hlo_transpose()` rejected a `permutation` with duplicates only when its
-  length was wrong, so `c(0, 1, 1)` on a rank-2 operand produced a rank-3
-  result type.
-
-* `hlo_abs()` rejects unsigned operands, which SPEC excludes.
-
-* `hlo_after_all()` requires its inputs to be tokens, and accepts none.
-
-* `hlo_reverse()` accepts an empty `dimensions`, which SPEC allows.
-
-* An op with no value operands reports its own "at least one input" error
-  instead of failing with `subscript out of bounds`.
-
 * `hlo_scatter()` read an axis of `scatter_indices` at `index_vector_dim`
   before bounding it, so an out-of-range value failed with an internal R error.
 
@@ -98,9 +79,6 @@
 * A shape holding a known `0` beside a `?` now has a known element count of 0,
   so `hlo_reshape()` and `hlo_dynamic_reshape()` still refuse an operand that
   provably holds no elements.
-
-* An error from one of `hlo_case()`'s branches is attributed to
-  `infer_types_case()` rather than to `base::call`.
 
 # stablehlo 0.4.0
 
