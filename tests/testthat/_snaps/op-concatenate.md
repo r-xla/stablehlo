@@ -52,3 +52,13 @@
       ! `dimension` contains index outside the valid range.
       x Got -2, but valid range is [0, 2).
 
+# inputs of different rank are rejected
+
+    Code
+      infer_types_concatenate(vt("f32", c(2L, 3L, 4L)), vt("f32", c(2L, 3L)),
+      dimension = scnst(2L, "i64"))
+    Condition
+      Error in `infer_types_concatenate()`:
+      ! All inputs must have the same shape, except in dimension(s) 2.
+      x Got shapes 2x3x4 and 2x3.
+
