@@ -44,11 +44,7 @@ infer_types_while <- function(..., cond, body) {
     arg = "output(condition)"
   )
 
-  # (C2) `body` has type `(T0, ..., TN-1) -> (T0, ..., TN-1)`, so its *inputs*
-  # are constrained by the same equality as its outputs -- and only the
-  # outputs were checked. A body declaring a different number or type of
-  # inputs renders a region whose block arguments contradict the op's
-  # operands. `cond` (C1) already has the matching check above.
+  # (C2)
   if (length(body$inputs) != length(value_types)) {
     cli_abort(c(
       "{.arg body} must have the same number of inputs as {.arg ...}",

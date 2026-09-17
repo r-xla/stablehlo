@@ -8,12 +8,7 @@ OpIf <- new_Op("OpIf", "if")
 infer_types_if <- function(pred, true_branch, false_branch) {
   assert_vt_has_ttype(pred, "bool", shape = integer())
 
-  # (C1) `input_types(true_branch) = input_types(false_branch) = []`. The op
-  # passes its branches nothing, so a branch declaring inputs renders
-  # `^bb0(%x: ...)` inside `stablehlo.if` and MLIR refuses the region with
-  # "expected 0 arguments". Nothing downstream catches it -- `pjrt_program()`
-  # does not validate the text -- so it is checked here, as `case` (C2)
-  # already checks for its own branches.
+  # (C1)
   for (nm in c("true_branch", "false_branch")) {
     branch <- if (nm == "true_branch") true_branch else false_branch
     n <- length(branch$inputs)

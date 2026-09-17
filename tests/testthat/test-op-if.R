@@ -69,10 +69,7 @@ test_that("errors", {
 })
 
 test_that("a branch that declares inputs is rejected", {
-  # (C1) `input_types(true_branch) = input_types(false_branch) = []`. The op
-  # passes its branches nothing, so a branch with an input rendered
-  # `^bb0(%x: ...)` and MLIR refused the region: "branch 0 must have 0
-  # arguments, but found 1".
+  # (C1)
   pred <- vt("pred", integer())
   ok <- Func(outputs = FuncOutputs(list(FuncOutput(vt("i32", 2L)))))
   with_input <- Func(
