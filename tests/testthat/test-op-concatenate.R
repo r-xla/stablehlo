@@ -99,3 +99,17 @@ test_that("no inputs reports concatenate's own error", {
   local_func()
   expect_error(hlo_concatenate(dimension = 0L), "at least one input")
 })
+
+test_that("inputs of different rank are rejected", {
+  # (C2) `same(shape(inputs...))` covers the rank too. `x[-dim_r]` drops
+  # nothing from an input of lower rank, so the shape check passed and the
+  # result came out with an `NA` size along the concatenation dimension.
+  expect_snapshot(
+    infer_types_concatenate(
+      vt("f32", c(2L, 3L, 4L)),
+      vt("f32", c(2L, 3L)),
+      dimension = scnst(2L, "i64")
+    ),
+    error = TRUE
+  )
+})

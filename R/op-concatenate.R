@@ -90,10 +90,14 @@ infer_types_concatenate <- function(..., dimension) {
     )
   }
 
-  # (C2)
+  # (C2) `same(shape(inputs...))` except in `dimension`, which includes the
+  # rank: `x[-dim_r]` drops nothing from an input of lower rank, so without the
+  # rank comparison `(2x3x4, 2x3)` at `dimension = 2` would pass here and (C6)
+  # would sum an `NA` into the result shape.
   dims_no_concat <- lapply(input_dims, \(x) x[-dim_r])
   if (
-    !all(vapply(dims_no_concat, identical, logical(1), dims_no_concat[[1]]))
+    !all(lengths(input_dims) == length(input_dims[[1]])) ||
+      !all(vapply(dims_no_concat, identical, logical(1), dims_no_concat[[1]]))
   ) {
     error_concatenate_shapes(
       dimensions = dimension,
