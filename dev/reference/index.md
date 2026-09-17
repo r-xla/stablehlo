@@ -36,6 +36,8 @@
   : OpInputAttr
 - [`OpInputFunc()`](https://r-xla.github.io/stablehlo/dev/reference/OpInputFunc.md)
   : OpInputFunc
+- [`OutputOperandAlias()`](https://r-xla.github.io/stablehlo/dev/reference/OutputOperandAlias.md)
+  : OutputOperandAlias
 - [`ScalarAttr()`](https://r-xla.github.io/stablehlo/dev/reference/ScalarAttr.md)
   : ScalarAttr
 - [`ScatterDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/ScatterDimensionNumbers.md)

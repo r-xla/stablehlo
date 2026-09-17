@@ -6,10 +6,20 @@
     }
   };
 </script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="CustomOpBackendConfig — CustomOpBackendConfig"><meta name="description" content="A backend configuration as a list of typed attributes for custom operations.
-Each element must be a BoolAttr, StringAttr, or ScalarAttr for now.
-All attribute names must be unique."><meta property="og:description" content="A backend configuration as a list of typed attributes for custom operations.
-Each element must be a BoolAttr, StringAttr, or ScalarAttr for now.
-All attribute names must be unique."><meta name="robots" content="noindex"></head><body>
+Each element must be a BoolAttr, StringAttr, ScalarAttr or
+ConstantAttr. All attribute names must be unique.
+A ConstantAttr carries a vector rather than a scalar and is what an XLA
+FFI handler decodes as Span&amp;lt;const T&amp;gt;. The dtype has to match the
+handler's element type exactly – Span&amp;lt;const int64_t&amp;gt; needs &quot;i64&quot;, not
+the &quot;i32&quot; an R integer vector would otherwise infer. constant_attr()
+is a shorthand that builds the Constant for you."><meta property="og:description" content="A backend configuration as a list of typed attributes for custom operations.
+Each element must be a BoolAttr, StringAttr, ScalarAttr or
+ConstantAttr. All attribute names must be unique.
+A ConstantAttr carries a vector rather than a scalar and is what an XLA
+FFI handler decodes as Span&amp;lt;const T&amp;gt;. The dtype has to match the
+handler's element type exactly – Span&amp;lt;const int64_t&amp;gt; needs &quot;i64&quot;, not
+the &quot;i32&quot; an R integer vector would otherwise infer. constant_attr()
+is a shorthand that builds the Constant for you."><meta name="robots" content="noindex"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -52,8 +62,13 @@ All attribute names must be unique."><meta name="robots" content="noindex"></hea
 
     <div class="ref-description section level2">
     <p>A backend configuration as a list of typed attributes for custom operations.
-Each element must be a <code>BoolAttr</code>, <code>StringAttr</code>, or <code>ScalarAttr</code> for now.
-All attribute names must be unique.</p>
+Each element must be a <code><a href="BoolAttr.html">BoolAttr</a></code>, <code><a href="StringAttr.html">StringAttr</a></code>, <code><a href="ScalarAttr.html">ScalarAttr</a></code> or
+<code><a href="ConstantAttr.html">ConstantAttr</a></code>. All attribute names must be unique.</p>
+<p>A <code><a href="ConstantAttr.html">ConstantAttr</a></code> carries a vector rather than a scalar and is what an XLA
+FFI handler decodes as <code>Span&lt;const T&gt;</code>. The dtype has to match the
+handler's element type exactly – <code>Span&lt;const int64_t&gt;</code> needs <code>"i64"</code>, not
+the <code>"i32"</code> an R integer vector would otherwise infer. <code><a href="constant_attr.html">constant_attr()</a></code>
+is a shorthand that builds the <code><a href="Constant.html">Constant</a></code> for you.</p>
     </div>
 
     <div class="section level2">
@@ -67,7 +82,8 @@ All attribute names must be unique.</p>
 
 <dl><dt id="arg-items">items<a class="anchor" aria-label="anchor" href="#arg-items"></a></dt>
 <dd><p>(<code>list</code>)<br>
-A list of <code>BoolAttr</code>, <code>StringAttr</code>, or <code>ScalarAttr</code> objects.</p></dd>
+A list of <code><a href="BoolAttr.html">BoolAttr</a></code>, <code><a href="StringAttr.html">StringAttr</a></code>, <code><a href="ScalarAttr.html">ScalarAttr</a></code> or
+<code><a href="ConstantAttr.html">ConstantAttr</a></code> objects.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -75,6 +91,49 @@ A list of <code>BoolAttr</code>, <code>StringAttr</code>, or <code>ScalarAttr</c
     <p><code>CustomOpBackendConfig</code></p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">CustomOpBackendConfig</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="StringAttr.html">StringAttr</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"mode"</span>, value <span class="op">=</span> <span class="st">"fast"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="ConstantAttr.html">ConstantAttr</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    name <span class="op">=</span> <span class="st">"axes"</span>,</span></span>
+<span class="r-in"><span>    value <span class="op">=</span> <span class="fu"><a href="r_to_constant.html">r_to_constant</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">2L</span><span class="op">)</span>, dtype <span class="op">=</span> <span class="st">"i64"</span>, shape <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mode"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fast"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "StringAttr"  "OpInputAttr"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "axes"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $type</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tensor&lt;2xi64&gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Constant"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $simplify_dense</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "ConstantAttr" "OpInputAttr" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "CustomOpBackendConfig"</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

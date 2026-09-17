@@ -3,8 +3,7 @@
 Create a custom call operation that invokes an external function via the
 FFI (Foreign Function Interface) API.
 
-Note that the attributes `called_computations` and
-`output_operand_aliases` are not implemented yet.
+Note that the attribute `called_computations` is not implemented yet.
 
 ## Usage
 
@@ -17,7 +16,8 @@ hlo_custom_call(
   backend_config = NULL,
   output_types = NULL,
   operand_layouts = NULL,
-  result_layouts = NULL
+  result_layouts = NULL,
+  output_operand_aliases = NULL
 )
 ```
 
@@ -47,7 +47,8 @@ hlo_custom_call(
 
   ([`CustomOpBackendConfig`](https://r-xla.github.io/stablehlo/dev/reference/CustomOpBackendConfig.md)
   \| `NULL`)  
-  Optional backend configuration.
+  Optional backend configuration. Its attributes are what the FFI
+  handler receives through `.Attr<T>("name")` or `.Attrs<Dictionary>()`.
 
 - output_types:
 
@@ -72,6 +73,16 @@ hlo_custom_call(
   `NULL`)  
   Layouts for each result in minor-to-major order. Same format as
   `operand_layouts`.
+
+- output_operand_aliases:
+
+  (`list` of
+  [`OutputOperandAlias`](https://r-xla.github.io/stablehlo/dev/reference/OutputOperandAlias.md)
+  \| `NULL`)  
+  Buffer aliases between operands and results. XLA then hands the
+  handler the *same* pointer for the aliased operand and result, so a
+  handler that works in place does not force a copy. `NULL` (the
+  default) means no aliasing.
 
 ## Value
 

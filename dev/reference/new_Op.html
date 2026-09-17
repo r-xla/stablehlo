@@ -90,14 +90,7 @@ fields <code>mnemonic</code>, <code>dialect</code>, <code>outputs_str</code>, <c
 <dd><p>(<code>logical(1)</code>)<br>
 Whether the op's MLIR assembly has the short
 <code>%0 = stablehlo.&lt;op&gt; %a : &lt;type&gt;</code> form, which names one type for the
-operands and the result alike. In the ODS an op gets that form from the
-elementwise base classes' <code>custom&lt;SameOperandsAndResultType&gt;</code> assembly,
-and loses it by overriding <code>assemblyFormat</code> with
-<code>functional-type(operands, results)</code> – <code>is_finite</code> and
-<code>dynamic_update_slice</code> are the two such ops here whose operand and result
-types can still coincide, so the short form would be emitted for them and
-would not parse. Default <code>TRUE</code>; set it <code>FALSE</code> for an op whose ODS
-overrides the assembly.</p></dd>
+operands and the result alike.</p></dd>
 
 </dl></div>
     <div class="section level2">

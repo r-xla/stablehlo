@@ -13,7 +13,8 @@ infer_types_custom_call(
   backend_config = NULL,
   output_types = NULL,
   operand_layouts = NULL,
-  result_layouts = NULL
+  result_layouts = NULL,
+  output_operand_aliases = NULL
 )
 ```
 
@@ -52,7 +53,12 @@ infer_types_custom_call(
 
 - operand_layouts, result_layouts:
 
-  Layouts (not used for type inference).
+  Layouts, checked but not used for type inference.
+
+- output_operand_aliases:
+
+  Aliases (not used for type inference; named only so that `hlo_fn()`
+  does not pass it through `...` as an operand).
 
 ## Value
 

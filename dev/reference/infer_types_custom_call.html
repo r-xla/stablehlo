@@ -60,7 +60,8 @@
 <span>  backend_config <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output_types <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  operand_layouts <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  result_layouts <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  result_layouts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output_operand_aliases <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -98,7 +99,13 @@ The output types of the custom call. Default is NULL (no outputs).</p></dd>
 
 
 <dt id="arg-operand-layouts-result-layouts">operand_layouts, result_layouts<a class="anchor" aria-label="anchor" href="#arg-operand-layouts-result-layouts"></a></dt>
-<dd><p>Layouts (not used for type inference).</p></dd>
+<dd><p>Layouts, checked but not used for
+type inference.</p></dd>
+
+
+<dt id="arg-output-operand-aliases">output_operand_aliases<a class="anchor" aria-label="anchor" href="#arg-output-operand-aliases"></a></dt>
+<dd><p>Aliases (not used for type inference; named
+only so that <code>hlo_fn()</code> does not pass it through <code>...</code> as an operand).</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -26,6 +26,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/Module.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputAttr.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/OpInputFunc.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/dev/reference/OutputOperandAlias.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/ScalarAttr.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/ScatterDimensionNumbers.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/dev/reference/Shape.html</loc></url>
