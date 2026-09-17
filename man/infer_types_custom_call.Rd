@@ -12,7 +12,8 @@ infer_types_custom_call(
   backend_config = NULL,
   output_types = NULL,
   operand_layouts = NULL,
-  result_layouts = NULL
+  result_layouts = NULL,
+  output_operand_aliases = NULL
 )
 }
 \arguments{
@@ -33,7 +34,11 @@ Optional backend configuration as a named list.}
 \item{output_types}{(\code{list} of \code{\link{ValueType}} | \code{NULL})\cr
 The output types of the custom call. Default is NULL (no outputs).}
 
-\item{operand_layouts, result_layouts}{Layouts (not used for type inference).}
+\item{operand_layouts, result_layouts}{Layouts, checked but not used for
+type inference.}
+
+\item{output_operand_aliases}{Aliases (not used for type inference; named
+only so that \code{hlo_fn()} does not pass it through \code{...} as an operand).}
 }
 \value{
 (\code{ValueTypes})\cr

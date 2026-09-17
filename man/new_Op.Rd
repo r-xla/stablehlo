@@ -29,14 +29,7 @@ fields \code{mnemonic}, \code{dialect}, \code{outputs_str}, \code{values_str},
 \item{same_type_form}{(\code{logical(1)})\cr
 Whether the op's MLIR assembly has the short
 \verb{\%0 = stablehlo.<op> \%a : <type>} form, which names one type for the
-operands and the result alike. In the ODS an op gets that form from the
-elementwise base classes' \verb{custom<SameOperandsAndResultType>} assembly,
-and loses it by overriding \code{assemblyFormat} with
-\code{functional-type(operands, results)} -- \code{is_finite} and
-\code{dynamic_update_slice} are the two such ops here whose operand and result
-types can still coincide, so the short form would be emitted for them and
-would not parse. Default \code{TRUE}; set it \code{FALSE} for an op whose ODS
-overrides the assembly.}
+operands and the result alike.}
 }
 \value{
 A descriptor \code{list} for use with \code{hlo_fn()}.
