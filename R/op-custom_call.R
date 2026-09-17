@@ -35,7 +35,7 @@ render_custom_call <- function(ctx) {
   paste0(
     outputs_repr,
     "stablehlo.custom_call @",
-    target_name,
+    mlir_symbol_name(target_name),
     "(",
     ctx$values_str,
     ") ",
@@ -43,6 +43,17 @@ render_custom_call <- function(ctx) {
     " : ",
     ctx$sig_str
   )
+}
+
+# An MLIR symbol reference is a bare identifier unless it is quoted. Upstream
+# prints these with `printSymbolName`, which quotes whatever is not one --
+# and an FFI target name with a `-` or a space in it is common enough that
+# emitting it bare produces text that does not parse.
+mlir_symbol_name <- function(name) {
+  if (grepl("^[A-Za-z_][A-Za-z0-9_$.]*$", name)) {
+    return(name)
+  }
+  paste0('"', gsub('(["\\\\])', "\\\\\\1", name), '"')
 }
 
 OpCustomCall <- new_Op(
@@ -126,20 +137,86 @@ infer_types_custom_call <- function(
   call_target_name,
   api_version,
   has_side_effect,
-  backend_config,
-  output_types,
-  operand_layouts,
-  result_layouts
+  # Defaulted, because `hlo_custom_call()` leaves an absent `backend_config`
+  # out of `custom_attrs` entirely rather than passing `NULL`.
+  backend_config = NULL,
+  output_types = NULL,
+  operand_layouts = NULL,
+  result_layouts = NULL
 ) {
-  if (is.null(output_types)) {
-    return(ValueTypes(list()))
+  operands <- list(...)
+
+  # The ODS types `api_version` a five-case enum; anything else fails the
+  # attribute constraint. `hlo_fn()` hands attrs over as their `ScalarAttr`
+  # value, which is a `Constant`.
+  if (inherits(api_version, "Constant")) {
+    api_version <- api_version$data
+  }
+  api_version <- as.integer(api_version)
+  if (!(api_version %in% 0:4)) {
+    cli_abort(c(
+      "{.arg api_version} must be one of 0, 1, 2, 3 or 4.",
+      x = "Got {vec_repr(api_version)}."
+    ))
   }
 
-  if (!inherits(output_types, "ValueTypes")) {
+  # A dictionary `backend_config` is only legal for the typed-FFI API; every
+  # other version wants a string.
+  if (!is.null(backend_config) && api_version != 4L) {
+    cli_abort(c(
+      "A {.cls CustomOpBackendConfig} requires {.arg api_version} 4
+       (typed FFI).",
+      x = "Got {vec_repr(api_version)}."
+    ))
+  }
+
+  if (is.null(output_types)) {
+    output_types <- ValueTypes(list())
+  } else if (!inherits(output_types, "ValueTypes")) {
     output_types <- ValueTypes(output_types)
   }
 
+  # Layouts are all-or-nothing, one per value, and each a permutation of that
+  # value's axes -- the verifier checks all three and the builder rendered
+  # them unchecked.
+  if (is.null(operand_layouts) != is.null(result_layouts)) {
+    cli_abort(
+      "{.arg operand_layouts} and {.arg result_layouts} must be given
+       together or not at all."
+    )
+  }
+  if (!is.null(operand_layouts)) {
+    check_layouts(operand_layouts, operands, "operand_layouts")
+    check_layouts(result_layouts, as.list(output_types), "result_layouts")
+  }
+
   output_types
+}
+
+# One layout per value, each a permutation of `[0, rank)` of that value.
+check_layouts <- function(layouts, values, arg, call = rlang::caller_env()) {
+  if (length(layouts) != length(values)) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must have one entry per value.",
+        x = "Got {length(layouts)} for {length(values)} value{?s}."
+      ),
+      call = call
+    )
+  }
+  for (i in seq_along(layouts)) {
+    layout <- layouts[[i]]
+    rank <- length(shape(values[[i]]))
+    if (!test_permutation(layout, seq_len(rank) - 1L)) {
+      error_permute_index(
+        arg = arg,
+        permutation = as.integer(layout),
+        expected = seq_len(rank) - 1L,
+        call = call
+      )
+    }
+  }
+  invisible(NULL)
 }
 
 custom_call_impl <- hlo_fn(OpCustomCall, infer_types_custom_call)

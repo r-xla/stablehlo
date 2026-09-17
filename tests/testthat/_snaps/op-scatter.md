@@ -66,3 +66,17 @@
       ! `update_computation` arguments must be 0-dimensional tensors.
       x Argument 0 has type tensor<2xf32>.
 
+# scatter_indices must be an integer tensor
+
+    Code
+      infer_types_scatter(inputs = list(vt("f32", c(4L, 3L))), scatter_indices = vt(
+        "f32", c(2L, 1L)), updates = list(vt("f32", c(2L, 3L))), update_computation = update_func,
+      scatter_dimension_numbers = ScatterDimensionNumbers(update_window_dims = 1L,
+        inserted_window_dims = 0L, scatter_dims_to_operand_dims = 0L,
+        index_vector_dim = 1L), indices_are_sorted = scnst(FALSE, "i1"),
+      unique_indices = scnst(FALSE, "i1"))
+    Condition
+      Error in `infer_types_scatter()`:
+      ! `scatter_indices` must have dtype int or uint.
+      x Got f32.
+
