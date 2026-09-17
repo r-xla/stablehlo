@@ -32,15 +32,6 @@ infer_types_pad <- function(
   high <- edge_padding_high$data
   interior <- interior_padding$data
 
-  lowhigh <- rbind(low, high)
-  lowhigh[lowhigh > 0] <- 0
-  if (any(colSums(abs(lowhigh)) > operand_rank)) {
-    cli_abort(c(
-      "negative padding values can't exceed dimension",
-      x = "edge_padding_low: {vec_repr(low)}, edge_padding_high: {vec_repr(high)}, operand_rank: {operand_rank}"
-    ))
-  }
-
   # (C3)
   if (any(interior < 0)) {
     cli_abort(c(
@@ -66,6 +57,17 @@ infer_types_pad <- function(
     low +
     pmax(operand_shape - 1L, 0L) * interior +
     high
+
+  # (C4) Negative edge padding removes elements, and may not remove more than
+  # the dimension it applies to holds: every dimension of the result is a size,
+  # so a negative one is not a shape at all. Checked here rather than left to
+  # `Shape()`, which would refuse it without naming an argument.
+  if (any(result_shape < 0L)) {
+    cli_abort(c(
+      "{.arg edge_padding_low} and {.arg edge_padding_high} must not remove more elements than a dimension holds.", # nolint
+      x = "Padding {.arg operand} of shape {shapevec_repr(operand_shape)} by {vec_repr(low)} and {vec_repr(high)} would give {vec_repr(result_shape)}." # nolint
+    ))
+  }
 
   ValueTypes(list(
     ValueType(
