@@ -636,43 +636,36 @@ test_that("scatter unifies the batch dimensions of inputs and scatter_indices", 
   expect_error(scat(c(2L, 5L), c(3L, 1L)), "batch dimensions")
 })
 
-test_that("scatter checks its update_computation", {
-  dn <- ScatterDimensionNumbers(
-    update_window_dims = 1L,
-    inserted_window_dims = 0L,
-    scatter_dims_to_operand_dims = 0L,
-    index_vector_dim = 1L
-  )
-  scat <- function(region = add_region()) {
-    local_func()
-    hlo_scatter(
-      list(hlo_input("a", "f32", shape = c(4L, 3L))),
-      hlo_input("i", "i32", shape = c(2L, 1L)),
-      list(hlo_input("u", "f32", shape = c(2L, 3L))),
+test_that("the update computation's type is checked against (C23)", {
+  scat <- function(region) {
+    infer_types_scatter(
+      inputs = list(vt("f32", c(4L, 3L))),
+      scatter_indices = vt("i32", c(2L, 1L)),
+      updates = list(vt("f32", c(2L, 3L))),
       update_computation = region,
-      scatter_dimension_numbers = dn,
-      indices_are_sorted = FALSE,
-      unique_indices = FALSE
+      scatter_dimension_numbers = ScatterDimensionNumbers(
+        update_window_dims = 1L,
+        inserted_window_dims = 0L,
+        scatter_dims_to_operand_dims = 0L,
+        index_vector_dim = 1L
+      ),
+      indices_are_sorted = scnst(FALSE, "i1"),
+      unique_indices = scnst(FALSE, "i1")
     )
   }
-  # (C23) the region takes 2 * N scalar arguments.
-  four_args <- local({
+  reg <- function(dtype, nargs = 2L, shape = integer()) {
     f <- local_func(id = "")
-    args <- lapply(1:4, function(i) hlo_input(paste0("a", i), "f32"))
+    args <- lapply(
+      seq_len(nargs),
+      function(i) hlo_input(paste0("a", i), dtype, shape = shape)
+    )
     hlo_return(hlo_add(args[[1L]], args[[2L]]))
     f
-  })
-  expect_error(scat(region = four_args), "two arguments per input")
-  # ... none of which may carry a dynamic axis.
-  dyn_region <- local({
-    f <- local_func(id = "")
-    hlo_return(hlo_add(
-      hlo_input("l", "f32", shape = N),
-      hlo_input("r", "f32", shape = N)
-    ))
-    f
-  })
-  expect_error(scat(region = dyn_region), "0-dimensional tensors")
+  }
+  # (C23) states the computation as a function type; only its outputs were
+  # read, so a wrong arity or a non-scalar argument was rendered as-is.
+  expect_snapshot(scat(reg("f32", nargs = 4L)), error = TRUE)
+  expect_snapshot(scat(reg("f32", shape = 2L)), error = TRUE)
 })
 
 test_that("scatter_indices must be an integer tensor", {

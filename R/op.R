@@ -200,12 +200,9 @@ constant_attr <- function(
 #'   `in_type_strs`, `out_type_strs`, `sig_str`, `attrs`, `attrs_str`,
 #'   `funcs_str` and `custom_attrs`.
 #' @param same_type_form (`logical(1)`)\cr
-#'   Whether the op's MLIR assembly has the short `%0 = op %a : <type>` form
-#'   that names one type for operands and result alike. True for the
-#'   elementwise arithmetic ops; false for one whose result type differs
-#'   structurally from its operands', such as a predicate-returning op, where
-#'   that form does not parse. `render_op_default()` only takes the short form
-#'   when this is true.
+#'   Whether the op's MLIR assembly has the short
+#'   `%0 = stablehlo.<op> %a : <type>` form, which names one type for the
+#'   operands and the result alike.
 #' @return A descriptor `list` for use with `hlo_fn()`.
 #' @keywords internal
 new_Op <- function(

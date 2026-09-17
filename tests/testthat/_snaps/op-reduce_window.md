@@ -61,6 +61,15 @@
       ! `padding` must have shape [rank, 2].
       x Expected shape (2x2), got (1x2).
 
+# the reducer accumulates into a promoted element type
+
+    Code
+      rw("f64", "f32")
+    Condition
+      Error in `infer_types_reduce_window()`:
+      ! `body` must reduce into a type its input promotes to.
+      x Input 0 has type f64, which does not promote to f32.
+
 # a zero window dilation is rejected
 
     Code

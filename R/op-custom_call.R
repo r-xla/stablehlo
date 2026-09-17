@@ -205,12 +205,12 @@ check_layouts <- function(layouts, values, arg, call = rlang::caller_env()) {
     )
   }
   for (i in seq_along(layouts)) {
-    layout <- as.integer(layouts[[i]])
+    layout <- layouts[[i]]
     rank <- length(shape(values[[i]]))
-    if (!identical(sort(layout), seq_len(rank) - 1L)) {
+    if (!test_permutation(layout, seq_len(rank) - 1L)) {
       error_permute_index(
         arg = arg,
-        permutation = layout,
+        permutation = as.integer(layout),
         expected = seq_len(rank) - 1L,
         call = call
       )

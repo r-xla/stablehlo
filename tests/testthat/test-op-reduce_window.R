@@ -235,24 +235,28 @@ test_that("reduce_window's window arithmetic propagates a dynamic axis", {
   expect_equal(inferred(function() rw(c(5L, 4L), c(2L, 2L))), "tensor<4x3xf32>")
 })
 
-test_that("reduce_window accumulates into a promoted element type", {
+test_that("the reducer accumulates into a promoted element type", {
   # (C13), like reduce's (C6), is stated with `is_promotable`.
   rw <- function(in_dtype, acc_dtype) {
-    hlo_reduce_window(
-      list(dyn_input("x", in_dtype, c(4L, 4L))),
-      list(hlo_scalar(0, dtype = in_dtype)),
-      window_dimensions = c(2L, 2L),
-      window_strides = c(2L, 2L),
-      base_dilations = c(1L, 1L),
-      window_dilations = c(1L, 1L),
-      padding = matrix(0L, nrow = 2L, ncol = 2L),
-      body = add_region(acc_dtype)
+    body <- local_func(id = "")
+    a <- hlo_input("a", acc_dtype)
+    b <- hlo_input("b", acc_dtype)
+    hlo_return(hlo_add(a, b))
+    infer_types_reduce_window(
+      vt(in_dtype, c(4L, 4L)),
+      vt(in_dtype, integer()),
+      body = body,
+      window_dimensions = cnst(c(2L, 2L), "i64", 2L),
+      window_strides = cnst(c(2L, 2L), "i64", 2L),
+      base_dilations = cnst(c(1L, 1L), "i64", 2L),
+      window_dilations = cnst(c(1L, 1L), "i64", 2L),
+      padding = cnst(c(0L, 0L, 0L, 0L), "i64", c(2L, 2L))
     )
   }
-  expect_equal(inferred(function() rw("f32", "f64")), "tensor<2x2xf64>")
-  local_func()
-  expect_error(rw("f64", "f32"), "promotes to")
+  expect_equal(repr(rw("f32", "f64")[[1L]]$type), "tensor<2x2xf64>")
+  expect_snapshot(rw("f64", "f32"), error = TRUE)
 })
+
 test_that("a zero window dilation is rejected", {
   # (C11) is `0 < window_dilations`. A zero flowed into
   # `(window_dimensions - 1) * window_dilations + 1` and collapsed every window

@@ -39,6 +39,8 @@
 
 ## Bug fixes
 
+* The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted only
+  for ops that actually allow it.
 * `hlo_triangular_solve()` now rejects operands that are not of floating-point
   type, as required by the StableHLO spec.
 * `infer_types_slice()` rejects a stride of `0`. The spec's (C4) is
@@ -49,19 +51,19 @@
   parse error.
 * Corrected some checks in the inference functions.
 * Added some missing checks in the inference functions.
+* `infer_types_reduce()`, `infer_types_reduce_window()`,
+  `infer_types_scatter()` and `infer_types_sort()` check their region's
+  arguments. Only the region's outputs were read, so a body with the wrong
+  arity, a non-scalar argument, or the wrong element type passed inference --
+  a one-argument `sort` comparator returning an `f32` was accepted and
+  rendered.
+* `infer_types_reduce()` accepts a body that accumulates into a wider element
+  type. (C6) is `is_promotable(element_type(inputs[i]), Ei)`, not an equality,
+  so summing an `i8` into an `i32` is legal; it used to be refused.
 
 * `hlo_pad()`'s negative-padding check compared each axis's trimming against
   the operand's *rank* rather than that axis's size, so it refused legal
   programs and accepted illegal ones. It is now (C4) applied per axis.
-
-* `hlo_reduce()`, `hlo_reduce_window()`, `hlo_scatter()` and `hlo_sort()` now
-  check their region's arguments -- `2 * N` scalar tensors -- and `hlo_sort()`
-  checks its comparator returns a scalar `i1`. A dynamic axis could previously
-  reach a region's block arguments.
-
-* `hlo_reduce()`, `hlo_reduce_window()` and `hlo_scatter()` accept a body that
-  accumulates into a wider element type, as (C6)/(C13)/(C23) allow; `reduce`
-  previously required the body's type to equal its inputs'.
 
 * The dynamic ops' size operands (`output_shape`, `slice_sizes`,
   `edge_padding_low`, ...) must be integer tensors, and those StableHLO types

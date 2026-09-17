@@ -27,12 +27,9 @@ fields \code{mnemonic}, \code{dialect}, \code{outputs_str}, \code{values_str},
 \code{funcs_str} and \code{custom_attrs}.}
 
 \item{same_type_form}{(\code{logical(1)})\cr
-Whether the op's MLIR assembly has the short \verb{\%0 = op \%a : <type>} form
-that names one type for operands and result alike. True for the
-elementwise arithmetic ops; false for one whose result type differs
-structurally from its operands', such as a predicate-returning op, where
-that form does not parse. \code{render_op_default()} only takes the short form
-when this is true.}
+Whether the op's MLIR assembly has the short
+\verb{\%0 = stablehlo.<op> \%a : <type>} form, which names one type for the
+operands and the result alike.}
 }
 \value{
 A descriptor \code{list} for use with \code{hlo_fn()}.

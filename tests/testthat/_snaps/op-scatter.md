@@ -48,6 +48,24 @@
       ! `update_window_dims` must contain unique dimension indices
       x Got c(1, 1)
 
+# the update computation's type is checked against (C23)
+
+    Code
+      scat(reg("f32", nargs = 4L))
+    Condition
+      Error in `infer_types_scatter()`:
+      ! `update_computation` must take two arguments per input.
+      x Expected 2 arguments, got 4.
+
+---
+
+    Code
+      scat(reg("f32", shape = 2L))
+    Condition
+      Error in `infer_types_scatter()`:
+      ! `update_computation` arguments must be 0-dimensional tensors.
+      x Argument 0 has type tensor<2xf32>.
+
 # scatter_indices must be an integer tensor
 
     Code

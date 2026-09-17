@@ -103,9 +103,9 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
     accumulator_dtypes,
     arg = "body"
   )
-  # (C6) The other half of the body's type: its arguments. Unchecked, a body
-  # declaring a dynamic or differently-typed argument renders that straight
-  # into the region's block arguments.
+  # (C6) The other half of the body's type: its arguments, which nothing else
+  # here looks at. A body declaring a differently-typed or non-scalar argument
+  # rendered that straight into the region's block arguments.
   assert_region_inputs(body, accumulator_dtypes, arg = "body")
 
   # (C7)

@@ -1,7 +1,11 @@
 #' @include op.R hlo.R
 NULL
 
-OpDynamicUpdateSlice <- new_Op("OpDynamicUpdateSlice", "dynamic_update_slice")
+OpDynamicUpdateSlice <- new_Op(
+  "OpDynamicUpdateSlice",
+  "dynamic_update_slice",
+  same_type_form = FALSE
+)
 
 # fmt: skip
 #' @rdname hlo_dynamic_update_slice

@@ -487,9 +487,8 @@ infer_types_scatter <- function(
       x = "Got {length(body_out_types)} outputs."
     ))
   }
-  # (C23) `is_promotable(element_type(inputs[i]), Ei)` for the accumulator, and
-  # the computation's arguments, which nothing else here looks at. Both are
-  # stated against `Ei` rather than the input's element type.
+  # (C23) As reduce's (C6): the accumulator is a widening of the input's
+  # element type, and the computation's arguments are `2 * N` scalars of it.
   accumulator_dtypes <- lapply(body_out_types, function(x) x$type$dtype)
   assert_accumulator_dtypes(
     lapply(inputs, function(x) x$type$dtype),

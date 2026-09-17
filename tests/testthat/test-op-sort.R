@@ -117,51 +117,6 @@ test_that("sort folds its inputs' shapes instead of comparing pairwise", {
   )
 })
 
-test_that("sort checks its comparator against (C5)", {
-  # Before this was checked, a one-argument comparator returning an f32 was
-  # accepted and rendered into the region.
-  expect_error(
-    infer_types_sort(
-      vt("i32", 4L),
-      dimension = scnst(0L, "i64"),
-      is_stable = scnst(TRUE, "pred"),
-      comparator = n_input_comparator(2L)
-    ),
-    "two arguments per input"
-  )
-  expect_error(
-    infer_types_sort(
-      vt("i32", 4L),
-      dimension = scnst(0L, "i64"),
-      is_stable = scnst(TRUE, "pred"),
-      comparator = lt_region("f32")
-    ),
-    "inputs' element types"
-  )
-  # A dynamic axis must never reach a region argument.
-  dyn_arg <- local({
-    f <- local_func(id = "")
-    a <- hlo_input("a", "i32", shape = N)
-    b <- hlo_input("b", "i32", shape = N)
-    hlo_return(hlo_compare(
-      a,
-      b,
-      comparison_direction = "LT",
-      compare_type = "SIGNED"
-    ))
-    f
-  })
-  expect_error(
-    infer_types_sort(
-      vt("i32", 4L),
-      dimension = scnst(0L, "i64"),
-      is_stable = scnst(TRUE, "pred"),
-      comparator = dyn_arg
-    ),
-    "0-dimensional tensors"
-  )
-})
-
 test_that("sort over a dynamic axis", {
   skip_if_no_refine()
   expect_refines_and_runs(
@@ -179,4 +134,47 @@ test_that("sort over a dynamic axis", {
       list(shapes = list(6L), args = list(c(9, 2, 7, 1, 8, 3)))
     )
   )
+})
+
+test_that("the comparator's type is checked against (C5)", {
+  # (C5) is `(tensor<E0>, tensor<E0>, ..., tensor<EN-1>, tensor<EN-1>) ->
+  # tensor<i1>` -- interleaved per input, unlike reduce's two groups. Only
+  # `assert_func()` was checked, so a one-argument comparator returning an
+  # `f32` was accepted and rendered.
+  cmp <- function(dtypes, out = NULL, shape = integer()) {
+    f <- local_func(id = "")
+    args <- lapply(
+      seq_along(dtypes),
+      function(i) hlo_input(paste0("a", i), dtypes[[i]], shape = shape)
+    )
+    hlo_return(
+      if (is.null(out)) {
+        hlo_compare(
+          args[[1L]],
+          args[[2L]],
+          comparison_direction = "LT",
+          compare_type = "SIGNED"
+        )
+      } else {
+        hlo_add(args[[1L]], args[[2L]])
+      }
+    )
+    f
+  }
+  srt <- function(comparator) {
+    infer_types_sort(
+      vt("i32", 4L),
+      dimension = scnst(0L, "i64"),
+      is_stable = scnst(TRUE, "i1"),
+      comparator = comparator
+    )
+  }
+  # Wrong arity: one pair is required per input.
+  expect_snapshot(srt(cmp(rep("i32", 4L))), error = TRUE)
+  # Wrong element type.
+  expect_snapshot(srt(cmp(rep("i64", 2L))), error = TRUE)
+  # A dynamic or non-scalar argument must never reach a region.
+  expect_snapshot(srt(cmp(rep("i32", 2L), shape = 3L)), error = TRUE)
+  # The comparator returns a scalar `i1`.
+  expect_snapshot(srt(cmp(rep("i32", 2L), out = "add")), error = TRUE)
 })

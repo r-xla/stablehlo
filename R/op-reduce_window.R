@@ -198,10 +198,8 @@ infer_types_reduce_window <- function(
       x = "Expected {num_inputs} output{?s}, got {length(body_out_types)}."
     ))
   }
-  # (C13) `is_promotable(element_type(inputs[i]), Ei)` for the accumulator the
-  # body reduces into, and the body's arguments, which nothing else here looks
-  # at. Both are stated against `Ei`, not against the input's element type, so
-  # accumulating into a wider type stays legal.
+  # (C13) As reduce's (C6): the accumulator is a widening of the input's
+  # element type, and the body's arguments are `2 * N` scalars of it.
   accumulator_dtypes <- lapply(body_out_types, function(x) x$type$dtype)
   assert_accumulator_dtypes(
     lapply(input_value_types, function(x) x$type$dtype),

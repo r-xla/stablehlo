@@ -331,18 +331,6 @@ assert_dtype_one_of <- function(
   )
 }
 
-# SPEC's `is_promotable(x, y)`: `y` is `x` widened. Same type class, and for
-# everything but bool a bit width that does not shrink.
-#
-# This is what a reducer's *accumulator* element type has to satisfy against
-# its input's, which is why `reduce`, `reduce_window` and `scatter` may sum an
-# `i8` input into an `i32` and must not be made to require equality.
-#
-# Note this follows SPEC rather than the MLIR verifier, which passes
-# `ignoreFpPrecision = true` and so also accepts a *narrower* float
-# accumulator. SPEC says `bitwidth(x) <= bitwidth(y)` with no exception for
-# floats, so `f64` reduced into an `f32` is refused here although XLA and IREE
-# would take it.
 is_promotable_dtype <- function(x, y) {
   same_class <- (is_dtype_bool(x) && is_dtype_bool(y)) ||
     ((is_dtype_int(x) || is_dtype_uint(x)) &&
@@ -357,30 +345,6 @@ is_promotable_dtype <- function(x, y) {
   dtype_width(x) <= dtype_width(y)
 }
 
-# The reducer/comparator/update regions of `reduce`, `reduce_window`,
-# `scatter` and `sort` are all constrained the same way: SPEC states each as a
-# function type over *scalar* tensors -- reduce (C6), reduce_window (C13),
-# scatter (C23), sort (C5). Two things follow that no other check in those ops
-# sees.
-#
-# The arity and the dtypes: `2 * N` arguments, one pair per operand. The pair
-# is spelled differently in the two families -- reduce, reduce_window and
-# scatter take all the left arguments and then all the right ones
-# (`E0, ..., EN-1, E0, ..., EN-1`), while sort interleaves them per operand
-# (`E0, E0, E1, E1, ...`) -- so `interleaved` picks which.
-#
-# `dtypes` is what every argument must be, and for the reducer family that is
-# the *accumulator* element type `Ei` -- the body's own result type -- not the
-# input's. SPEC only asks that `is_promotable(element_type(inputs[i]), Ei)`,
-# which `assert_accumulator_dtypes()` checks separately; requiring the
-# arguments to match the inputs would refuse accumulating an `i8` into an
-# `i32`, which StableHLO's verifier accepts. `sort` is the exception: its (C5)
-# says `Ei = element_type(inputs[i])` outright, so there `dtypes` is the
-# inputs'.
-#
-# And the ranks: every argument is `tensor<Ei>`, a 0-dimensional tensor. That
-# is what keeps a dynamic axis out of a region, where it would otherwise be
-# rendered straight into the block arguments and only be refused by MLIR.
 assert_region_inputs <- function(
   region,
   dtypes,
