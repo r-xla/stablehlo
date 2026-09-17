@@ -106,3 +106,12 @@ test_that("start_indices must all have the same type", {
     error = TRUE
   )
 })
+
+test_that("a rank-0 update renders in the generic form", {
+  local_func()
+  a <- hlo_input("a", "f32", shape = integer())
+  b <- hlo_input("b", "f32", shape = integer())
+  src <- repr(hlo_return(hlo_dynamic_update_slice(a, b)))
+  expect_match(src, '"stablehlo.dynamic_update_slice"', fixed = TRUE)
+  expect_no_match(src, "= stablehlo.dynamic_update_slice ", fixed = TRUE)
+})
