@@ -106,3 +106,18 @@ test_that("start_indices must all have the same type", {
     error = TRUE
   )
 })
+
+test_that("a rank-0 update renders in the generic form", {
+  # (C4) makes `size(start_indices) = rank(operand)`, so at rank 0 there are no
+  # index operands and operand, update and result all have the same type. The
+  # renderer's "all types equal" heuristic then reached for the short assembly
+  # form -- but the ODS overrides `dynamic_update_slice`'s assembly with
+  # `functional-type(operands, results)`, so `stablehlo.dynamic_update_slice
+  # %a, %b : tensor<f32>` does not parse.
+  local_func()
+  a <- hlo_input("a", "f32", shape = integer())
+  b <- hlo_input("b", "f32", shape = integer())
+  src <- repr(hlo_return(hlo_dynamic_update_slice(a, b)))
+  expect_match(src, '"stablehlo.dynamic_update_slice"', fixed = TRUE)
+  expect_no_match(src, "= stablehlo.dynamic_update_slice ", fixed = TRUE)
+})

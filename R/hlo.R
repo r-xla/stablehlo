@@ -17,6 +17,7 @@ hlo_fn <- function(
   op_render <- op_class$render %??% render_op_default
   mnemonic <- op_class$mnemonic
   dialect <- op_class$dialect
+  same_type_form <- op_class$same_type_form %??% TRUE
 
   # Fill in the id-dependent parts of the ctx (only knowable once ids are
   # numbered at repr time) and render the op line.
@@ -139,6 +140,7 @@ hlo_fn <- function(
     ctx <- list(
       mnemonic = mnemonic,
       dialect = dialect,
+      same_type_form = same_type_form,
       output_ids = output_value_ids,
       value_ids = lapply(flat_values, function(x) x$value_id),
       funcs = funcs,
