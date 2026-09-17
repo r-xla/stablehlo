@@ -193,3 +193,20 @@ test_that("layouts are all-or-nothing, counted, and permutations", {
     cc(operand_layouts = list(c(1L, 0L)), result_layouts = list(c(1L, 0L)))
   )
 })
+
+test_that("inference declares every custom attribute the builder passes", {
+  # `hlo_fn()` hands custom attributes to the inference function *by name*, so
+  # a name the inference function does not declare is swallowed by its `...`
+  # and counted as an operand. That is silent: it does not error, it makes
+  # `operands` one longer, which threw the layout checks off by one and broke
+  # every call passing layouts -- including ones passing the new attribute as
+  # `NULL`. Pinning the two signatures against each other catches the next
+  # attribute added to the builder without a matching argument here.
+  builder <- names(formals(hlo_custom_call))
+  inference <- names(formals(infer_types_custom_call))
+  # `...` is the operands, and `call_target_name`/`api_version`/
+  # `has_side_effect` arrive as `attrs` rather than `custom_attrs`; every
+  # other builder argument is a custom attribute.
+  custom_attrs <- setdiff(builder, "...")
+  expect_setequal(intersect(custom_attrs, inference), custom_attrs)
+})

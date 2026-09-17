@@ -72,11 +72,11 @@ OpCustomCall <- new_Op(
 #' Each element must be a [`BoolAttr`], [`StringAttr`], [`ScalarAttr`] or
 #' [`ConstantAttr`]. All attribute names must be unique.
 #'
-#' A [`ConstantAttr`] built with [`constant_attr()`] carries a vector rather
-#' than a scalar and is what an XLA FFI handler decodes as
-#' `Span<const T>`. The dtype has to match the handler's element type
-#' exactly -- `Span<const int64_t>` needs `"i64"`, not the `"i32"` that
-#' [`constant_attr()`] would infer from an R integer vector.
+#' A [`ConstantAttr`] carries a vector rather than a scalar and is what an XLA
+#' FFI handler decodes as `Span<const T>`. The dtype has to match the
+#' handler's element type exactly -- `Span<const int64_t>` needs `"i64"`, not
+#' the `"i32"` an R integer vector would otherwise infer. [`constant_attr()`]
+#' is a shorthand that builds the [`Constant`] for you.
 #' @param items (`list`)\cr
 #'   A list of [`BoolAttr`], [`StringAttr`], [`ScalarAttr`] or
 #'   [`ConstantAttr`] objects.
@@ -84,7 +84,10 @@ OpCustomCall <- new_Op(
 #' @examples
 #' CustomOpBackendConfig(list(
 #'   StringAttr(name = "mode", value = "fast"),
-#'   constant_attr(name = "axes", value = c(0L, 2L), dtype = "i64")
+#'   ConstantAttr(
+#'     name = "axes",
+#'     value = r_to_constant(c(0L, 2L), dtype = "i64", shape = 2L)
+#'   )
 #' ))
 #' @export
 CustomOpBackendConfig <- function(items = list()) {
