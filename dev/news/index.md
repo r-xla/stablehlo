@@ -24,6 +24,19 @@
   error.
 - Corrected some checks in the inference functions.
 - Added some missing checks in the inference functions.
+- [`infer_types_reduce()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce.md),
+  [`infer_types_reduce_window()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce_window.md),
+  [`infer_types_scatter()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_scatter.md)
+  and
+  [`infer_types_sort()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_sort.md)
+  check their region’s arguments. Only the region’s outputs were read,
+  so a body with the wrong arity, a non-scalar argument, or the wrong
+  element type passed inference – a one-argument `sort` comparator
+  returning an `f32` was accepted and rendered.
+- [`infer_types_reduce()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce.md)
+  accepts a body that accumulates into a wider element type. (C6) is
+  `is_promotable(element_type(inputs[i]), Ei)`, not an equality, so
+  summing an `i8` into an `i32` is legal; it used to be refused.
 
 ## stablehlo 0.4.0
 
