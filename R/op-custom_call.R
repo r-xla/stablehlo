@@ -358,16 +358,21 @@ repr_layouts <- function(name, layouts) {
 #' which is how an in-place kernel avoids a copy -- and why a handler that
 #' overwrites its input must be written to tolerate it.
 #'
-#' Indices are 0-based, as everywhere in StableHLO. The `*_tuple_indices` are
-#' the path into a tuple-typed result or operand and stay empty for the
-#' ordinary case of a call with plain tensor results.
+#' Indices are 0-based, as everywhere in StableHLO.
+#'
+#' The StableHLO attribute also carries an `operand_tuple_indices` path, for an
+#' operand that is itself a tuple. This package has no tuple types, so that
+#' path can only ever be empty and is not exposed; it is rendered as `[]`,
+#' which the attribute's syntax requires.
 #' @param operand_index (`integer(1)`)\cr
 #'   Which operand of the custom call the result aliases.
 #' @param output_tuple_indices (`integer()`)\cr
-#'   Path into the result tuple. Empty (the default) for a single result;
-#'   for a call with several results, the index of the aliased one.
-#' @param operand_tuple_indices (`integer()`)\cr
-#'   Path into the operand, if that operand is a tuple. Empty by default.
+#'   Which result is aliased, for a call that has several. This one is *not*
+#'   about tuple types: StableHLO's verifier builds a tuple out of the result
+#'   types whenever a custom call has more than one result, so a multi-result
+#'   call must name the aliased result here or the alias is compared against
+#'   the whole synthesised tuple and rejected. Empty (the default) is right
+#'   for a single result.
 #' @return `OutputOperandAlias`
 #' @examples
 #' # the single result is written into the buffer of the first operand
@@ -375,8 +380,7 @@ repr_layouts <- function(name, layouts) {
 #' @export
 OutputOperandAlias <- function(
   operand_index,
-  output_tuple_indices = integer(),
-  operand_tuple_indices = integer()
+  output_tuple_indices = integer()
 ) {
   checkmate::assert_int(operand_index, lower = 0L)
   checkmate::assert_integerish(
@@ -384,17 +388,11 @@ OutputOperandAlias <- function(
     lower = 0L,
     any.missing = FALSE
   )
-  checkmate::assert_integerish(
-    operand_tuple_indices,
-    lower = 0L,
-    any.missing = FALSE
-  )
 
   structure(
     list(
       operand_index = as.integer(operand_index),
-      output_tuple_indices = as.integer(output_tuple_indices),
-      operand_tuple_indices = as.integer(operand_tuple_indices)
+      output_tuple_indices = as.integer(output_tuple_indices)
     ),
     class = "OutputOperandAlias"
   )
@@ -407,9 +405,9 @@ repr.OutputOperandAlias <- function(x, ...) {
     paste(x$output_tuple_indices, collapse = ", "),
     "], operand_index = ",
     x$operand_index,
-    ", operand_tuple_indices = [",
-    paste(x$operand_tuple_indices, collapse = ", "),
-    "]>"
+    # Always empty: an operand path needs a tuple-typed operand, which this
+    # package cannot build. The attribute's syntax requires the field.
+    ", operand_tuple_indices = []>"
   )
 }
 

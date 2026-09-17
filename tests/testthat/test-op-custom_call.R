@@ -84,13 +84,9 @@ test_that("custom call with output_operand_aliases", {
   expect_snapshot(repr(f))
 })
 
-test_that("OutputOperandAlias renders tuple indices", {
+test_that("OutputOperandAlias names the aliased result", {
   expect_snapshot(
-    repr(OutputOperandAlias(
-      operand_index = 1L,
-      output_tuple_indices = 0L,
-      operand_tuple_indices = 2L
-    ))
+    repr(OutputOperandAlias(operand_index = 1L, output_tuple_indices = 0L))
   )
   expect_error(OutputOperandAlias(operand_index = -1L))
   expect_error(
@@ -209,4 +205,31 @@ test_that("inference declares every custom attribute the builder passes", {
   # other builder argument is a custom attribute.
   custom_attrs <- setdiff(builder, "...")
   expect_setequal(intersect(custom_attrs, inference), custom_attrs)
+})
+
+test_that("a multi-result call names the aliased result", {
+  # StableHLO's verifier builds a tuple out of the result types whenever a
+  # custom call has more than one result, so an alias on a multi-result call
+  # must say *which* result it means -- with an empty `output_tuple_indices`
+  # the operand is compared against the whole synthesised tuple and the
+  # program is rejected. anvl's `nv_custom_call()` relies on this.
+  local_func()
+  x <- hlo_input("x", "f32", shape = c(2L, 3L))
+  out <- hlo_custom_call(
+    x,
+    call_target_name = "t",
+    has_side_effect = FALSE,
+    output_types = list(
+      ValueType("f32", shape = c(2L, 3L)),
+      ValueType("f32", shape = 2L)
+    ),
+    output_operand_aliases = list(
+      OutputOperandAlias(operand_index = 0L, output_tuple_indices = 0L)
+    )
+  )
+  src <- repr(hlo_return(out[[1L]]))
+  expect_match(src, "output_tuple_indices = [0]", fixed = TRUE)
+  # The operand path is always empty here -- there are no tuple-typed operands
+  # to walk into -- but the attribute's syntax still requires the field.
+  expect_match(src, "operand_tuple_indices = []", fixed = TRUE)
 })

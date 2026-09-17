@@ -36,13 +36,12 @@
     Output
       [1] "func.func @main (%x: tensor<2x3xf32>) -> tensor<2x3xf32> {\n%0 = stablehlo.custom_call @in_place(%x) {\n  call_target_name = \"in_place\",\n  api_version = 4 : i32,\n  has_side_effect = false,\n  operand_layouts = [dense<[1, 0]> : tensor<2xindex>],\n  result_layouts = [dense<[1, 0]> : tensor<2xindex>],\n  output_operand_aliases = [#stablehlo.output_operand_alias<output_tuple_indices = [], operand_index = 0, operand_tuple_indices = []>]\n} : (tensor<2x3xf32>) -> (tensor<2x3xf32>)\nreturn %0 : tensor<2x3xf32>\n}\n"
 
-# OutputOperandAlias renders tuple indices
+# OutputOperandAlias names the aliased result
 
     Code
-      repr(OutputOperandAlias(operand_index = 1L, output_tuple_indices = 0L,
-        operand_tuple_indices = 2L))
+      repr(OutputOperandAlias(operand_index = 1L, output_tuple_indices = 0L))
     Output
-      [1] "#stablehlo.output_operand_alias<output_tuple_indices = [0], operand_index = 1, operand_tuple_indices = [2]>"
+      [1] "#stablehlo.output_operand_alias<output_tuple_indices = [0], operand_index = 1, operand_tuple_indices = []>"
 
 # api_version is one of the five the ODS defines
 

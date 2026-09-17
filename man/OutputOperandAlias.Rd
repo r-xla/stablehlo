@@ -4,22 +4,19 @@
 \alias{OutputOperandAlias}
 \title{OutputOperandAlias}
 \usage{
-OutputOperandAlias(
-  operand_index,
-  output_tuple_indices = integer(),
-  operand_tuple_indices = integer()
-)
+OutputOperandAlias(operand_index, output_tuple_indices = integer())
 }
 \arguments{
 \item{operand_index}{(\code{integer(1)})\cr
 Which operand of the custom call the result aliases.}
 
 \item{output_tuple_indices}{(\code{integer()})\cr
-Path into the result tuple. Empty (the default) for a single result;
-for a call with several results, the index of the aliased one.}
-
-\item{operand_tuple_indices}{(\code{integer()})\cr
-Path into the operand, if that operand is a tuple. Empty by default.}
+Which result is aliased, for a call that has several. This one is \emph{not}
+about tuple types: StableHLO's verifier builds a tuple out of the result
+types whenever a custom call has more than one result, so a multi-result
+call must name the aliased result here or the alias is compared against
+the whole synthesised tuple and rejected. Empty (the default) is right
+for a single result.}
 }
 \value{
 \code{OutputOperandAlias}
@@ -30,9 +27,12 @@ the call's operands. XLA then hands the handler the same pointer for both,
 which is how an in-place kernel avoids a copy -- and why a handler that
 overwrites its input must be written to tolerate it.
 
-Indices are 0-based, as everywhere in StableHLO. The \verb{*_tuple_indices} are
-the path into a tuple-typed result or operand and stay empty for the
-ordinary case of a call with plain tensor results.
+Indices are 0-based, as everywhere in StableHLO.
+
+The StableHLO attribute also carries an \code{operand_tuple_indices} path, for an
+operand that is itself a tuple. This package has no tuple types, so that
+path can only ever be empty and is not exposed; it is rendered as \verb{[]},
+which the attribute's syntax requires.
 }
 \examples{
 # the single result is written into the buffer of the first operand
