@@ -39,3 +39,39 @@
       ! `dimension` contains index outside the valid range.
       x Got 5, but valid range is [-2, 2).
 
+# the comparator's type is checked against (C5)
+
+    Code
+      srt(cmp(rep("i32", 4L)))
+    Condition
+      Error in `infer_types_sort()`:
+      ! `comparator` must take two arguments per input.
+      x Expected 2 arguments, got 4.
+
+---
+
+    Code
+      srt(cmp(rep("i64", 2L)))
+    Condition
+      Error in `infer_types_sort()`:
+      ! `comparator` arguments must have the inputs' element types.
+      x Argument 0 has type i64, expected i32.
+
+---
+
+    Code
+      srt(cmp(rep("i32", 2L), shape = 3L))
+    Condition
+      Error in `infer_types_sort()`:
+      ! `comparator` arguments must be 0-dimensional tensors.
+      x Argument 0 has type tensor<3xi32>.
+
+---
+
+    Code
+      srt(cmp(rep("i32", 2L), out = "add"))
+    Condition
+      Error in `infer_types_sort()`:
+      ! `output(comparator)` must have dtype bool.
+      x Got i32.
+

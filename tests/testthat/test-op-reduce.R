@@ -164,3 +164,50 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+# A reducer body over `dtype`, built in its own scope so `local_func()`'s
+# deferred restore has run before the caller emits its op.
+add_body <- function(dtype, nargs = 2L, shape = integer()) {
+  f <- local_func(id = "")
+  args <- lapply(
+    seq_len(nargs),
+    function(i) hlo_input(paste0("a", i), dtype, shape = shape)
+  )
+  hlo_return(hlo_add(args[[1L]], args[[2L]]))
+  f
+}
+
+test_that("the reducer accumulates into a promoted element type", {
+  # (C6) is `is_promotable(element_type(inputs[i]), Ei)`, not an equality, so
+  # summing an `i8` into an `i32` accumulator is legal and the verifier takes
+  # it. This used to require the body's type to equal the inputs'.
+  red <- function(in_dtype, acc_dtype) {
+    infer_types_reduce(
+      inputs = list(vt(in_dtype, c(2L, 3L))),
+      init_values = list(vt(in_dtype, integer())),
+      body = add_body(acc_dtype),
+      dimensions = cnst(1L, "i64", 1L)
+    )
+  }
+  expect_equal(repr(red("i8", "i32")[[1L]]$type), "tensor<2xi32>")
+  expect_equal(repr(red("f32", "f32")[[1L]]$type), "tensor<2xf32>")
+  # Narrowing is not promotion, and nor is crossing type classes.
+  expect_snapshot(red("i32", "i8"), error = TRUE)
+  expect_snapshot(red("i32", "f32"), error = TRUE)
+})
+
+test_that("the reducer's arguments are 2 * N scalars of the accumulator", {
+  # (C6) states the body as a function type; only its outputs were read, so a
+  # body with the wrong arity or a non-scalar argument was rendered as-is.
+  red <- function(body) {
+    infer_types_reduce(
+      inputs = list(vt("f32", c(2L, 3L))),
+      init_values = list(vt("f32", integer())),
+      body = body,
+      dimensions = cnst(1L, "i64", 1L)
+    )
+  }
+  expect_snapshot(red(add_body("f32", nargs = 3L)), error = TRUE)
+  expect_snapshot(red(add_body("f32", shape = 4L)), error = TRUE)
+  expect_snapshot(red(add_body("i32")), error = TRUE)
+})
