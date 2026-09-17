@@ -7,6 +7,8 @@
 
 ## Bug fixes
 
+* The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted only
+  for ops that actually allow it.
 * `hlo_triangular_solve()` now rejects operands that are not of floating-point
   type, as required by the StableHLO spec.
 * `infer_types_slice()` rejects a stride of `0`. The spec's (C4) is
