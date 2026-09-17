@@ -52,7 +52,13 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">new_Op</span><span class="op">(</span><span class="va">classname</span>, <span class="va">mnemonic</span>, dialect <span class="op">=</span> <span class="st">"stablehlo"</span>, render <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">new_Op</span><span class="op">(</span></span>
+<span>  <span class="va">classname</span>,</span>
+<span>  <span class="va">mnemonic</span>,</span>
+<span>  dialect <span class="op">=</span> <span class="st">"stablehlo"</span>,</span>
+<span>  render <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  same_type_form <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -78,6 +84,20 @@ default assembly/generic format. The <code>ctx</code> argument is a list with
 fields <code>mnemonic</code>, <code>dialect</code>, <code>outputs_str</code>, <code>values_str</code>,
 <code>in_type_strs</code>, <code>out_type_strs</code>, <code>sig_str</code>, <code>attrs</code>, <code>attrs_str</code>,
 <code>funcs_str</code> and <code>custom_attrs</code>.</p></dd>
+
+
+<dt id="arg-same-type-form">same_type_form<a class="anchor" aria-label="anchor" href="#arg-same-type-form"></a></dt>
+<dd><p>(<code>logical(1)</code>)<br>
+Whether the op's MLIR assembly has the short
+<code>%0 = stablehlo.&lt;op&gt; %a : &lt;type&gt;</code> form, which names one type for the
+operands and the result alike. In the ODS an op gets that form from the
+elementwise base classes' <code>custom&lt;SameOperandsAndResultType&gt;</code> assembly,
+and loses it by overriding <code>assemblyFormat</code> with
+<code>functional-type(operands, results)</code> – <code>is_finite</code> and
+<code>dynamic_update_slice</code> are the two such ops here whose operand and result
+types can still coincide, so the short form would be emitted for them and
+would not parse. Default <code>TRUE</code>; set it <code>FALSE</code> for an op whose ODS
+overrides the assembly.</p></dd>
 
 </dl></div>
     <div class="section level2">

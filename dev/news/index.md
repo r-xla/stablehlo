@@ -9,6 +9,8 @@
 
 ### Bug fixes
 
+- The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted
+  only for ops that actually allow it.
 - [`hlo_triangular_solve()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_triangular_solve.md)
   now rejects operands that are not of floating-point type, as required
   by the StableHLO spec.
