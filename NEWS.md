@@ -17,6 +17,11 @@
 
 ## Bug fixes
 
+* `hlo_pad()` refused negative edge padding whose magnitude exceeded
+  `rank(operand)` rather than the size of the dimension it applied to, so
+  `pad(tensor<10xf32>, low = -5)` was rejected although its result is a
+  `tensor<5xf32>`. Padding that genuinely empties a dimension is still
+  refused, now naming the arguments involved.
 * `infer_types_if()` rejects a branch that declares inputs.
 * `infer_types_while()` checks its `body`'s inputs and not only its outputs.
 * The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted only

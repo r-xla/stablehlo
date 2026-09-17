@@ -45,3 +45,25 @@
       ! `padding_value` must be a 0-dimensional tensor.
       x Got shape (2).
 
+---
+
+    Code
+      infer_types_pad(operand, padding_value, edge_padding_low = cnst(low, "i64",
+        length(low)), edge_padding_high = cnst(high, "i64", length(high)),
+      interior_padding = cnst(interior, "i64", length(interior)))
+    Condition
+      Error in `infer_types_pad()`:
+      ! `edge_padding_low` and `edge_padding_high` must not remove more elements than a dimension holds.
+      x Padding `operand` of shape (3) by -3 and -3 would give -3.
+
+---
+
+    Code
+      infer_types_pad(operand, padding_value, edge_padding_low = cnst(low, "i64",
+        length(low)), edge_padding_high = cnst(high, "i64", length(high)),
+      interior_padding = cnst(interior, "i64", length(interior)))
+    Condition
+      Error in `infer_types_pad()`:
+      ! `edge_padding_low` and `edge_padding_high` must not remove more elements than a dimension holds.
+      x Padding `operand` of shape (1x5x5) by c(-2, 0, 0) and c(0, 0, 0) would give c(-1, 5, 5).
+
