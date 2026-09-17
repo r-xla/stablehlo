@@ -74,3 +74,31 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+test_that("the body's inputs are checked, not only its outputs", {
+  # (C2) `body` has type `(T0, ..., TN-1) -> (T0, ..., TN-1)`, so the inputs
+  # carry the same equality as the outputs -- only the outputs were checked,
+  # so a body whose block arguments contradicted the op's operands passed.
+  cond_ok <- local_func("cond_ok")
+  x <- hlo_input("x", "i32", 2L)
+  cond_ok <- hlo_return(hlo_scalar(TRUE))
+
+  body_wrong_in_type <- local_func("body_wrong_in_type")
+  y <- hlo_input("y", "f32", 2L)
+  body_wrong_in_type <- hlo_return(hlo_convert(y, "i32"))
+
+  body_wrong_in_count <- local_func("body_wrong_in_count")
+  a <- hlo_input("a", "i32", 2L)
+  b <- hlo_input("b", "i32", 2L)
+  body_wrong_in_count <- hlo_return(a)
+
+  operand <- vt("i32", 2L)
+  expect_snapshot(
+    infer_types_while(operand, cond = cond_ok, body = body_wrong_in_type),
+    error = TRUE
+  )
+  expect_snapshot(
+    infer_types_while(operand, cond = cond_ok, body = body_wrong_in_count),
+    error = TRUE
+  )
+})

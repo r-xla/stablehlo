@@ -30,3 +30,21 @@
       ! `output_types(true_branch)[0]` and `output_types(false_branch)[0]` must have the same type.
       x Got tensor<2xi32> and tensor<2xf32>.
 
+# a branch that declares inputs is rejected
+
+    Code
+      infer_types_if(pred, with_input, ok)
+    Condition
+      Error in `infer_types_if()`:
+      ! `true_branch` must not have inputs.
+      x Got 1 input.
+
+---
+
+    Code
+      infer_types_if(pred, ok, with_input)
+    Condition
+      Error in `infer_types_if()`:
+      ! `false_branch` must not have inputs.
+      x Got 1 input.
+

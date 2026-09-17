@@ -31,3 +31,21 @@
       ! `body output[0]` and `input[0]` must have the same type.
       x Got tensor<2xf32> and tensor<2xi32>.
 
+# the body's inputs are checked, not only its outputs
+
+    Code
+      infer_types_while(operand, cond = cond_ok, body = body_wrong_in_type)
+    Condition
+      Error in `infer_types_while()`:
+      ! `body input[0]` and `input[0]` must have the same type.
+      x Got tensor<2xf32> and tensor<2xi32>.
+
+---
+
+    Code
+      infer_types_while(operand, cond = cond_ok, body = body_wrong_in_count)
+    Condition
+      Error in `infer_types_while()`:
+      ! `body` must have the same number of inputs as `...`
+      x Got 2 and 1.
+

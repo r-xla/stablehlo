@@ -67,3 +67,18 @@ test_that("errors", {
     error = TRUE
   )
 })
+
+test_that("a branch that declares inputs is rejected", {
+  # (C1) `input_types(true_branch) = input_types(false_branch) = []`. The op
+  # passes its branches nothing, so a branch with an input rendered
+  # `^bb0(%x: ...)` and MLIR refused the region: "branch 0 must have 0
+  # arguments, but found 1".
+  pred <- vt("pred", integer())
+  ok <- Func(outputs = FuncOutputs(list(FuncOutput(vt("i32", 2L)))))
+  with_input <- Func(
+    inputs = FuncInputs(list(FuncInput(ValueId("x"), vt("i32", 2L)))),
+    outputs = FuncOutputs(list(FuncOutput(vt("i32", 2L))))
+  )
+  expect_snapshot(infer_types_if(pred, with_input, ok), error = TRUE)
+  expect_snapshot(infer_types_if(pred, ok, with_input), error = TRUE)
+})

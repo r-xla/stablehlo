@@ -6,6 +6,14 @@
 * `shape.Shape` was removed.
 
 ## Bug fixes
+* `infer_types_if()` rejects a branch that declares inputs, as `case` (C2)
+  already did for its own branches. `if` (C1) is
+  `input_types(true_branch) = input_types(false_branch) = []`, and a branch
+  with an input rendered `^bb0(%x: ...)` into the region, which MLIR refused
+  with "branch 0 must have 0 arguments, but found 1".
+* `infer_types_while()` checks its `body`'s inputs and not only its outputs.
+  (C2) makes `body` have type `(T0, ..., TN-1) -> (T0, ..., TN-1)`, so the
+  same equality binds both ends; `cond` (C1) was already checked this way.
 
 * `hlo_triangular_solve()` now rejects operands that are not of floating-point
   type, as required by the StableHLO spec.
