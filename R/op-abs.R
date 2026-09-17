@@ -11,7 +11,7 @@ infer_types_abs <- function(operand) {
   ValueTypes(list(operand))
 }
 
-hlo_abs_impl <- hlo_fn(OpAbs, infer_types_numeric_uni)
+hlo_abs_impl <- hlo_fn(OpAbs, infer_types_abs)
 
 #' @templateVar mnemonic abs
 #' @template op

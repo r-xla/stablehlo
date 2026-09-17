@@ -199,10 +199,25 @@ constant_attr <- function(
 #'   fields `mnemonic`, `dialect`, `outputs_str`, `values_str`,
 #'   `in_type_strs`, `out_type_strs`, `sig_str`, `attrs`, `attrs_str`,
 #'   `funcs_str` and `custom_attrs`.
+#' @param same_type_form (`logical(1)`)\cr
+#'   Whether the op's MLIR assembly has the short
+#'   `%0 = stablehlo.<op> %a : <type>` form, which names one type for the
+#'   operands and the result alike.
 #' @return A descriptor `list` for use with `hlo_fn()`.
 #' @keywords internal
-new_Op <- function(classname, mnemonic, dialect = "stablehlo", render = NULL) {
-  list(mnemonic = mnemonic, dialect = dialect, render = render)
+new_Op <- function(
+  classname,
+  mnemonic,
+  dialect = "stablehlo",
+  render = NULL,
+  same_type_form = TRUE
+) {
+  list(
+    mnemonic = mnemonic,
+    dialect = dialect,
+    render = render,
+    same_type_form = same_type_form
+  )
 }
 
 # Renders the ` {\n<attr>,\n<attr>\n}` block of an op line ("" if no attrs).
@@ -249,6 +264,7 @@ render_funcs <- function(funcs) {
 render_op_default <- function(ctx) {
   if (
     ctx$dialect == "stablehlo" &&
+      isTRUE(ctx$same_type_form) &&
       length(ctx$in_type_strs) > 0L &&
       nchar(ctx$funcs_str) == 0L &&
       nchar(ctx$attrs_str) == 0L &&

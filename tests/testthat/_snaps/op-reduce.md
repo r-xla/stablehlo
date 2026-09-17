@@ -73,3 +73,48 @@
       ! `dimensions` must contain unique dimension indices
       x Got c(0, 0)
 
+# the reducer accumulates into a promoted element type
+
+    Code
+      red("i32", "i8")
+    Condition
+      Error in `infer_types_reduce()`:
+      ! `body` must reduce into a type its input promotes to.
+      x Input 0 has type i32, which does not promote to i8.
+
+---
+
+    Code
+      red("i32", "f32")
+    Condition
+      Error in `infer_types_reduce()`:
+      ! `body` must reduce into a type its input promotes to.
+      x Input 0 has type i32, which does not promote to f32.
+
+# the reducer's arguments are 2 * N scalars of the accumulator
+
+    Code
+      red(add_body("f32", nargs = 3L))
+    Condition
+      Error in `infer_types_reduce()`:
+      ! `body` must take two arguments per input.
+      x Expected 2 arguments, got 3.
+
+---
+
+    Code
+      red(add_body("f32", shape = 4L))
+    Condition
+      Error in `infer_types_reduce()`:
+      ! `body` arguments must be 0-dimensional tensors.
+      x Argument 0 has type tensor<4xf32>.
+
+---
+
+    Code
+      red(add_body("i32"))
+    Condition
+      Error in `infer_types_reduce()`:
+      ! `body` must reduce into a type its input promotes to.
+      x Input 0 has type f32, which does not promote to i32.
+

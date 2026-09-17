@@ -141,6 +141,8 @@ infer_types_scatter <- function(
 
   lapply(inputs, assert_vt_is_tensor)
   assert_vt_is_tensor(scatter_indices)
+  # (I2) `scatter_indices` is a tensor of integer type.
+  assert_vt_has_ttype(scatter_indices, "int", "uint")
   lapply(updates, assert_vt_is_tensor)
 
   num_inputs <- length(inputs)
@@ -446,6 +448,19 @@ infer_types_scatter <- function(
       x = "Got {length(body_out_types)} outputs."
     ))
   }
+  # (C23) As reduce's (C6): the accumulator is a widening of the input's
+  # element type, and the computation's arguments are `2 * N` scalars of it.
+  accumulator_dtypes <- lapply(body_out_types, function(x) x$type$dtype)
+  assert_accumulator_dtypes(
+    lapply(inputs, function(x) x$type$dtype),
+    accumulator_dtypes,
+    arg = "update_computation"
+  )
+  assert_region_inputs(
+    update_computation,
+    accumulator_dtypes,
+    arg = "update_computation"
+  )
 
   for (i in seq_len(num_inputs)) {
     out_type <- body_out_types[[i]]
@@ -511,6 +526,6 @@ hlo_scatter <- function(
         value = as.logical(indices_are_sorted)
       ),
       BoolAttr(name = "unique_indices", value = as.logical(unique_indices))
-    ),
+    )
   )
 }

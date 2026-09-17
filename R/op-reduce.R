@@ -31,7 +31,7 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   init_value_types <- init_values
 
   lapply(init_value_types, function(vt) {
-    if (length(vt$type$shape$dims) != 0L) {
+    if (length(vt$type$shape) != 0L) {
       cli_abort("{.arg init_values} must be 0-D tensors")
     }
   })
@@ -81,13 +81,19 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
       x = "Body returns {length(body_out_types)} tensors, but {num_inputs} are required."
     ))
   }
-  for (i in seq_len(num_inputs)) {
-    if (body_out_types[[i]]$type$dtype != input_value_types[[i]]$type$dtype) {
-      cli_abort(c(
-        "{.arg body} must return tensors with the same data type as the inputs"
-      ))
-    }
-  }
+  # (C6) `is_promotable(element_type(inputs[i]), Ei)`, where `Ei` is the
+  # accumulator the body reduces into -- a widening, not an equality, so an
+  # `i8` input may be summed into an `i32`.
+  accumulator_dtypes <- lapply(body_out_types, function(x) x$type$dtype)
+  assert_accumulator_dtypes(
+    lapply(input_value_types, function(x) x$type$dtype),
+    accumulator_dtypes,
+    arg = "body"
+  )
+  # (C6) The other half of the body's type: its arguments, which nothing else
+  # here looks at. A body declaring a differently-typed or non-scalar argument
+  # rendered that straight into the region's block arguments.
+  assert_region_inputs(body, accumulator_dtypes, arg = "body")
 
   # (C7)
   result_dims <- if (length(dims0) == 0L) {
@@ -100,7 +106,7 @@ infer_types_reduce <- function(inputs, init_values, body, dimensions) {
   out_vts <- lapply(seq_len(num_inputs), function(i) {
     out_elem_vt <- body_out_types[[i]]
     # Expect 0-D tensor data type; take dtype from it
-    if (length(out_elem_vt$type$shape$dims) != 0L) {
+    if (length(out_elem_vt$type$shape) != 0L) {
       cli_abort("{.arg body} outputs must be 0-D tensors")
     }
     ValueType(

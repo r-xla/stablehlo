@@ -62,12 +62,12 @@ infer_types_compare <- function(
         "{.arg compare_type} must be UNSIGNED for unsigned integer or boolean data types."
       )
     }
-  } else if (is_dtype_float(dtype)) {
-    if (!(compare_type %in% c("FLOAT", "TOTALORDER"))) {
-      cli_abort(
-        "{.arg compare_type} must be FLOAT or TOTALORDER for floating-point data types."
-      )
-    }
+  } else if (
+    is_dtype_float(dtype) && !(compare_type %in% c("FLOAT", "TOTALORDER"))
+  ) {
+    cli_abort(
+      "{.arg compare_type} must be FLOAT or TOTALORDER for floating-point data types."
+    )
   }
 
   ValueTypes(list(

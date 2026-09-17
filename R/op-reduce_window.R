@@ -48,12 +48,12 @@ infer_types_reduce_window <- function(
 
   lapply(seq_along(init_value_types), function(i) {
     vt <- init_value_types[[i]]
-    if (length(vt$type$shape$dims) != 0L) {
+    if (length(vt$type$shape) != 0L) {
       error_unexpected_list_type(
         arg = "init_values",
         index = i - 1L, # 0-based
         expected = "must be 0-D tensors",
-        actual = paste("shape", shapevec_repr(vt$type$shape$dims))
+        actual = paste("shape", shapevec_repr(unclass(vt$type$shape)))
       )
     }
   })
@@ -159,8 +159,10 @@ infer_types_reduce_window <- function(
       x = "Got {shapevec_repr(base_dil)}"
     ))
   }
-  # (C11)
-  if (any(window_dil < 0)) {
+  # (C11) `0 < window_dilations`, so a zero is refused as well as a negative:
+  # it would otherwise flow into `dilated_window` below and collapse every
+  # window to width 1.
+  if (any(window_dil <= 0)) {
     cli_abort(c(
       "{.arg window_dilations} must be positive.",
       x = "Got {shapevec_repr(window_dil)}"
@@ -184,15 +186,24 @@ infer_types_reduce_window <- function(
       x = "Expected {num_inputs} output{?s}, got {length(body_out_types)}."
     ))
   }
+  # (C13) As reduce's (C6): the accumulator is a widening of the input's
+  # element type, and the body's arguments are `2 * N` scalars of it.
+  accumulator_dtypes <- lapply(body_out_types, function(x) x$type$dtype)
+  assert_accumulator_dtypes(
+    lapply(input_value_types, function(x) x$type$dtype),
+    accumulator_dtypes,
+    arg = "body"
+  )
+  assert_region_inputs(body, accumulator_dtypes, arg = "body")
 
   out_vts <- lapply(seq_len(num_inputs), function(i) {
     out_elem_vt <- body_out_types[[i]]
-    if (length(out_elem_vt$type$shape$dims) != 0L) {
+    if (length(out_elem_vt$type$shape) != 0L) {
       error_unexpected_list_type(
         arg = "body output",
         index = i - 1L, # 0-based
         expected = "must be 0-D tensors",
-        actual = paste("shape", shapevec_repr(out_elem_vt$type$shape$dims))
+        actual = paste("shape", shapevec_repr(unclass(out_elem_vt$type$shape)))
       )
     }
     ValueType(

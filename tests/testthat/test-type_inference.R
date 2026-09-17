@@ -42,6 +42,25 @@ test_that("infer_types_integerish_biv errors", {
   check(vt("i32", c(2L, 3L)), vt("i32", c(3L, 4L)))
 })
 
+test_that("infer_types_integer_biv errors", {
+  check <- function(lhs, rhs) {
+    expect_snapshot(infer_types_integer_biv(lhs, rhs), error = TRUE)
+  }
+  # floats are not integers
+  check(vt("f32", c(2L, 3L)), vt("f32", c(2L, 3L)))
+  # booleans are not integers either -- this is what separates it from
+  # `infer_types_integerish_biv()`
+  check(vt("i1", c(2L, 3L)), vt("i1", c(2L, 3L)))
+  check(vt("i32", c(2L, 3L)), vt("i1", c(2L, 3L)))
+  # lhs and rhs have different types
+  check(vt("i32", c(2L, 3L)), vt("i32", c(3L, 4L)))
+})
+
+test_that("infer_types_integer_biv accepts signed and unsigned integers", {
+  expect_no_error(infer_types_integer_biv(vt("i32", 2L), vt("i32", 2L)))
+  expect_no_error(infer_types_integer_biv(vt("ui8", 2L), vt("ui8", 2L)))
+})
+
 test_that("infer_types_generic_uni errors", {
   check <- function(operand) {
     expect_snapshot(infer_types_generic_uni(operand), error = TRUE)

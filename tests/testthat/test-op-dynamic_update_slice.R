@@ -81,4 +81,37 @@ test_that("errors", {
     ),
     error = TRUE
   )
+  # (I3) start_indices are of integer type
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(2L, 3L)),
+      vt("f32", integer()),
+      vt("i32", integer())
+    ),
+    error = TRUE
+  )
+})
+
+test_that("start_indices must all have the same type", {
+  # (C5) `same(type(start_indices...))`, which no per-operand check sees.
+  # `dynamic_slice` checks the identical constraint for its own indices.
+  expect_snapshot(
+    infer_types_dynamic_update_slice(
+      vt("f32", c(4L, 5L)),
+      vt("f32", c(2L, 3L)),
+      vt("i32", integer()),
+      vt("i64", integer())
+    ),
+    error = TRUE
+  )
+})
+
+test_that("a rank-0 update renders in the generic form", {
+  local_func()
+  a <- hlo_input("a", "f32", shape = integer())
+  b <- hlo_input("b", "f32", shape = integer())
+  src <- repr(hlo_return(hlo_dynamic_update_slice(a, b)))
+  expect_match(src, '"stablehlo.dynamic_update_slice"', fixed = TRUE)
+  expect_no_match(src, "= stablehlo.dynamic_update_slice ", fixed = TRUE)
 })

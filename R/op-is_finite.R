@@ -1,7 +1,7 @@
 #' @include op.R hlo.R type_inference.R
 NULL
 
-OpIsFinite <- new_Op("IsFinite", "is_finite")
+OpIsFinite <- new_Op("IsFinite", "is_finite", same_type_form = FALSE)
 
 #' @rdname hlo_is_finite
 #' @export

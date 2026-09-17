@@ -4,7 +4,13 @@
 \alias{new_Op}
 \title{Define a new Op}
 \usage{
-new_Op(classname, mnemonic, dialect = "stablehlo", render = NULL)
+new_Op(
+  classname,
+  mnemonic,
+  dialect = "stablehlo",
+  render = NULL,
+  same_type_form = TRUE
+)
 }
 \arguments{
 \item{classname}{Name of the op (kept for readability at the call sites).}
@@ -19,6 +25,11 @@ default assembly/generic format. The \code{ctx} argument is a list with
 fields \code{mnemonic}, \code{dialect}, \code{outputs_str}, \code{values_str},
 \code{in_type_strs}, \code{out_type_strs}, \code{sig_str}, \code{attrs}, \code{attrs_str},
 \code{funcs_str} and \code{custom_attrs}.}
+
+\item{same_type_form}{(\code{logical(1)})\cr
+Whether the op's MLIR assembly has the short
+\verb{\%0 = stablehlo.<op> \%a : <type>} form, which names one type for the
+operands and the result alike.}
 }
 \value{
 A descriptor \code{list} for use with \code{hlo_fn()}.

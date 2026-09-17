@@ -1,7 +1,11 @@
 #' @include op.R hlo.R
 NULL
 
-OpDynamicUpdateSlice <- new_Op("OpDynamicUpdateSlice", "dynamic_update_slice")
+OpDynamicUpdateSlice <- new_Op(
+  "OpDynamicUpdateSlice",
+  "dynamic_update_slice",
+  same_type_form = FALSE
+)
 
 # fmt: skip
 #' @rdname hlo_dynamic_update_slice
@@ -24,6 +28,22 @@ infer_types_dynamic_update_slice <- function( # nolint
         expected = "must be 0-dimensional tensors",
         actual = paste("shape", shapevec_repr(shape(vt)))
       )
+    }
+    # (I3) `start_indices` are 0-dimensional tensors of integer type.
+    assert_vt_has_ttype(vt, "int", "uint", arg = sprintf("start_indices[[%d]]", i))
+  }
+
+  # (C5) `same(type(start_indices...))`, which no per-operand check sees.
+  # `dynamic_slice` checks the identical constraint for its own indices.
+  if (length(start_indices) > 0L) {
+    start_types <- lapply(start_indices, function(x) x$type)
+    if (length(unique(start_types)) != 1L) {
+      # fmt: skip
+      type_strs <- vapply(start_types, repr, character(1)) # nolint
+      cli_abort(c(
+        "All {.arg start_indices} must have the same type.",
+        x = "Got types: {paste0(type_strs, collapse = ', ')}."
+      ))
     }
   }
 

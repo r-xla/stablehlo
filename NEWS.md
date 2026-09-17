@@ -1,5 +1,10 @@
 # stablehlo (development version)
 
+## Breaking changes
+
+* A `Shape` is now represented as an integer.
+* `shape.Shape` was removed.
+
 ## Features
 
 * `CustomOpBackendConfig()` now accepts `ConstantAttr` items, so a custom
@@ -9,6 +14,32 @@
   with the new `OutputOperandAlias()`. XLA then hands the handler the same
   buffer for the aliased operand and result, which is what lets an in-place
   kernel avoid a copy.
+
+## Bug fixes
+
+* `infer_types_if()` rejects a branch that declares inputs.
+* `infer_types_while()` checks its `body`'s inputs and not only its outputs.
+* The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted only
+  for ops that actually allow it.
+* `hlo_triangular_solve()` now rejects operands that are not of floating-point
+  type, as required by the StableHLO spec.
+* `infer_types_slice()` rejects a stride of `0`. The spec's (C4) is
+  `0 < strides`, but the check read `0 <= strides`.
+* `infer_types_dynamic_slice()`, `infer_types_dynamic_update_slice()` and
+  `infer_types_gather()` reject `start_indices` that are not of integer type,
+  as the spec requires. A float one used to reach MLIR and come back as a raw
+  parse error.
+* Corrected some checks in the inference functions.
+* Added some missing checks in the inference functions.
+* `infer_types_reduce()`, `infer_types_reduce_window()`,
+  `infer_types_scatter()` and `infer_types_sort()` check their region's
+  arguments. Only the region's outputs were read, so a body with the wrong
+  arity, a non-scalar argument, or the wrong element type passed inference --
+  a one-argument `sort` comparator returning an `f32` was accepted and
+  rendered.
+* `infer_types_reduce()` accepts a body that accumulates into a wider element
+  type. (C6) is `is_promotable(element_type(inputs[i]), Ei)`, not an equality,
+  so summing an `i8` into an `i32` is legal; it used to be refused.
 
 # stablehlo 0.4.0
 

@@ -9,7 +9,7 @@ OpShiftRightLogical <- new_Op(
 #' @rdname hlo_shift_right_logical
 #' @export
 # fmt: skip
-infer_types_shift_right_logical <- infer_types_integerish_biv # nolint
+infer_types_shift_right_logical <- infer_types_integer_biv # nolint
 
 hlo_shift_right_logical_impl <- hlo_fn(
   OpShiftRightLogical,

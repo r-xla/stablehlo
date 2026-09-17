@@ -61,3 +61,24 @@
       ! `padding` must have shape [rank, 2].
       x Expected shape (2x2), got (1x2).
 
+# the reducer accumulates into a promoted element type
+
+    Code
+      rw("f64", "f32")
+    Condition
+      Error in `infer_types_reduce_window()`:
+      ! `body` must reduce into a type its input promotes to.
+      x Input 0 has type f64, which does not promote to f32.
+
+# a zero window dilation is rejected
+
+    Code
+      infer_types_reduce_window(vt("f32", c(4L, 4L)), vt("f32", integer()), body = body,
+      window_dimensions = cnst(c(2L, 2L), "i64", 2L), window_strides = cnst(c(1L, 1L),
+      "i64", 2L), base_dilations = cnst(c(1L, 1L), "i64", 2L), window_dilations = cnst(
+        c(0L, 1L), "i64", 2L), padding = cnst(c(0L, 0L, 0L, 0L), "i64", c(2L, 2L)))
+    Condition
+      Error in `infer_types_reduce_window()`:
+      ! `window_dilations` must be positive.
+      x Got (0x1)
+

@@ -13,5 +13,9 @@ Shape(dims = integer())
 \code{Shape}
 }
 \description{
-Represents the shape of a tensor.
+Represents the shape of a tensor: the size of each axis, \code{NA} where a size
+is only known at run time.
+
+A \code{Shape} \emph{is} its integer vector, with a class attached, so \code{length()} is
+the rank and \code{[} selects axes without unwrapping anything first.
 }

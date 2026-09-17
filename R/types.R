@@ -37,7 +37,7 @@ repr.DataType <- function(x, ...) {
 #' @return `TensorType`
 #' @export
 TensorType <- function(dtype, shape) {
-  dims <- shape$dims
+  dims <- unclass(shape)
   if (anyNA(dims)) {
     dims[is.na(dims)] <- "?"
   }
@@ -85,7 +85,7 @@ cli_format.TensorType <- function(x, style = NULL, ...) {
 #' @export
 #' @method shape TensorType
 shape.TensorType <- function(x, ...) {
-  x$shape$dims
+  unclass(x$shape)
 }
 
 #' @export
@@ -154,7 +154,7 @@ dtype.ValueType <- function(x, ...) {
 #' @export
 #' @method shape ValueType
 shape.ValueType <- function(x, ...) {
-  x$type$shape$dims
+  unclass(x$type$shape)
 }
 
 #' @export

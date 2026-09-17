@@ -23,12 +23,9 @@ infer_types_reverse <- function(
     )
   }
 
-  # (C3) 0 <= dimensions < rank(result)
-  if (length(revdims) == 0L) {
-    cli_abort(
-      "at least one dimension needs to be provided"
-    )
-  }
+  # (C3) 0 <= dimensions < rank(result). An empty `dimensions` satisfies (C2)
+  # and (C3) vacuously and StableHLO accepts the program, so it is not refused
+  # here -- a lowering that computes the set may legitimately end up with none.
   if (any(revdims < 0L | revdims >= length(operand_dims))) {
     error_index_out_of_bounds(
       arg = "dimensions",

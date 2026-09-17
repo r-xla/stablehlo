@@ -77,9 +77,14 @@ infer_types_slice <- function(
     )
   }
 
-  # (C4)
-  if (any(stride_vals < 0)) {
-    cli_abort("{.arg strides} must be non-negative")
+  # (C4) `0 < strides` -- a stride of 0 is not a degenerate slice, it makes
+  # the result shape infinite, and MLIR rejects it much later with a raw
+  # message plus an R coercion warning from `ceiling(x / 0)`.
+  if (any(stride_vals < 1)) {
+    cli_abort(c(
+      "{.arg strides} must be positive.",
+      x = "Got {.val {stride_vals}}."
+    ))
   }
 
   # (C5)

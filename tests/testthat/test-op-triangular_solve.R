@@ -62,6 +62,10 @@ test_that("errors", {
       error = TRUE
     )
   }
+  # (I1) integer a
+  check(vt("i32", c(3L, 3L)), vt("i32", c(3L, 2L)))
+  # (I2) boolean b
+  check(vt("f32", c(3L, 3L)), vt("pred", c(3L, 2L)))
   # (C2) rank < 2
   check(vt("f32", 3L), vt("f32", 3L))
   # (C2) different rank

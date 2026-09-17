@@ -495,3 +495,61 @@ test_that("errors", {
     )
   )
 })
+
+test_that("the update computation's type is checked against (C23)", {
+  scat <- function(region) {
+    infer_types_scatter(
+      inputs = list(vt("f32", c(4L, 3L))),
+      scatter_indices = vt("i32", c(2L, 1L)),
+      updates = list(vt("f32", c(2L, 3L))),
+      update_computation = region,
+      scatter_dimension_numbers = ScatterDimensionNumbers(
+        update_window_dims = 1L,
+        inserted_window_dims = 0L,
+        scatter_dims_to_operand_dims = 0L,
+        index_vector_dim = 1L
+      ),
+      indices_are_sorted = scnst(FALSE, "i1"),
+      unique_indices = scnst(FALSE, "i1")
+    )
+  }
+  reg <- function(dtype, nargs = 2L, shape = integer()) {
+    f <- local_func(id = "")
+    args <- lapply(
+      seq_len(nargs),
+      function(i) hlo_input(paste0("a", i), dtype, shape = shape)
+    )
+    hlo_return(hlo_add(args[[1L]], args[[2L]]))
+    f
+  }
+  # (C23) states the computation as a function type; only its outputs were
+  # read, so a wrong arity or a non-scalar argument was rendered as-is.
+  expect_snapshot(scat(reg("f32", nargs = 4L)), error = TRUE)
+  expect_snapshot(scat(reg("f32", shape = 2L)), error = TRUE)
+})
+
+test_that("scatter_indices must be an integer tensor", {
+  # (I2) types `scatter_indices` a "tensor of integer type"; a float index
+  # tensor passed inference and only MLIR refused it.
+  update_func <- local_func("update")
+  a <- hlo_input("a", "f32", integer())
+  b <- hlo_input("b", "f32", integer())
+  update_func <- hlo_return(hlo_add(a, b))
+  expect_snapshot(
+    infer_types_scatter(
+      inputs = list(vt("f32", c(4L, 3L))),
+      scatter_indices = vt("f32", c(2L, 1L)),
+      updates = list(vt("f32", c(2L, 3L))),
+      update_computation = update_func,
+      scatter_dimension_numbers = ScatterDimensionNumbers(
+        update_window_dims = 1L,
+        inserted_window_dims = 0L,
+        scatter_dims_to_operand_dims = 0L,
+        index_vector_dim = 1L
+      ),
+      indices_are_sorted = scnst(FALSE, "i1"),
+      unique_indices = scnst(FALSE, "i1")
+    ),
+    error = TRUE
+  )
+})

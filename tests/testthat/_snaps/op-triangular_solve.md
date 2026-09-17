@@ -12,6 +12,26 @@
         TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
     Condition
       Error in `infer_types_triangular_solve()`:
+      ! `a` must have dtype float.
+      x Got i32.
+
+---
+
+    Code
+      infer_types_triangular_solve(a, b, left_side = scnst(left_side, "pred"), lower = scnst(
+        TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
+    Condition
+      Error in `infer_types_triangular_solve()`:
+      ! `b` must have dtype float.
+      x Got bool.
+
+---
+
+    Code
+      infer_types_triangular_solve(a, b, left_side = scnst(left_side, "pred"), lower = scnst(
+        TRUE, "pred"), unit_diagonal = scnst(FALSE, "pred"), transpose_a = transpose_a)
+    Condition
+      Error in `infer_types_triangular_solve()`:
       ! `a` must have rank >= 2
       x Got rank 1.
 

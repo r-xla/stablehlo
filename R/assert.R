@@ -359,3 +359,86 @@ assert_dtype_one_of <- function(
     call = call
   )
 }
+
+is_promotable_dtype <- function(x, y) {
+  same_class <- (is_dtype_bool(x) && is_dtype_bool(y)) ||
+    ((is_dtype_int(x) || is_dtype_uint(x)) &&
+      (is_dtype_int(y) || is_dtype_uint(y))) ||
+    (is_dtype_float(x) && is_dtype_float(y))
+  if (!same_class) {
+    return(FALSE)
+  }
+  if (is_dtype_bool(x)) {
+    return(TRUE)
+  }
+  dtype_width(x) <= dtype_width(y)
+}
+
+assert_region_inputs <- function(
+  region,
+  dtypes,
+  arg = "body",
+  interleaved = FALSE,
+  dtype_label = "the accumulator's element types",
+  call = rlang::caller_env()
+) {
+  n <- length(dtypes)
+  in_types <- lapply(region$inputs, function(x) x$type)
+  if (length(in_types) != 2L * n) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must take two arguments per input.",
+        x = "Expected {2L * n} argument{?s}, got {length(in_types)}."
+      ),
+      call = call
+    )
+  }
+  expected <- if (interleaved) rep(dtypes, each = 2L) else rep(dtypes, 2L)
+  for (i in seq_along(expected)) {
+    vt <- in_types[[i]]
+    if (!inherits(vt$type, "TensorType") || length(shape(vt)) != 0L) {
+      cli_abort(
+        c(
+          "{.arg {arg}} arguments must be 0-dimensional tensors.",
+          x = "Argument {i - 1L} has type {.val {vt$type}}."
+        ),
+        call = call
+      )
+    }
+    if (vt$type$dtype != expected[[i]]) {
+      cli_abort(
+        c(
+          "{.arg {arg}} arguments must have {dtype_label}.",
+          x = "Argument {i - 1L} has type {.val {vt$type$dtype}}, expected
+               {.val {expected[[i]]}}."
+        ),
+        call = call
+      )
+    }
+  }
+  invisible(NULL)
+}
+
+# reduce (C6) / reduce_window (C13) / scatter (C23): the accumulator element
+# type `Ei` the body reduces into must be a widening of the input's, not
+# necessarily equal to it.
+assert_accumulator_dtypes <- function(
+  input_dtypes,
+  accumulator_dtypes,
+  arg = "body",
+  call = rlang::caller_env()
+) {
+  for (i in seq_along(input_dtypes)) {
+    if (!is_promotable_dtype(input_dtypes[[i]], accumulator_dtypes[[i]])) {
+      cli_abort(
+        c(
+          "{.arg {arg}} must reduce into a type its input promotes to.",
+          x = "Input {i - 1L} has type {.val {input_dtypes[[i]]}}, which does
+               not promote to {.val {accumulator_dtypes[[i]]}}."
+        ),
+        call = call
+      )
+    }
+  }
+  invisible(NULL)
+}

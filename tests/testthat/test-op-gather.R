@@ -432,4 +432,18 @@ test_that("errors", {
     ),
     c(1L, 4L, 1L)
   )
+  # (I2) start_indices is a tensor of integer type. A float one used to pass
+  # here and reach MLIR as a raw `op operand #1 must be ranked tensor of
+  # 2/4/8/16/32/64-bit integer values` dump.
+  check(
+    vt("f32", c(3L, 4L, 2L)),
+    vt("f32", c(2L, 2L)),
+    GatherDimensionNumbers(
+      offset_dims = 2L,
+      collapsed_slice_dims = c(0L, 1L),
+      start_index_map = c(0L, 1L),
+      index_vector_dim = 1L
+    ),
+    c(1L, 1L, 2L)
+  )
 })
