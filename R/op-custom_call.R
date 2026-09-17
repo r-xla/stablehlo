@@ -147,7 +147,10 @@ repr.CustomOpBackendConfig <- function(
 #'   Optional backend configuration as a named list.
 #' @param output_types (`list` of [`ValueType`] | `NULL`)\cr
 #'   The output types of the custom call. Default is NULL (no outputs).
-#' @param operand_layouts,result_layouts Layouts (not used for type inference).
+#' @param operand_layouts,result_layouts Layouts, checked but not used for
+#'   type inference.
+#' @param output_operand_aliases Aliases (not used for type inference; named
+#'   only so that `hlo_fn()` does not pass it through `...` as an operand).
 #' @return (`ValueTypes`)\cr
 #'   The output types (empty for side-effect only calls).
 #' @export
