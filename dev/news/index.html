@@ -55,7 +55,11 @@
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
-<ul><li>The short assembly form (<code>%0 = stablehlo.&lt;op&gt; %a : &lt;type&gt;</code>) is emitted only for ops that actually allow it.</li>
+<ul><li>
+<code><a href="../reference/hlo_if.html">infer_types_if()</a></code> rejects a branch that declares inputs.</li>
+<li>
+<code><a href="../reference/hlo_while.html">infer_types_while()</a></code> checks its <code>body</code>’s inputs and not only its outputs.</li>
+<li>The short assembly form (<code>%0 = stablehlo.&lt;op&gt; %a : &lt;type&gt;</code>) is emitted only for ops that actually allow it.</li>
 <li>
 <code><a href="../reference/hlo_triangular_solve.html">hlo_triangular_solve()</a></code> now rejects operands that are not of floating-point type, as required by the StableHLO spec.</li>
 <li>

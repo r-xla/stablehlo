@@ -9,6 +9,10 @@
 
 ### Bug fixes
 
+- [`infer_types_if()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_if.md)
+  rejects a branch that declares inputs.
+- [`infer_types_while()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_while.md)
+  checks its `body`’s inputs and not only its outputs.
 - The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted
   only for ops that actually allow it.
 - [`hlo_triangular_solve()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_triangular_solve.md)
