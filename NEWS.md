@@ -6,13 +6,9 @@
 * `shape.Shape` was removed.
 
 ## Bug fixes
-* The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted only
-  for ops whose ODS grants it. It was chosen whenever an op's operand and
-  result type strings all matched, which is not the same thing:
-  `dynamic_update_slice` on a rank-0 operand has no index operands and so all
-  its types coincide, but its assembly is `functional-type`, and the short
-  form did not parse. `new_Op()` gained a `same_type_form` flag for this.
 
+* The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted only
+  for ops that actually allow it.
 * `hlo_triangular_solve()` now rejects operands that are not of floating-point
   type, as required by the StableHLO spec.
 * `infer_types_slice()` rejects a stride of `0`. The spec's (C4) is

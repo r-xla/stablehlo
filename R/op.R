@@ -202,14 +202,7 @@ constant_attr <- function(
 #' @param same_type_form (`logical(1)`)\cr
 #'   Whether the op's MLIR assembly has the short
 #'   `%0 = stablehlo.<op> %a : <type>` form, which names one type for the
-#'   operands and the result alike. In the ODS an op gets that form from the
-#'   elementwise base classes' `custom<SameOperandsAndResultType>` assembly,
-#'   and loses it by overriding `assemblyFormat` with
-#'   `functional-type(operands, results)` -- `is_finite` and
-#'   `dynamic_update_slice` are the two such ops here whose operand and result
-#'   types can still coincide, so the short form would be emitted for them and
-#'   would not parse. Default `TRUE`; set it `FALSE` for an op whose ODS
-#'   overrides the assembly.
+#'   operands and the result alike.
 #' @return A descriptor `list` for use with `hlo_fn()`.
 #' @keywords internal
 new_Op <- function(
