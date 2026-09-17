@@ -21,6 +21,12 @@
 
 ### Bug fixes
 
+- [`hlo_pad()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_pad.md)
+  refused negative edge padding whose magnitude exceeded `rank(operand)`
+  rather than the size of the dimension it applied to, so
+  `pad(tensor<10xf32>, low = -5)` was rejected although its result is a
+  `tensor<5xf32>`. Padding that genuinely empties a dimension is still
+  refused, now naming the arguments involved.
 - [`infer_types_if()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_if.md)
   rejects a branch that declares inputs.
 - [`infer_types_while()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_while.md)
