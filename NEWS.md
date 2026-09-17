@@ -7,6 +7,8 @@
 
 ## Bug fixes
 
+* `infer_types_if()` rejects a branch that declares inputs.
+* `infer_types_while()` checks its `body`'s inputs and not only its outputs.
 * The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted only
   for ops that actually allow it.
 * `hlo_triangular_solve()` now rejects operands that are not of floating-point

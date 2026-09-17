@@ -45,6 +45,27 @@ infer_types_while <- function(..., cond, body) {
   )
 
   # (C2)
+  if (length(body$inputs) != length(value_types)) {
+    cli_abort(c(
+      "{.arg body} must have the same number of inputs as {.arg ...}",
+      x = "Got {length(body$inputs)} and {length(value_types)}."
+    ))
+  }
+  body_in_types <- lapply(body$inputs, function(x) x$type)
+  for (i in seq_along(value_types)) {
+    if (body_in_types[[i]] != value_types[[i]]) {
+      error_unequal_types(
+        arg1 = "body input",
+        arg2 = "input",
+        index = i - 1L,
+        expected = "must have the same type",
+        actual1 = body_in_types[[i]],
+        actual2 = value_types[[i]]
+      )
+    }
+  }
+
+  # (C2)
   body_out_types <- func_output_types(body)
   if (length(body_out_types) != length(value_types)) {
     cli_abort(c(
