@@ -27,6 +27,11 @@
   `pad(tensor<10xf32>, low = -5)` was rejected although its result is a
   `tensor<5xf32>`. Padding that genuinely empties a dimension is still
   refused, now naming the arguments involved.
+- [`infer_types_concatenate()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_concatenate.md)
+  rejects inputs of different rank. Its (C2) check compared the shapes
+  without the concatenation dimension, which a shorter shape passed, so
+  `concatenate(tensor<2x3x4>, tensor<2x3>, dimension = 2)` inferred a
+  result with an unknown size along that dimension.
 - [`infer_types_if()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_if.md)
   rejects a branch that declares inputs.
 - [`infer_types_while()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_while.md)

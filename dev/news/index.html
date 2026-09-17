@@ -65,6 +65,8 @@
 <ul><li>
 <code><a href="../reference/hlo_pad.html">hlo_pad()</a></code> refused negative edge padding whose magnitude exceeded <code>rank(operand)</code> rather than the size of the dimension it applied to, so <code>pad(tensor&lt;10xf32&gt;, low = -5)</code> was rejected although its result is a <code>tensor&lt;5xf32&gt;</code>. Padding that genuinely empties a dimension is still refused, now naming the arguments involved.</li>
 <li>
+<code><a href="../reference/hlo_concatenate.html">infer_types_concatenate()</a></code> rejects inputs of different rank. Its (C2) check compared the shapes without the concatenation dimension, which a shorter shape passed, so <code>concatenate(tensor&lt;2x3x4&gt;, tensor&lt;2x3&gt;, dimension = 2)</code> inferred a result with an unknown size along that dimension.</li>
+<li>
 <code><a href="../reference/hlo_if.html">infer_types_if()</a></code> rejects a branch that declares inputs.</li>
 <li>
 <code><a href="../reference/hlo_while.html">infer_types_while()</a></code> checks its <code>body</code>’s inputs and not only its outputs.</li>
