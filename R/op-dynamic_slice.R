@@ -14,6 +14,7 @@ infer_types_dynamic_slice <- function(
 
   start_indices <- list(...)
   operand_rank <- length(shape(operand))
+  assert_const(slice_sizes, dtype = as_dtype("i64"))
   slice_sizes_data <- slice_sizes$data
 
   # (C2)

@@ -7,6 +7,11 @@
 
 ## Features
 
+* Inference functions now refuse a dimension attribute that contains a missing
+  value, instead of letting it surface as R's `missing value where TRUE/FALSE
+  needed`. `GatherDimensionNumbers()` and `ScatterDimensionNumbers()` check
+  their dimension vectors the same way.
+
 * `CustomOpBackendConfig()` now accepts `ConstantAttr` items, so a custom
   call can carry array-valued attributes (what an XLA FFI handler decodes
   as `Span<const T>`) and not just scalars, booleans and strings.

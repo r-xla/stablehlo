@@ -311,8 +311,20 @@ assert_const <- function(
   if (!is.null(naxes) && naxes(x$type) != naxes) {
     cli_abort(
       c(
-        "{.arg {arg}} must have {naxes} axes.",
-        x = "Got {length(shape(x$type))} axes."
+        "{.arg {arg}} must have {naxes} {cli::qty(naxes)}ax{?is/es}.",
+        x = "Got {cli::qty(length(shape(x$type)))}{length(shape(x$type))}."
+      ),
+      call = call
+    )
+  }
+  # Every inference function reads `x$data` and compares it -- a missing value
+  # reaches the first `if ()` and comes back out as R's own
+  # "missing value where TRUE/FALSE needed", with no argument named.
+  if (anyNA(x$data)) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must not contain missing values.",
+        x = "Got {vec_repr(x$data)}."
       ),
       call = call
     )
@@ -322,6 +334,37 @@ assert_const <- function(
 
 assert_shapevec <- function(x) {
   assert_integerish(x, lower = 0, any.missing = FALSE)
+}
+
+# A vector of dimension numbers the caller supplied directly (the members of a
+# GatherDimensionNumbers / ScatterDimensionNumbers). `as.integer()` alone lets a
+# missing value or a character through to the first `if ()` that reads it, where
+# it becomes R's own "missing value where TRUE/FALSE needed".
+assert_dimvec <- function(
+  x,
+  len = NULL,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  if (!is.numeric(x) || anyNA(x) || any(x != trunc(x))) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must be a vector of whole numbers without missing values.",
+        x = "Got {.cls {class(x)[1]}} {vec_repr(x)}."
+      ),
+      call = call
+    )
+  }
+  if (!is.null(len) && length(x) != len) {
+    cli_abort(
+      c(
+        "{.arg {arg}} must have {len} entr{cli::qty(len)}{?y/ies}.",
+        x = "Got {length(x)}."
+      ),
+      call = call
+    )
+  }
+  as.integer(x)
 }
 
 assert_func <- function(

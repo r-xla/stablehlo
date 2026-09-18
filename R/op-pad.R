@@ -28,6 +28,12 @@ infer_types_pad <- function(
   operand_shape <- shape(operand)
   operand_rank <- length(operand_shape)
 
+  # No `naxes`: a rank-1 operand may be padded with rank-0 constants, and the
+  # length against the operand's rank is checked below.
+  assert_const(edge_padding_low, dtype = as_dtype("i64"))
+  assert_const(edge_padding_high, dtype = as_dtype("i64"))
+  assert_const(interior_padding, dtype = as_dtype("i64"))
+
   low <- edge_padding_low$data
   high <- edge_padding_high$data
   interior <- interior_padding$data

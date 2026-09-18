@@ -169,3 +169,63 @@ test_that("assert_one_of", {
     NA
   )
 })
+
+test_that("assert_const rejects a missing value in the attribute's data", {
+  # Every inference function reads `$data` and compares it, so an `NA` that got
+  # this far came back out as R's own "missing value where TRUE/FALSE needed".
+  na_attr <- cnst(c(NA_integer_, 1L), "i64", 2L)
+  expect_error(
+    assert_const(na_attr, dtype = as_dtype("i64")),
+    "must not contain missing values",
+    fixed = TRUE
+  )
+  expect_error(
+    assert_const(cnst(c(0L, 1L), "i64", 2L), dtype = as_dtype("i64")),
+    NA
+  )
+})
+
+test_that("assert_dimvec rejects dimension numbers it cannot compare", {
+  expect_error(
+    assert_dimvec(c(NA_integer_, 1L)),
+    "must be a vector of whole numbers without missing values",
+    fixed = TRUE
+  )
+  expect_error(assert_dimvec("a"), "must be a vector of whole numbers")
+  expect_error(
+    assert_dimvec(c(1L, 2L), len = 1L),
+    "must have 1 entry",
+    fixed = TRUE
+  )
+  expect_identical(assert_dimvec(c(0, 1)), c(0L, 1L))
+})
+
+test_that("the inference functions refuse a missing dimension number", {
+  x <- make_vt("f32", c(2L, 3L))
+  expect_error(
+    infer_types_transpose(x, cnst(c(NA_integer_, 1L), "i64", 2L)),
+    "must not contain missing values",
+    fixed = TRUE
+  )
+  expect_error(
+    infer_types_pad(
+      x,
+      make_vt("f32", integer()),
+      cnst(c(NA_integer_, 0L), "i64", 2L),
+      cnst(c(0L, 0L), "i64", 2L),
+      cnst(c(0L, 0L), "i64", 2L)
+    ),
+    "must not contain missing values",
+    fixed = TRUE
+  )
+  expect_error(
+    GatherDimensionNumbers(
+      offset_dims = c(NA_integer_, 1L),
+      collapsed_slice_dims = 0L,
+      start_index_map = 0L,
+      index_vector_dim = 1L
+    ),
+    "without missing values",
+    fixed = TRUE
+  )
+})
