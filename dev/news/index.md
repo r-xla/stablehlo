@@ -9,10 +9,19 @@
 
 ### Features
 
+- Inference functions now refuse a dimension attribute that contains a
+  missing value, instead of letting it surface as R’s
+  `missing value where TRUE/FALSE needed`.
+  [`GatherDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/GatherDimensionNumbers.md)
+  and
+  [`ScatterDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/ScatterDimensionNumbers.md)
+  check their dimension vectors the same way.
+
 - [`CustomOpBackendConfig()`](https://r-xla.github.io/stablehlo/dev/reference/CustomOpBackendConfig.md)
   now accepts `ConstantAttr` items, so a custom call can carry
   array-valued attributes (what an XLA FFI handler decodes as
   `Span<const T>`) and not just scalars, booleans and strings.
+
 - [`hlo_custom_call()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_custom_call.md)
   gained an `output_operand_aliases` argument, built with the new
   [`OutputOperandAlias()`](https://r-xla.github.io/stablehlo/dev/reference/OutputOperandAlias.md).

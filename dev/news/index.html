@@ -55,10 +55,9 @@
 </ul></div>
 <div class="section level3">
 <h3 id="features-development-version">Features<a class="anchor" aria-label="anchor" href="#features-development-version"></a></h3>
-<ul><li>
-<code><a href="../reference/CustomOpBackendConfig.html">CustomOpBackendConfig()</a></code> now accepts <code>ConstantAttr</code> items, so a custom call can carry array-valued attributes (what an XLA FFI handler decodes as <code>Span&lt;const T&gt;</code>) and not just scalars, booleans and strings.</li>
-<li>
-<code><a href="../reference/hlo_custom_call.html">hlo_custom_call()</a></code> gained an <code>output_operand_aliases</code> argument, built with the new <code><a href="../reference/OutputOperandAlias.html">OutputOperandAlias()</a></code>. XLA then hands the handler the same buffer for the aliased operand and result, which is what lets an in-place kernel avoid a copy.</li>
+<ul><li><p>Inference functions now refuse a dimension attribute that contains a missing value, instead of letting it surface as R’s <code>missing value where TRUE/FALSE needed</code>. <code><a href="../reference/GatherDimensionNumbers.html">GatherDimensionNumbers()</a></code> and <code><a href="../reference/ScatterDimensionNumbers.html">ScatterDimensionNumbers()</a></code> check their dimension vectors the same way.</p></li>
+<li><p><code><a href="../reference/CustomOpBackendConfig.html">CustomOpBackendConfig()</a></code> now accepts <code>ConstantAttr</code> items, so a custom call can carry array-valued attributes (what an XLA FFI handler decodes as <code>Span&lt;const T&gt;</code>) and not just scalars, booleans and strings.</p></li>
+<li><p><code><a href="../reference/hlo_custom_call.html">hlo_custom_call()</a></code> gained an <code>output_operand_aliases</code> argument, built with the new <code><a href="../reference/OutputOperandAlias.html">OutputOperandAlias()</a></code>. XLA then hands the handler the same buffer for the aliased operand and result, which is what lets an in-place kernel avoid a copy.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
