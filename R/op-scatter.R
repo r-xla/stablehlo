@@ -52,12 +52,16 @@ ScatterDimensionNumbers <- function(
   assert_int(index_vector_dim)
   structure(
     list(
-      update_window_dims = as.integer(update_window_dims),
-      inserted_window_dims = as.integer(inserted_window_dims),
-      input_batching_dims = as.integer(input_batching_dims),
-      scatter_indices_batching_dims = as.integer(scatter_indices_batching_dims),
-      scatter_dims_to_operand_dims = as.integer(scatter_dims_to_operand_dims),
-      index_vector_dim = as.integer(index_vector_dim)
+      update_window_dims = assert_dimvec(update_window_dims),
+      inserted_window_dims = assert_dimvec(inserted_window_dims),
+      input_batching_dims = assert_dimvec(input_batching_dims),
+      scatter_indices_batching_dims = assert_dimvec(
+        scatter_indices_batching_dims
+      ),
+      scatter_dims_to_operand_dims = assert_dimvec(
+        scatter_dims_to_operand_dims
+      ),
+      index_vector_dim = assert_dimvec(index_vector_dim, len = 1L)
     ),
     class = "ScatterDimensionNumbers"
   )

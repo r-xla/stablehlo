@@ -50,12 +50,12 @@ GatherDimensionNumbers <- function(
   assert_int(index_vector_dim)
   structure(
     list(
-      offset_dims = as.integer(offset_dims),
-      collapsed_slice_dims = as.integer(collapsed_slice_dims),
-      operand_batching_dims = as.integer(operand_batching_dims),
-      start_indices_batching_dims = as.integer(start_indices_batching_dims),
-      start_index_map = as.integer(start_index_map),
-      index_vector_dim = as.integer(index_vector_dim)
+      offset_dims = assert_dimvec(offset_dims),
+      collapsed_slice_dims = assert_dimvec(collapsed_slice_dims),
+      operand_batching_dims = assert_dimvec(operand_batching_dims),
+      start_indices_batching_dims = assert_dimvec(start_indices_batching_dims),
+      start_index_map = assert_dimvec(start_index_map),
+      index_vector_dim = assert_dimvec(index_vector_dim, len = 1L)
     ),
     class = "GatherDimensionNumbers"
   )
