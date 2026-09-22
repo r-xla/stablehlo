@@ -188,16 +188,27 @@ test_that("assert_const rejects a missing value in the attribute's data", {
 test_that("assert_dimvec rejects dimension numbers it cannot compare", {
   expect_error(
     assert_dimvec(c(NA_integer_, 1L)),
-    "must be a vector of whole numbers without missing values",
+    "must contain whole numbers without missing values",
     fixed = TRUE
   )
-  expect_error(assert_dimvec("a"), "must be a vector of whole numbers")
+  expect_error(assert_dimvec("a"), "must contain whole numbers")
   expect_error(
     assert_dimvec(c(1L, 2L), len = 1L),
     "must have 1 entry",
     fixed = TRUE
   )
   expect_identical(assert_dimvec(c(0, 1)), c(0L, 1L))
+})
+
+test_that("assert_dimvec rejects a whole number outside the integer range", {
+  # `as.integer()` would turn these into the very NA the guard exists to refuse.
+  for (value in list(3e9, -3e9, Inf, -Inf, NaN)) {
+    expect_error(
+      assert_dimvec(value),
+      "must contain whole numbers without missing values",
+      fixed = TRUE
+    )
+  }
 })
 
 test_that("the inference functions refuse a missing dimension number", {

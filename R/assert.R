@@ -332,24 +332,29 @@ assert_const <- function(
   invisible(NULL)
 }
 
-assert_shapevec <- function(x) {
-  assert_integerish(x, lower = 0, any.missing = FALSE)
+assert_shapevec <- function(x, arg = rlang::caller_arg(x)) {
+  assert_integerish(x, lower = 0, any.missing = FALSE, .var.name = arg)
 }
 
 # A vector of dimension numbers the caller supplied directly (the members of a
 # GatherDimensionNumbers / ScatterDimensionNumbers). `as.integer()` alone lets a
 # missing value or a character through to the first `if ()` that reads it, where
 # it becomes R's own "missing value where TRUE/FALSE needed".
+#
+# `checkmate::test_integerish()` is what decides "whole number": it covers the
+# missing value, the fraction and the wrong type, and also the value that is
+# whole but outside the integer range (`3e9`, `Inf`), which `as.integer()` would
+# quietly turn into the very `NA` this guard exists to keep out.
 assert_dimvec <- function(
   x,
   len = NULL,
   arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
-  if (!is.numeric(x) || anyNA(x) || any(x != trunc(x))) {
+  if (!checkmate::test_integerish(x, any.missing = FALSE)) {
     cli_abort(
       c(
-        "{.arg {arg}} must be a vector of whole numbers without missing values.",
+        "{.arg {arg}} must contain whole numbers without missing values.",
         x = "Got {.cls {class(x)[1]}} {vec_repr(x)}."
       ),
       call = call

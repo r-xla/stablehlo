@@ -93,7 +93,7 @@ hlo_broadcast_in_dim <- function(
     attrs = list(
       constant_attr(
         "broadcast_dimensions",
-        as.integer(broadcast_dimensions),
+        assert_dimvec(broadcast_dimensions),
         dtype = "i64",
         shape = length(broadcast_dimensions)
       )
