@@ -484,11 +484,17 @@ infer_types_convolution <- function(
              {pad[sd, 1L]} and {pad[sd, 2L]} leaves {padded_input}."
       ))
     }
-    dilated_window <- if (rhs_size == 0L) {
-      0L
-    } else {
-      (rhs_size - 1L) * rhs_dil[sd] + 1L
+    # A window has to have something in it. A zero-sized kernel dimension would
+    # give a zero-wide window, which the arithmetic below would then read as
+    # "not wider than the input", inferring a *non-empty* result from an empty
+    # window; StableHLO refuses it outright at parse time.
+    if (rhs_size == 0L) {
+      cli_abort(c(
+        "{.arg rhs} must not have a zero-sized spatial dimension.",
+        x = "Dimension {ksd[sd]} of {.arg rhs} is 0."
+      ))
     }
+    dilated_window <- (rhs_size - 1L) * rhs_dil[sd] + 1L
     num_windows <- if (padded_input == 0L || dilated_window > padded_input) {
       0L
     } else {

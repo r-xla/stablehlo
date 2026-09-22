@@ -156,3 +156,8 @@
     `padding` must contain whole numbers without missing values.
     x Got <matrix> c(3e+09, 0, 0, 0).
 
+# error: a zero-sized kernel spatial dimension gives no window
+
+    `rhs` must not have a zero-sized spatial dimension.
+    x Dimension 0 of `rhs` is 0.
+

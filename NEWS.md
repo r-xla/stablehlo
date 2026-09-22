@@ -15,6 +15,8 @@
 * `infer_types_convolution()` refuses a `padding` that takes away more than a
   spatial dimension holds. Such a shape made XLA's own inference abort the
   process; negative padding that only empties a dimension stays legal.
+  It also refuses a zero-sized kernel spatial dimension, which would otherwise
+  infer a non-empty result from an empty window.
 
 * Dimension attributes are checked before they are coerced, so a whole number
   outside the integer range (`3e9`, `Inf`) is reported as the value the caller
