@@ -17,6 +17,22 @@
   [`ScatterDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/ScatterDimensionNumbers.md)
   check their dimension vectors the same way.
 
+- [`infer_types_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md)
+  refuses a `padding` that takes away more than a spatial dimension
+  holds. Such a shape made XLA’s own inference abort the process;
+  negative padding that only empties a dimension stays legal.
+
+- Dimension attributes are checked before they are coerced, so a whole
+  number outside the integer range (`3e9`, `Inf`) is reported as the
+  value the caller passed instead of the `NA`
+  [`as.integer()`](https://rdrr.io/r/base/integer.html) made of it.
+  Affects
+  [`hlo_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md),
+  [`hlo_broadcast_in_dim()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_broadcast_in_dim.md),
+  [`hlo_dynamic_slice()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_dynamic_slice.md)
+  and
+  [`hlo_empty()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_constant.md).
+
 - [`CustomOpBackendConfig()`](https://r-xla.github.io/stablehlo/dev/reference/CustomOpBackendConfig.md)
   now accepts `ConstantAttr` items, so a custom call can carry
   array-valued attributes (what an XLA FFI handler decodes as
