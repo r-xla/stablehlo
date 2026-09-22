@@ -325,3 +325,52 @@ test_that("error: lhs and rhs different dtypes", {
     )
   })
 })
+
+test_that("negative padding may empty a spatial dimension", {
+  local_func()
+  lhs <- hlo_input("lhs", "f32", shape = c(1L, 5L, 5L, 1L))
+  rhs <- hlo_input("rhs", "f32", shape = c(3L, 3L, 1L, 1L))
+  z <- hlo_convolution(
+    lhs,
+    rhs,
+    dimension_numbers = make_dn_nhwc(),
+    window_strides = c(1L, 1L),
+    padding = matrix(-1L, nrow = 2L, ncol = 2L)
+  )
+  expect_equal(shape(z$value_type$type), c(1L, 1L, 1L, 1L))
+})
+
+test_that("error: negative padding takes away more than the dimension holds", {
+  local_func()
+  lhs <- hlo_input("lhs", "f32", shape = c(1L, 5L, 5L, 1L))
+  rhs <- hlo_input("rhs", "f32", shape = c(3L, 3L, 1L, 1L))
+  expect_snapshot_error({
+    hlo_convolution(
+      lhs,
+      rhs,
+      dimension_numbers = make_dn_nhwc(),
+      window_strides = c(1L, 1L),
+      padding = matrix(-4L, nrow = 2L, ncol = 2L)
+    )
+  })
+})
+
+test_that("error: a window attribute outside the integer range names the value it got", {
+  local_func()
+  lhs <- hlo_input("lhs", "f32", shape = c(1L, 5L, 5L, 1L))
+  rhs <- hlo_input("rhs", "f32", shape = c(3L, 3L, 1L, 1L))
+  conv <- function(
+    window_strides = c(1L, 1L),
+    padding = matrix(0L, nrow = 2L, ncol = 2L)
+  ) {
+    hlo_convolution(
+      lhs,
+      rhs,
+      dimension_numbers = make_dn_nhwc(),
+      window_strides = window_strides,
+      padding = padding
+    )
+  }
+  expect_snapshot_error(conv(window_strides = c(3e9, 1)))
+  expect_snapshot_error(conv(padding = matrix(c(3e9, 0, 0, 0), nrow = 2L)))
+})

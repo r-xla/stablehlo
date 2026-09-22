@@ -141,3 +141,18 @@
     `lhs` and `rhs` must have the same element type.
     x Got f32 and f64.
 
+# error: negative padding takes away more than the dimension holds
+
+    `padding` must not remove more than spatial dimension 1 of `lhs` holds.
+    x Dimension 1 dilates to 5, and padding -4 and -4 leaves -3.
+
+# error: a window attribute outside the integer range names the value it got
+
+    `window_strides` must contain whole numbers without missing values.
+    x Got <numeric> c(3e+09, 1).
+
+---
+
+    `padding` must contain whole numbers without missing values.
+    x Got <matrix> c(3e+09, 0, 0, 0).
+

@@ -106,7 +106,7 @@ hlo_dynamic_slice <- function(
     attrs = list(
       constant_attr(
         "slice_sizes",
-        as.integer(slice_sizes),
+        assert_dimvec(slice_sizes),
         dtype = "i64",
         shape = c()
       )

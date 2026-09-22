@@ -473,6 +473,17 @@ infer_types_convolution <- function(
       (lhs_size - 1L) * lhs_dil[sd] + 1L
     }
     padded_input <- pad[sd, 1L] + dilated_input + pad[sd, 2L]
+    # Negative padding may empty a spatial dimension but must not take away more
+    # than it holds: XLA's own shape inference CHECK-fails on a negative bound
+    # and aborts the process, so a negative extent can never leave this function.
+    if (padded_input < 0L) {
+      cli_abort(c(
+        "{.arg padding} must not remove more than spatial dimension {isd[sd]} of \\
+         {.arg lhs} holds.",
+        x = "Dimension {isd[sd]} dilates to {dilated_input}, and padding \\
+             {pad[sd, 1L]} and {pad[sd, 2L]} leaves {padded_input}."
+      ))
+    }
     dilated_window <- if (rhs_size == 0L) {
       0L
     } else {
@@ -557,16 +568,22 @@ hlo_convolution <- function(
   rhs_dilation <- rhs_dilation %??% rep.int(1L, n_spatial)
   window_reversal <- window_reversal %??% rep.int(FALSE, n_spatial)
 
+  # Check before coercing: `as.integer()` turns a value outside the integer
+  # range into `NA`, which `assert_const()` would then report as a missing value
+  # the caller never wrote. `call` names this function rather than the local one.
+  here <- rlang::current_env()
   one_d_int <- function(name, value) {
-    value <- as.integer(value)
+    value <- assert_dimvec(value, arg = name, call = here)
     constant_attr(name, value, dtype = "i64", shape = length(value))
   }
+  assert_dimvec(padding, arg = "padding", call = here)
+  storage.mode(padding) <- "integer"
 
   attrs <- list(
     one_d_int("window_strides", window_strides),
     constant_attr(
       "padding",
-      `storage.mode<-`(padding, "integer"),
+      padding,
       dtype = "i64",
       shape = dim(padding),
       simplify_dense = FALSE

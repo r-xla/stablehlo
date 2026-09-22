@@ -12,6 +12,16 @@
   needed`. `GatherDimensionNumbers()` and `ScatterDimensionNumbers()` check
   their dimension vectors the same way.
 
+* `infer_types_convolution()` refuses a `padding` that takes away more than a
+  spatial dimension holds. Such a shape made XLA's own inference abort the
+  process; negative padding that only empties a dimension stays legal.
+
+* Dimension attributes are checked before they are coerced, so a whole number
+  outside the integer range (`3e9`, `Inf`) is reported as the value the caller
+  passed instead of the `NA` `as.integer()` made of it. Affects
+  `hlo_convolution()`, `hlo_broadcast_in_dim()`, `hlo_dynamic_slice()` and
+  `hlo_empty()`.
+
 * `CustomOpBackendConfig()` now accepts `ConstantAttr` items, so a custom
   call can carry array-valued attributes (what an XLA FFI handler decodes
   as `Span<const T>`) and not just scalars, booleans and strings.
