@@ -24,6 +24,11 @@
   refuses a zero-sized kernel spatial dimension, which would otherwise
   infer a non-empty result from an empty window.
 
+- [`infer_types_reduce_window()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce_window.md)
+  refuses a `padding` that takes away more than a dimension holds, as
+  [`infer_types_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md)
+  already did.
+
 - Dimension attributes are checked before they are coerced, so a whole
   number outside the integer range (`3e9`, `Inf`) is reported as the
   value the caller passed instead of the `NA`
