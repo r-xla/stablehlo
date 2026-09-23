@@ -169,14 +169,36 @@ infer_types_reduce_window <- function(
     ))
   }
 
-  dilated_input <- ifelse(ref_shape == 0L, 0L, (ref_shape - 1L) * base_dil + 1L)
+  # In double: a dilation or a padding in the billions is inside the integer
+  # range on its own but overflows here, and the `NA` it produces reaches the
+  # test below as R's own "missing value where TRUE/FALSE needed".
+  ref_shape_d <- as.double(ref_shape)
+  dilated_input <- ifelse(ref_shape_d == 0, 0, (ref_shape_d - 1) * base_dil + 1)
   padded_input <- pad[, 1L] + dilated_input + pad[, 2L]
-  dilated_window <- (window_dims - 1L) * window_dil + 1L
-  is_empty_window <- padded_input == 0L | dilated_window > padded_input
+
+  # Negative padding may empty a dimension but must not take away more than it
+  # holds: XLA infers the window bound from this and `CHECK`-fails on a
+  # negative one, which aborts the process rather than raising an error, so a
+  # negative extent can never leave this function. Same constraint as
+  # convolution's, on the same arithmetic.
+  if (any(padded_input < 0)) {
+    bad <- which(padded_input < 0)
+    cli_abort(c(
+      "{.arg padding} must not remove more than a dimension of {.arg inputs} holds.",
+      x = "{cli::qty(length(bad))}Dimension{?s} {vec_repr(bad - 1L)} dilate to {vec_repr(dilated_input[bad])}, and padding {vec_repr(pad[bad, 1L])} and {vec_repr(pad[bad, 2L])} leaves {vec_repr(padded_input[bad])}." # nolint
+    ))
+  }
+
+  dilated_window <- (as.double(window_dims) - 1) * window_dil + 1
+  is_empty_window <- padded_input == 0 | dilated_window > padded_input
   result_shape <- ifelse(
     is_empty_window,
-    0L,
-    as.integer(floor((padded_input - dilated_window) / strides) + 1L)
+    0,
+    floor((padded_input - dilated_window) / strides) + 1
+  )
+  result_shape <- assert_result_dims(
+    result_shape,
+    "The reduced window's result"
   )
 
   body_out_types <- func_output_types(body)

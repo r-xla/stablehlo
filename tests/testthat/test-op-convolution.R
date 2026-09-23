@@ -403,3 +403,33 @@ test_that("a zero-sized input spatial dimension is still allowed", {
   )
   expect_equal(shape(z$value_type$type), c(1L, 0L, 3L, 1L))
 })
+
+test_that("a dilation or padding that overflows the window is refused", {
+  # Each attribute is inside the integer range on its own; `(lhs_size - 1) *
+  # lhs_dilation + 1` and the padding sum are what overflow. The `NA` that
+  # produced used to reach `if (padded_input < 0L)` as R's own "missing value
+  # where TRUE/FALSE needed".
+  conv <- function(...) {
+    local_func()
+    lhs <- hlo_input("lhs", "f32", shape = c(1L, 4L, 4L, 1L))
+    rhs <- hlo_input("rhs", "f32", shape = c(2L, 2L, 1L, 1L))
+    args <- list(
+      lhs,
+      rhs,
+      dimension_numbers = make_dn_nhwc(),
+      window_strides = c(1L, 1L),
+      padding = matrix(0L, nrow = 2L, ncol = 2L)
+    )
+    do.call(hlo_convolution, utils::modifyList(args, list(...)))
+  }
+  expect_snapshot(conv(lhs_dilation = c(2000000000L, 1L)), error = TRUE)
+  expect_snapshot(
+    conv(padding = matrix(2000000000L, nrow = 2L, ncol = 2L)),
+    error = TRUE
+  )
+  # A large but legal dilation is untouched.
+  expect_equal(
+    shape(conv(lhs_dilation = c(3L, 1L))$value_type$type),
+    c(1L, 9L, 3L, 1L)
+  )
+})

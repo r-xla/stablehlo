@@ -461,22 +461,27 @@ infer_types_convolution <- function(
   result_shape[obd + 1L] <- input_batch_size %/% bg_count
   result_shape[ofd + 1L] <- kernel_output_feature_size
 
+  # The window arithmetic runs in double: a dilation or a padding in the
+  # billions is inside the integer range on its own but overflows here, and the
+  # `NA` it produces reaches the tests below as R's own "missing value where
+  # TRUE/FALSE needed".
+  result_shape <- as.double(result_shape)
   for (sd in seq_len(n_spatial)) {
     lhs_dim <- isd[sd]
     rhs_dim <- ksd[sd]
-    lhs_size <- lhs_shape[lhs_dim + 1L]
-    rhs_size <- rhs_shape[rhs_dim + 1L]
+    lhs_size <- as.double(lhs_shape[lhs_dim + 1L])
+    rhs_size <- as.double(rhs_shape[rhs_dim + 1L])
 
-    dilated_input <- if (lhs_size == 0L) {
-      0L
+    dilated_input <- if (lhs_size == 0) {
+      0
     } else {
-      (lhs_size - 1L) * lhs_dil[sd] + 1L
+      (lhs_size - 1) * lhs_dil[sd] + 1
     }
     padded_input <- pad[sd, 1L] + dilated_input + pad[sd, 2L]
     # Negative padding may empty a spatial dimension but must not take away more
     # than it holds: XLA's own shape inference CHECK-fails on a negative bound
     # and aborts the process, so a negative extent can never leave this function.
-    if (padded_input < 0L) {
+    if (padded_input < 0) {
       cli_abort(c(
         "{.arg padding} must not remove more than spatial dimension {isd[sd]} of \\
          {.arg lhs} holds.",
@@ -488,20 +493,22 @@ infer_types_convolution <- function(
     # give a zero-wide window, which the arithmetic below would then read as
     # "not wider than the input", inferring a *non-empty* result from an empty
     # window; StableHLO refuses it outright at parse time.
-    if (rhs_size == 0L) {
+    if (rhs_size == 0) {
       cli_abort(c(
         "{.arg rhs} must not have a zero-sized spatial dimension.",
         x = "Dimension {ksd[sd]} of {.arg rhs} is 0."
       ))
     }
-    dilated_window <- (rhs_size - 1L) * rhs_dil[sd] + 1L
-    num_windows <- if (padded_input == 0L || dilated_window > padded_input) {
-      0L
+    dilated_window <- (rhs_size - 1) * rhs_dil[sd] + 1
+    num_windows <- if (padded_input == 0 || dilated_window > padded_input) {
+      0
     } else {
-      as.integer(floor((padded_input - dilated_window) / strides[sd]) + 1L)
+      floor((padded_input - dilated_window) / strides[sd]) + 1
     }
     result_shape[osd[sd] + 1L] <- num_windows
   }
+
+  result_shape <- assert_result_dims(result_shape, "The convolution's result")
 
   ValueTypes(list(
     ValueType(

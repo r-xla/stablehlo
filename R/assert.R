@@ -336,6 +336,28 @@ assert_shapevec <- function(x, arg = rlang::caller_arg(x)) {
   assert_integerish(x, lower = 0, any.missing = FALSE, .var.name = arg)
 }
 
+# A result shape an inference rule computed from the caller's attributes. The
+# arithmetic that produces it runs in double, because attributes that each sit
+# inside the integer range still overflow when they are summed -- and the `NA`
+# an overflow produces reaches the next `if ()` as R's own "missing value where
+# TRUE/FALSE needed", under the op's name and with nothing to act on. A
+# dimension that no longer fits an R integer is refused here rather than at
+# `Shape()`, which would report it as a missing value the caller never wrote.
+assert_result_dims <- function(dims, what, call = rlang::caller_env()) {
+  int_max <- .Machine$integer.max
+  bad <- which(dims > int_max)
+  if (length(bad)) {
+    cli_abort(
+      c(
+        "{what} must have at most {.val {int_max}} elements in each dimension.",
+        x = "{cli::qty(length(bad))}Dimension{?s} {vec_repr(bad - 1L)} would be {vec_repr(dims[bad])}." # nolint
+      ),
+      call = call
+    )
+  }
+  as.integer(dims)
+}
+
 # A vector of dimension numbers the caller supplied directly (the members of a
 # GatherDimensionNumbers / ScatterDimensionNumbers). `as.integer()` alone lets a
 # missing value or a character through to the first `if ()` that reads it, where
