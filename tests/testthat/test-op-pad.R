@@ -145,3 +145,10 @@ test_that("negative edge padding executes as it infers", {
   output <- pjrt_execute(exec, pjrt_buffer(as.integer(1:10)))
   expect_equal(as_array(output), array(as.integer(6:10), dim = 5L))
 })
+
+test_that("a large but legal padding still infers", {
+  local_func()
+  x <- hlo_input("x", "i32", shape = 4L)
+  y <- hlo_pad(x, hlo_scalar(0L, dtype = "i32"), 1000L, 1000L, 0L)
+  expect_equal(shape(y$value_type$type), 2004L)
+})

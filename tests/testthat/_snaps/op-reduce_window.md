@@ -82,3 +82,16 @@
       ! `window_dilations` must be positive.
       x Got (0x1)
 
+# a padding that empties a dimension past zero is rejected
+
+    Code
+      infer_types_reduce_window(vt("f32", c(4L, 4L)), vt("f32", integer()), body = body,
+      window_dimensions = cnst(c(2L, 2L), "i64", 2L), window_strides = cnst(c(1L, 1L),
+      "i64", 2L), base_dilations = cnst(c(1L, 1L), "i64", 2L), window_dilations = cnst(
+        c(1L, 1L), "i64", 2L), padding = cnst(c(-100L, -100L, -100L, -100L), "i64", c(
+        2L, 2L)))
+    Condition
+      Error in `infer_types_reduce_window()`:
+      ! `padding` must not remove more than a dimension of `inputs` holds.
+      x Dimensions c(0, 1) dilate to c(4, 4), and padding c(-100, -100) and c(-100, -100) leaves c(-196, -196).
+

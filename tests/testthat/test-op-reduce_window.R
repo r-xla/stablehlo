@@ -220,3 +220,26 @@ test_that("a zero window dilation is rejected", {
     error = TRUE
   )
 })
+
+test_that("a padding that empties a dimension past zero is rejected", {
+  # The same constraint convolution has, on the same arithmetic: XLA's shape
+  # inference `CHECK`-fails on the negative window bound and aborts the
+  # process, so a negative extent can never leave this function.
+  body <- local_func("body")
+  x <- hlo_input("x", "f32")
+  y <- hlo_input("y", "f32")
+  body <- hlo_return(hlo_add(x, y))
+  expect_snapshot(
+    infer_types_reduce_window(
+      vt("f32", c(4L, 4L)),
+      vt("f32", integer()),
+      body = body,
+      window_dimensions = cnst(c(2L, 2L), "i64", 2L),
+      window_strides = cnst(c(1L, 1L), "i64", 2L),
+      base_dilations = cnst(c(1L, 1L), "i64", 2L),
+      window_dilations = cnst(c(1L, 1L), "i64", 2L),
+      padding = cnst(c(-100L, -100L, -100L, -100L), "i64", c(2L, 2L))
+    ),
+    error = TRUE
+  )
+})
