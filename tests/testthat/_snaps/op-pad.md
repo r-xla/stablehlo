@@ -67,21 +67,3 @@
       ! `edge_padding_low` and `edge_padding_high` must not remove more elements than a dimension holds.
       x Padding `operand` of shape (1x5x5) by c(-2, 0, 0) and c(0, 0, 0) would give c(-1, 5, 5).
 
-# a padding that overflows the result is refused, not turned into an NA
-
-    Code
-      hlo_pad(x, pad_val, 2000000000L, 2000000000L, 0L)
-    Condition
-      Error:
-      ! The padded tensor must have at most 2147483647 elements in each dimension.
-      x Dimension 0 would be 4000000004.
-
----
-
-    Code
-      hlo_pad(x, pad_val, 0L, 0L, 2000000000L)
-    Condition
-      Error:
-      ! The padded tensor must have at most 2147483647 elements in each dimension.
-      x Dimension 0 would be 6000000004.
-

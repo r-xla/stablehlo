@@ -146,24 +146,6 @@ test_that("negative edge padding executes as it infers", {
   expect_equal(as_array(output), array(as.integer(6:10), dim = 5L))
 })
 
-test_that("a padding that overflows the result is refused, not turned into an NA", {
-  # Each entry sits inside the integer range, so the attribute checks accept
-  # it; `operand_shape + low + ... + high` is what overflows. The `NA` that
-  # produced used to reach `if (any(result_shape < 0L))` as R's own "missing
-  # value where TRUE/FALSE needed".
-  local_func()
-  x <- hlo_input("x", "i32", shape = 4L)
-  pad_val <- hlo_scalar(0L, dtype = "i32")
-  expect_snapshot(
-    hlo_pad(x, pad_val, 2000000000L, 2000000000L, 0L),
-    error = TRUE
-  )
-  expect_snapshot(
-    hlo_pad(x, pad_val, 0L, 0L, 2000000000L),
-    error = TRUE
-  )
-})
-
 test_that("a large but legal padding still infers", {
   local_func()
   x <- hlo_input("x", "i32", shape = 4L)

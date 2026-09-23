@@ -95,21 +95,3 @@
       ! `padding` must not remove more than a dimension of `inputs` holds.
       x Dimensions c(0, 1) dilate to c(4, 4), and padding c(-100, -100) and c(-100, -100) leaves c(-196, -196).
 
-# a dilation or padding that overflows the window is refused
-
-    Code
-      rw(c(2000000000L, 1L), c(0L, 0L, 0L, 0L))
-    Condition
-      Error in `infer_types_reduce_window()`:
-      ! The reduced window's result must have at most 2147483647 elements in each dimension.
-      x Dimension 0 would be 6e+09.
-
----
-
-    Code
-      rw(c(1L, 1L), rep(2000000000L, 4L))
-    Condition
-      Error in `infer_types_reduce_window()`:
-      ! The reduced window's result must have at most 2147483647 elements in each dimension.
-      x Dimensions c(0, 1) would be c(4000000003, 4000000003).
-

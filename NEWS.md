@@ -21,12 +21,6 @@
 * `infer_types_reduce_window()` refuses a `padding` that takes away more than a
   dimension holds, as `infer_types_convolution()` already did.
 
-* `infer_types_pad()`, `infer_types_convolution()` and
-  `infer_types_reduce_window()` compute their result shape in double, so that
-  a padding or dilation that is large but inside the integer range no longer
-  overflows into R's `missing value where TRUE/FALSE needed`. A result
-  dimension past the integer range is refused by name.
-
 * Dimension attributes are checked before they are coerced, so a whole number
   outside the integer range (`3e9`, `Inf`) is reported as the value the caller
   passed instead of the `NA` `as.integer()` made of it. Affects

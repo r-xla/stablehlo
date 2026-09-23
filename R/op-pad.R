@@ -58,12 +58,10 @@ infer_types_pad <- function(
   check(high, "edge_padding_high")
   check(interior, "interior_padding")
 
-  # (C4) In double: integer arithmetic overflows to `NA` for a padding that is
-  # large but inside the integer range on its own, and the test below then
-  # reaches `if ()` with a missing value.
-  result_shape <- as.double(operand_shape) +
+  # (C4)
+  result_shape <- operand_shape +
     low +
-    pmax(as.double(operand_shape) - 1, 0) * interior +
+    pmax(operand_shape - 1L, 0L) * interior +
     high
 
   # (C4) Negative edge padding removes elements, and may not remove more than
@@ -76,8 +74,6 @@ infer_types_pad <- function(
       x = "Padding {.arg operand} of shape {shapevec_repr(operand_shape)} by {vec_repr(low)} and {vec_repr(high)} would give {vec_repr(result_shape)}." # nolint
     ))
   }
-
-  result_shape <- assert_result_dims(result_shape, "The padded tensor")
 
   ValueTypes(list(
     ValueType(

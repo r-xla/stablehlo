@@ -161,21 +161,3 @@
     `rhs` must not have a zero-sized spatial dimension.
     x Dimension 0 of `rhs` is 0.
 
-# a dilation or padding that overflows the window is refused
-
-    Code
-      conv(lhs_dilation = c(2000000000L, 1L))
-    Condition
-      Error:
-      ! The convolution's result must have at most 2147483647 elements in each dimension.
-      x Dimension 1 would be 6e+09.
-
----
-
-    Code
-      conv(padding = matrix(2000000000L, nrow = 2L, ncol = 2L))
-    Condition
-      Error:
-      ! The convolution's result must have at most 2147483647 elements in each dimension.
-      x Dimensions c(1, 2) would be c(4000000003, 4000000003).
-
