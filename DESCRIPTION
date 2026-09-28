@@ -1,6 +1,6 @@
 Package: stablehlo
-Title: Write stableHLO programs
-Version: 0.4.0.9000
+Title: Write 'StableHLO' Programs
+Version: 0.5.0
 Authors@R: c(
     person("Daniel", "Falbel", , "daniel@posit.co", role = "aut",
            comment = c(ORCID = "https://orcid.org/0009-0006-0143-2392")),
@@ -9,9 +9,16 @@ Authors@R: c(
     person("Nikolai", "German", , "N.German@campus.lmu.de", role = "aut",
            comment = c(ORCID = "https://orcid.org/0009-0001-7394-8367"))
   )
-Description: The package offers a low level interface to create stableHLO
-    programs.  These programs can be compiled and run on different
-    hardware backends (CPU, GPU, ...)  using the 'pjrt' package.
+Description: A low-level interface for building 'StableHLO' programs from R.
+    'StableHLO' is an operation set and portable intermediate representation
+    for machine learning computations, developed within the 'OpenXLA'
+    project and consumed by compilers such as 'XLA'
+    <https://openxla.org/stablehlo>. The package implements the operations
+    of the 'StableHLO' specification together with their type inference
+    rules, so that output types are derived automatically and invalid
+    programs are rejected with informative errors at construction time.
+    The resulting programs can be compiled and executed on hardware
+    backends such as CPU and GPU using the 'pjrt' package.
 License: MIT + file LICENSE
 URL: https://r-xla.github.io/stablehlo/,
     https://github.com/r-xla/stablehlo
@@ -30,8 +37,10 @@ Imports:
 Suggests:
     rmarkdown,
     knitr,
-    pjrt (>= 0.5.0),
+    pjrt (>= 0.6.0),
     testthat (>= 3.0.0)
+Remotes:
+    r-xla/pjrt
 Additional_repositories:
     https://r-xla.r-universe.dev
 Config/build/compilation-database: true
