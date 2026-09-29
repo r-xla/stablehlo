@@ -4,12 +4,14 @@ S3method("!=",Shape)
 S3method("!=",TensorType)
 S3method("!=",ValueId)
 S3method("!=",ValueType)
+S3method("!=",list_of)
 S3method("==",FuncId)
 S3method("==",OpInputFunc)
 S3method("==",Shape)
 S3method("==",TensorType)
 S3method("==",ValueId)
 S3method("==",ValueType)
+S3method("==",list_of)
 S3method(c,FuncValue)
 S3method(cli::cli_format,IndexVector)
 S3method(cli::cli_format,Shape)
@@ -41,6 +43,7 @@ S3method(hlo_tensor,array)
 S3method(hlo_tensor,double)
 S3method(hlo_tensor,integer)
 S3method(hlo_tensor,logical)
+S3method(length,list_of)
 S3method(print,Func)
 S3method(print,FuncValue)
 S3method(print,Module)
@@ -348,7 +351,7 @@ export(repr)
 export(shape)
 export(to_one_based)
 import(checkmate)
-import(tengen)
+import(xlamisc)
 importFrom(cli,
   cli_abort,
   cli_format,
@@ -357,14 +360,13 @@ importFrom(cli,
 importFrom(methods,is)
 importFrom(rlang,"%||%")
 importFrom(stats,setNames)
-importFrom(tengen,
+importFrom(utils,
+  hashtab,
+  strcapture
+)
+importFrom(xlamisc,
   as_dtype,
   dtype,
   is_dtype,
   shape
 )
-importFrom(utils,
-  hashtab,
-  strcapture
-)
-importFrom(xlamisc,new_list_of)

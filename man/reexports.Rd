@@ -14,6 +14,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{tengen}{\code{\link[tengen:as_dtype]{as_dtype()}}, \code{\link[tengen:dtype]{dtype()}}, \code{\link[tengen:is_dtype]{is_dtype()}}, \code{\link[tengen:shape]{shape()}}}
+  \item{xlamisc}{\code{\link[xlamisc:as_dtype]{as_dtype()}}, \code{\link[xlamisc:dtype]{dtype()}}, \code{\link[xlamisc:is_dtype]{is_dtype()}}, \code{\link[xlamisc:shape]{shape()}}}
 }}
 

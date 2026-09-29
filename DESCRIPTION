@@ -24,14 +24,15 @@ Imports:
     fastmap,
     methods,
     rlang,
-    tengen (>= 0.3.0),
     withr,
-    xlamisc (>= 0.4.1)
+    xlamisc (>= 0.4.1.9000)
 Suggests:
     rmarkdown,
     knitr,
     pjrt (>= 0.5.0),
     testthat (>= 3.0.0)
+Remotes:
+    r-xla/xlamisc
 Additional_repositories:
     https://r-xla.r-universe.dev
 Config/build/compilation-database: true
@@ -43,6 +44,7 @@ Collate:
     'assert.R'
     'conditions.R'
     'repr.R'
+    'list_of.R'
     'shape.R'
     'types.R'
     'constant.R'

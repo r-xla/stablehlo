@@ -380,7 +380,7 @@ infer_types_scatter <- function(
   }
 
   update_scatter_dims <- setdiff(
-    xlamisc::seq_len0(updates_rank),
+    seq_len0(updates_rank),
     update_window_dims
   )
 

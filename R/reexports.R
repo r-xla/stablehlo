@@ -1,5 +1,5 @@
 #' @export
-tengen::shape
+xlamisc::shape
 
 #' @export
-tengen::dtype
+xlamisc::dtype
