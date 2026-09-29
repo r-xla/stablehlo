@@ -13,7 +13,7 @@ The name of the attribute.}
 \item{value}{(\code{numeric(1)} or \code{logical(1)})\cr
 The scalar value.}
 
-\item{dtype}{(\code{\link[tengen:DataType]{DataType}})\cr
+\item{dtype}{(\code{\link[xlamisc:DataType]{DataType}})\cr
 The dtype of the scalar (e.g., \code{as_dtype("i32")}, \code{as_dtype("f32")}, \code{as_dtype("bool")}).}
 }
 \value{

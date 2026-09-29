@@ -366,7 +366,7 @@ infer_types_gather <- function(
   }
 
   # (C22)
-  batch_dims <- setdiff(xlamisc::seq_len0(result_rank), offset_dims)
+  batch_dims <- setdiff(seq_len0(result_rank), offset_dims)
 
   result_shape <- integer(result_rank)
   if (length(batch_dims) > 0L) {

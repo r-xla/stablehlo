@@ -13,7 +13,7 @@ The name of the attribute.}
 \item{value}{(any)\cr
 The value of the attribute.}
 
-\item{dtype}{(\code{\link[tengen:DataType]{DataType}})\cr
+\item{dtype}{(\code{\link[xlamisc:DataType]{DataType}})\cr
 The dtype of the attribute.}
 }
 \value{

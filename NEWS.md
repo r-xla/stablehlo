@@ -4,6 +4,8 @@
 
 * A `Shape` is now represented as an integer.
 * `shape.Shape` was removed.
+* The tensor generics and `DataType` now come from xlamisc, which absorbed
+  tengen; stablehlo no longer depends on tengen.
 
 ## Features
 

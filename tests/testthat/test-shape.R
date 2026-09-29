@@ -13,7 +13,7 @@ describe("Shape", {
     expect_identical(shape[2:3], c(3L, 4L))
   })
 
-  it("is not a tengen array: naxes() and nelts() do not apply to it", {
+  it("is not an xlamisc array: naxes() and nelts() do not apply to it", {
     # Both are defined as length(shape(x)) / prod(shape(x)), so removing the
     # shape() method removes them too. On a Shape you write length() and
     # prod(unclass()) -- it already *is* the vector they would have fetched.
