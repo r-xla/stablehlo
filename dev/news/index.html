@@ -52,6 +52,7 @@
 <ul><li>A <code>Shape</code> is now represented as an integer.</li>
 <li>
 <code>shape.Shape</code> was removed.</li>
+<li>The tensor generics and <code>DataType</code> now come from xlamisc, which absorbed tengen; stablehlo no longer depends on tengen.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="features-development-version">Features<a class="anchor" aria-label="anchor" href="#features-development-version"></a></h3>
@@ -98,7 +99,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h3>
-<ul><li>Adopted tengen’s enum-style <code>DataType</code>. The <code>BooleanType()</code>, <code>FloatType()</code>, <code>IntegerType()</code> and <code>UIntegerType()</code> constructors were removed, use <code><a href="https://r-xla.github.io/tengen/reference/dtype.html" class="external-link">dtype()</a></code> / <code><a href="https://r-xla.github.io/tengen/reference/as_dtype.html" class="external-link">as_dtype()</a></code> instead.</li>
+<ul><li>Adopted tengen’s enum-style <code>DataType</code>. The <code>BooleanType()</code>, <code>FloatType()</code>, <code>IntegerType()</code> and <code>UIntegerType()</code> constructors were removed, use <code><a href="https://rdrr.io/pkg/xlamisc/man/dtype.html" class="external-link">dtype()</a></code> / <code><a href="https://rdrr.io/pkg/xlamisc/man/as_dtype.html" class="external-link">as_dtype()</a></code> instead.</li>
 <li>The package now requires R &gt;= 4.4.0.</li>
 </ul></div>
 <div class="section level3">

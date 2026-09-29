@@ -6,6 +6,8 @@
 
 - A `Shape` is now represented as an integer.
 - `shape.Shape` was removed.
+- The tensor generics and `DataType` now come from xlamisc, which
+  absorbed tengen; stablehlo no longer depends on tengen.
 
 ### Features
 
@@ -113,10 +115,8 @@
 
 - Adopted tengen’s enum-style `DataType`. The `BooleanType()`,
   `FloatType()`, `IntegerType()` and `UIntegerType()` constructors were
-  removed, use
-  [`dtype()`](https://r-xla.github.io/tengen/reference/dtype.html) /
-  [`as_dtype()`](https://r-xla.github.io/tengen/reference/as_dtype.html)
-  instead.
+  removed, use [`dtype()`](https://rdrr.io/pkg/xlamisc/man/dtype.html) /
+  [`as_dtype()`](https://rdrr.io/pkg/xlamisc/man/as_dtype.html) instead.
 - The package now requires R \>= 4.4.0.
 
 ### Performance

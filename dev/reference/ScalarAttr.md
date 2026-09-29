@@ -22,7 +22,7 @@ ScalarAttr(name, value, dtype)
 
 - dtype:
 
-  ([`DataType`](https://r-xla.github.io/tengen/reference/DataType.html))  
+  ([`DataType`](https://rdrr.io/pkg/xlamisc/man/DataType.html))  
   The dtype of the scalar (e.g., `as_dtype("i32")`, `as_dtype("f32")`,
   `as_dtype("bool")`).
 
