@@ -14,7 +14,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/r-xla/stablehlo/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/r-xla/stablehlo/blob/v0.5.0/DESCRIPTION)
 
 Falbel D, Fischer S, German N (2026). *stablehlo: Write 'StableHLO'
 Programs*. R package version 0.5.0,
