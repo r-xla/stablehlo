@@ -1,4 +1,4 @@
-# stablehlo (development version)
+# stablehlo 0.5.0
 
 ## Breaking changes
 
@@ -8,26 +8,6 @@
   tengen; stablehlo no longer depends on tengen.
 
 ## Features
-
-* Inference functions now refuse a dimension attribute that contains a missing
-  value, instead of letting it surface as R's `missing value where TRUE/FALSE
-  needed`. `GatherDimensionNumbers()` and `ScatterDimensionNumbers()` check
-  their dimension vectors the same way.
-
-* `infer_types_convolution()` refuses a `padding` that takes away more than a
-  spatial dimension holds. Such a shape made XLA's own inference abort the
-  process; negative padding that only empties a dimension stays legal.
-  It also refuses a zero-sized kernel spatial dimension, which would otherwise
-  infer a non-empty result from an empty window.
-
-* `infer_types_reduce_window()` refuses a `padding` that takes away more than a
-  dimension holds, as `infer_types_convolution()` already did.
-
-* Dimension attributes are checked before they are coerced, so a whole number
-  outside the integer range (`3e9`, `Inf`) is reported as the value the caller
-  passed instead of the `NA` `as.integer()` made of it. Affects
-  `hlo_convolution()`, `hlo_broadcast_in_dim()`, `hlo_dynamic_slice()` and
-  `hlo_empty()`.
 
 * `CustomOpBackendConfig()` now accepts `ConstantAttr` items, so a custom
   call can carry array-valued attributes (what an XLA FFI handler decodes
@@ -39,38 +19,8 @@
 
 ## Bug fixes
 
-* `hlo_pad()` refused negative edge padding whose magnitude exceeded
-  `rank(operand)` rather than the size of the dimension it applied to, so
-  `pad(tensor<10xf32>, low = -5)` was rejected although its result is a
-  `tensor<5xf32>`. Padding that genuinely empties a dimension is still
-  refused, now naming the arguments involved.
-* `infer_types_concatenate()` rejects inputs of different rank. Its (C2) check
-  compared the shapes without the concatenation dimension, which a shorter
-  shape passed, so `concatenate(tensor<2x3x4>, tensor<2x3>, dimension = 2)`
-  inferred a result with an unknown size along that dimension.
-* `infer_types_if()` rejects a branch that declares inputs.
-* `infer_types_while()` checks its `body`'s inputs and not only its outputs.
-* The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted only
-  for ops that actually allow it.
-* `hlo_triangular_solve()` now rejects operands that are not of floating-point
-  type, as required by the StableHLO spec.
-* `infer_types_slice()` rejects a stride of `0`. The spec's (C4) is
-  `0 < strides`, but the check read `0 <= strides`.
-* `infer_types_dynamic_slice()`, `infer_types_dynamic_update_slice()` and
-  `infer_types_gather()` reject `start_indices` that are not of integer type,
-  as the spec requires. A float one used to reach MLIR and come back as a raw
-  parse error.
-* Corrected some checks in the inference functions.
-* Added some missing checks in the inference functions.
-* `infer_types_reduce()`, `infer_types_reduce_window()`,
-  `infer_types_scatter()` and `infer_types_sort()` check their region's
-  arguments. Only the region's outputs were read, so a body with the wrong
-  arity, a non-scalar argument, or the wrong element type passed inference --
-  a one-argument `sort` comparator returning an `f32` was accepted and
-  rendered.
-* `infer_types_reduce()` accepts a body that accumulates into a wider element
-  type. (C6) is `is_promotable(element_type(inputs[i]), Ei)`, not an equality,
-  so summing an `i8` into an `i32` is legal; it used to be refused.
+* Fixed various bugs in the stablehlo inference functions.
+* Improved some error messages in the inference functions.
 
 # stablehlo 0.4.0
 
