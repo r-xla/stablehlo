@@ -1,16 +1,17 @@
 #' @include shape.R
+#' @include list_of.R
 NULL
 
 #' @export
-tengen::is_dtype
+xlamisc::is_dtype
 
 #' @export
-tengen::as_dtype
+xlamisc::as_dtype
 
-# Re-export assert_dtype from tengen
-assert_dtype <- tengen::assert_dtype
+# Re-export assert_dtype from xlamisc
+assert_dtype <- xlamisc::assert_dtype
 
-# Dtypes whose MLIR spelling differs from their canonical tengen name.
+# Dtypes whose MLIR spelling differs from their canonical xlamisc name.
 mlir_dtype_overrides <- c(
   bool = "i1",
   c64 = "complex<f32>",
