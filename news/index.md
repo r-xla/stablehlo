@@ -1,5 +1,31 @@
 # Changelog
 
+## stablehlo 0.5.0
+
+### Breaking changes
+
+- A `Shape` is now represented as an integer.
+- `shape.Shape` was removed.
+- The tensor generics and `DataType` now come from xlamisc, which
+  absorbed tengen; stablehlo no longer depends on tengen.
+
+### Features
+
+- [`CustomOpBackendConfig()`](https://r-xla.github.io/stablehlo/reference/CustomOpBackendConfig.md)
+  now accepts `ConstantAttr` items, so a custom call can carry
+  array-valued attributes (what an XLA FFI handler decodes as
+  `Span<const T>`) and not just scalars, booleans and strings.
+- [`hlo_custom_call()`](https://r-xla.github.io/stablehlo/reference/hlo_custom_call.md)
+  gained an `output_operand_aliases` argument, built with the new
+  [`OutputOperandAlias()`](https://r-xla.github.io/stablehlo/reference/OutputOperandAlias.md).
+  XLA then hands the handler the same buffer for the aliased operand and
+  result, which is what lets an in-place kernel avoid a copy.
+
+### Bug fixes
+
+- Fixed various bugs in the stablehlo inference functions.
+- Improved some error messages in the inference functions.
+
 ## stablehlo 0.4.0
 
 ### Features
@@ -15,8 +41,8 @@
 - Adopted tengen’s enum-style `DataType`. The `BooleanType()`,
   `FloatType()`, `IntegerType()` and `UIntegerType()` constructors were
   removed, use
-  [`dtype()`](https://r-xla.github.io/tengen/reference/dtype.html) /
-  [`as_dtype()`](https://r-xla.github.io/tengen/reference/as_dtype.html)
+  [`dtype()`](https://r-xla.github.io/xlamisc/reference/dtype.html) /
+  [`as_dtype()`](https://r-xla.github.io/xlamisc/reference/as_dtype.html)
   instead.
 - The package now requires R \>= 4.4.0.
 

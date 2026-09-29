@@ -3,9 +3,9 @@
 These objects are imported from other packages. Follow the links below
 to see their documentation.
 
-- tengen:
+- xlamisc:
 
-  [`as_dtype()`](https://r-xla.github.io/tengen/reference/as_dtype.html),
-  [`dtype()`](https://r-xla.github.io/tengen/reference/dtype.html),
-  [`is_dtype()`](https://r-xla.github.io/tengen/reference/is_dtype.html),
-  [`shape()`](https://r-xla.github.io/tengen/reference/shape.html)
+  [`as_dtype()`](https://r-xla.github.io/xlamisc/reference/as_dtype.html),
+  [`dtype()`](https://r-xla.github.io/xlamisc/reference/dtype.html),
+  [`is_dtype()`](https://r-xla.github.io/xlamisc/reference/is_dtype.html),
+  [`shape()`](https://r-xla.github.io/xlamisc/reference/shape.html)

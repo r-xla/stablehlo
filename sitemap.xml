@@ -27,6 +27,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/reference/Module.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/OpInputAttr.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/OpInputFunc.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/reference/OutputOperandAlias.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/ScalarAttr.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/ScatterDimensionNumbers.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/Shape.html</loc></url>
@@ -151,6 +152,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/reference/infer_types_float_uni.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/infer_types_generic_biv.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/infer_types_generic_uni.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/reference/infer_types_integer_biv.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/infer_types_integer_uni.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/infer_types_integerish_biv.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/infer_types_integerish_uni.html</loc></url>

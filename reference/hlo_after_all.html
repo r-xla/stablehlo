@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">stablehlo</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>AfterAll Operator</h1>
-      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/v0.4.0/R/op-after_all.R" class="external-link"><code>R/op-after_all.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-xla/stablehlo/blob/main/R/op-after_all.R" class="external-link"><code>R/op-after_all.R</code></a></small>
       <div class="d-none name"><code>hlo_after_all.Rd</code></div>
     </div>
 
@@ -54,14 +54,14 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">infer_types_after_all</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">hlo_after_all</span><span class="op">(</span><span class="va">...</span>, output_types <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">hlo_after_all</span><span class="op">(</span><span class="va">...</span>, func <span class="op">=</span> <span class="cn">NULL</span>, output_types <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dl><dt id="arg--func">..., func<a class="anchor" aria-label="anchor" href="#arg--func"></a></dt>
 <dd><p>(<code><a href="FuncValue.html">FuncValue</a></code>)<br></p></dd>
 
 

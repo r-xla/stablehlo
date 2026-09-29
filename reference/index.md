@@ -35,6 +35,8 @@
   : OpInputAttr
 - [`OpInputFunc()`](https://r-xla.github.io/stablehlo/reference/OpInputFunc.md)
   : OpInputFunc
+- [`OutputOperandAlias()`](https://r-xla.github.io/stablehlo/reference/OutputOperandAlias.md)
+  : OutputOperandAlias
 - [`ScalarAttr()`](https://r-xla.github.io/stablehlo/reference/ScalarAttr.md)
   : ScalarAttr
 - [`ScatterDimensionNumbers()`](https://r-xla.github.io/stablehlo/reference/ScatterDimensionNumbers.md)
@@ -374,6 +376,8 @@
   : Infer types for binary operations
 - [`infer_types_generic_uni()`](https://r-xla.github.io/stablehlo/reference/infer_types_generic_uni.md)
   : Infer types for unary operations
+- [`infer_types_integer_biv()`](https://r-xla.github.io/stablehlo/reference/infer_types_integer_biv.md)
+  : Infer types for integer binary operations
 - [`infer_types_integer_uni()`](https://r-xla.github.io/stablehlo/reference/infer_types_integer_uni.md)
   : Infer types for integer unary operations
 - [`infer_types_integerish_biv()`](https://r-xla.github.io/stablehlo/reference/infer_types_integerish_biv.md)

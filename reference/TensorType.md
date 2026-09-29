@@ -12,7 +12,7 @@ TensorType(dtype, shape)
 
 - dtype:
 
-  ([`DataType`](https://r-xla.github.io/tengen/reference/DataType.html))
+  ([`DataType`](https://r-xla.github.io/xlamisc/reference/DataType.html))
 
 - shape:
 

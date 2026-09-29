@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">stablehlo</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,9 +42,31 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/r-xla/stablehlo/blob/v0.4.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/r-xla/stablehlo/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="stablehlo-050">stablehlo 0.5.0<a class="anchor" aria-label="anchor" href="#stablehlo-050"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-5-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-5-0"></a></h3>
+<ul><li>A <code>Shape</code> is now represented as an integer.</li>
+<li>
+<code>shape.Shape</code> was removed.</li>
+<li>The tensor generics and <code>DataType</code> now come from xlamisc, which absorbed tengen; stablehlo no longer depends on tengen.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="features-0-5-0">Features<a class="anchor" aria-label="anchor" href="#features-0-5-0"></a></h3>
+<ul><li>
+<code><a href="../reference/CustomOpBackendConfig.html">CustomOpBackendConfig()</a></code> now accepts <code>ConstantAttr</code> items, so a custom call can carry array-valued attributes (what an XLA FFI handler decodes as <code>Span&lt;const T&gt;</code>) and not just scalars, booleans and strings.</li>
+<li>
+<code><a href="../reference/hlo_custom_call.html">hlo_custom_call()</a></code> gained an <code>output_operand_aliases</code> argument, built with the new <code><a href="../reference/OutputOperandAlias.html">OutputOperandAlias()</a></code>. XLA then hands the handler the same buffer for the aliased operand and result, which is what lets an in-place kernel avoid a copy.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-0-5-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0"></a></h3>
+<ul><li>Fixed various bugs in the stablehlo inference functions.</li>
+<li>Improved some error messages in the inference functions.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="stablehlo-040">stablehlo 0.4.0<a class="anchor" aria-label="anchor" href="#stablehlo-040"></a></h2>
 <div class="section level3">
@@ -56,7 +78,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h3>
-<ul><li>Adopted tengen’s enum-style <code>DataType</code>. The <code>BooleanType()</code>, <code>FloatType()</code>, <code>IntegerType()</code> and <code>UIntegerType()</code> constructors were removed, use <code><a href="https://r-xla.github.io/tengen/reference/dtype.html" class="external-link">dtype()</a></code> / <code><a href="https://r-xla.github.io/tengen/reference/as_dtype.html" class="external-link">as_dtype()</a></code> instead.</li>
+<ul><li>Adopted tengen’s enum-style <code>DataType</code>. The <code>BooleanType()</code>, <code>FloatType()</code>, <code>IntegerType()</code> and <code>UIntegerType()</code> constructors were removed, use <code><a href="https://r-xla.github.io/xlamisc/reference/dtype.html" class="external-link">dtype()</a></code> / <code><a href="https://r-xla.github.io/xlamisc/reference/as_dtype.html" class="external-link">as_dtype()</a></code> instead.</li>
 <li>The package now requires R &gt;= 4.4.0.</li>
 </ul></div>
 <div class="section level3">
