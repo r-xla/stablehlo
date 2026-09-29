@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">stablehlo</a>
 
-    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.4.0.9000</small>
+    <small class="nav-text text-default me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,45 +47,27 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="stablehlo-development-version">stablehlo (development version)<a class="anchor" aria-label="anchor" href="#stablehlo-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="stablehlo-050">stablehlo 0.5.0<a class="anchor" aria-label="anchor" href="#stablehlo-050"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-0-5-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-5-0"></a></h3>
 <ul><li>A <code>Shape</code> is now represented as an integer.</li>
 <li>
 <code>shape.Shape</code> was removed.</li>
 <li>The tensor generics and <code>DataType</code> now come from xlamisc, which absorbed tengen; stablehlo no longer depends on tengen.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="features-development-version">Features<a class="anchor" aria-label="anchor" href="#features-development-version"></a></h3>
-<ul><li><p>Inference functions now refuse a dimension attribute that contains a missing value, instead of letting it surface as R’s <code>missing value where TRUE/FALSE needed</code>. <code><a href="../reference/GatherDimensionNumbers.html">GatherDimensionNumbers()</a></code> and <code><a href="../reference/ScatterDimensionNumbers.html">ScatterDimensionNumbers()</a></code> check their dimension vectors the same way.</p></li>
-<li><p><code><a href="../reference/hlo_convolution.html">infer_types_convolution()</a></code> refuses a <code>padding</code> that takes away more than a spatial dimension holds. Such a shape made XLA’s own inference abort the process; negative padding that only empties a dimension stays legal. It also refuses a zero-sized kernel spatial dimension, which would otherwise infer a non-empty result from an empty window.</p></li>
-<li><p><code><a href="../reference/hlo_reduce_window.html">infer_types_reduce_window()</a></code> refuses a <code>padding</code> that takes away more than a dimension holds, as <code><a href="../reference/hlo_convolution.html">infer_types_convolution()</a></code> already did.</p></li>
-<li><p>Dimension attributes are checked before they are coerced, so a whole number outside the integer range (<code>3e9</code>, <code>Inf</code>) is reported as the value the caller passed instead of the <code>NA</code> <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer()</a></code> made of it. Affects <code><a href="../reference/hlo_convolution.html">hlo_convolution()</a></code>, <code><a href="../reference/hlo_broadcast_in_dim.html">hlo_broadcast_in_dim()</a></code>, <code><a href="../reference/hlo_dynamic_slice.html">hlo_dynamic_slice()</a></code> and <code><a href="../reference/hlo_constant.html">hlo_empty()</a></code>.</p></li>
-<li><p><code><a href="../reference/CustomOpBackendConfig.html">CustomOpBackendConfig()</a></code> now accepts <code>ConstantAttr</code> items, so a custom call can carry array-valued attributes (what an XLA FFI handler decodes as <code>Span&lt;const T&gt;</code>) and not just scalars, booleans and strings.</p></li>
-<li><p><code><a href="../reference/hlo_custom_call.html">hlo_custom_call()</a></code> gained an <code>output_operand_aliases</code> argument, built with the new <code><a href="../reference/OutputOperandAlias.html">OutputOperandAlias()</a></code>. XLA then hands the handler the same buffer for the aliased operand and result, which is what lets an in-place kernel avoid a copy.</p></li>
+<h3 id="features-0-5-0">Features<a class="anchor" aria-label="anchor" href="#features-0-5-0"></a></h3>
+<ul><li>
+<code><a href="../reference/CustomOpBackendConfig.html">CustomOpBackendConfig()</a></code> now accepts <code>ConstantAttr</code> items, so a custom call can carry array-valued attributes (what an XLA FFI handler decodes as <code>Span&lt;const T&gt;</code>) and not just scalars, booleans and strings.</li>
+<li>
+<code><a href="../reference/hlo_custom_call.html">hlo_custom_call()</a></code> gained an <code>output_operand_aliases</code> argument, built with the new <code><a href="../reference/OutputOperandAlias.html">OutputOperandAlias()</a></code>. XLA then hands the handler the same buffer for the aliased operand and result, which is what lets an in-place kernel avoid a copy.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
-<ul><li>
-<code><a href="../reference/hlo_pad.html">hlo_pad()</a></code> refused negative edge padding whose magnitude exceeded <code>rank(operand)</code> rather than the size of the dimension it applied to, so <code>pad(tensor&lt;10xf32&gt;, low = -5)</code> was rejected although its result is a <code>tensor&lt;5xf32&gt;</code>. Padding that genuinely empties a dimension is still refused, now naming the arguments involved.</li>
-<li>
-<code><a href="../reference/hlo_concatenate.html">infer_types_concatenate()</a></code> rejects inputs of different rank. Its (C2) check compared the shapes without the concatenation dimension, which a shorter shape passed, so <code>concatenate(tensor&lt;2x3x4&gt;, tensor&lt;2x3&gt;, dimension = 2)</code> inferred a result with an unknown size along that dimension.</li>
-<li>
-<code><a href="../reference/hlo_if.html">infer_types_if()</a></code> rejects a branch that declares inputs.</li>
-<li>
-<code><a href="../reference/hlo_while.html">infer_types_while()</a></code> checks its <code>body</code>’s inputs and not only its outputs.</li>
-<li>The short assembly form (<code>%0 = stablehlo.&lt;op&gt; %a : &lt;type&gt;</code>) is emitted only for ops that actually allow it.</li>
-<li>
-<code><a href="../reference/hlo_triangular_solve.html">hlo_triangular_solve()</a></code> now rejects operands that are not of floating-point type, as required by the StableHLO spec.</li>
-<li>
-<code><a href="../reference/hlo_slice.html">infer_types_slice()</a></code> rejects a stride of <code>0</code>. The spec’s (C4) is <code>0 &lt; strides</code>, but the check read <code>0 &lt;= strides</code>.</li>
-<li>
-<code><a href="../reference/hlo_dynamic_slice.html">infer_types_dynamic_slice()</a></code>, <code><a href="../reference/hlo_dynamic_update_slice.html">infer_types_dynamic_update_slice()</a></code> and <code><a href="../reference/hlo_gather.html">infer_types_gather()</a></code> reject <code>start_indices</code> that are not of integer type, as the spec requires. A float one used to reach MLIR and come back as a raw parse error.</li>
-<li>Corrected some checks in the inference functions.</li>
-<li>Added some missing checks in the inference functions.</li>
-<li>
-<code><a href="../reference/hlo_reduce.html">infer_types_reduce()</a></code>, <code><a href="../reference/hlo_reduce_window.html">infer_types_reduce_window()</a></code>, <code><a href="../reference/hlo_scatter.html">infer_types_scatter()</a></code> and <code><a href="../reference/hlo_sort.html">infer_types_sort()</a></code> check their region’s arguments. Only the region’s outputs were read, so a body with the wrong arity, a non-scalar argument, or the wrong element type passed inference – a one-argument <code>sort</code> comparator returning an <code>f32</code> was accepted and rendered.</li>
-<li>
-<code><a href="../reference/hlo_reduce.html">infer_types_reduce()</a></code> accepts a body that accumulates into a wider element type. (C6) is <code>is_promotable(element_type(inputs[i]), Ei)</code>, not an equality, so summing an <code>i8</code> into an <code>i32</code> is legal; it used to be refused.</li>
+<h3 id="bug-fixes-0-5-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-5-0"></a></h3>
+<ul><li>Fixed various bugs in the stablehlo inference functions.</li>
+<li>Improved some error messages in the inference functions.</li>
 </ul></div>
 </div>
     <div class="section level2">
@@ -99,7 +81,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="breaking-changes-0-4-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-4-0"></a></h3>
-<ul><li>Adopted tengen’s enum-style <code>DataType</code>. The <code>BooleanType()</code>, <code>FloatType()</code>, <code>IntegerType()</code> and <code>UIntegerType()</code> constructors were removed, use <code><a href="https://rdrr.io/pkg/xlamisc/man/dtype.html" class="external-link">dtype()</a></code> / <code><a href="https://rdrr.io/pkg/xlamisc/man/as_dtype.html" class="external-link">as_dtype()</a></code> instead.</li>
+<ul><li>Adopted tengen’s enum-style <code>DataType</code>. The <code>BooleanType()</code>, <code>FloatType()</code>, <code>IntegerType()</code> and <code>UIntegerType()</code> constructors were removed, use <code><a href="https://r-xla.github.io/xlamisc/reference/dtype.html" class="external-link">dtype()</a></code> / <code><a href="https://r-xla.github.io/xlamisc/reference/as_dtype.html" class="external-link">as_dtype()</a></code> instead.</li>
 <li>The package now requires R &gt;= 4.4.0.</li>
 </ul></div>
 <div class="section level3">

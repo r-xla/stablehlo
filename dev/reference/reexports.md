@@ -5,7 +5,7 @@ to see their documentation.
 
 - xlamisc:
 
-  [`as_dtype()`](https://rdrr.io/pkg/xlamisc/man/as_dtype.html),
-  [`dtype()`](https://rdrr.io/pkg/xlamisc/man/dtype.html),
-  [`is_dtype()`](https://rdrr.io/pkg/xlamisc/man/is_dtype.html),
-  [`shape()`](https://rdrr.io/pkg/xlamisc/man/shape.html)
+  [`as_dtype()`](https://r-xla.github.io/xlamisc/reference/as_dtype.html),
+  [`dtype()`](https://r-xla.github.io/xlamisc/reference/dtype.html),
+  [`is_dtype()`](https://r-xla.github.io/xlamisc/reference/is_dtype.html),
+  [`shape()`](https://r-xla.github.io/xlamisc/reference/shape.html)

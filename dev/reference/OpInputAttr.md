@@ -22,7 +22,7 @@ OpInputAttr(name, value, dtype)
 
 - dtype:
 
-  ([`DataType`](https://rdrr.io/pkg/xlamisc/man/DataType.html))  
+  ([`DataType`](https://r-xla.github.io/xlamisc/reference/DataType.html))  
   The dtype of the attribute.
 
 ## Value

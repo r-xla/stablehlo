@@ -2,6 +2,8 @@
 
 ## stablehlo (development version)
 
+## stablehlo 0.5.0
+
 ### Breaking changes
 
 - A `Shape` is now represented as an integer.
@@ -11,42 +13,10 @@
 
 ### Features
 
-- Inference functions now refuse a dimension attribute that contains a
-  missing value, instead of letting it surface as R’s
-  `missing value where TRUE/FALSE needed`.
-  [`GatherDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/GatherDimensionNumbers.md)
-  and
-  [`ScatterDimensionNumbers()`](https://r-xla.github.io/stablehlo/dev/reference/ScatterDimensionNumbers.md)
-  check their dimension vectors the same way.
-
-- [`infer_types_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md)
-  refuses a `padding` that takes away more than a spatial dimension
-  holds. Such a shape made XLA’s own inference abort the process;
-  negative padding that only empties a dimension stays legal. It also
-  refuses a zero-sized kernel spatial dimension, which would otherwise
-  infer a non-empty result from an empty window.
-
-- [`infer_types_reduce_window()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce_window.md)
-  refuses a `padding` that takes away more than a dimension holds, as
-  [`infer_types_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md)
-  already did.
-
-- Dimension attributes are checked before they are coerced, so a whole
-  number outside the integer range (`3e9`, `Inf`) is reported as the
-  value the caller passed instead of the `NA`
-  [`as.integer()`](https://rdrr.io/r/base/integer.html) made of it.
-  Affects
-  [`hlo_convolution()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_convolution.md),
-  [`hlo_broadcast_in_dim()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_broadcast_in_dim.md),
-  [`hlo_dynamic_slice()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_dynamic_slice.md)
-  and
-  [`hlo_empty()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_constant.md).
-
 - [`CustomOpBackendConfig()`](https://r-xla.github.io/stablehlo/dev/reference/CustomOpBackendConfig.md)
   now accepts `ConstantAttr` items, so a custom call can carry
   array-valued attributes (what an XLA FFI handler decodes as
   `Span<const T>`) and not just scalars, booleans and strings.
-
 - [`hlo_custom_call()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_custom_call.md)
   gained an `output_operand_aliases` argument, built with the new
   [`OutputOperandAlias()`](https://r-xla.github.io/stablehlo/dev/reference/OutputOperandAlias.md).
@@ -55,51 +25,8 @@
 
 ### Bug fixes
 
-- [`hlo_pad()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_pad.md)
-  refused negative edge padding whose magnitude exceeded `rank(operand)`
-  rather than the size of the dimension it applied to, so
-  `pad(tensor<10xf32>, low = -5)` was rejected although its result is a
-  `tensor<5xf32>`. Padding that genuinely empties a dimension is still
-  refused, now naming the arguments involved.
-- [`infer_types_concatenate()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_concatenate.md)
-  rejects inputs of different rank. Its (C2) check compared the shapes
-  without the concatenation dimension, which a shorter shape passed, so
-  `concatenate(tensor<2x3x4>, tensor<2x3>, dimension = 2)` inferred a
-  result with an unknown size along that dimension.
-- [`infer_types_if()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_if.md)
-  rejects a branch that declares inputs.
-- [`infer_types_while()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_while.md)
-  checks its `body`’s inputs and not only its outputs.
-- The short assembly form (`%0 = stablehlo.<op> %a : <type>`) is emitted
-  only for ops that actually allow it.
-- [`hlo_triangular_solve()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_triangular_solve.md)
-  now rejects operands that are not of floating-point type, as required
-  by the StableHLO spec.
-- [`infer_types_slice()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_slice.md)
-  rejects a stride of `0`. The spec’s (C4) is `0 < strides`, but the
-  check read `0 <= strides`.
-- [`infer_types_dynamic_slice()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_dynamic_slice.md),
-  [`infer_types_dynamic_update_slice()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_dynamic_update_slice.md)
-  and
-  [`infer_types_gather()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_gather.md)
-  reject `start_indices` that are not of integer type, as the spec
-  requires. A float one used to reach MLIR and come back as a raw parse
-  error.
-- Corrected some checks in the inference functions.
-- Added some missing checks in the inference functions.
-- [`infer_types_reduce()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce.md),
-  [`infer_types_reduce_window()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce_window.md),
-  [`infer_types_scatter()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_scatter.md)
-  and
-  [`infer_types_sort()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_sort.md)
-  check their region’s arguments. Only the region’s outputs were read,
-  so a body with the wrong arity, a non-scalar argument, or the wrong
-  element type passed inference – a one-argument `sort` comparator
-  returning an `f32` was accepted and rendered.
-- [`infer_types_reduce()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_reduce.md)
-  accepts a body that accumulates into a wider element type. (C6) is
-  `is_promotable(element_type(inputs[i]), Ei)`, not an equality, so
-  summing an `i8` into an `i32` is legal; it used to be refused.
+- Fixed various bugs in the stablehlo inference functions.
+- Improved some error messages in the inference functions.
 
 ## stablehlo 0.4.0
 
@@ -115,8 +42,10 @@
 
 - Adopted tengen’s enum-style `DataType`. The `BooleanType()`,
   `FloatType()`, `IntegerType()` and `UIntegerType()` constructors were
-  removed, use [`dtype()`](https://rdrr.io/pkg/xlamisc/man/dtype.html) /
-  [`as_dtype()`](https://rdrr.io/pkg/xlamisc/man/as_dtype.html) instead.
+  removed, use
+  [`dtype()`](https://r-xla.github.io/xlamisc/reference/dtype.html) /
+  [`as_dtype()`](https://r-xla.github.io/xlamisc/reference/as_dtype.html)
+  instead.
 - The package now requires R \>= 4.4.0.
 
 ### Performance
