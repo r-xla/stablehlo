@@ -1,5 +1,8 @@
 # stablehlo (development version)
 
+* Bugfix: `format_double()` rounds an f32 constant to single precision once,
+  instead of rounding a 9-digit decimal of it a second time.
+
 # stablehlo 0.5.0
 
 ## Breaking changes

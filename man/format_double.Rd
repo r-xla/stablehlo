@@ -17,8 +17,9 @@ Currently supports 32 and 64 bit precisions.}
 \code{character()}
 }
 \description{
-Formats a double array using scientific notation with 16 digits precision,
-similar to \code{formatC(x, digits = 16, format = "e")}.
+Formats a double array using scientific notation with enough digits to round-trip
+at the requested precision. For 32 bit, the values are first rounded to the nearest
+single-precision float, so the parser's own rounding cannot round them a second time.
 
 This is used to embed floating point constants into stableHLO programs.
 }

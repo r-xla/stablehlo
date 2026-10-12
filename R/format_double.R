@@ -1,7 +1,8 @@
 #' @title Format Double Array with Scientific Notation
 #'
-#' @description Formats a double array using scientific notation with 16 digits precision,
-#' similar to \code{formatC(x, digits = 16, format = "e")}.
+#' @description Formats a double array using scientific notation with enough digits to round-trip
+#' at the requested precision. For 32 bit, the values are first rounded to the nearest
+#' single-precision float, so the parser's own rounding cannot round them a second time.
 #'
 #' This is used to embed floating point constants into stableHLO programs.
 #'
@@ -26,6 +27,10 @@ format_double <- function(x, precision = 64) {
 
   if (length(x) == 0) {
     return(character(0))
+  }
+
+  if (precision == 32) {
+    x <- round_to_f32(x)
   }
 
   res <- character(length(x))
@@ -63,4 +68,15 @@ format_double <- function(x, precision = 64) {
     dim(res) <- dim(x)
   }
   res
+}
+
+round_to_f32 <- function(x) {
+  rounded <- readBin(
+    writeBin(as.vector(x), raw(), size = 4L),
+    "double",
+    n = length(x),
+    size = 4L
+  )
+  attributes(rounded) <- attributes(x)
+  rounded
 }
