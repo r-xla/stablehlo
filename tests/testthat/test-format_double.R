@@ -24,3 +24,25 @@ test_that("format_double keeps non-finite positions in a mixed vector", {
   )
   expect_match(out64[1], "^1")
 })
+
+test_that("format_double rounds to f32 only once", {
+  # 1 + 2^-24 lies exactly halfway between 1 and the next f32; rounding to
+  # nearest even gives 1, whereas rounding the 9-digit decimal again does not.
+  expect_equal(as.numeric(format_double(1 + 2^-24, 32)), 1)
+
+  withr::local_seed(1L)
+  x <- runif(1000L)
+  expect_equal(
+    round_to_f32(as.numeric(format_double(x, 32))),
+    round_to_f32(x)
+  )
+})
+
+test_that("format_double maps doubles beyond the f32 range to infinity", {
+  expect_equal(format_double(c(1e39, -1e39), 32), c("0x7F800000", "0xFF800000"))
+})
+
+test_that("format_double keeps the shape of an array at 32 bit", {
+  out <- format_double(array(c(1, 2, 3, 4, 5, 6), dim = c(2L, 3L)), 32)
+  expect_equal(dim(out), c(2L, 3L))
+})

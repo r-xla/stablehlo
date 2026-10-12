@@ -4,7 +4,7 @@
       cat(func_lines(f$func)[[1L]])
     Output
       %0 = "stablehlo.constant" () {
-      value = dense<3.14000000e+00> : tensor<f32>
+      value = dense<3.14000010e+00> : tensor<f32>
       }: () -> (tensor<f32>)
 
 ---
