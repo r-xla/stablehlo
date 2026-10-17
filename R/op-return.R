@@ -18,7 +18,7 @@ OpReturn <- new_Op("OpReturn", "return", render = render_return)
 #' @rdname hlo_return
 #' @export
 infer_types_return <- function(...) {
-  assert_vts_are_tensors(...)
+  # any value can be returned, a token too
   ValueTypes()
 }
 

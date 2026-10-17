@@ -63,6 +63,16 @@ test_that("TensorType equality", {
   expect_false(t1 == t3)
 })
 
+test_that("ValueType equality of tokens", {
+  token <- ValueType("token")
+  tensor <- ValueType("f32", shape = 2L)
+  expect_true(token == ValueType("token"))
+  expect_false(token != ValueType("token"))
+  expect_false(token == tensor)
+  expect_false(tensor == token)
+  expect_true(tensor != token)
+})
+
 test_that("print methods - compound types", {
   expect_snapshot({
     Shape(c())

@@ -1,5 +1,7 @@
 # stablehlo (development version)
 
+* `hlo_return()` accepts a token, e.g. to hand one on from a `while` body, and
+  two token `ValueType`s compare equal.
 * Bugfix: `format_double()` rounds an f32 constant to single precision once,
   instead of rounding a 9-digit decimal of it a second time.
 
