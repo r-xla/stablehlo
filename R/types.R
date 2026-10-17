@@ -181,6 +181,10 @@ make_vt <- function(type, shape) {
   if (!inherits(e2, "ValueType")) {
     return(FALSE)
   }
+  # a token type equals only a token type
+  if (inherits(e1$type, "TokenType") || inherits(e2$type, "TokenType")) {
+    return(inherits(e1$type, "TokenType") && inherits(e2$type, "TokenType"))
+  }
   e1$type == e2$type
 }
 

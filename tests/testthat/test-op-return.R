@@ -21,4 +21,9 @@ test_that("double nested return", {
   expect_equal(.current_func(), a)
 })
 
-# Errors are tested in test-assert.R (via assert_vts_are_tensors)
+test_that("a token can be returned", {
+  local_func()
+  x <- hlo_input("x", "f32", shape = 2L)
+  f <- hlo_return(x, hlo_after_all())
+  expect_match(repr(f), "!stablehlo.token", fixed = TRUE)
+})
