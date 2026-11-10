@@ -1,5 +1,6 @@
 # stablehlo (development version)
 
+* New `hlo_optimization_barrier()`.
 * `hlo_return()` accepts a token, e.g. to hand one on from a `while` body, and
   two token `ValueType`s compare equal.
 * Bugfix: `format_double()` rounds an f32 constant to single precision once,
