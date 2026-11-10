@@ -2,6 +2,8 @@
 
 ## stablehlo (development version)
 
+## stablehlo 0.6.0
+
 - New
   [`hlo_optimization_barrier()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_optimization_barrier.md).
 - [`hlo_return()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_return.md)
