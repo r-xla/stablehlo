@@ -118,6 +118,7 @@ Collate:
     'op-multiply.R'
     'op-negate.R'
     'op-not.R'
+    'op-optimization_barrier.R'
     'op-or.R'
     'op-pad.R'
     'op-polygamma.R'
