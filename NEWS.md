@@ -1,4 +1,4 @@
-# stablehlo (development version)
+# stablehlo 0.6.0
 
 * New `hlo_optimization_barrier()`.
 * `hlo_return()` accepts a token, e.g. to hand one on from a `while` body, and
