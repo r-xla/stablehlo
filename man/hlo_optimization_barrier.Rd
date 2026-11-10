@@ -7,15 +7,10 @@
 \usage{
 infer_types_optimization_barrier(...)
 
-hlo_optimization_barrier(
-  ...,
-  simplify = TRUE,
-  func = NULL,
-  output_types = NULL
-)
+hlo_optimization_barrier(..., simplify = TRUE, output_types = NULL)
 }
 \arguments{
-\item{..., func}{(\code{\link{FuncValue}})\cr}
+\item{...}{(\code{\link{FuncValue}})\cr}
 
 \item{simplify}{(\code{logical(1)})\cr
 Whether to simplify results by unpacking lists of length 1 into their single element.}
