@@ -1,3 +1,5 @@
+# stablehlo (development version)
+
 # stablehlo 0.6.0
 
 * New `hlo_optimization_barrier()`.
