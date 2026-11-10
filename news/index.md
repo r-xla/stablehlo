@@ -1,5 +1,17 @@
 # Changelog
 
+## stablehlo 0.6.0
+
+- New
+  [`hlo_optimization_barrier()`](https://r-xla.github.io/stablehlo/reference/hlo_optimization_barrier.md).
+- [`hlo_return()`](https://r-xla.github.io/stablehlo/reference/hlo_return.md)
+  accepts a token, e.g. to hand one on from a `while` body, and two
+  token `ValueType`s compare equal.
+- Bugfix:
+  [`format_double()`](https://r-xla.github.io/stablehlo/reference/format_double.md)
+  rounds an f32 constant to single precision once, instead of rounding a
+  9-digit decimal of it a second time.
+
 ## stablehlo 0.5.0
 
 ### Breaking changes

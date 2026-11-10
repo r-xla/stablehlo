@@ -14,16 +14,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/r-xla/stablehlo/blob/v0.5.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/r-xla/stablehlo/blob/main/DESCRIPTION)
 
 Falbel D, Fischer S, German N (2026). *stablehlo: Write 'StableHLO'
-Programs*. R package version 0.5.0,
+Programs*. R package version 0.6.0,
 <https://r-xla.github.io/stablehlo/>.
 
     @Manual{,
       title = {stablehlo: Write 'StableHLO' Programs},
       author = {Daniel Falbel and Sebastian Fischer and Nikolai German},
       year = {2026},
-      note = {R package version 0.5.0},
+      note = {R package version 0.6.0},
       url = {https://r-xla.github.io/stablehlo/},
     }

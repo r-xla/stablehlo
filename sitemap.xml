@@ -1,7 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://r-xla.github.io/stablehlo/404.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/AGENTS.html</loc></url>
-<url><loc>https://r-xla.github.io/stablehlo/CLAUDE.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/LICENSE-text.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/LICENSE.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/SPEC.html</loc></url>
@@ -110,6 +109,7 @@
 <url><loc>https://r-xla.github.io/stablehlo/reference/hlo_multiply.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/hlo_negate.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/hlo_not.html</loc></url>
+<url><loc>https://r-xla.github.io/stablehlo/reference/hlo_optimization_barrier.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/hlo_or.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/hlo_pad.html</loc></url>
 <url><loc>https://r-xla.github.io/stablehlo/reference/hlo_polygamma.html</loc></url>

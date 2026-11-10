@@ -373,6 +373,9 @@ specification. At least initially, it will:
 - [`infer_types_not()`](https://r-xla.github.io/stablehlo/reference/hlo_not.md)
   [`hlo_not()`](https://r-xla.github.io/stablehlo/reference/hlo_not.md)
   : Not Operator
+- [`infer_types_optimization_barrier()`](https://r-xla.github.io/stablehlo/reference/hlo_optimization_barrier.md)
+  [`hlo_optimization_barrier()`](https://r-xla.github.io/stablehlo/reference/hlo_optimization_barrier.md)
+  : OptimizationBarrier Operator
 - [`infer_types_or()`](https://r-xla.github.io/stablehlo/reference/hlo_or.md)
   [`hlo_or()`](https://r-xla.github.io/stablehlo/reference/hlo_or.md) :
   Or Operator
