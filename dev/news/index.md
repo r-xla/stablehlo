@@ -2,6 +2,8 @@
 
 ## stablehlo (development version)
 
+- New
+  [`hlo_optimization_barrier()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_optimization_barrier.md).
 - [`hlo_return()`](https://r-xla.github.io/stablehlo/dev/reference/hlo_return.md)
   accepts a token, e.g. to hand one on from a `while` body, and two
   token `ValueType`s compare equal.
