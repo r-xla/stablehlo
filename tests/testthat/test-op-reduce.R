@@ -14,7 +14,7 @@ test_that("basic tests", {
   func <- hlo_return(r)
 
   expect_snapshot(func)
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   expect_snapshot(repr(func))
 
@@ -30,7 +30,7 @@ test_that("basic tests", {
 })
 
 test_that("reduce along multiple dimensions", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   func <- local_func()
 
@@ -63,7 +63,7 @@ test_that("reduce along multiple dimensions", {
 })
 
 test_that("reduce with two different tensors and init values", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   func <- local_func()
 

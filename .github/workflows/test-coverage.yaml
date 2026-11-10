@@ -11,3 +11,6 @@ permissions:
 jobs:
   test-coverage:
     uses: r-xla/actions/.github/workflows/test-coverage.yaml@main
+    with:
+      env-vars: |
+        PJRT_INSTALL=1

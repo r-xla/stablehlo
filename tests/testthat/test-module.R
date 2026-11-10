@@ -100,7 +100,7 @@ test_that("Module rejects duplicate function names during registration", {
 })
 
 test_that("PJRT execution with module", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   mod <- local_module()
 

@@ -5,7 +5,7 @@ test_that("basic tests", {
   f <- hlo_return(y)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
 
@@ -17,7 +17,7 @@ test_that("basic tests", {
 })
 
 test_that("2D transpose", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   x <- hlo_input("x", "i32", shape = c(3L, 4L))
   y <- hlo_transpose(x, permutation = c(1L, 0L))
@@ -34,7 +34,7 @@ test_that("2D transpose", {
 })
 
 test_that("identity permutation", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   x <- hlo_input("x", "i32", shape = c(2L, 3L))
   y <- hlo_transpose(x, permutation = c(0L, 1L))
@@ -50,7 +50,7 @@ test_that("identity permutation", {
 })
 
 test_that("scalar transpose", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   x <- hlo_input("x", "f64", shape = integer())
   y <- hlo_transpose(x, permutation = integer())

@@ -7,6 +7,7 @@ test_that("basic tests", {
   result_func <- hlo_return(y)
   expect_snapshot(repr(result_func))
 
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(result_func))
   expect_class(program, "PJRTProgram")
 
@@ -24,7 +25,7 @@ test_that("basic tests", {
 })
 
 test_that("scalar min and max", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   func <- local_func()
   x <- hlo_input("x", "f32", shape = c(2L, 2L))
   x1 <- hlo_scalar(0.0, func = func)

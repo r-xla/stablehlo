@@ -28,7 +28,7 @@ test_that("basic 2D convolution (NHWC, valid padding)", {
   f <- hlo_return(z)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   prog <- pjrt_program(repr(f))
   exec <- pjrt_compile(prog)
 
@@ -57,7 +57,7 @@ test_that("2D convolution with strides and padding", {
   f <- hlo_return(z)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   prog <- pjrt_program(repr(f))
   exec <- pjrt_compile(prog)
   expect_class(exec, "PJRTLoadedExecutable")
@@ -91,7 +91,7 @@ test_that("2D convolution with asymmetric (causal) padding", {
   expect_equal(shape(z), c(1L, 3L, 4L, 1L))
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   prog <- pjrt_program(repr(f))
   exec <- pjrt_compile(prog)
 
@@ -131,7 +131,7 @@ test_that("convolution with feature_group_count (depthwise)", {
   f <- hlo_return(z)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   prog <- pjrt_program(repr(f))
   exec <- pjrt_compile(prog)
   expect_class(exec, "PJRTLoadedExecutable")
@@ -171,7 +171,7 @@ test_that("rank-3 (1D) convolution", {
   f <- hlo_return(z)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   prog <- pjrt_program(repr(f))
   exec <- pjrt_compile(prog)
   expect_class(exec, "PJRTLoadedExecutable")

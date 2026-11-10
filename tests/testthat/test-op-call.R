@@ -60,7 +60,7 @@ test_that("hlo_call wrong argument type", {
 })
 
 test_that("hlo_call compiles and executes with pjrt", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   mod <- local_module()
 

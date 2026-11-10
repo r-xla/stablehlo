@@ -23,7 +23,7 @@ test_that("gather looks correct", {
 })
 
 describe("gather", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   check <- function(
     operand,

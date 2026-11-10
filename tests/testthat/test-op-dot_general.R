@@ -10,7 +10,7 @@ test_that("matmul", {
   f <- hlo_return(z)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   pjrt_program <- pjrt_program(repr(f))
   exec <- pjrt_compile(pjrt_program)
@@ -53,7 +53,7 @@ test_that("precision config", {
   )
   expect_match(repr(z2$func), "precision = [HIGHEST, HIGHEST]", fixed = TRUE)
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   pjrt_program <- pjrt_program(repr(f))
   exec <- pjrt_compile(pjrt_program)
@@ -94,7 +94,7 @@ test_that("invalid precision config raises", {
 })
 
 test_that("batching_dims", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   func <- local_func()
   lhs <- hlo_input("lhs", "f32", shape = c(1, 5, 4))
   rhs <- hlo_input("rhs", "f32", shape = c(4, 3, 1L))
@@ -126,7 +126,7 @@ test_that("batching_dims", {
 })
 
 test_that("dot product", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   lhs <- hlo_input("lhs", "f32", shape = 10)
   rhs <- hlo_input("rhs", "f32", shape = 10)
@@ -148,7 +148,7 @@ test_that("dot product", {
 })
 
 test_that("no contracting dims", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   lhs <- hlo_input("lhs", "f32", shape = 10L)
   rhs <- hlo_input("rhs", "f32", shape = 10L)

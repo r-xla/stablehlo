@@ -13,7 +13,7 @@ test_that("print_tensor with header works on CPU", {
   f <- hlo_return(x)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   # printing currently only works on CPU
   skip_if(!is_cpu())
 
