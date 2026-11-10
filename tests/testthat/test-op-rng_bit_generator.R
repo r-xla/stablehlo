@@ -11,7 +11,7 @@ test_that("basic tests", {
   f <- hlo_return(res[[1L]], res[[2L]])
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt::pjrt_program(repr(f))
   executable <- pjrt::pjrt_compile(program)
   out_buf <- pjrt::pjrt_execute(
@@ -33,7 +33,7 @@ test_that("basic tests", {
   f_d <- hlo_return(res_d[[1L]], res_d[[2L]])
   expect_snapshot(repr(f_d))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt::pjrt_program(repr(f_d))
   executable <- pjrt::pjrt_compile(program)
   out_buf <- pjrt::pjrt_execute(
@@ -55,7 +55,7 @@ test_that("basic tests", {
   f_p2 <- hlo_return(res_p2[[1L]], res_p2[[2L]])
   expect_snapshot(repr(f_p2))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt::pjrt_program(repr(f_p2))
   executable <- pjrt::pjrt_compile(program)
   out_buf <- pjrt::pjrt_execute(
@@ -77,7 +77,7 @@ test_that("basic tests", {
   f_p3 <- hlo_return(res_p3[[1L]], res_p3[[2L]])
   expect_snapshot(repr(f_p3))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt::pjrt_program(repr(f_p3))
   executable <- pjrt::pjrt_compile(program)
   out_buf <- pjrt::pjrt_execute(

@@ -15,7 +15,7 @@ describe("hlo_optimization_barrier", {
   }
 
   it("returns operands of different types unchanged", {
-    skip_if_not_installed("pjrt")
+    skip_if_no_pjrt()
     local_func()
     x <- hlo_input("x", "f32", shape = c(2L, 3L))
     y <- hlo_input("y", "i32", shape = integer())
@@ -29,7 +29,7 @@ describe("hlo_optimization_barrier", {
   })
 
   it("returns operands of one type unchanged", {
-    skip_if_not_installed("pjrt")
+    skip_if_no_pjrt()
     local_func()
     x <- hlo_input("x", "f32", shape = 2L)
     y <- hlo_input("y", "f32", shape = 2L)
@@ -42,7 +42,7 @@ describe("hlo_optimization_barrier", {
   })
 
   it("takes tokens", {
-    skip_if_not_installed("pjrt")
+    skip_if_no_pjrt()
     local_func()
     x <- hlo_input("x", "f32", shape = 2L)
     out <- hlo_optimization_barrier(x, hlo_after_all(), hlo_after_all())

@@ -33,7 +33,7 @@ test_that("scatter looks correct", {
 })
 
 describe("scatter", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   check <- function(
     input,

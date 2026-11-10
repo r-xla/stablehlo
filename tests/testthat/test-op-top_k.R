@@ -12,7 +12,7 @@ test_that("basic tests", {
   expect_snapshot(repr(fv))
   expect_snapshot(repr(fi))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   exec_v <- pjrt::pjrt_compile(pjrt::pjrt_program(repr(fv)))
   exec_i <- pjrt::pjrt_compile(pjrt::pjrt_program(repr(fi)))
 
@@ -48,7 +48,7 @@ test_that("works on rank-1 input", {
 
   expect_snapshot(repr(fv1))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   exec_v <- pjrt::pjrt_compile(pjrt::pjrt_program(repr(fv1)))
   exec_i <- pjrt::pjrt_compile(pjrt::pjrt_program(repr(fi1)))
   buf <- pjrt::pjrt_buffer(c(5, 1, 3, 2, 4), dtype = "f32")

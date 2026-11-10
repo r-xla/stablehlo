@@ -1,4 +1,4 @@
-skip_if_not_installed("pjrt")
+skip_if_no_pjrt()
 
 test_that("scalars are correctly formatted", {
   check_roundtrip_scalar <- function(input_buffer) {

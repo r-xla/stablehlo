@@ -1,5 +1,5 @@
 test_that("integer to float conversion", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   local_func()
   operand <- hlo_input("operand", "i32", shape = 4)

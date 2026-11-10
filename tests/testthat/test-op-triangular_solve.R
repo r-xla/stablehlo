@@ -13,7 +13,7 @@ test_that("basic triangular_solve", {
   f <- hlo_return(y)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
 

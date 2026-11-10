@@ -15,7 +15,7 @@ test_that("If operator works", {
   f <- hlo_return(out)
   expect_snapshot(f)
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   expect_class(program, "PJRTProgram")
 

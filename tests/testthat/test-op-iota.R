@@ -4,7 +4,7 @@ test_that("basic tests", {
   f <- hlo_return(res)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt::pjrt_program(repr(f))
   executable <- pjrt::pjrt_compile(program)
   out_buf <- pjrt::pjrt_execute(executable)

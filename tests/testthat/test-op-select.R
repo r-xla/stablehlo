@@ -11,7 +11,7 @@ test_that("basic tests", {
   f <- hlo_return(y)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
 
@@ -47,7 +47,7 @@ test_that("basic tests", {
 })
 
 test_that("select with all i1 types uses generic format", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   pred <- hlo_input("pred", "i1", shape = 2L)
   on_true <- hlo_input("on_true", "i1", shape = 2L)

@@ -60,7 +60,7 @@ test_that("multiple returns", {
   x <- hlo_input("x", "f32", shape = c(2L, 2L))
   f <- hlo_return(x, x)
   expect_snapshot(repr(f))
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   exec <- pjrt_compile(pjrt_program(repr(f)))
   out <- pjrt_execute(exec, pjrt_buffer(array(1:4, dim = c(2, 2)), "f32"))
   expect_identical(out[[1L]], out[[2L]])
@@ -108,7 +108,7 @@ test_that("Input-output aliasing", {
   x <- hlo_input("x", "f32", shape = c(2L, 2L), func = func, alias = 0L)
   f <- hlo_return(x)
   expect_snapshot(repr(f))
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   exec <- pjrt_compile(pjrt_program(repr(f)))
   xin <- pjrt_buffer(1:4, shape = c(2, 2), dtype = "f32", device = "cpu")

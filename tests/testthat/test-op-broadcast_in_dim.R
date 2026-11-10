@@ -9,7 +9,7 @@ test_that("basic tests", {
   f <- hlo_return(y)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
 
@@ -32,7 +32,7 @@ test_that("append dims at the end", {
   )
   f <- hlo_return(y)
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
 
@@ -45,7 +45,7 @@ test_that("append dims at the end", {
 })
 
 test_that("broadcasting a scalar", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   x <- hlo_input("x", "f32", 2L)
   f <- hlo_return(
@@ -60,7 +60,7 @@ test_that("broadcasting a scalar", {
 })
 
 test_that("works for scalars", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   x <- hlo_input("x", "f32", integer())
   f <- hlo_return(

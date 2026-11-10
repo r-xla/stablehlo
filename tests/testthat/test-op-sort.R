@@ -29,7 +29,7 @@ test_that("basic tests", {
 
   expect_snapshot(lapply(f, repr))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- lapply(f, \(x) pjrt_program(repr(x)))
   exec <- lapply(program, \(x) pjrt_compile(x))
 

@@ -23,7 +23,7 @@ test_that("scalars", {
 })
 
 test_that("compile scalars", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   check <- function(x, dtype = NULL) {
     func <- local_func()
     y <- if (is.null(dtype)) {
@@ -67,7 +67,7 @@ test_that("arrays", {
 })
 
 test_that("compile tensors", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   check <- function(x, dtype) {
     func <- local_func()
     f <- hlo_return(hlo_tensor(x, dtype = dtype))
@@ -89,7 +89,7 @@ test_that("compile tensors", {
 })
 
 test_that("pjrt int from R double", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   func <- local_func()
   f <- hlo_return(hlo_scalar(3.14, dtype = "i32"))
   program <- pjrt_program(repr(f))
@@ -99,7 +99,7 @@ test_that("pjrt int from R double", {
 })
 
 test_that("pjrt float from R int", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   func <- local_func()
   f <- hlo_return(hlo_scalar(3L, dtype = "f32"))
   program <- pjrt_program(repr(f))
@@ -132,7 +132,7 @@ test_that("specify shape in hlo_tensor", {
 })
 
 test_that("PJRTBuffer", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   expect_snapshot(repr(
     hlo_tensor(pjrt_buffer(1L, dtype = "i32"), func = hlo_func())$func
@@ -143,7 +143,7 @@ test_that("PJRTBuffer", {
 })
 
 test_that("empty array: dense<[]> formatting", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   empty_tensor <- hlo_empty("i64", 0L)
   f <- hlo_return(empty_tensor)
@@ -160,6 +160,7 @@ test_that("empty array: array<> formatting", {
   y <- hlo_transpose(empty_tensor, permutation = integer())
   f <- hlo_return(y)
   expect_snapshot(repr(f))
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
   buffer <- pjrt_execute(exec, pjrt_scalar(1L, "i64"))
@@ -177,7 +178,7 @@ test_that("can use dtype with constant", {
 })
 
 test_that("nan, inf, -inf scalars execute correctly for f32 and f64", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   # f64 previously reused the 32-bit hex bit-patterns, so the constants were
   # parsed as tiny denormals (~1e-314) instead of Inf/-Inf/NaN at runtime.
   for (dt in c("f32", "f64")) {
@@ -195,7 +196,7 @@ test_that("nan, inf, -inf scalars execute correctly for f32 and f64", {
 })
 
 test_that("nan, inf, -inf in an f64 tensor execute correctly", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   x <- hlo_tensor(c(1, NaN, Inf, -Inf), dtype = "f64")
   f <- hlo_return(x)
@@ -212,7 +213,7 @@ test_that("Efficient representation of constants with single value", {
   res <- hlo_tensor(1.0, shape = c(2, 2), dtype = "f32")
   f <- hlo_return(res)
   expect_snapshot(repr(f))
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
   result_buffer <- pjrt_execute(exec)
@@ -224,7 +225,7 @@ test_that("c() shape is interpreted as scalar", {
   x <- hlo_tensor(1L, shape = NULL)
   f <- hlo_return(x)
   expect_snapshot(repr(f))
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
   buffer <- pjrt_execute(exec)

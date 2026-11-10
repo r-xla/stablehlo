@@ -24,7 +24,7 @@ test_that("basic reduce_window (sum pooling)", {
 
   expect_snapshot(repr(func))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   program <- pjrt_program(repr(func))
   executable <- pjrt_compile(program)
@@ -84,7 +84,7 @@ test_that("rank-1 reduce_window (sum pooling)", {
   )
   func <- hlo_return(r)
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
 
   program <- pjrt_program(repr(func))
   executable <- pjrt_compile(program)

@@ -12,7 +12,7 @@ test_that("basic edge padding", {
   f <- hlo_return(y)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
 
@@ -41,7 +41,7 @@ test_that("interior padding", {
   f <- hlo_return(y)
   expect_snapshot(repr(f))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(f))
   exec <- pjrt_compile(program)
 
@@ -129,7 +129,7 @@ test_that("negative edge padding trims, as long as the result is a shape", {
 })
 
 test_that("negative edge padding executes as it infers", {
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   local_func()
   x <- hlo_input("x", "i32", shape = 10L)
   y <- hlo_pad(

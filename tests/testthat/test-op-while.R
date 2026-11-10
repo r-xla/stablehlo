@@ -29,7 +29,7 @@ test_that("simple loop", {
 
   expect_snapshot(repr(func))
 
-  skip_if_not_installed("pjrt")
+  skip_if_no_pjrt()
   program <- pjrt_program(repr(func))
   exec <- pjrt_compile(program)
 
