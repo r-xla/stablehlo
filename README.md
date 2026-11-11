@@ -11,7 +11,7 @@ Package website: [release](https://r-xla.github.io/stablehlo/) \|
 ![R-CMD-check](https://github.com/r-xla/stablehlo/actions/workflows/R-CMD-check.yaml/badge.svg)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/stablehlo)](https://CRAN.R-project.org/package=stablehlo)
-[![codecov](https://codecov.io/gh/r-xla/stablehlo/branch/main/graph/badge.svg)](https://codecov.io/gh/r-xla/stablehlo)
+[![codecov](https://codecov.io/gh/r-xla/stablehlo/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-xla/stablehlo)
 [![r-universe](https://r-xla.r-universe.dev/badges/stablehlo)](https://r-xla.r-universe.dev/stablehlo)
 <!-- badges: end -->
 
@@ -115,7 +115,8 @@ specification. At least initially, it will:
 
 ## Acknowledgments
 
-- This work is supported by [MaRDI](https://www.mardi4nfdi.de).
+- This work is supported by
+  [MaRDI](https://www.mardi4nfdi.de/about/mission).
 - This work is built upon the [stableHLO
   specification](https://openxla.org/stablehlo/spec) from the OpenXLA
   project.
