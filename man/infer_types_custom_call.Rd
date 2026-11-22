@@ -28,8 +28,8 @@ The API version.}
 \item{has_side_effect}{(\code{logical(1)})\cr
 Whether the custom call has side effects.}
 
-\item{backend_config}{(\code{list} | \code{NULL})\cr
-Optional backend configuration as a named list.}
+\item{backend_config}{(\code{CustomOpBackendConfig} | \code{character(1)} | \code{NULL})\cr
+Optional backend configuration.}
 
 \item{output_types}{(\code{list} of \code{\link{ValueType}} | \code{NULL})\cr
 The output types of the custom call. Default is NULL (no outputs).}

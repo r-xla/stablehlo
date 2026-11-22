@@ -29,8 +29,8 @@ The API version. Default is 4.}
 \item{has_side_effect}{(\code{logical(1)})\cr
 Whether the custom call has side effects.}
 
-\item{backend_config}{(\code{\link{CustomOpBackendConfig}} | \code{NULL})\cr
-Optional backend configuration. Its attributes are what the FFI
+\item{backend_config}{(\code{\link{CustomOpBackendConfig}} | \code{character(1)} | \code{NULL})\cr
+Typed attributes for API version 4, or an opaque string for other versions. Its attributes are what the FFI
 handler receives through \verb{.Attr<T>("name")} or \verb{.Attrs<Dictionary>()}.}
 
 \item{output_types}{(\code{list} of \code{\link{ValueType}} | \code{NULL})\cr
