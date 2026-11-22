@@ -235,7 +235,8 @@ hlo_reduce_window_impl <- hlo_fn(OpReduceWindow, infer_types_reduce_window)
 
 #' @title ReduceWindow Operator
 #' @description
-#' See \url{https://openxla.org/stablehlo/spec#reduce_window} for details.
+#' See the `reduce_window` section of the
+#' [StableHLO specification](https://openxla.org/stablehlo/spec) for details.
 #' @param inputs (`list()` of [`FuncValue`])\cr
 #'   The input tensor(s) to apply the reduction to.
 #' @param init_values (`list()` of [`FuncValue`])\cr

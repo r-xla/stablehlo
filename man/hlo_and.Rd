@@ -18,5 +18,6 @@ hlo_and(lhs, rhs, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#and} for details.
+See the \code{and} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

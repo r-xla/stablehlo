@@ -26,3 +26,5 @@ SPEC.md
 ^jarl.toml$
 ^.worktrees/
 ^.worktrees/
+^CRAN-SUBMISSION$
+^cran-comments.md$

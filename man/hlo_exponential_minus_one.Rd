@@ -18,5 +18,6 @@ hlo_exponential_minus_one(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#exponential_minus_one} for details.
+See the \code{exponential_minus_one} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

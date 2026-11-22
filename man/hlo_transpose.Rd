@@ -18,5 +18,6 @@ hlo_transpose(operand, permutation, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#transpose} for details.
+See the \code{transpose} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -16,5 +16,6 @@ hlo_reduce(inputs, init_values, dimensions, body)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#reduce} for details.
+See the \code{reduce} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

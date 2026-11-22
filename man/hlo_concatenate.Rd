@@ -18,5 +18,6 @@ hlo_concatenate(..., dimension, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#concatenate} for details.
+See the \code{concatenate} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

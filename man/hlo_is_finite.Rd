@@ -18,5 +18,6 @@ hlo_is_finite(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#is_finite} for details.
+See the \code{is_finite} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -18,5 +18,6 @@ hlo_tan(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#tan} for details.
+See the \code{tan} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

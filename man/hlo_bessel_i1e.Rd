@@ -19,7 +19,7 @@ hlo_bessel_i1e(operand, output_types = NULL)
 }
 \description{
 This op is from the CHLO dialect, a higher-level companion to stableHLO
-that is lowered to stableHLO during compilation. See
-\url{https://openxla.org/stablehlo/generated/chlo#chlobessel_i1e_chlobessel_i1eop}
+that is lowered to stableHLO during compilation. See the \code{chlo.bessel_i1e}
+section of the \href{https://openxla.org/stablehlo/generated/chlo}{CHLO documentation}
 for details.
 }

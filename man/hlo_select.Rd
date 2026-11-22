@@ -18,5 +18,6 @@ hlo_select(pred, on_true, on_false, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#select} for details.
+See the \code{select} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

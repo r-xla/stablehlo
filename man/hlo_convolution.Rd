@@ -85,7 +85,8 @@ When provided, type inference and its input validation are skipped.}
 }
 \description{
 Computes dot products between windows of \code{lhs} and slices of \code{rhs}.
-See \url{https://openxla.org/stablehlo/spec#convolution} for details.
+See the \code{convolution} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 
 All dimension indices are 0-based.
 }

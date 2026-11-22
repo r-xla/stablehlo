@@ -18,5 +18,6 @@ hlo_multiply(lhs, rhs, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#multiply} for details.
+See the \code{multiply} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

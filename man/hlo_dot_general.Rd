@@ -39,5 +39,6 @@ emitted, which is equivalent to \code{"DEFAULT"} for both operands.}
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#dot_general} for details.
+See the \code{dot_general} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -18,5 +18,6 @@ hlo_maximum(lhs, rhs, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#maximum} for details.
+See the \code{maximum} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -18,5 +18,6 @@ hlo_round_nearest_even(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#round_nearest_even} for details.
+See the \code{round_nearest_even} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

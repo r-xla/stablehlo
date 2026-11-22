@@ -24,5 +24,6 @@ hlo_rng_bit_generator(
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#rng_bit_generator} for details.
+See the \code{rng_bit_generator} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -18,5 +18,6 @@ hlo_atan2(lhs, rhs, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#atan2} for details.
+See the \code{atan2} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -40,5 +40,6 @@ Whether indices are sorted.}
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#gather} for details.
+See the \code{gather} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

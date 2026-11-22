@@ -19,7 +19,7 @@ hlo_is_pos_inf(operand, output_types = NULL)
 }
 \description{
 This op is from the CHLO dialect, a higher-level companion to stableHLO
-that is lowered to stableHLO during compilation. See
-\url{https://openxla.org/stablehlo/generated/chlo#chlois_pos_inf_chlois_pos_infop}
+that is lowered to stableHLO during compilation. See the \code{chlo.is_pos_inf}
+section of the \href{https://openxla.org/stablehlo/generated/chlo}{CHLO documentation}
 for details.
 }

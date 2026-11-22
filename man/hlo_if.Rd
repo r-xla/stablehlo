@@ -19,5 +19,6 @@ Whether to simplify results by unpacking lists of length 1 into their single ele
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#if} for details.
+See the \code{if} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

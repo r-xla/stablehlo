@@ -18,5 +18,6 @@ hlo_xor(lhs, rhs, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#xor} for details.
+See the \code{xor} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

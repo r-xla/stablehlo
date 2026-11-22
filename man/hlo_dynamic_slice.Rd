@@ -18,5 +18,6 @@ hlo_dynamic_slice(operand, ..., slice_sizes, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#dynamic_slice} for details.
+See the \code{dynamic_slice} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

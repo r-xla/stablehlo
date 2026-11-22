@@ -18,5 +18,6 @@ hlo_divide(lhs, rhs, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#divide} for details.
+See the \code{divide} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -28,7 +28,7 @@ are broken by lower index first.
 }
 \description{
 This op is from the CHLO dialect, a higher-level companion to stableHLO
-that is lowered to stableHLO during compilation. See
-\url{https://openxla.org/stablehlo/generated/chlo#chlotop_k_chlotop_kop}
+that is lowered to stableHLO during compilation. See the \code{chlo.top_k}
+section of the \href{https://openxla.org/stablehlo/generated/chlo}{CHLO documentation}
 for details.
 }

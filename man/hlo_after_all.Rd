@@ -18,5 +18,6 @@ hlo_after_all(..., func = NULL, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#after_all} for details.
+See the \code{after_all} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }
