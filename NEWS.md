@@ -1,5 +1,7 @@
 # stablehlo (development version)
 
+* `hlo_custom_call()` accepts opaque string backend configurations.
+
 # stablehlo 0.6.0
 
 * New `hlo_optimization_barrier()`.

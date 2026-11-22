@@ -233,3 +233,24 @@ test_that("a multi-result call names the aliased result", {
   # to walk into -- but the attribute's syntax still requires the field.
   expect_match(src, "operand_tuple_indices = []", fixed = TRUE)
 })
+
+describe("hlo_custom_call", {
+  it("renders an opaque backend configuration as an escaped MLIR string", {
+    local_func()
+    x <- hlo_input("x", "f32")
+    y <- hlo_custom_call(
+      x,
+      call_target_name = "foo",
+      api_version = 2L,
+      has_side_effect = FALSE,
+      backend_config = '{"key":"first\\second\nthird"}',
+      output_types = list(ValueType("f32"))
+    )
+    f <- hlo_return(y)
+    expect_match(
+      repr(f),
+      'backend_config = "{\\22key\\22:\\22first\\5Csecond\\0Athird\\22}"',
+      fixed = TRUE
+    )
+  })
+})
