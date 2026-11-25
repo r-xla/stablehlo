@@ -1,5 +1,8 @@
 # stablehlo (development version)
 
+* Bugfix: `format_double()` formats R's `NA_real_` as a NaN, instead of as `NA`,
+  which the StableHLO parser rejects.
+
 # stablehlo 0.6.0
 
 * New `hlo_optimization_barrier()`.
