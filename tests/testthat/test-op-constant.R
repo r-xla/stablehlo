@@ -208,6 +208,18 @@ test_that("nan, inf, -inf in an f64 tensor execute correctly", {
   expect_equal(out[4], -Inf)
 })
 
+describe("hlo_scalar", {
+  it("builds a missing value as a NaN constant that parses and executes", {
+    skip_if_no_pjrt()
+    for (dt in c("f32", "f64")) {
+      local_func()
+      f <- hlo_return(hlo_scalar(NA_real_, dtype = dt))
+      out <- as_array(pjrt_execute(pjrt_compile(pjrt_program(repr(f)))))
+      expect_true(is.nan(out), info = dt)
+    }
+  })
+})
+
 test_that("Efficient representation of constants with single value", {
   local_func()
   res <- hlo_tensor(1.0, shape = c(2, 2), dtype = "f32")

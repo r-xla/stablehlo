@@ -46,3 +46,11 @@ test_that("format_double keeps the shape of an array at 32 bit", {
   out <- format_double(array(c(1, 2, 3, 4, 5, 6), dim = c(2L, 3L)), 32)
   expect_equal(dim(out), c(2L, 3L))
 })
+
+describe("format_double", {
+  it("formats a missing value as NaN at both widths", {
+    expect_equal(format_double(NA_real_, 64), "0x7FF8000000000000")
+    expect_equal(format_double(NA_real_, 32), "0x7FC00000")
+    expect_equal(format_double(c(1, NA, 2), 64)[2L], "0x7FF8000000000000")
+  })
+})

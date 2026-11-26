@@ -34,7 +34,9 @@ format_double <- function(x, precision = 64) {
   }
 
   res <- character(length(x))
-  nans <- is.nan(x)
+  # `is.na()`, not `is.nan()`: R's `NA_real_` is a NaN too, but `is.nan()` is
+  # `FALSE` for it, and `formatC()` would spell it "NA", which no parser takes.
+  nans <- is.na(x)
   infs <- is.infinite(x)
   finite_mask <- !nans & !infs
 

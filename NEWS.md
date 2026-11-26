@@ -8,6 +8,11 @@
 
 # stablehlo 0.6.0
 
+* Bugfix: `format_double()` formats R's `NA_real_` as a NaN, instead of as `NA`,
+  which the StableHLO parser rejects.
+
+# stablehlo 0.6.0
+
 * New `hlo_optimization_barrier()`.
 * `hlo_return()` accepts a token, e.g. to hand one on from a `while` body, and
   two token `ValueType`s compare equal.
