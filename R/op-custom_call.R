@@ -13,7 +13,18 @@ render_custom_call <- function(ctx) {
   attr_reprs <- vapply(ctx$attrs, repr, character(1))
   bec <- ctx$custom_attrs$backend_config
   if (!is.null(bec)) {
-    attr_reprs <- c(attr_reprs, repr(bec))
+    if (is.character(bec)) {
+      # MLIR string literals escape individual bytes with hexadecimal escapes.
+      bytes <- as.integer(charToRaw(enc2utf8(bec)))
+      escape <- bytes < 32L | bytes >= 127L | bytes %in% c(34L, 92L)
+      parts <- character(length(bytes))
+      parts[escape] <- sprintf("\\%02X", bytes[escape])
+      parts[!escape] <- intToUtf8(bytes[!escape], multiple = TRUE)
+      bec <- paste0('backend_config = "', paste0(parts, collapse = ""), '"')
+    } else {
+      bec <- repr(bec)
+    }
+    attr_reprs <- c(attr_reprs, bec)
   }
   ol <- ctx$custom_attrs$operand_layouts
   if (!is.null(ol)) {
@@ -143,8 +154,8 @@ repr.CustomOpBackendConfig <- function(
 #'   The API version.
 #' @param has_side_effect (`logical(1)`)\cr
 #'   Whether the custom call has side effects.
-#' @param backend_config (`list` | `NULL`)\cr
-#'   Optional backend configuration as a named list.
+#' @param backend_config (`CustomOpBackendConfig` | `character(1)` | `NULL`)\cr
+#'   Optional backend configuration.
 #' @param output_types (`list` of [`ValueType`] | `NULL`)\cr
 #'   The output types of the custom call. Default is NULL (no outputs).
 #' @param operand_layouts,result_layouts Layouts, checked but not used for
@@ -189,12 +200,24 @@ infer_types_custom_call <- function(
 
   # A dictionary `backend_config` is only legal for the typed-FFI API; every
   # other version wants a string.
-  if (!is.null(backend_config) && api_version != 4L) {
+  if (inherits(backend_config, "CustomOpBackendConfig") && api_version != 4L) {
     cli_abort(c(
       "A {.cls CustomOpBackendConfig} requires {.arg api_version} 4
        (typed FFI).",
       x = "Got {vec_repr(api_version)}."
     ))
+  }
+
+  if (
+    !is.null(backend_config) &&
+      !inherits(backend_config, "CustomOpBackendConfig")
+  ) {
+    checkmate::assert_string(backend_config)
+    if (api_version == 4L && nzchar(backend_config)) {
+      cli_abort(
+        "A nonempty string {.arg backend_config} requires an {.arg api_version} other than 4."
+      )
+    }
   }
 
   if (is.null(output_types)) {
@@ -263,8 +286,8 @@ custom_call_impl <- hlo_fn(OpCustomCall, infer_types_custom_call)
 #'   The API version. Default is 4.
 #' @param has_side_effect (`logical(1)`)\cr
 #'   Whether the custom call has side effects.
-#' @param backend_config ([`CustomOpBackendConfig`] | `NULL`)\cr
-#'   Optional backend configuration. Its attributes are what the FFI
+#' @param backend_config ([`CustomOpBackendConfig`] | `character(1)` | `NULL`)\cr
+#'   Typed attributes for API version 4, or an opaque string for other versions. Its attributes are what the FFI
 #'   handler receives through `.Attr<T>("name")` or `.Attrs<Dictionary>()`.
 #' @param output_types (`list` of [`ValueType`] | `NULL`)\cr
 #'   The output types of the custom call. Default is NULL (no outputs).

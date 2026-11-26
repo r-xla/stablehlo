@@ -1,3 +1,7 @@
+# stablehlo (development version)
+
+* `hlo_custom_call()` accepts opaque string backend configurations.
+
 # stablehlo 0.7.0
 
 * Initial CRAN release and minor fixes.
