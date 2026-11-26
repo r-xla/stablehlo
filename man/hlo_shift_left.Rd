@@ -18,5 +18,6 @@ hlo_shift_left(lhs, rhs, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#shift_left} for details.
+See the \code{shift_left} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

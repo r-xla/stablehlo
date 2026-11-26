@@ -18,5 +18,6 @@ hlo_reshape(operand, shape, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#reshape} for details.
+See the \code{reshape} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

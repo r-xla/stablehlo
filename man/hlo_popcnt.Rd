@@ -18,5 +18,6 @@ hlo_popcnt(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#popcnt} for details.
+See the \code{popcnt} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

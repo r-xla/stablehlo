@@ -18,5 +18,6 @@ hlo_rsqrt(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#rsqrt} for details.
+See the \code{rsqrt} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

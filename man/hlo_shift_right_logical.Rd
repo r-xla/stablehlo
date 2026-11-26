@@ -18,5 +18,6 @@ hlo_shift_right_logical(lhs, rhs, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#shift_right_logical} for details.
+See the \code{shift_right_logical} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -18,5 +18,6 @@ hlo_subtract(lhs, rhs, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#subtract} for details.
+See the \code{subtract} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -45,5 +45,6 @@ One of \code{"NO_TRANSPOSE"}, \code{"TRANSPOSE"}, or \code{"ADJOINT"}.}
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#triangular_solve} for details.
+See the \code{triangular_solve} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -88,7 +88,8 @@ impl_hlo_iota <- function(iota_dimension, dtype, shape, func) {
 
 #' @title Iota Operator
 #' @description
-#' See \url{https://openxla.org/stablehlo/spec#iota} for details.
+#' See the `iota` section of the
+#' [StableHLO specification](https://openxla.org/stablehlo/spec) for details.
 #' @param iota_dimension (`integer(1)`)\cr
 #'   The dimension along which to generate increasing values.
 #'   Must be in range `[0, rank(output))`.

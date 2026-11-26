@@ -515,7 +515,8 @@ hlo_convolution_impl <- hlo_fn(OpConvolution, infer_types_convolution)
 #' @title Convolution Operator
 #' @description
 #' Computes dot products between windows of `lhs` and slices of `rhs`.
-#' See \url{https://openxla.org/stablehlo/spec#convolution} for details.
+#' See the `convolution` section of the
+#' [StableHLO specification](https://openxla.org/stablehlo/spec) for details.
 #'
 #' All dimension indices are 0-based.
 #' @param lhs ([`FuncValue`])\cr

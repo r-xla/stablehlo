@@ -15,7 +15,8 @@ hlo_cholesky(operand, lower, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#cholesky} for details.
+See the \code{cholesky} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }
 \details{
 The values of the other half of the matrix are not guaranteed and backend dependent.

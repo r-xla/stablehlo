@@ -18,5 +18,6 @@ hlo_cbrt(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#cbrt} for details.
+See the \code{cbrt} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

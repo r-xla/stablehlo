@@ -16,5 +16,6 @@ hlo_sort(..., dimension, is_stable, comparator)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#sort} for details.
+See the \code{sort} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

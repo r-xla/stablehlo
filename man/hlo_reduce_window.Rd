@@ -55,5 +55,6 @@ The input tensor(s) to apply the reduction to.}
 The initial value(s) for the reduction. Must be 0-D tensors.}
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#reduce_window} for details.
+See the \code{reduce_window} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

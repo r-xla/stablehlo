@@ -5,7 +5,8 @@
 #' <% has_output_types <- "output_types" %in% formalArgs(f) %>
 #' @title <%= gsub("^Op", "", op_name) %> Operator
 #' @description
-#' See \url{https://openxla.org/stablehlo/spec#<%= mnemonic %>} for details.
+#' See the `<%= mnemonic %>` section of the
+#' [StableHLO specification](https://openxla.org/stablehlo/spec) for details.
 #' @param <%= paste(setdiff(formalArgs(f), c(not_func_variables, "output_types")), collapse = ",") %> ([`FuncValue`])\cr
 #' <%= if (has_output_types) "@param output_types (`list()` of [`ValueType`] | `NULL`)\\cr Output types known ahead of time (e.g. from type inference at trace time). When provided, type inference and its input validation are skipped." else "" %>
 #' @return [`FuncValue`]\cr

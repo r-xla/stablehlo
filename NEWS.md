@@ -1,4 +1,8 @@
-# stablehlo (development version)
+# stablehlo 0.7.0
+
+* Initial CRAN release and minor fixes.
+
+# stablehlo 0.6.0
 
 * Bugfix: `format_double()` formats R's `NA_real_` as a NaN, instead of as `NA`,
   which the StableHLO parser rejects.

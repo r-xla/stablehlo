@@ -18,5 +18,6 @@ hlo_sine(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#sine} for details.
+See the \code{sine} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

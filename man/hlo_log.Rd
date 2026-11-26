@@ -18,5 +18,6 @@ hlo_log(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#log} for details.
+See the \code{log} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

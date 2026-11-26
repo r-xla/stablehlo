@@ -18,5 +18,6 @@ hlo_count_leading_zeros(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#count_leading_zeros} for details.
+See the \code{count_leading_zeros} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

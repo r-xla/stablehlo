@@ -18,5 +18,6 @@ hlo_abs(operand, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#abs} for details.
+See the \code{abs} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

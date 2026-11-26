@@ -18,5 +18,6 @@ hlo_convert(operand, dtype, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#convert} for details.
+See the \code{convert} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

@@ -29,5 +29,6 @@ Per default, uses the last function created with \code{\link{hlo_func}} or \code
 \code{\link{FuncValue}}
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#iota} for details.
+See the \code{iota} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

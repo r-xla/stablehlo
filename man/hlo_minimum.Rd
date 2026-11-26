@@ -18,5 +18,6 @@ hlo_minimum(lhs, rhs, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#minimum} for details.
+See the \code{minimum} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

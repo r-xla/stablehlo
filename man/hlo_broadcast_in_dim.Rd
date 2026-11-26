@@ -18,5 +18,6 @@ hlo_broadcast_in_dim(operand, broadcast_dimensions, shape, output_types = NULL)
 \code{\link{FuncValue}}\cr
 }
 \description{
-See \url{https://openxla.org/stablehlo/spec#broadcast_in_dim} for details.
+See the \code{broadcast_in_dim} section of the
+\href{https://openxla.org/stablehlo/spec}{StableHLO specification} for details.
 }

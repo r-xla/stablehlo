@@ -19,7 +19,7 @@ hlo_lgamma(operand, output_types = NULL)
 }
 \description{
 This op is from the CHLO dialect, a higher-level companion to stableHLO
-that is lowered to stableHLO during compilation. See
-\url{https://openxla.org/stablehlo/generated/chlo#chlolgamma_chlolgammaop}
+that is lowered to stableHLO during compilation. See the \code{chlo.lgamma}
+section of the \href{https://openxla.org/stablehlo/generated/chlo}{CHLO documentation}
 for details.
 }
